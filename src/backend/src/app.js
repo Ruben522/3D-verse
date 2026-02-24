@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-/*
 import authRoutes from "./routes/auth.routes.js";
+/*
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import modelosRoutes from "./routes/modelos.routes.js";
 import comentariosRoutes from "./routes/comentarios.routes.js";
@@ -20,8 +20,8 @@ app.get("/", (req, res) => {
   res.json({ message: "API 3D-verse funcionando 🚀" });
 });
 
-/*
 app.use("/auth", authRoutes);
+/*
 app.use("/usuarios", usuariosRoutes);
 app.use("/modelos", modelosRoutes);
 app.use("/comentarios", comentariosRoutes);
