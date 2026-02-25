@@ -1,3 +1,16 @@
+-- DELETE TABLES
+DROP TABLE IF EXISTS followers;
+DROP TABLE IF EXISTS model_tag;
+DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS downloads;
+DROP TABLE IF EXISTS favorites;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS models;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS model_images;
+DROP TABLE IF EXISTS model_parts;
+DROP TYPE IF EXISTS role_enum;
+
 -- ENUM for user roles
 CREATE TYPE role_enum AS ENUM ('admin', 'user');
 
@@ -21,11 +34,31 @@ CREATE TABLE models (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     file_url TEXT NOT NULL,
-    preview_image_url TEXT,
+    main_image_url TEXT NOT NULL,
+    video_url TEXT,
     license VARCHAR(50),
     downloads INTEGER DEFAULT 0,
+    views INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- MODELS PARTS
+CREATE TABLE model_parts (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    model_id UUID REFERENCES models(id),
+    part_name VARCHAR(255),
+    file_url TEXT NOT NULL,
+    file_size BIGINT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- GALERY IMAGES
+CREATE TABLE model_images (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    model_id UUID NOT NULL REFERENCES models(id),
+    image_url TEXT NOT NULL,
+    display_order INTEGER DEFAULT 0
 );
 
 -- COMMENTS
@@ -84,6 +117,7 @@ ALTER TABLE models
     ADD FOREIGN KEY (user_id)
     REFERENCES users(id)
     ON DELETE CASCADE;
+    
 
 ALTER TABLE comments
     ADD FOREIGN KEY (user_id)
@@ -123,4 +157,14 @@ ALTER TABLE followers
     ON DELETE CASCADE,
     ADD FOREIGN KEY (follower_id)
     REFERENCES users(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE model_images
+    ADD FOREIGN KEY (model_id)
+    REFERENCES models(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE model_parts
+    ADD FOREIGN KEY (model_id)
+    REFERENCES models(id)
     ON DELETE CASCADE;

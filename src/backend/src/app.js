@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
+import modelsRoutes from "./routes/models.routes.js";
 /*
 import usuariosRoutes from "./routes/usuarios.routes.js";
-import modelosRoutes from "./routes/modelos.routes.js";
 import comentariosRoutes from "./routes/comentarios.routes.js";
 import favoritosRoutes from "./routes/favoritos.routes.js";
 import descargasRoutes from "./routes/descargas.routes.js";
@@ -21,9 +21,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/models", modelsRoutes);
 /*
 app.use("/usuarios", usuariosRoutes);
-app.use("/modelos", modelosRoutes);
 app.use("/comentarios", comentariosRoutes);
 app.use("/favoritos", favoritosRoutes);
 app.use("/descargas", descargasRoutes);

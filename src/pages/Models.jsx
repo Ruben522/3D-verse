@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { ModelsContext } from "../context/ModelsContext";
+import React from 'react';
 import ModelCard from '../components/ModelCard';
+import useModels from '../hooks/useModels';
 
-const Modelos = () => {
-  const { models, loading, error } = useContext(ModelsContext);
+const Models = () => {
+  const { models, isLoading, error } = useModels();
   
   return (
     <div className="min-h-screen bg-surface">
-      
-      {/* Cabecera */}
       <div className="bg-white border-b border-gray-200 mb-8">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <h1 className="text-3xl font-bold text-gray-900">
@@ -34,32 +32,24 @@ const Modelos = () => {
 
       <main className="max-w-7xl mx-auto px-6 pb-12 flex flex-col md:flex-row gap-8">
         <div className="flex-1">
-
-          {
-            loading ? (
-              // Skeleton Loader
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* skeletons */}
-              </div>
-            ) : error ? (
-              // Error simple y controlado
-              <p className="text-red-500 font-medium">
-                Error al cargar los modelos: {error}
-              </p>
-            ) : (
-              // Modelos reales desde Supabase
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {models.map((modelo) => (
-                  <ModelCard key={modelo.id} modelo={modelo} />
-                ))}
-              </div>
-            )
-          }
-
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+          ) : error ? (
+            <p className="text-red-500 font-medium">
+              Error al cargar los modelos: {error}
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {models.map((model) => (
+                <ModelCard key={model.id} model={model} />
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>
   );
 };
 
-export default Modelos;
+export default Models;
