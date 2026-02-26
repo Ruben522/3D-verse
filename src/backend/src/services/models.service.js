@@ -111,7 +111,6 @@ const getModelById = async (modelId) => {
         m.video_url,
         m.license,
         m.downloads,
-        m.likes,
         m.views,
         m.created_at,
         m.updated_at,
@@ -184,7 +183,6 @@ const getModels = async ({ page = 1, limit = 20 }) => {
       m.description,
       m.main_image_url,
       m.downloads,
-      m.likes,
       m.views,
       m.created_at,
 

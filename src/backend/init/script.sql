@@ -1,5 +1,4 @@
 -- DELETE TABLES (orden correcto: primero las que tienen dependencias)
-DROP TABLE IF EXISTS model_likes;
 DROP TABLE IF EXISTS followers;
 DROP TABLE IF EXISTS model_tag;
 DROP TABLE IF EXISTS comments;
