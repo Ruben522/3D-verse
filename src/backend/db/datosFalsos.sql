@@ -2,7 +2,9 @@
 DELETE FROM users; -- Limpiar tabla antes de insertar datos falsos
 DELETE FROM tags; -- Limpiar tabla antes de insertar datos falsos
 DELETE FROM models; -- Limpiar tabla antes de insertar datos falsos
-
+DELETE FROM favorites; -- Limpiar tabla antes de insertar datos falsos
+DELETE FROM model_likes; -- Limpiar tabla antes de insertar datos falsos
+DELETE FROM comments; -- Limpiar tabla antes de insertar datos falsos
 
 INSERT INTO users (id, name, lastname, username, email, password_hash, role, avatar, bio, youtube, twitter, linkedin, github, location) VALUES
 ('11111111-1111-1111-1111-111111111119', 'R', 'R', 'R', 'R.garcia@email.com', '$2a$10$HASHEXAMPLE1', 'user', 'https://storage.com/avatars/ana.jpg', 'R 3D especializada en personajes fantásticos', '@Ana3D', '@ana_3d', 'ana-garcia-3d', 'anagarcia3d', 'Madrid, España'),
@@ -139,3 +141,7 @@ INSERT INTO comments (user_id, model_id, content, created_at) VALUES
 ('77777777-7777-7777-7777-777777777777', 'e5e5e5e5-5555-5555-5555-555555555555', '¿Es resistente para uso diario? Me preocupa que se rompa.', '2024-02-19 12:45:00'),
 ('88888888-8888-8888-8888-888888888888', 'e5e5e5e5-5555-5555-5555-555555555555', 'Lo imprimí en PETG y ha aguantado perfecto un mes ya.', '2024-02-20 09:30:00'),
 ('99999999-9999-9999-9999-999999999999', 'e5e5e5e5-5555-5555-5555-555555555555', 'El diseño es precioso, mi mujer lo adora.', '2024-02-21 16:20:00');
+
+UPDATE users 
+SET role = 'admin' 
+WHERE username = 'ruben_admin';

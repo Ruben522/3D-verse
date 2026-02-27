@@ -6,8 +6,6 @@ import {
     update,
     remove,
     download,
-    favorite,
-    unfavorite,
     like,
     unlike,
 } from "../controllers/models.controller.js";
@@ -21,9 +19,7 @@ router.get("/:id", getById);
 router.put("/:id", verifyToken, update);
 router.delete("/:id", verifyToken, remove);
 router.post("/:id/download", download);
-
-router.post("/:id/favorite", verifyToken, favorite);
-router.delete("/:id/favorite", verifyToken, unfavorite);
 router.post("/:id/like", verifyToken, like);
 router.delete("/:id/like", verifyToken, unlike);
+
 export default router;

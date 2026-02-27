@@ -85,30 +85,6 @@ const download = async (req, res) => {
     }
 };
 
-const favorite = async (req, res) => {
-    try {
-        const result = await addFavorite(
-            req.params.id,
-            req.user.id,
-        );
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-const unfavorite = async (req, res) => {
-    try {
-        const result = await removeFavorite(
-            req.params.id,
-            req.user.id,
-        );
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
 const like = async (req, res) => {
     try {
         const result = await addLike(
@@ -140,8 +116,6 @@ export {
     update,
     remove,
     download,
-    favorite,
-    unfavorite,
     like,
     unlike,
 };

@@ -371,31 +371,6 @@ const downloadModel = async (
     }
 };
 
-const addFavorite = async (modelId, userId) => {
-    try {
-        await pool.query(
-            `INSERT INTO favorites (user_id, model_id)
-       VALUES ($1,$2)
-       ON CONFLICT (user_id, model_id) DO NOTHING`,
-            [userId, modelId],
-        );
-
-        return { message: "Añadido a favoritos" };
-    } catch (error) {
-        throw error;
-    }
-};
-
-const removeFavorite = async (modelId, userId) => {
-    await pool.query(
-        `DELETE FROM favorites
-     WHERE user_id = $1 AND model_id = $2`,
-        [userId, modelId],
-    );
-
-    return { message: "Eliminado de favoritos" };
-};
-
 const addLike = async (modelId, userId) => {
     const client = await pool.connect();
 
@@ -478,8 +453,6 @@ export {
     deleteModel,
     downloadModel,
     updateModel,
-    addFavorite,
-    removeFavorite,
     addLike,
     removeLike,
 };
