@@ -32,6 +32,20 @@ const followUser = async (userIdToFollow, followerId) => {
             return { message: "Ya sigues a este usuario" };
         }
 
+        await client.query(
+            `UPDATE users
+             SET followers_count = followers_count + 1
+             WHERE id = $1`,
+            [userIdToFollow]
+        );
+
+        await client.query(
+            `UPDATE users
+             SET following_count = following_count + 1
+             WHERE id = $1`,
+            [followerId]
+        );
+
         await client.query("COMMIT");
 
         return { message: "Ahora sigues a este usuario" };
@@ -61,6 +75,20 @@ const unfollowUser = async (userIdToUnfollow, followerId) => {
             await client.query("ROLLBACK");
             return { message: "No seguías a este usuario" };
         }
+
+        await client.query(
+            `UPDATE users
+             SET followers_count = GREATEST(followers_count - 1, 0)
+             WHERE id = $1`,
+            [userIdToUnfollow]
+        );
+
+        await client.query(
+            `UPDATE users
+             SET following_count = GREATEST(following_count - 1, 0)
+             WHERE id = $1`,
+            [followerId]
+        );
 
         await client.query("COMMIT");
 

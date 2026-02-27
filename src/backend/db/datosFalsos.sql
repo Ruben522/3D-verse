@@ -242,3 +242,156 @@ INSERT INTO followers (user_id, follower_id, followed_at) VALUES
 -- Si quieres añadir a Ruben como admin, primero debes insertarlo:
 -- INSERT INTO users (id, username, email, password_hash, role) VALUES 
 -- ('rrrrrrrr-rrrr-rrrr-rrrr-rrrrrrrrrrrr', 'ruben_admin', 'ruben@email.com', '$2a$10$HASH', 'admin');
+
+-- INSERT MODEL_TAG (relaciones modelo-tag) - 40 registros
+INSERT INTO model_tag (model_id, tag_id, created_at) VALUES
+
+
+
+-- Guerrero Élfico (d4d4d4d4-4444-4444-4444-444444444444)
+('d4d4d4d4-4444-4444-4444-444444444444', 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', '2024-02-10 12:30:00'), -- miniaturas
+('d4d4d4d4-4444-4444-4444-444444444444', 'f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', '2024-02-10 12:30:00'), -- dungeons-and-dragons
+('d4d4d4d4-4444-4444-4444-444444444444', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '2024-02-10 12:30:00'), -- figura
+('d4d4d4d4-4444-4444-4444-444444444444', 'b2eebc99-9c0b-4ef8-bb6d-6bb9bd380a24', '2024-02-10 12:30:00'), -- juguete
+
+-- Anillo Dragón (e5e5e5e5-5555-5555-5555-555555555555)
+('e5e5e5e5-5555-5555-5555-555555555555', 'd0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', '2024-02-15 17:00:00'), -- joyería
+('e5e5e5e5-5555-5555-5555-555555555555', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', '2024-02-15 17:00:00'), -- dragón
+('e5e5e5e5-5555-5555-5555-555555555555', 'f2eebc99-9c0b-4ef8-bb6d-6bb9bd380a28', '2024-02-15 17:00:00'), -- joyería-paramétrica
+
+-- Soporte Modular (f6f6f6f6-6666-6666-6666-666666666666)
+('f6f6f6f6-6666-6666-6666-666666666666', 'a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a17', '2024-02-20 12:00:00'), -- organizador
+('f6f6f6f6-6666-6666-6666-666666666666', 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13', '2024-02-20 12:00:00'), -- funcional
+('f6f6f6f6-6666-6666-6666-666666666666', 'e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a21', '2024-02-20 12:00:00'), -- gadget
+('f6f6f6f6-6666-6666-6666-666666666666', 'c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a25', '2024-02-20 12:00:00'), -- herramienta
+
+-- Criatura Lovecraftiana (a7a7a7a7-7777-7777-7777-777777777777)
+('a7a7a7a7-7777-7777-7777-777777777777', 'f1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '2024-03-01 14:30:00'), -- escultura
+('a7a7a7a7-7777-7777-7777-777777777777', 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a18', '2024-03-01 14:30:00'), -- arte
+('a7a7a7a7-7777-7777-7777-777777777777', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '2024-03-01 14:30:00'), -- figura
+
+-- Caja Engranajes (b8b8b8b8-8888-8888-8888-888888888888)
+('b8b8b8b8-8888-8888-8888-888888888888', 'a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a17', '2024-03-05 11:15:00'), -- organizador
+('b8b8b8b8-8888-8888-8888-888888888888', 'd1eebc99-9c0b-4ef8-bb6d-6bb9bd380a20', '2024-03-05 11:15:00'), -- decoración
+('b8b8b8b8-8888-8888-8888-888888888888', 'a3eebc99-9c0b-4ef8-bb6d-6bb9bd380a29', '2024-03-05 11:15:00'), -- engranajes
+
+-- Maceta Geométrica (c9c9c9c9-9999-9999-9999-999999999999)
+('c9c9c9c9-9999-9999-9999-999999999999', 'd1eebc99-9c0b-4ef8-bb6d-6bb9bd380a20', '2024-03-10 13:45:00'), -- decoración
+('c9c9c9c9-9999-9999-9999-999999999999', 'a2eebc99-9c0b-4ef8-bb6d-6bb9bd380a23', '2024-03-10 13:45:00'), -- arquitectura
+('c9c9c9c9-9999-9999-9999-999999999999', 'b2eebc99-9c0b-4ef8-bb6d-6bb9bd380a24', '2024-03-10 13:45:00'), -- juguete
+
+-- Portalápices Dinosaurio (d0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa)
+('d0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a17', '2024-03-15 18:00:00'), -- organizador
+('d0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'b2eebc99-9c0b-4ef8-bb6d-6bb9bd380a24', '2024-03-15 18:00:00'), -- juguete
+('d0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'e1eebc99-9c0b-4ef83-25 13:15:00'), -- mecánico
+('f2f2f2f2-cccc-cccc-cccc-cccccccccccc', 'c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a25', '2024-03-25 13:15:00'), -- herramienta
+
+-- Lámpara Voronoi (a3a3a3a3-dddd-dddd-dddd-dddddddddddd)
+('a3a3a3a3-dddd-dddd-dddd-dddddddddddd', 'd1eebc99-9c0b-4ef8-bb6d-6bb9bd380a20', '2024-04-01 19:30:00'), -- decoración
+('a3a3a3a3-dddd-dddd-dddd-dddddddddddd', 'a2eebc99-9c0b-4ef8-bb6d-6bb9bd380a23', '2024-04-01 19:30:00'), -- arquitectura
+('a3a3a3a3-dddd-dddd-dddd-dddddddddddd', 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a18', '2024-04-01 19:30:00'), -- arte
+
+-- Castillo Modular (b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee)
+('b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', '2024-04-05 10:30:00'), -- miniaturas
+('b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', 'f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', '2024-04-05 10:30:00'), -- dungeons-and-dragons
+('b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', 'a2eebc99-9c0b-4ef8-bb6d-6bb9bd380a23', '2024-04-05 10:30:00'), -- arquitectura
+
+-- Collar Geométrico (c5c5c5c5-ffff-ffff-ffff-ffffffffffff)
+('c5c5c5c5-ffff-ffff-ffff-ffffffffffff', 'd0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', '2024-04-10 17:00:00'), -- joyería
+('c5c5c5c5-ffff-ffff-ffff-ffffffffffff', 'f2eebc99-9c0b-4ef8-bb6d-6bb9bd380a28', '2024-04-10 17:00:00'), -- joyería-paramétrica
+('c5c5c5c5-ffff-ffff-ffff-ffffffffffff', 'a2eebc99-9c0b-4ef8-bb6d-6bb9bd380a23', '2024-04-10 17:00:00'); -- arquitectura-bb6d-6bb9bd380a21', '2024-03-15 18:00:00'), -- gadget
+
+-- Fénix Real (e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb)
+('e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', '2024-03-20 08:30:00'), -- dragón
+('e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'f1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '2024-03-20 08:30:00'), -- escultura
+('e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a18', '2024-03-20 08:30:00'), -- arte
+
+-- Polea Ajustable (f2f2f2f2-cccc-cccc-cccc-cccccccccccc)
+('f2f2f2f2-cccc-cccc-cccc-cccccccccccc', 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13', '2024-03-25 13:15:00'), -- funcional
+('f2f2f2f2-cccc-cccc-cccc-cccccccccccc', 'c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a19', '2024-03-25 13:15:00'), -- mecánico
+('f2f2f2f2-cccc-cccc-cccc-cccccccccccc', 'c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a25', '2024-03-25 13:15:00'), -- herramienta
+
+-- Lámpara Voronoi (a3a3a3a3-dddd-dddd-dddd-dddddddddddd)
+('a3a3a3a3-dddd-dddd-dddd-dddddddddddd', 'd1eebc99-9c0b-4ef8-bb6d-6bb9bd380a20', '2024-04-01 19:30:00'), -- decoración
+('a3a3a3a3-dddd-dddd-dddd-dddddddddddd', 'a2eebc99-9c0b-4ef8-bb6d-6bb9bd380a23', '2024-04-01 19:30:00'), -- arquitectura
+('a3a3a3a3-dddd-dddd-dddd-dddddddddddd', 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a18', '2024-04-01 19:30:00'), -- arte
+
+-- Castillo Modular (b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee)
+('b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', 'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', '2024-04-05 10:30:00'), -- miniaturas
+('b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', 'f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', '2024-04-05 10:30:00'), -- dungeons-and-dragons
+('b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', 'a2eebc99-9c0b-4ef8-bb6d-6bb9bd380a23', '2024-04-05 10:30:00'), -- arquitectura
+
+-- Collar Geométrico (c5c5c5c5-ffff-ffff-ffff-ffffffffffff)
+('c5c5c5c5-ffff-ffff-ffff-ffffffffffff', 'd0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', '2024-04-10 17:00:00'), -- joyería
+('c5c5c5c5-ffff-ffff-ffff-ffffffffffff', 'f2eebc99-9c0b-4ef8-bb6d-6bb9bd380a28', '2024-04-10 17:00:00'), -- joyería-paramétrica
+('c5c5c5c5-ffff-ffff-ffff-ffffffffffff', 'a2eebc99-9c0b-4ef8-bb6d-6bb9bd380a23', '2024-04-10 17:00:00'); -- arquitectura
+
+-- INSERT MODEL PARTS (30 registros - 2-3 partes por modelo)
+INSERT INTO model_parts (id, model_id, color, part_name, file_url, file_size, created_at) VALUES
+-- Dragón Esmeralda (a1a1a1a1-1111-1111-1111-111111111111)
+(gen_random_uuid(), 'a1a1a1a1-1111-1111-1111-111111111111', '#00FF00', 'Cuerpo del Dragón', 'https://storage.com/parts/dragon-cuerpo.stl', 15728640, '2024-01-15 10:35:00'),
+(gen_random_uuid(), 'a1a1a1a1-1111-1111-1111-111111111111', '#00DD00', 'Alas (par)', 'https://storage.com/parts/dragon-alas.stl', 10485760, '2024-01-15 10:35:00'),
+(gen_random_uuid(), 'a1a1a1a1-1111-1111-1111-111111111111', '#AAFFAA', 'Cabeza', 'https://storage.com/parts/dragon-cabeza.stl', 8388608, '2024-01-15 10:35:00'),
+
+-- Engranaje Planetario (b2b2b2b2-2222-2222-2222-222222222222)
+(gen_random_uuid(), 'b2b2b2b2-2222-2222-2222-222222222222', '#FF0000', 'Engranaje central', 'https://storage.com/parts/engranaje-central.stl', 5242880, '2024-01-20 15:50:00'),
+(gen_random_uuid(), 'b2b2b2b2-2222-2222-2222-222222222222', '#DD0000', 'Engranajes satélite (x3)', 'https://storage.com/parts/engranaje-satelite.stl', 3145728, '2024-01-20 15:50:00'),
+(gen_random_uuid(), 'b2b2b2b2-2222-2222-2222-222222222222', '#BB0000', 'Soporte y anillo exterior', 'https://storage.com/parts/engranaje-soporte.stl', 2097152, '2024-01-20 15:50:00'),
+
+-- Vaso Paramétrico (c3c3c3c3-3333-3333-3333-333333333333)
+(gen_random_uuid(), 'c3c3c3c3-3333-3333-3333-333333333333', '#3366FF', 'Cuerpo principal', 'https://storage.com/parts/vaso-cuerpo.stl', 10485760, '2024-02-01 09:20:00'),
+(gen_random_uuid(), 'c3c3c3c3-3333-3333-3333-333333333333', '#2255EE', 'Base', 'https://storage.com/parts/vaso-base.stl', 4194304, '2024-02-01 09:20:00'),
+
+-- Guerrero Élfico (d4d4d4d4-4444-4444-4444-444444444444)
+(gen_random_uuid(), 'd4d4d4d4-4444-4444-4444-444444444444', '#FFAA00', 'Cuerpo con armadura', 'https://storage.com/parts/elfo-cuerpo.stl', 12582912, '2024-02-10 12:05:00'),
+(gen_random_uuid(), 'd4d4d4d4-4444-4444-4444-444444444444', '#FFCC00', 'Cabeza con casco', 'https://storage.com/parts/elfo-cabeza.stl', 5242880, '2024-02-10 12:05:00'),
+(gen_random_uuid(), 'd4d4d4d4-4444-4444-4444-444444444444', '#DDAA00', 'Armas (espada y escudo)', 'https://storage.com/parts/elfo-armas.stl', 3145728, '2024-02-10 12:05:00'),
+
+-- Anillo Dragón (e5e5e5e5-5555-5555-5555-555555555555)
+(gen_random_uuid(), 'e5e5e5e5-5555-5555-5555-555555555555', '#FFD700', 'Aro del anillo', 'https://storage.com/parts/anillo-aro.stl', 2097152, '2024-02-15 16:25:00'),
+(gen_random_uuid(), 'e5e5e5e5-5555-5555-5555-555555555555', '#FFAA00', 'Dragón decorativo', 'https://storage.com/parts/anillo-dragon.stl', 4194304, '2024-02-15 16:25:00'),
+
+-- Soporte Modular (f6f6f6f6-6666-6666-6666-666666666666)
+(gen_random_uuid(), 'f6f6f6f6-6666-6666-6666-666666666666', '#888888', 'Base principal', 'https://storage.com/parts/soporte-base.stl', 8388608, '2024-02-20 11:35:00'),
+(gen_random_uuid(), 'f6f6f6f6-6666-6666-6666-666666666666', '#666666', 'Módulo A (estante)', 'https://storage.com/parts/soporte-modulo-a.stl', 5242880, '2024-02-20 11:35:00'),
+(gen_random_uuid(), 'f6f6f6f6-6666-6666-6666-666666666666', '#444444', 'Módulo B (cajón)', 'https://storage.com/parts/soporte-modulo-b.stl', 5242880, '2024-02-20 11:35:00'),
+
+-- Criatura Lovecraftiana (a7a7a7a7-7777-7777-7777-777777777777)
+(gen_random_uuid(), 'a7a7a7a7-7777-7777-7777-777777777777', '#440044', 'Cuerpo principal', 'https://storage.com/parts/lovecraft-cuerpo.stl', 18874368, '2024-03-01 14:05:00'),
+(gen_random_uuid(), 'a7a7a7a7-7777-7777-7777-777777777777', '#330033', 'Tentáculos', 'https://storage.com/parts/lovecraft-tentaculos.stl', 12582912, '2024-03-01 14:05:00'),
+(gen_random_uuid(), 'a7a7a7a7-7777-7777-7777-777777777777', '#220022', 'Base', 'https://storage.com/parts/lovecraft-base.stl', 6291456, '2024-03-01 14:05:00'),
+
+-- Caja Engranajes (b8b8b8b8-8888-8888-8888-888888888888)
+(gen_random_uuid(), 'b8b8b8b8-8888-8888-8888-888888888888', '#FF6600', 'Cuerpo de la caja', 'https://storage.com/parts/caja-cuerpo.stl', 7340032, '2024-03-05 10:50:00'),
+(gen_random_uuid(), 'b8b8b8b8-8888-8888-8888-888888888888', '#DD4400', 'Tapa con engranajes', 'https://storage.com/parts/caja-tapa.stl', 4194304, '2024-03-05 10:50:00'),
+
+-- Maceta Geométrica (c9c9c9c9-9999-9999-9999-999999999999)
+(gen_random_uuid(), 'c9c9c9c9-9999-9999-9999-999999999999', '#99CC00', 'Maceta', 'https://storage.com/parts/maceta-cuerpo.stl', 10485760, '2024-03-10 13:20:00'),
+(gen_random_uuid(), 'c9c9c9c9-9999-9999-9999-999999999999', '#88BB00', 'Plato', 'https://storage.com/parts/maceta-plato.stl', 3145728, '2024-03-10 13:20:00'),
+
+-- Portalápices Dinosaurio (d0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa)
+(gen_random_uuid(), 'd0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '#663300', 'Cuerpo del dinosaurio', 'https://storage.com/parts/dino-cuerpo.stl', 6291456, '2024-03-15 17:35:00'),
+(gen_random_uuid(), 'd0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '#552200', 'Portalápices (espalda)', 'https://storage.com/parts/dino-portalapices.stl', 4194304, '2024-03-15 17:35:00'),
+
+-- Fénix Real (e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb)
+(gen_random_uuid(), 'e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '#FF5500', 'Cuerpo', 'https://storage.com/parts/fenix-cuerpo.stl', 14680064, '2024-03-20 08:05:00'),
+(gen_random_uuid(), 'e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '#FF3300', 'Alas', 'https://storage.com/parts/fenix-alas.stl', 10485760, '2024-03-20 08:05:00'),
+(gen_random_uuid(), 'e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '#FF2200', 'Cola', 'https://storage.com/parts/fenix-cola.stl', 7340032, '2024-03-20 08:05:00'),
+
+-- Polea Ajustable (f2f2f2f2-cccc-cccc-cccc-cccccccccccc)
+(gen_random_uuid(), 'f2f2f2f2-cccc-cccc-cccc-cccccccccccc', '#CCCCCC', 'Cuerpo de polea', 'https://storage.com/parts/polea-cuerpo.stl', 5242880, '2024-03-25 12:50:00'),
+(gen_random_uuid(), 'f2f2f2f2-cccc-cccc-cccc-cccccccccccc', '#AAAAAA', 'Rodamiento', 'https://storage.com/parts/polea-rodamiento.stl', 2097152, '2024-03-25 12:50:00'),
+
+-- Lámpara Voronoi (a3a3a3a3-dddd-dddd-dddd-dddddddddddd)
+(gen_random_uuid(), 'a3a3a3a3-dddd-dddd-dddd-dddddddddddd', '#FFFFAA', 'Pantalla Voronoi', 'https://storage.com/parts/lampara-pantalla.stl', 12582912, '2024-04-01 19:05:00'),
+(gen_random_uuid(), 'a3a3a3a3-dddd-dddd-dddd-dddddddddddd', '#FFEE99', 'Base', 'https://storage.com/parts/lampara-base.stl', 5242880, '2024-04-01 19:05:00'),
+
+-- Castillo Modular (b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee)
+(gen_random_uuid(), 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', '#AA8866', 'Torre principal', 'https://storage.com/parts/castillo-torre.stl', 10485760, '2024-04-05 10:05:00'),
+(gen_random_uuid(), 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', '#997755', 'Muralla', 'https://storage.com/parts/castillo-muralla.stl', 8388608, '2024-04-05 10:05:00'),
+(gen_random_uuid(), 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', '#886644', 'Puerta', 'https://storage.com/parts/castillo-puerta.stl', 4194304, '2024-04-05 10:05:00'),
+
+-- Collar Geométrico (c5c5c5c5-ffff-ffff-ffff-ffffffffffff)
+(gen_random_uuid(), 'c5c5c5c5-ffff-ffff-ffff-ffffffffffff', '#C0C0C0', 'Pieza central', 'https://storage.com/parts/collar-central.stl', 2097152, '2024-04-10 16:35:00'),
+(gen_random_uuid(), 'c5c5c5c5-ffff-ffff-ffff-ffffffffffff', '#A0A0A0', 'Cadena', 'https://storage.com/parts/collar-cadena.stl', 1572864, '2024-04-10 16:35:00'),
+(gen_random_uuid(), 'c5c5c5c5-ffff-ffff-ffff-ffffffffffff', '#808080', 'Cierre', 'https://storage.com/parts/collar-cierre.stl', 1048576, '2024-04-10 16:35:00');
