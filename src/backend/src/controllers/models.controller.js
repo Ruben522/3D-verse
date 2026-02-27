@@ -109,6 +109,23 @@ const unlike = async (req, res) => {
     }
 };
 
+const uploadModel = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "Archivo requerido" });
+    }
+
+    const fileUrl = `/uploads/models/${req.file.filename}`;
+
+    res.status(201).json({
+      message: "Archivo subido correctamente",
+      file_url: fileUrl,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 export {
     create,
     getById,
@@ -118,4 +135,5 @@ export {
     download,
     like,
     unlike,
+    uploadModel,
 };
