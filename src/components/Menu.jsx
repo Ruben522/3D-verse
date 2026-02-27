@@ -35,7 +35,7 @@ const Menu = () => {
           {/* 3. Navegación y Perfil */}
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-                <NavLink to="/modelos" className={({isActive}) => isActive ? "text-white" : "text-primary-200 hover:text-white transition-colors"}>
+                <NavLink to="/models" className={({isActive}) => isActive ? "text-white" : "text-primary-200 hover:text-white transition-colors"}>
                     Explorar
                 </NavLink>
                 <NavLink to="/comunidad" className="text-primary-200 hover:text-white transition-colors">

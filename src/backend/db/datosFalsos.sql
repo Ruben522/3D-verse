@@ -5,6 +5,7 @@ DELETE FROM models; -- Limpiar tabla antes de insertar datos falsos
 DELETE FROM favorites; -- Limpiar tabla antes de insertar datos falsos
 DELETE FROM model_likes; -- Limpiar tabla antes de insertar datos falsos
 DELETE FROM comments; -- Limpiar tabla antes de insertar datos falsos
+DELETE FROM followers;
 
 INSERT INTO users (id, name, lastname, username, email, password_hash, role, avatar, bio, youtube, twitter, linkedin, github, location) VALUES
 ('11111111-1111-1111-1111-111111111119', 'R', 'R', 'R', 'R.garcia@email.com', '$2a$10$HASHEXAMPLE1', 'user', 'https://storage.com/avatars/ana.jpg', 'R 3D especializada en personajes fantásticos', '@Ana3D', '@ana_3d', 'ana-garcia-3d', 'anagarcia3d', 'Madrid, España'),
@@ -145,3 +146,99 @@ INSERT INTO comments (user_id, model_id, content, created_at) VALUES
 UPDATE users 
 SET role = 'admin' 
 WHERE username = 'ruben_admin';
+
+-- 10 FAVORITOS ADICIONALES
+INSERT INTO favorites (user_id, model_id, created_at) VALUES
+-- Javier (javier3d) favoritos
+('88888888-8888-8888-8888-888888888888', 'f6f6f6f6-6666-6666-6666-666666666666', '2024-02-22 11:30:00'),
+('88888888-8888-8888-8888-888888888888', 'b8b8b8b8-8888-8888-8888-888888888888', '2024-03-07 09:45:00'),
+('88888888-8888-8888-8888-888888888888', 'a3a3a3a3-dddd-dddd-dddd-dddddddddddd', '2024-04-02 16:20:00'),
+
+-- Carmen (carmen3d) favoritos
+('99999999-9999-9999-9999-999999999999', 'f6f6f6f6-6666-6666-6666-666666666666', '2024-02-23 10:15:00'),
+('99999999-9999-9999-9999-999999999999', 'c9c9c9c9-9999-9999-9999-999999999999', '2024-03-11 12:30:00'),
+
+-- Pablo (pablo3d) favoritos
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'd0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '2024-03-16 18:20:00'),
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'f2f2f2f2-cccc-cccc-cccc-cccccccccccc', '2024-03-26 14:45:00'),
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', '2024-04-06 11:10:00'),
+
+-- Más favoritos de Ana
+('11111111-1111-1111-1111-111111111111', 'e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '2024-03-21 09:30:00'),
+('11111111-1111-1111-1111-111111111111', 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', '2024-04-07 15:40:00');
+
+-- 10 MODEL LIKES ADICIONALES
+INSERT INTO model_likes (user_id, model_id, created_at) VALUES
+-- Caja Engranajes
+('11111111-1111-1111-1111-111111111111', 'b8b8b8b8-8888-8888-8888-888888888888', '2024-03-06 10:30:00'),
+('33333333-3333-3333-3333-333333333333', 'b8b8b8b8-8888-8888-8888-888888888888', '2024-03-06 14:20:00'),
+
+-- Maceta Geométrica
+('22222222-2222-2222-2222-222222222222', 'c9c9c9c9-9999-9999-9999-999999999999', '2024-03-11 13:15:00'),
+('44444444-4444-4444-4444-444444444444', 'c9c9c9c9-9999-9999-9999-999999999999', '2024-03-12 10:45:00'),
+
+-- Portalápices Dinosaurio
+('55555555-5555-5555-5555-555555555555', 'd0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '2024-03-16 17:30:00'),
+('66666666-6666-6666-6666-666666666666', 'd0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '2024-03-17 09:20:00'),
+
+-- Fénix Real
+('77777777-7777-7777-7777-777777777777', 'e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '2024-03-21 08:45:00'),
+('88888888-8888-8888-8888-888888888888', 'e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '2024-03-22 11:30:00'),
+
+-- Castillo Modular
+('99999999-9999-9999-9999-999999999999', 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', '2024-04-06 10:15:00'),
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', '2024-04-07 14:30:00');
+
+-- 10 COMMENTS ADICIONALES
+INSERT INTO comments (user_id, model_id, content, created_at) VALUES
+-- Caja Engranajes
+('11111111-1111-1111-1111-111111111111', 'b8b8b8b8-8888-8888-8888-888888888888', 'Me encanta el diseño, muy original lo de los engranajes decorativos.', '2024-03-06 11:30:00'),
+('22222222-2222-2222-2222-222222222222', 'b8b8b8b8-8888-8888-8888-888888888888', '¿Las medidas son estándar? Me vendría bien para unos componentes.', '2024-03-07 09:15:00'),
+
+-- Maceta Geométrica
+('33333333-3333-3333-3333-333333333333', 'c9c9c9c9-9999-9999-9999-999999999999', 'La imprimí en maceta grande y quedó preciosa en el salón.', '2024-03-11 14:20:00'),
+('44444444-4444-4444-4444-444444444444', 'c9c9c9c9-9999-9999-9999-999999999999', '¿El plato encaja bien? Me preocupa que entre agua.', '2024-03-12 11:30:00'),
+
+-- Portalápices Dinosaurio
+('55555555-5555-5555-5555-555555555555', 'd0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'A mi hijo le encantó, ahora quiere uno de T-Rex jaja', '2024-03-16 18:45:00'),
+('66666666-6666-6666-6666-666666666666', 'd0d0d0d0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Imprime sin problemas, muy buen diseño.', '2024-03-17 10:30:00'),
+
+-- Fénix Real
+('77777777-7777-7777-7777-777777777777', 'e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Las plumas son impresionantes, mucho detalle.', '2024-03-21 09:15:00'),
+('88888888-8888-8888-8888-888888888888', 'e1e1e1e1-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '¿Cuántas horas de impresión son aproximadamente?', '2024-03-22 12:20:00'),
+
+-- Castillo Modular
+('99999999-9999-9999-9999-999999999999', 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', 'Perfecto para mis partidas de D&D, los jugadores alucinaron.', '2024-04-06 11:30:00'),
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'b4b4b4b4-eeee-eeee-eeee-eeeeeeeeeeee', '¿Los módulos encajan bien entre sí?', '2024-04-07 15:20:00');
+
+-- 15 FOLLOWERS (relaciones de seguimiento)
+INSERT INTO followers (user_id, follower_id, followed_at) VALUES
+-- Ana sigue a...
+('11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222', '2024-01-05 10:30:00'), -- Ana sigue a Carlos
+('11111111-1111-1111-1111-111111111111', '33333333-3333-3333-3333-333333333333', '2024-01-06 11:45:00'), -- Ana sigue a Laura
+('11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555555', '2024-01-07 09:20:00'), -- Ana sigue a Sofia
+
+-- Carlos sigue a...
+('22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111111', '2024-01-08 14:15:00'), -- Carlos sigue a Ana
+('22222222-2222-2222-2222-222222222222', '44444444-4444-4444-4444-444444444444', '2024-01-09 16:30:00'), -- Carlos sigue a Miguel
+('22222222-2222-2222-2222-222222222222', '66666666-6666-6666-6666-666666666666', '2024-01-10 10:45:00'), -- Carlos sigue a David
+
+-- Laura sigue a...
+('33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111', '2024-01-11 12:20:00'), -- Laura sigue a Ana
+('33333333-3333-3333-3333-333333333333', '44444444-4444-4444-4444-444444444444', '2024-01-12 13:40:00'), -- Laura sigue a Miguel
+('33333333-3333-3333-3333-333333333333', '77777777-7777-7777-7777-777777777777', '2024-01-13 15:10:00'), -- Laura sigue a Elena
+
+-- Miguel sigue a...
+('44444444-4444-4444-4444-444444444444', '11111111-1111-1111-1111-111111111111', '2024-01-14 09:50:00'), -- Miguel sigue a Ana
+('44444444-4444-4444-4444-444444444444', '22222222-2222-2222-2222-222222222222', '2024-01-15 11:25:00'), -- Miguel sigue a Carlos
+('44444444-4444-4444-4444-444444444444', '88888888-8888-8888-8888-888888888888', '2024-01-16 14:35:00'), -- Miguel sigue a Javier
+
+-- Sofia sigue a...
+('55555555-5555-5555-5555-555555555555', '11111111-1111-1111-1111-111111111111', '2024-01-17 10:15:00'), -- Sofia sigue a Ana
+('55555555-5555-5555-5555-555555555555', '22222222-2222-2222-2222-222222222222', '2024-01-18 12:40:00'), -- Sofia sigue a Carlos
+('55555555-5555-5555-5555-555555555555', '99999999-9999-9999-9999-999999999999', '2024-01-19 16:20:00'); -- Sofia sigue a Carmen
+
+-- NOTA: He eliminado la línea del UPDATE porque el usuario 'ruben_admin' no existe
+-- Si quieres añadir a Ruben como admin, primero debes insertarlo:
+-- INSERT INTO users (id, username, email, password_hash, role) VALUES 
+-- ('rrrrrrrr-rrrr-rrrr-rrrr-rrrrrrrrrrrr', 'ruben_admin', 'ruben@email.com', '$2a$10$HASH', 'admin');

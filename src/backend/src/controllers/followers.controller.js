@@ -1,42 +1,45 @@
 import {
-    addFavorite,
-    removeFavorite,
-    getUserFavorites,
-    checkFavorite,
-} from "../services/favorites.service.js";
+    followUser,
+    unfollowUser,
+    getFollowers,
+    getFollowing,
+    checkFollow
+} from "../services/followers.service.js";
 
-const favorite = async (req, res) => {
+const follow = async (req, res) => {
     try {
-        const result = await addFavorite(
-            req.params.id,
-            req.user.id,
+        const result = await followUser(
+            req.params.userId,
+            req.user.id
         );
 
         res.status(200).json(result);
+
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
-const unfavorite = async (req, res) => {
+const unfollow = async (req, res) => {
     try {
-        const result = await removeFavorite(
-            req.params.id,
-            req.user.id,
+        const result = await unfollowUser(
+            req.params.userId,
+            req.user.id
         );
 
         res.status(200).json(result);
+
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
-const getUserFavoritesPublic = async (req, res) => {
+const followers = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
 
-        const result = await getUserFavorites(
+        const result = await getFollowers(
             req.params.userId,
             { page, limit }
         );
@@ -48,17 +51,18 @@ const getUserFavoritesPublic = async (req, res) => {
     }
 };
 
-const getMyFavorites = async (req, res) => {
+const following = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
 
-        const result = await getUserFavorites(req.user.id, {
-            page,
-            limit,
-        });
+        const result = await getFollowing(
+            req.params.userId,
+            { page, limit }
+        );
 
         res.status(200).json(result);
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -66,15 +70,22 @@ const getMyFavorites = async (req, res) => {
 
 const check = async (req, res) => {
     try {
-        const result = await checkFavorite(
-            req.params.id,
-            req.user.id,
+        const result = await checkFollow(
+            req.params.userId,
+            req.user.id
         );
 
         res.status(200).json(result);
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-export { favorite, unfavorite, getMyFavorites, check, getUserFavoritesPublic };
+export {
+    follow,
+    unfollow,
+    followers,
+    following,
+    check
+};
