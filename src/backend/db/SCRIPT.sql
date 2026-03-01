@@ -33,7 +33,9 @@ CREATE TABLE users (
     linkedin VARCHAR(100),
     github VARCHAR(100),
     location VARCHAR(255),
-    
+    followers_count INTEGER DEFAULT 0,
+    following_count INTEGER DEFAULT 0,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

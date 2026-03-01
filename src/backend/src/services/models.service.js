@@ -62,11 +62,7 @@ const createModel = async (userId, data) => {
                     `INSERT INTO model_images
            (model_id, image_url, display_order)
            VALUES ($1,$2,$3)`,
-                    [
-                        model.id,
-                        image.image_url,
-                        image.display_order || 0,
-                    ],
+                    [model.id, image.image_url, image.display_order || 0],
                 );
             }
         }
@@ -89,10 +85,7 @@ const getModelById = async (modelId) => {
         await client.query("BEGIN");
 
         const updateResult = await client.query(
-            `UPDATE models
-       SET views = views + 1
-       WHERE id = $1
-       RETURNING id`,
+            `UPDATE models SET views = views + 1 WHERE id = $1 RETURNING id`,
             [modelId],
         );
 
@@ -135,7 +128,7 @@ const getModelById = async (modelId) => {
             )
             FROM model_parts mp
             WHERE mp.model_id = m.id
-          ), '[]'
+          ), '[]'::json
         ) AS parts,
 
         COALESCE(
@@ -150,8 +143,22 @@ const getModelById = async (modelId) => {
             )
             FROM model_images mi
             WHERE mi.model_id = m.id
-          ), '[]'
-        ) AS images
+          ), '[]'::json
+        ) AS images,
+
+        COALESCE(
+          (
+            SELECT json_agg(
+              json_build_object(
+                'id', t.id,
+                'name', t.name
+              )
+            )
+            FROM model_tag mt
+            JOIN tags t ON mt.tag_id = t.id
+            WHERE mt.model_id = m.id
+          ), '[]'::json
+        ) AS tags
 
       FROM models m
       JOIN users u ON m.user_id = u.id
@@ -176,45 +183,61 @@ const getModels = async ({ page = 1, limit = 20 }) => {
     const offset = (page - 1) * safeLimit;
 
     const modelsQuery = `
-    SELECT 
-      m.id,
-      m.title,
-      m.main_color,
-      m.description,
-      m.main_image_url,
-      m.downloads,
-      m.views,
-      m.created_at,
-
-      json_build_object(
-        'id', u.id,
-        'username', u.username,
-        'avatar', u.avatar
-      ) AS creator
-
-    FROM models m
-    JOIN users u ON m.user_id = u.id
-    ORDER BY m.created_at DESC
-    LIMIT $1
-    OFFSET $2
-  `;
+      SELECT 
+        m.id,
+        m.title,
+        m.main_color,
+        m.description,
+        m.main_image_url,
+        m.downloads,
+        m.views,
+        m.created_at,
+        json_build_object(
+          'id', u.id,
+          'username', u.username,
+          'avatar', u.avatar
+        ) AS creator,
+        -- Corrección aquí: castear el string '[]' a json para que COALESCE no falle
+        COALESCE(
+          (
+            SELECT json_agg(
+              json_build_object(
+                'id', t.id,
+                'name', t.name
+              )
+            )
+            FROM model_tag mt
+            JOIN tags t ON mt.tag_id = t.id
+            WHERE mt.model_id = m.id
+          ), '[]'::json
+        ) AS tags
+      FROM models m
+      JOIN users u ON m.user_id = u.id
+      ORDER BY m.created_at DESC
+      LIMIT $1 OFFSET $2
+    `;
 
     const countQuery = `SELECT COUNT(*) FROM models`;
 
-    const [modelsResult, countResult] = await Promise.all([
-        pool.query(modelsQuery, [safeLimit, offset]),
-        pool.query(countQuery),
-    ]);
+    try {
+        const [modelsResult, countResult] = await Promise.all([
+            pool.query(modelsQuery, [safeLimit, offset]),
+            pool.query(countQuery),
+        ]);
 
-    const total = parseInt(countResult.rows[0].count, 10);
+        const total = parseInt(countResult.rows[0].count, 10);
 
-    return {
-        page,
-        limit: safeLimit,
-        total,
-        totalPages: Math.ceil(total / safeLimit),
-        data: modelsResult.rows,
-    };
+        return {
+            page,
+            limit: safeLimit,
+            total,
+            totalPages: Math.ceil(total / safeLimit),
+            data: modelsResult.rows,
+        };
+    } catch (error) {
+        console.error("Error en getModels query:", error);
+        throw error;
+    }
 };
 
 const deleteModel = async (modelId, user) => {
@@ -239,10 +262,7 @@ const deleteModel = async (modelId, user) => {
             throw new Error("No autorizado");
         }
 
-        await client.query(
-            "DELETE FROM models WHERE id = $1",
-            [modelId],
-        );
+        await client.query("DELETE FROM models WHERE id = $1", [modelId]);
 
         return {
             message: "Modelo eliminado correctamente",
@@ -296,9 +316,7 @@ const updateModel = async (modelId, user, data) => {
         }
 
         if (fields.length === 0) {
-            throw new Error(
-                "No hay campos para actualizar",
-            );
+            throw new Error("No hay campos para actualizar");
         }
 
         fields.push(`updated_at = CURRENT_TIMESTAMP`);
@@ -314,10 +332,7 @@ const updateModel = async (modelId, user, data) => {
 
         values.push(modelId);
 
-        const updateResult = await client.query(
-            query,
-            values,
-        );
+        const updateResult = await client.query(query, values);
 
         return updateResult.rows[0];
     } finally {
@@ -325,12 +340,7 @@ const updateModel = async (modelId, user, data) => {
     }
 };
 
-const downloadModel = async (
-    modelId,
-    user,
-    ip,
-    userAgent,
-) => {
+const downloadModel = async (modelId, user, ip, userAgent) => {
     const client = await pool.connect();
 
     try {

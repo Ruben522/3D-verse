@@ -8,8 +8,10 @@ import {
     download,
     like,
     unlike,
+    uploadModel,
 } from "../controllers/models.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
+import { uploadModelFile } from "../middlewares/upload.middleware.js";
 
 const router = express.Router();
 
@@ -21,5 +23,11 @@ router.delete("/:id", verifyToken, remove);
 router.post("/:id/download", download);
 router.post("/:id/like", verifyToken, like);
 router.delete("/:id/like", verifyToken, unlike);
+router.post(
+  "/upload/model",
+  verifyToken,
+  uploadModelFile.single("file"),
+  uploadModel
+);
 
 export default router;
