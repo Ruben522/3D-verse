@@ -6,7 +6,7 @@ const ModelCard = ({ model }) => {
 
   return model ? (
     <div
-      onClick={() => navigate(`/model/${model.id}`)}
+      onClick={() => navigate(`/models/${model.id}`)}
       className="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col overflow-hidden"
     >
       <div className="relative w-full aspect-[4/3] bg-gray-50 overflow-hidden">

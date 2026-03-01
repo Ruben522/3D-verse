@@ -30,7 +30,7 @@ const ModelsContext = ({ children }) => {
   const getModels = async () => {
     try {
       const data = await get(API_URL);
-      const normalizedData = data.map(normalizeModelData);
+      const normalizedData = data.data.map(normalizeModelData);
 
       setModels(normalizedData);
       setPagination({
