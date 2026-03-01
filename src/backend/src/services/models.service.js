@@ -24,7 +24,7 @@ const createModel = async (userId, data) => {
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
        RETURNING id, user_id, title, main_color, description, file_url,
                  main_image_url, video_url, license,
-                 downloads, likes, views, created_at, updated_at`,
+                 downloads, views, created_at, updated_at`,
             [
                 userId,
                 title,
@@ -62,7 +62,11 @@ const createModel = async (userId, data) => {
                     `INSERT INTO model_images
            (model_id, image_url, display_order)
            VALUES ($1,$2,$3)`,
-                    [model.id, image.image_url, image.display_order || 0],
+                    [
+                        model.id,
+                        image.image_url,
+                        image.display_order || 0,
+                    ],
                 );
             }
         }
@@ -84,6 +88,7 @@ const getModelById = async (modelId) => {
     try {
         await client.query("BEGIN");
 
+        // Incrementamos vistas
         const updateResult = await client.query(
             `UPDATE models SET views = views + 1 WHERE id = $1 RETURNING id`,
             [modelId],
@@ -107,6 +112,9 @@ const getModelById = async (modelId) => {
         m.views,
         m.created_at,
         m.updated_at,
+
+        -- Subconsulta para contar likes en tiempo real
+        (SELECT COUNT(*) FROM model_likes WHERE model_id = m.id) AS likes,
 
         json_build_object(
           'id', u.id,
@@ -192,6 +200,9 @@ const getModels = async ({ page = 1, limit = 20 }) => {
         m.downloads,
         m.views,
         m.created_at,
+
+        (SELECT COUNT(*) FROM model_likes WHERE model_id = m.id) AS likes,
+
         json_build_object(
           'id', u.id,
           'username', u.username,
@@ -220,12 +231,19 @@ const getModels = async ({ page = 1, limit = 20 }) => {
     const countQuery = `SELECT COUNT(*) FROM models`;
 
     try {
-        const [modelsResult, countResult] = await Promise.all([
-            pool.query(modelsQuery, [safeLimit, offset]),
-            pool.query(countQuery),
-        ]);
+        const [modelsResult, countResult] =
+            await Promise.all([
+                pool.query(modelsQuery, [
+                    safeLimit,
+                    offset,
+                ]),
+                pool.query(countQuery),
+            ]);
 
-        const total = parseInt(countResult.rows[0].count, 10);
+        const total = parseInt(
+            countResult.rows[0].count,
+            10,
+        );
 
         return {
             page,
@@ -262,7 +280,10 @@ const deleteModel = async (modelId, user) => {
             throw new Error("No autorizado");
         }
 
-        await client.query("DELETE FROM models WHERE id = $1", [modelId]);
+        await client.query(
+            "DELETE FROM models WHERE id = $1",
+            [modelId],
+        );
 
         return {
             message: "Modelo eliminado correctamente",
@@ -316,7 +337,9 @@ const updateModel = async (modelId, user, data) => {
         }
 
         if (fields.length === 0) {
-            throw new Error("No hay campos para actualizar");
+            throw new Error(
+                "No hay campos para actualizar",
+            );
         }
 
         fields.push(`updated_at = CURRENT_TIMESTAMP`);
@@ -327,12 +350,15 @@ const updateModel = async (modelId, user, data) => {
       WHERE id = $${index}
       RETURNING id, title, main_color, description, file_url,
                 main_image_url, video_url, license,
-                downloads, likes, views, created_at, updated_at
+                downloads, views, created_at, updated_at
     `;
 
         values.push(modelId);
 
-        const updateResult = await client.query(query, values);
+        const updateResult = await client.query(
+            query,
+            values,
+        );
 
         return updateResult.rows[0];
     } finally {
@@ -340,7 +366,12 @@ const updateModel = async (modelId, user, data) => {
     }
 };
 
-const downloadModel = async (modelId, user, ip, userAgent) => {
+const downloadModel = async (
+    modelId,
+    user,
+    ip,
+    userAgent,
+) => {
     const client = await pool.connect();
 
     try {
@@ -383,15 +414,14 @@ const downloadModel = async (modelId, user, ip, userAgent) => {
 
 const addLike = async (modelId, userId) => {
     const client = await pool.connect();
-
     try {
         await client.query("BEGIN");
 
         const insertResult = await client.query(
             `INSERT INTO model_likes (user_id, model_id)
-       VALUES ($1,$2)
-       ON CONFLICT DO NOTHING
-       RETURNING *`,
+             VALUES ($1,$2)
+             ON CONFLICT DO NOTHING
+             RETURNING *`,
             [userId, modelId],
         );
 
@@ -400,17 +430,15 @@ const addLike = async (modelId, userId) => {
             return { message: "Ya habías dado like" };
         }
 
-        const updateResult = await client.query(
-            `UPDATE models
-       SET likes = likes + 1
-       WHERE id = $1
-       RETURNING likes`,
+        const countResult = await client.query(
+            `SELECT COUNT(*) as count FROM model_likes WHERE model_id = $1`,
             [modelId],
         );
 
         await client.query("COMMIT");
-
-        return { likes: updateResult.rows[0].likes };
+        return {
+            likes: parseInt(countResult.rows[0].count, 10),
+        };
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;
@@ -421,14 +449,13 @@ const addLike = async (modelId, userId) => {
 
 const removeLike = async (modelId, userId) => {
     const client = await pool.connect();
-
     try {
         await client.query("BEGIN");
 
         const deleteResult = await client.query(
             `DELETE FROM model_likes
-       WHERE user_id = $1 AND model_id = $2
-       RETURNING *`,
+             WHERE user_id = $1 AND model_id = $2
+             RETURNING *`,
             [userId, modelId],
         );
 
@@ -437,17 +464,15 @@ const removeLike = async (modelId, userId) => {
             return { message: "No habías dado like" };
         }
 
-        const updateResult = await client.query(
-            `UPDATE models
-       SET likes = GREATEST(likes - 1, 0)
-       WHERE id = $1
-       RETURNING likes`,
+        const countResult = await client.query(
+            `SELECT COUNT(*) as count FROM model_likes WHERE model_id = $1`,
             [modelId],
         );
 
         await client.query("COMMIT");
-
-        return { likes: updateResult.rows[0].likes };
+        return {
+            likes: parseInt(countResult.rows[0].count, 10),
+        };
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;

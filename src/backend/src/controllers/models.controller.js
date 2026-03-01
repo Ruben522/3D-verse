@@ -2,6 +2,11 @@ import {
     createModel,
     getModelById,
     getModels,
+    updateModel,
+    deleteModel,
+    downloadModel,
+    addLike,
+    removeLike,
 } from "../services/models.service.js";
 
 const create = async (req, res) => {
@@ -10,7 +15,10 @@ const create = async (req, res) => {
             req.user.id,
             req.body,
         );
-        res.status(201).json(model);
+        res.status(201).json({
+            message: "Modelo publicado con éxito",
+            data: model,
+        });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -63,8 +71,6 @@ const remove = async (req, res) => {
     }
 };
 
-import { downloadModel } from "../services/models.service.js";
-
 const download = async (req, res) => {
     try {
         const tokenUser = req.user || null;
@@ -109,21 +115,50 @@ const unlike = async (req, res) => {
     }
 };
 
-const uploadModel = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: "Archivo requerido" });
+const formatUploadedFiles = (files) => {
+    if (
+        !files ||
+        !files["main_file"] ||
+        !files["cover_image"]
+    ) {
+        throw new Error(
+            "El archivo principal y la imagen de portada son obligatorios",
+        );
     }
 
-    const fileUrl = `/uploads/models/${req.file.filename}`;
+    const getUrl = (file) =>
+        `/uploads/models/${file.filename}`;
 
-    res.status(201).json({
-      message: "Archivo subido correctamente",
-      file_url: fileUrl,
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+    const main_file = getUrl(files["main_file"][0]);
+    const cover_image = getUrl(files["cover_image"][0]);
+
+    const parts = (files["parts"] || []).map((file) => ({
+        part_name: file.originalname.split(".")[0],
+        file_url: getUrl(file),
+        file_size: file.size,
+    }));
+
+    const gallery = (files["gallery"] || []).map((file) =>
+        getUrl(file),
+    );
+
+    return { main_file, cover_image, parts, gallery };
+};
+
+const uploadModel = async (req, res) => {
+    try {
+        const formattedFiles = formatUploadedFiles(
+            req.files,
+        );
+
+        res.status(201).json({
+            message:
+                "Archivos subidos y clasificados correctamente",
+            ...formattedFiles,
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 };
 
 export {
