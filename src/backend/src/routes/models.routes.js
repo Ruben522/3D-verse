@@ -5,7 +5,6 @@ import {
     getAll,
     update,
     remove,
-    download,
     like,
     unlike,
     uploadModel,
@@ -20,7 +19,6 @@ router.get("/", getAll);
 router.get("/:id", getById);
 router.put("/:id", verifyToken, update);
 router.delete("/:id", verifyToken, remove);
-router.post("/:id/download", download);
 router.post("/:id/like", verifyToken, like);
 router.delete("/:id/like", verifyToken, unlike);
 router.post(

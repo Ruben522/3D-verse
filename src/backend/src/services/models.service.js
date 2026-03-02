@@ -1,4 +1,6 @@
 import pool from "../config/db.js";
+import fs from "fs";
+import path from "path";
 
 const createModel = async (userId, data) => {
     const {
@@ -97,7 +99,6 @@ const getModelById = async (modelId) => {
     try {
         await client.query("BEGIN");
 
-        // Incrementamos vistas
         const updateResult = await client.query(
             `UPDATE models SET views = views + 1 WHERE id = $1 RETURNING id`,
             [modelId],
@@ -267,11 +268,6 @@ const getModels = async ({ page = 1, limit = 20 }) => {
     }
 };
 
-import fs from "fs";
-import path from "path";
-
-// ... código superior
-
 const deleteModel = async (modelId, user) => {
     const client = await pool.connect();
 
@@ -391,52 +387,6 @@ const updateModel = async (modelId, user, data) => {
     }
 };
 
-const downloadModel = async (
-    modelId,
-    user,
-    ip,
-    userAgent,
-) => {
-    const client = await pool.connect();
-
-    try {
-        await client.query("BEGIN");
-
-        const modelResult = await client.query(
-            "SELECT id FROM models WHERE id = $1",
-            [modelId],
-        );
-
-        if (modelResult.rows.length === 0) {
-            throw new Error("Modelo no encontrado");
-        }
-
-        await client.query(
-            `INSERT INTO downloads (user_id, model_id, ip_address, user_agent)
-       VALUES ($1,$2,$3,$4)`,
-            [user ? user.id : null, modelId, ip, userAgent],
-        );
-
-        await client.query(
-            `UPDATE models
-       SET downloads = downloads + 1
-       WHERE id = $1`,
-            [modelId],
-        );
-
-        await client.query("COMMIT");
-
-        return {
-            message: "Descarga registrada correctamente",
-        };
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
-};
-
 const addLike = async (modelId, userId) => {
     const client = await pool.connect();
     try {
@@ -511,7 +461,6 @@ export {
     getModelById,
     getModels,
     deleteModel,
-    downloadModel,
     updateModel,
     addLike,
     removeLike,

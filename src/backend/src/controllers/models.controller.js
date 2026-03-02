@@ -4,7 +4,6 @@ import {
     getModels,
     updateModel,
     deleteModel,
-    downloadModel,
     addLike,
     removeLike,
 } from "../services/models.service.js";
@@ -68,26 +67,6 @@ const remove = async (req, res) => {
         res.status(200).json(result);
     } catch (error) {
         res.status(403).json({ error: error.message });
-    }
-};
-
-const download = async (req, res) => {
-    try {
-        const tokenUser = req.user || null;
-
-        const ip = req.ip;
-        const userAgent = req.headers["user-agent"];
-
-        const result = await downloadModel(
-            req.params.id,
-            tokenUser,
-            ip,
-            userAgent,
-        );
-
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
     }
 };
 
@@ -170,7 +149,6 @@ export {
     getAll,
     update,
     remove,
-    download,
     like,
     unlike,
     uploadModel,
