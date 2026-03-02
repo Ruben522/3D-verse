@@ -10,3 +10,4 @@ SELECT * FROM downloads;
 
 -- Cambiar mi rol de user a admin
 UPDATE users SET role = 'admin' WHERE name = 'Ruben';
+
