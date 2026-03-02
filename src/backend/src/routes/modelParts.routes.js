@@ -6,7 +6,7 @@ import {
     update,
     remove,
 } from "../controllers/modelParts.controller.js";
-import { verifyToken, isAdmin, isOwnerOrAdmin } from "../middlewares/auth.middleware.js";
+import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 

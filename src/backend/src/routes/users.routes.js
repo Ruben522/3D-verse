@@ -10,7 +10,7 @@ import { verifyToken, isAdmin, isOwnerOrAdmin } from "../middlewares/auth.middle
 
 const router = express.Router();
 
-router.get("/", isAdmin, getAll);
+router.get("/", verifyToken, isAdmin, getAll);
 router.get("/:id/favorites", getFavorites);
 router.get("/:id", verifyToken, isOwnerOrAdmin, getById);
 router.put("/:id", verifyToken, isOwnerOrAdmin, update);

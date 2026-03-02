@@ -15,6 +15,6 @@ router.get("/", getAll);
 router.post("/model/:modelId", verifyToken, isOwnerOrAdmin, addToModel);
 router.delete("/model/:modelId/:tagId", verifyToken, isOwnerOrAdmin, removeFromModel);
 router.delete("/:tagId", verifyToken, isOwnerOrAdmin, remove);
-router.get("/model/:modelId", getForModel);
+router.get("/model/:modelId", verifyToken, getForModel);
 
 export default router;
