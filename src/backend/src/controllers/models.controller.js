@@ -115,7 +115,7 @@ const unlike = async (req, res) => {
     }
 };
 
-const formatUploadedFiles = (files) => {
+const formatUploadedFiles = (files, userId, folderName) => {
     if (
         !files ||
         !files["main_file"] ||
@@ -127,7 +127,7 @@ const formatUploadedFiles = (files) => {
     }
 
     const getUrl = (file) =>
-        `/uploads/models/${file.filename}`;
+        `/uploads/models/${userId}/${folderName}/${file.filename}`;
 
     const main_file = getUrl(files["main_file"][0]);
     const cover_image = getUrl(files["cover_image"][0]);
@@ -149,11 +149,14 @@ const uploadModel = async (req, res) => {
     try {
         const formattedFiles = formatUploadedFiles(
             req.files,
+            req.user.id,
+            req.currentFolder,
         );
 
         res.status(201).json({
             message:
                 "Archivos subidos y clasificados correctamente",
+            folder_used: req.currentFolder,
             ...formattedFiles,
         });
     } catch (error) {

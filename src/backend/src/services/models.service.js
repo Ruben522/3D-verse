@@ -11,6 +11,7 @@ const createModel = async (userId, data) => {
         license,
         parts,
         images,
+        tags,
     } = data;
 
     const client = await pool.connect();
@@ -71,6 +72,14 @@ const createModel = async (userId, data) => {
             }
         }
 
+        if (tags && tags.length > 0) {
+            for (const tagId of tags) {
+                await client.query(
+                    `INSERT INTO model_tag (model_id, tag_id) VALUES ($1, $2)`,
+                    [model.id, tagId],
+                );
+            }
+        }
         await client.query("COMMIT");
 
         return model;
@@ -258,35 +267,51 @@ const getModels = async ({ page = 1, limit = 20 }) => {
     }
 };
 
+import fs from "fs";
+import path from "path";
+
+// ... código superior
+
 const deleteModel = async (modelId, user) => {
     const client = await pool.connect();
 
     try {
         const result = await client.query(
-            "SELECT user_id FROM models WHERE id = $1",
+            "SELECT user_id, file_url FROM models WHERE id = $1",
             [modelId],
         );
 
-        if (result.rows.length === 0) {
+        if (result.rows.length === 0)
             throw new Error("Modelo no encontrado");
-        }
 
         const model = result.rows[0];
-
         const isOwner = model.user_id === user.id;
         const isAdmin = user.role === "admin";
 
-        if (!isOwner && !isAdmin) {
+        if (!isOwner && !isAdmin)
             throw new Error("No autorizado");
-        }
+
+        const relativeFolder = path.dirname(model.file_url);
+        const absoluteFolder = path.join(
+            process.cwd(),
+            relativeFolder,
+        );
 
         await client.query(
             "DELETE FROM models WHERE id = $1",
             [modelId],
         );
 
+        if (fs.existsSync(absoluteFolder)) {
+            fs.rmSync(absoluteFolder, {
+                recursive: true,
+                force: true,
+            });
+        }
+
         return {
-            message: "Modelo eliminado correctamente",
+            message:
+                "Modelo y archivos eliminados correctamente",
         };
     } finally {
         client.release();

@@ -6,7 +6,18 @@ const createStorage = (folder) => {
     return multer.diskStorage({
         destination: (req, file, cb) => {
             const userId = req.user.id;
-            const dir = `uploads/${folder}/${userId}`;
+            let folderName = req.body.folder_name
+                ? req.body.folder_name.replace(
+                      /[^a-zA-Z0-9_-]/g,
+                      "",
+                  )
+                : "modelo";
+            const uniqueFolder = `${folderName}_${Date.now()}`;
+
+            req.currentFolder =
+                req.currentFolder || uniqueFolder;
+
+            const dir = `uploads/${folder}/${userId}/${req.currentFolder}`;
 
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, { recursive: true });
