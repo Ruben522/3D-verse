@@ -7,6 +7,7 @@ import favoritesRoutes from "./routes/favorites.routes.js";
 import commentsRoutes from "./routes/comments.routes.js";
 import followersRoutes from "./routes/followers.routes.js";
 import tagsRoutes from "./routes/tags.routes.js"
+import modelPartsRoutes from "./routes/modelParts.routes.js";
 
 const app = express();
 
@@ -22,5 +23,10 @@ app.use("/favorites", favoritesRoutes);
 app.use("/comments", commentsRoutes);
 app.use("/followers", followersRoutes);
 app.use("/tags", tagsRoutes);
+app.use("/model-parts", modelPartsRoutes);
+
+app.get("/", (req, res) => {
+    res.send("Bienvenido a la API de 3D-verse");
+});
 
 export default app;

@@ -26,6 +26,23 @@ const createOrGetTag = async (client, name) => {
   return existing.rows[0];
 };
 
+const getTagsForModel = async (modelId) => {
+  const result = await pool.query(
+    `SELECT t.id, t.name
+         FROM tags t
+         JOIN model_tag mt ON t.id = mt.tag_id
+         WHERE mt.model_id = $1
+         ORDER BY t.name ASC`,
+    [modelId],
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error("No se encontraron tags para este modelo");
+  }
+
+  return result.rows;
+};
+
 const addTagToModel = async (modelId, user, tagName) => {
   const client = await pool.connect();
 
@@ -180,4 +197,4 @@ const getAllTags = async () => {
   return result.rows;
 };
 
-export { addTagToModel, removeTagFromModel, removeTag, getAllTags };
+export { addTagToModel, removeTagFromModel, removeTag, getAllTags, getTagsForModel };

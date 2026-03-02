@@ -2,8 +2,18 @@ import {
     addTagToModel,
     removeTagFromModel,
     getAllTags,
-    removeTag
+    removeTag,
+    getTagsForModel,
 } from "../services/tags.service.js";
+
+const getForModel = async (req, res) => {
+    try {
+        const tags = await getTagsForModel(req.params.modelId);
+        res.status(200).json(tags);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+};
 
 const addToModel = async (req, res) => {
     try {
@@ -68,5 +78,6 @@ export {
     addToModel,
     removeFromModel,
     getAll,
-    remove
+    remove,
+    getForModel,
 };
