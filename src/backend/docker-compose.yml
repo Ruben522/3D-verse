@@ -1,19 +1,15 @@
 services:
-  db:
-    image: postgres:latest
-    container_name: Proyecto3Dverse
-    restart: always
-    environment:
-      POSTGRES_USER: ruben
-      POSTGRES_PASSWORD: "1234"
-      POSTGRES_DB: Proyecto3Dverse
-    ports:
-      - "54876:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      # Si quieres que la DB se cree con tablas automáticamente, 
-      # pon tu script .sql en una carpeta llamada 'init' y descomenta la siguiente línea:
-      - ./init:/docker-entrypoint-initdb.d 
-
+    db:
+        image: postgres:latest
+        container_name: Proyecto3Dverse
+        restart: always
+        environment:
+            POSTGRES_USER: ruben
+            POSTGRES_PASSWORD: "1234"
+            POSTGRES_DB: Proyecto3Dverse
+        ports:
+            - "54876:5432"
+        volumes:
+            - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
 volumes:
-  postgres_data:
+    postgres_data:

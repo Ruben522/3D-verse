@@ -1,4 +1,5 @@
 -- DELETE TABLES (orden correcto: primero las que tienen dependencias)
+DROP TABLE IF EXISTS model_likes;
 DROP TABLE IF EXISTS followers;
 DROP TABLE IF EXISTS model_tag;
 DROP TABLE IF EXISTS comments;
@@ -32,7 +33,9 @@ CREATE TABLE users (
     linkedin VARCHAR(100),
     github VARCHAR(100),
     location VARCHAR(255),
-    
+    followers_count INTEGER DEFAULT 0,
+    following_count INTEGER DEFAULT 0,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
