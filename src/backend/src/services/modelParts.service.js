@@ -1,8 +1,9 @@
 import pool from "../config/db.js";
 import fs from "fs";
 import path from "path";
+import { checkPermission } from "../utils/checkPermission.js";
 
-const createPart = async (userId, modelId, data) => {
+const createPart = async (user, modelId, data) => {
     const { color, part_name, file_url, file_size } = data;
     const client = await pool.connect();
 
@@ -14,13 +15,9 @@ const createPart = async (userId, modelId, data) => {
             [modelId]
         );
 
-        if (modelResult.rows.length === 0) {
-            throw new Error("Modelo no encontrado");
-        }
+        if (modelResult.rows.length === 0) throw new Error("Modelo no encontrado");
 
-        if (modelResult.rows[0].user_id !== userId) {
-            throw new Error("No autorizado para añadir partes a este modelo");
-        }
+        checkPermission(modelResult.rows[0].user_id, user);
 
         const insertResult = await client.query(
             `INSERT INTO model_parts (model_id, color, part_name, file_url, file_size)
@@ -43,25 +40,15 @@ const getParts = async ({ page = 1, limit = 20 }) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const partsQuery = `
-        SELECT * FROM model_parts
-        ORDER BY created_at DESC
-        LIMIT $1 OFFSET $2
-    `;
-    const countQuery = `SELECT COUNT(*) FROM model_parts`;
-
     const [partsResult, countResult] = await Promise.all([
-        pool.query(partsQuery, [safeLimit, offset]),
-        pool.query(countQuery),
+        pool.query(`SELECT * FROM model_parts ORDER BY created_at DESC LIMIT $1 OFFSET $2`, [safeLimit, offset]),
+        pool.query(`SELECT COUNT(*) FROM model_parts`)
     ]);
-
-    const total = parseInt(countResult.rows[0].count, 10);
 
     return {
         page,
         limit: safeLimit,
-        total,
-        totalPages: Math.ceil(total / safeLimit),
+        total: parseInt(countResult.rows[0].count, 10),
         data: partsResult.rows,
     };
 };
@@ -76,28 +63,18 @@ const getPartsByModelId = async (modelId) => {
 
 const updatePart = async (partId, user, data) => {
     const client = await pool.connect();
-
     try {
         await client.query("BEGIN");
 
         const result = await client.query(
-            `SELECT mp.id, m.user_id 
-             FROM model_parts mp 
-             JOIN models m ON mp.model_id = m.id 
-             WHERE mp.id = $1`,
+            `SELECT m.user_id FROM model_parts mp 
+             JOIN models m ON mp.model_id = m.id WHERE mp.id = $1`,
             [partId]
         );
 
-        if (result.rows.length === 0) {
-            throw new Error("Parte no encontrada");
-        }
+        if (result.rows.length === 0) throw new Error("Parte no encontrada");
 
-        const isOwner = result.rows[0].user_id === user.id;
-        const isAdmin = user.role === "admin";
-
-        if (!isOwner && !isAdmin) {
-            throw new Error("No autorizado");
-        }
+        checkPermission(result.rows[0].user_id, user);
 
         const allowedFields = ["color", "part_name", "file_url", "file_size"];
         const fields = [];
@@ -106,26 +83,17 @@ const updatePart = async (partId, user, data) => {
 
         for (const field of allowedFields) {
             if (data[field] !== undefined) {
-                fields.push(`${field} = $${index}`);
+                fields.push(`${field} = $${index++}`);
                 values.push(data[field]);
-                index++;
             }
         }
 
-        if (fields.length === 0) {
-            throw new Error("No hay campos para actualizar");
-        }
+        if (fields.length === 0) throw new Error("No hay campos para actualizar");
 
-        const query = `
-            UPDATE model_parts
-            SET ${fields.join(", ")}
-            WHERE id = $${index}
-            RETURNING *
-        `;
+        const query = `UPDATE model_parts SET ${fields.join(", ")} WHERE id = $${index} RETURNING *`;
         values.push(partId);
 
         const updateResult = await client.query(query, values);
-
         await client.query("COMMIT");
         return updateResult.rows[0];
     } catch (error) {
@@ -138,31 +106,20 @@ const updatePart = async (partId, user, data) => {
 
 const deletePart = async (partId, user) => {
     const client = await pool.connect();
-
     try {
         await client.query("BEGIN");
 
         const result = await client.query(
-            `SELECT mp.file_url, m.user_id 
-             FROM model_parts mp 
-             JOIN models m ON mp.model_id = m.id 
-             WHERE mp.id = $1`,
+            `SELECT mp.file_url, m.user_id FROM model_parts mp 
+             JOIN models m ON mp.model_id = m.id WHERE mp.id = $1`,
             [partId]
         );
 
-        if (result.rows.length === 0) {
-            throw new Error("Parte no encontrada");
-        }
+        if (result.rows.length === 0) throw new Error("Parte no encontrada");
 
-        const isOwner = result.rows[0].user_id === user.id;
-        const isAdmin = user.role === "admin";
+        checkPermission(result.rows[0].user_id, user);
 
-        if (!isOwner && !isAdmin) {
-            throw new Error("No autorizado");
-        }
-
-        const relativePath = result.rows[0].file_url;
-        const absolutePath = path.join(process.cwd(), relativePath);
+        const absolutePath = path.join(process.cwd(), result.rows[0].file_url);
 
         await client.query("DELETE FROM model_parts WHERE id = $1", [partId]);
 

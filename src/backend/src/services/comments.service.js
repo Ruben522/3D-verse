@@ -1,8 +1,8 @@
 import pool from "../config/db.js";
+import { checkPermission } from "../utils/checkPermission.js";
 
 const createComment = async (modelId, userId, content) => {
     const client = await pool.connect();
-
     try {
         await client.query("BEGIN");
 
@@ -23,9 +23,7 @@ const createComment = async (modelId, userId, content) => {
         );
 
         await client.query("COMMIT");
-
         return insertResult.rows[0];
-
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;
@@ -40,17 +38,8 @@ const getModelComments = async (modelId, { page = 1, limit = 20 }) => {
 
     const commentsQuery = `
         SELECT 
-            c.id,
-            c.content,
-            c.created_at,
-            c.updated_at,
-
-            json_build_object(
-                'id', u.id,
-                'username', u.username,
-                'avatar', u.avatar
-            ) AS author
-
+            c.id, c.content, c.created_at, c.updated_at,
+            json_build_object('id', u.id, 'username', u.username, 'avatar', u.avatar) AS author
         FROM comments c
         JOIN users u ON c.user_id = u.id
         WHERE c.model_id = $1
@@ -58,11 +47,7 @@ const getModelComments = async (modelId, { page = 1, limit = 20 }) => {
         LIMIT $2 OFFSET $3
     `;
 
-    const countQuery = `
-        SELECT COUNT(*) 
-        FROM comments
-        WHERE model_id = $1
-    `;
+    const countQuery = `SELECT COUNT(*) FROM comments WHERE model_id = $1`;
 
     const [commentsResult, countResult] = await Promise.all([
         pool.query(commentsQuery, [modelId, safeLimit, offset]),
@@ -82,37 +67,26 @@ const getModelComments = async (modelId, { page = 1, limit = 20 }) => {
 
 const updateComment = async (commentId, user, content) => {
     const client = await pool.connect();
-
     try {
         const result = await client.query(
             "SELECT user_id FROM comments WHERE id = $1",
             [commentId]
         );
 
-        if (result.rows.length === 0) {
-            throw new Error("Comentario no encontrado");
-        }
+        if (result.rows.length === 0) throw new Error("Comentario no encontrado");
 
-        const comment = result.rows[0];
-
-        const isOwner = comment.user_id === user.id;
-        const isAdmin = user.role === "admin";
-
-        if (!isOwner && !isAdmin) {
-            throw new Error("No autorizado");
-        }
+        // VALIDACIÓN CENTRALIZADA
+        checkPermission(result.rows[0].user_id, user);
 
         const updateResult = await client.query(
             `UPDATE comments
-             SET content = $1,
-                 updated_at = CURRENT_TIMESTAMP
+             SET content = $1, updated_at = CURRENT_TIMESTAMP
              WHERE id = $2
              RETURNING id, content, created_at, updated_at`,
             [content, commentId]
         );
 
         return updateResult.rows[0];
-
     } finally {
         client.release();
     }
@@ -120,33 +94,20 @@ const updateComment = async (commentId, user, content) => {
 
 const deleteComment = async (commentId, user) => {
     const client = await pool.connect();
-
     try {
         const result = await client.query(
             "SELECT user_id FROM comments WHERE id = $1",
             [commentId]
         );
 
-        if (result.rows.length === 0) {
-            throw new Error("Comentario no encontrado");
-        }
+        if (result.rows.length === 0) throw new Error("Comentario no encontrado");
 
-        const comment = result.rows[0];
+        // VALIDACIÓN CENTRALIZADA
+        checkPermission(result.rows[0].user_id, user);
 
-        const isOwner = comment.user_id === user.id;
-        const isAdmin = user.role === "admin";
-
-        if (!isOwner && !isAdmin) {
-            throw new Error("No autorizado");
-        }
-
-        await client.query(
-            "DELETE FROM comments WHERE id = $1",
-            [commentId]
-        );
+        await client.query("DELETE FROM comments WHERE id = $1", [commentId]);
 
         return { message: "Comentario eliminado correctamente" };
-
     } finally {
         client.release();
     }
