@@ -7,15 +7,14 @@ import {
     getForModel,
 } from "../controllers/tags.controller.js";
 
-import { verifyToken } from "../middlewares/auth.middleware.js";
+import { verifyToken, isAdmin, isOwnerOrAdmin } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 router.get("/", getAll);
-
-router.post("/model/:modelId", verifyToken, addToModel);
-router.delete("/model/:modelId/:tagId", verifyToken, removeFromModel);
-router.delete("/:tagId", verifyToken, remove);
+router.post("/model/:modelId", verifyToken, isOwnerOrAdmin, addToModel);
+router.delete("/model/:modelId/:tagId", verifyToken, isOwnerOrAdmin, removeFromModel);
+router.delete("/:tagId", verifyToken, isOwnerOrAdmin, remove);
 router.get("/model/:modelId", getForModel);
 
 export default router;

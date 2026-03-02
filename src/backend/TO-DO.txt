@@ -8,4 +8,4 @@
 
     Un botón para: "Imágenes extra".
 
-2. Comprobar para eliminar la carptera si eliminamos a un usuario (o no si queremos quedarnos sus modelos).
+2. Probar a renombrar el modelo para ver si cambia su carpeta

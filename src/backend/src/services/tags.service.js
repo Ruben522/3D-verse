@@ -153,19 +153,6 @@ const removeTag = async (tagId, user) => {
     try {
         await client.query("BEGIN");
 
-        // comprobar rol real
-        const roleResult = await client.query(
-            "SELECT role FROM users WHERE id = $1",
-            [user.id]
-        );
-
-        const actualRole =
-            roleResult.rows.length > 0 ? roleResult.rows[0].role : null;
-
-        if (actualRole !== "admin") {
-            throw new Error("No autorizado");
-        }
-
         const deleteResult = await client.query(
             "DELETE FROM tags WHERE id = $1 RETURNING *",
             [tagId]
