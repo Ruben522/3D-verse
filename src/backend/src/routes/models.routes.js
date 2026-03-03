@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import {
     create,
     getById,
@@ -9,23 +9,36 @@ import {
     unlike,
     uploadModel,
 } from "../controllers/models.controller.js";
-import { verifyToken } from "../middlewares/auth.middleware.js";
-import { modelUploadFields } from "../middlewares/upload.middleware.js";
+import { verifyToken } from "../middlewares/auth.middleware.js"; // Verifica el nombre de tu middleware auth
+import { modelUploadFields } from "../middlewares/upload.middleware.js"; // Verifica el nombre de tu exportación multer
 
-const router = express.Router();
+const router = Router();
 
-router.post("/", verifyToken, create);
+// Rutas Públicas
 router.get("/", getAll);
 router.get("/:id", getById);
-router.put("/:id", verifyToken, update);
-router.delete("/:id", verifyToken, remove);
-router.post("/:id/like", verifyToken, like);
-router.delete("/:id/like", verifyToken, unlike);
+
+// ----------------------------------------------------------------
+// FLUJO DE 2 PASOS (Protegido con Token)
+// ----------------------------------------------------------------
+
+// PASO 1: Recibe form-data, sube archivos, devuelve JSON con URLs
 router.post(
-    "/upload/model",
+    "/upload",
     verifyToken,
     modelUploadFields,
     uploadModel,
 );
+
+// PASO 2: Recibe raw JSON (con las URLs del Paso 1) y crea en BD
+router.post("/", verifyToken, create);
+
+// ----------------------------------------------------------------
+
+// Modificar / Eliminar / Likes
+router.put("/:id", verifyToken, update);
+router.delete("/:id", verifyToken, remove);
+router.post("/:id/like", verifyToken, like);
+router.delete("/:id/like", verifyToken, unlike);
 
 export default router;

@@ -7,14 +7,18 @@ import usersRoutes from "./routes/users.routes.js";
 import favoritesRoutes from "./routes/favorites.routes.js";
 import commentsRoutes from "./routes/comments.routes.js";
 import followersRoutes from "./routes/followers.routes.js";
-import tagsRoutes from "./routes/tags.routes.js"
+import tagsRoutes from "./routes/tags.routes.js";
 import modelPartsRoutes from "./routes/modelParts.routes.js";
 import downloadsRoutes from "./routes/downloads.routes.js";
+import modelImagesRoutes from "./routes/modelsImages.routes.js";
 
 const app = express();
 
 const configureStaticFiles = (expressApp) => {
-    const uploadsPath = path.resolve(process.cwd(), "uploads");
+    const uploadsPath = path.resolve(
+        process.cwd(),
+        "uploads",
+    );
     expressApp.use("/uploads", express.static(uploadsPath));
 };
 
@@ -34,6 +38,7 @@ app.use("/followers", followersRoutes);
 app.use("/tags", tagsRoutes);
 app.use("/model-parts", modelPartsRoutes);
 app.use("/downloads", downloadsRoutes);
+app.use("/model-images", modelImagesRoutes);
 
 app.get("/", (req, res) => {
     res.send("Bienvenido a la API de 3D-verse");
