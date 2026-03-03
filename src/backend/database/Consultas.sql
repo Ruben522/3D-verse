@@ -8,6 +8,7 @@ SELECT * from model_parts;
 
 SELECT * FROM downloads;
 
+SELECT * FROM models;
 -- Cambiar mi rol de user a admin
 UPDATE users SET role = 'admin' WHERE name = 'Ruben';
 
