@@ -8,39 +8,34 @@ import {
     removeLike,
 } from "../services/models.service.js";
 
-// FUNCIÓN DE FORMATEO (Usada en el Paso 1)
 const formatUploadedFiles = (files, userId, folderName) => {
-    // Solo exigimos el archivo principal
     if (!files || !files["main_file"]) {
         throw new Error(
             "El archivo principal 3D es obligatorio",
         );
     }
 
-    const getUrl = (file) =>
-        `/uploads/models/${userId}/${folderName}/${file.filename}`;
+    const baseUrl = `/uploads/models/${userId}/${folderName}`;
 
-    const main_file = getUrl(files["main_file"][0]);
+    const main_file = `${baseUrl}/${files["main_file"][0].filename}`;
 
-    // Imagen de portada opcional
     const cover_image = files["cover_image"]
-        ? getUrl(files["cover_image"][0])
+        ? `${baseUrl}/${files["cover_image"][0].filename}`
         : null;
 
     const parts = (files["parts"] || []).map((file) => ({
         part_name: file.originalname.split(".")[0],
-        file_url: getUrl(file),
+        file_url: `${baseUrl}/parts/${file.filename}`,
         file_size: file.size,
     }));
 
-    const gallery = (files["gallery"] || []).map((file) =>
-        getUrl(file),
+    const gallery = (files["gallery"] || []).map(
+        (file) => `${baseUrl}/gallery/${file.filename}`,
     );
 
     return { main_file, cover_image, parts, gallery };
 };
 
-// PASO 1: Subir archivos físicos y devolver URLs
 const uploadModel = async (req, res) => {
     try {
         const formattedFiles = formatUploadedFiles(
@@ -60,10 +55,8 @@ const uploadModel = async (req, res) => {
     }
 };
 
-// PASO 2: Guardar en Base de Datos
 const create = async (req, res) => {
     try {
-        // req.body ahora recibe el JSON final enviado por el Frontend/Postman
         const model = await createModel(
             req.user.id,
             req.body,

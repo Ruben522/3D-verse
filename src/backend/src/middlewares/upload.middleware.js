@@ -6,10 +6,8 @@ import fs from "fs";
 const createStorage = (folder) => {
     return multer.diskStorage({
         destination: (req, file, cb) => {
-            // Requerimos que el usuario esté autenticado (req.user debe existir por el verifyToken)
             const userId = req.user?.id || "unknown";
 
-            // Si el usuario envía un 'folder_name' en el req.body, lo sanitizamos. Si no, usamos "modelo"
             let folderName = req.body.folder_name
                 ? req.body.folder_name.replace(
                       /[^a-zA-Z0-9_-]/g,
@@ -17,25 +15,28 @@ const createStorage = (folder) => {
                   )
                 : "modelo";
 
-            // Creamos un sufijo único con la fecha/hora actual
             const uniqueFolder = `${folderName}_${Date.now()}`;
-
-            // Usamos req.currentFolder para que todos los archivos de esta misma petición
-            // (principal, portada, partes) vayan exactamente a la misma carpeta.
             req.currentFolder =
                 req.currentFolder || uniqueFolder;
 
-            // Construimos la ruta física: uploads/models/ID_USUARIO/NOMBRE_CARPETA/
-            const dir = `uploads/${folder}/${userId}/${req.currentFolder}`;
+            // --- LÓGICA DE SUB-CARPETAS ---
+            let subFolder = "";
+            if (file.fieldname === "parts") {
+                subFolder = "/parts";
+            } else if (file.fieldname === "gallery") {
+                subFolder = "/gallery";
+            }
+            // ------------------------------
 
-            // Si la carpeta no existe, Node.js la crea (recursive: true crea las subcarpetas necesarias)
+            // Construimos la ruta: uploads/models/USER_ID/FOLDER_ID/parts (o gallery)
+            const dir = `uploads/${folder}/${userId}/${req.currentFolder}${subFolder}`;
+
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, { recursive: true });
             }
             cb(null, dir);
         },
         filename: (req, file, cb) => {
-            // Generamos un nombre único para evitar que archivos con el mismo nombre se sobrescriban
             const uniqueName =
                 Date.now() +
                 "-" +
