@@ -153,12 +153,11 @@ const handleMultipleImagesUpload = (req, res, next) => {
         next();
     });
 };
-// --- NUEVA CONFIGURACIÓN PARA LA IMAGEN PRINCIPAL (PORTADA) ---
+
 const mainImageStorage = multer.diskStorage({
     destination: async (req, file, cb) => {
         try {
-            const modelId = req.params.id; // La ruta es /:id/main-image
-
+            const modelId = req.params.id;
             const result = await pool.query(
                 "SELECT file_url FROM models WHERE id = $1",
                 [modelId],
@@ -177,7 +176,6 @@ const mainImageStorage = multer.diskStorage({
                 ? fileUrl.slice(1)
                 : fileUrl;
 
-            // modelFolder es la raíz exacta del modelo (ej: uploads/models/userId/timestamp)
             const modelFolder = path.dirname(relativePath);
             const finalDir = path.join(
                 process.cwd(),
@@ -218,8 +216,103 @@ const mainImageStorage = multer.diskStorage({
 
 const uploadMainImageFile = multer({
     storage: mainImageStorage,
-    fileFilter: imageFileFilter, // Reutilizamos el filtro que ya tienes para PNG/JPG
+    fileFilter: imageFileFilter,
 });
+
+const partsStorage = multer.diskStorage({
+    destination: async (req, file, cb) => {
+        try {
+            const { modelId } = req.params;
+
+            const result = await pool.query(
+                "SELECT file_url FROM models WHERE id = $1",
+                [modelId],
+            );
+
+            if (result.rows.length === 0) {
+                return cb(
+                    new Error(
+                        "Modelo no encontrado en la base de datos",
+                    ),
+                );
+            }
+
+            const fileUrl = result.rows[0].file_url;
+            const relativePath = fileUrl.startsWith("/")
+                ? fileUrl.slice(1)
+                : fileUrl;
+            const modelFolder = path.dirname(relativePath);
+
+            const finalDir = path.join(
+                process.cwd(),
+                modelFolder,
+                "parts",
+            );
+
+            if (!fs.existsSync(finalDir)) {
+                fs.mkdirSync(finalDir, { recursive: true });
+            }
+
+            req.currentPartsDir = finalDir;
+            cb(null, finalDir);
+        } catch (error) {
+            cb(error);
+        }
+    },
+    filename: (req, file, cb) => {
+        const cleanName = file.originalname.replace(
+            /\s/g,
+            "_",
+        );
+        const fullPath = path.join(
+            req.currentPartsDir,
+            cleanName,
+        );
+
+        if (fs.existsSync(fullPath)) {
+            return cb(
+                new Error(
+                    `La pieza '${cleanName}' ya existe en este modelo. Por favor, cámbiale el nombre.`,
+                ),
+            );
+        }
+
+        cb(null, cleanName);
+    },
+});
+
+const partsFileFilter = (req, file, cb) => {
+    const allowedTypes = [".stl", ".glb", ".obj"];
+    const ext = path
+        .extname(file.originalname)
+        .toLowerCase();
+
+    if (allowedTypes.includes(ext)) {
+        cb(null, true);
+    } else {
+        cb(
+            new Error(
+                "Solo se permiten archivos 3D (STL, GLB, OBJ) para las piezas.",
+            ),
+        );
+    }
+};
+
+const uploadPartsFile = multer({
+    storage: partsStorage,
+    fileFilter: partsFileFilter,
+});
+
+const handleMultiplePartsUpload = (req, res, next) => {
+    const upload = uploadPartsFile.array("parts", 10);
+    upload(req, res, function (err) {
+        if (err)
+            return res
+                .status(400)
+                .json({ error: err.message });
+        next();
+    });
+};
 
 export {
     uploadModelFile,
@@ -227,4 +320,6 @@ export {
     uploadImageFile,
     handleMultipleImagesUpload,
     uploadMainImageFile,
+    handleMultiplePartsUpload,
+    uploadPartsFile,
 };
