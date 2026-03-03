@@ -6,7 +6,7 @@ import {
     removeImage,
 } from "../controllers/modelsImages.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
-import { uploadImageFile } from "../middlewares/upload.middleware.js";
+import { handleMultipleImagesUpload } from "../middlewares/upload.middleware.js";
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router.get("/model/:modelId", getImages);
 router.post(
     "/model/:modelId",
     verifyToken,
-    uploadImageFile.single("image"),
+    handleMultipleImagesUpload,
     uploadImage,
 );
 

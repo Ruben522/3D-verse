@@ -101,17 +101,26 @@ const deleteImage = async (imageId, user) => {
 
         checkPermission(result.rows[0].user_id, user);
 
+        // 1. Borramos de la Base de Datos
         await client.query(
             "DELETE FROM model_images WHERE id = $1",
             [imageId],
         );
 
-        const absolutePath = path.join(
-            process.cwd(),
-            result.rows[0].image_url,
+        // 2. CORRECCIÓN: Borrado seguro del archivo físico en Windows
+        const relativePath = path.normalize(
+            result.rows[0].image_url.startsWith("/")
+                ? result.rows[0].image_url.slice(1)
+                : result.rows[0].image_url,
         );
+
+        const absolutePath = path.resolve(
+            process.cwd(),
+            relativePath,
+        );
+
         if (fs.existsSync(absolutePath)) {
-            fs.unlinkSync(absolutePath);
+            fs.unlinkSync(absolutePath); // unlinkSync es para borrar archivos sueltos
         }
 
         await client.query("COMMIT");
