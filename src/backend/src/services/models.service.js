@@ -301,6 +301,118 @@ const removeLike = async (modelId, userId) => {
     }
 };
 
+const updateMainImage = async (modelId, user, imageUrl) => {
+    const client = await pool.connect();
+    try {
+        await client.query("BEGIN");
+
+        const result = await client.query(
+            "SELECT user_id, main_image_url FROM models WHERE id = $1",
+            [modelId],
+        );
+
+        if (result.rows.length === 0)
+            throw new Error("Modelo no encontrado");
+        checkPermission(result.rows[0].user_id, user);
+
+        const oldImageUrl = result.rows[0].main_image_url;
+
+        if (oldImageUrl) {
+            const relativePath = path.normalize(
+                oldImageUrl.startsWith("/")
+                    ? oldImageUrl.slice(1)
+                    : oldImageUrl,
+            );
+            const absolutePath = path.resolve(
+                process.cwd(),
+                relativePath,
+            );
+            if (fs.existsSync(absolutePath)) {
+                fs.unlinkSync(absolutePath);
+            }
+        }
+
+        const updateResult = await client.query(
+            "UPDATE models SET main_image_url = $1 WHERE id = $2 RETURNING *",
+            [imageUrl, modelId],
+        );
+
+        await client.query("COMMIT");
+        return updateResult.rows[0];
+    } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+    } finally {
+        client.release();
+    }
+};
+
+const deleteMainImage = async (modelId, user) => {
+    const client = await pool.connect();
+    try {
+        await client.query("BEGIN");
+
+        const result = await client.query(
+            "SELECT user_id, main_image_url FROM models WHERE id = $1",
+            [modelId],
+        );
+
+        if (result.rows.length === 0)
+            throw new Error("Modelo no encontrado");
+        checkPermission(result.rows[0].user_id, user);
+
+        const imageUrl = result.rows[0].main_image_url;
+        if (!imageUrl)
+            throw new Error(
+                "El modelo ya no tiene imagen principal",
+            );
+
+        await client.query(
+            "UPDATE models SET main_image_url = NULL WHERE id = $1",
+            [modelId],
+        );
+
+        const relativePath = path.normalize(
+            imageUrl.startsWith("/")
+                ? imageUrl.slice(1)
+                : imageUrl,
+        );
+        const absolutePath = path.resolve(
+            process.cwd(),
+            relativePath,
+        );
+
+        console.log(
+            "-> Intentando borrar portada física en:",
+            absolutePath,
+        );
+
+        try {
+            if (fs.existsSync(absolutePath)) {
+                fs.unlinkSync(absolutePath);
+                message.log(
+                    "Imagen principal eliminada del disco correctamente.",
+                );
+            } else {
+                message.log(
+                    "El archivo no existía en el disco, pero se limpió de la BD.",
+                );
+            }
+        } catch (fsError) {}
+
+        await client.query("COMMIT");
+        return {
+            message:
+                "Imagen principal eliminada correctamente",
+        };
+    } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+    } finally {
+        client.release();
+    }
+};
+
 export {
     createModel,
     getModelById,
@@ -309,4 +421,6 @@ export {
     updateModel,
     addLike,
     removeLike,
+    updateMainImage,
+    deleteMainImage,
 };

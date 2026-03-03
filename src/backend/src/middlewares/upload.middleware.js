@@ -153,10 +153,78 @@ const handleMultipleImagesUpload = (req, res, next) => {
         next();
     });
 };
+// --- NUEVA CONFIGURACIÓN PARA LA IMAGEN PRINCIPAL (PORTADA) ---
+const mainImageStorage = multer.diskStorage({
+    destination: async (req, file, cb) => {
+        try {
+            const modelId = req.params.id; // La ruta es /:id/main-image
+
+            const result = await pool.query(
+                "SELECT file_url FROM models WHERE id = $1",
+                [modelId],
+            );
+
+            if (result.rows.length === 0) {
+                return cb(
+                    new Error(
+                        "Modelo no encontrado en la base de datos",
+                    ),
+                );
+            }
+
+            const fileUrl = result.rows[0].file_url;
+            const relativePath = fileUrl.startsWith("/")
+                ? fileUrl.slice(1)
+                : fileUrl;
+
+            // modelFolder es la raíz exacta del modelo (ej: uploads/models/userId/timestamp)
+            const modelFolder = path.dirname(relativePath);
+            const finalDir = path.join(
+                process.cwd(),
+                modelFolder,
+            );
+
+            if (!fs.existsSync(finalDir)) {
+                fs.mkdirSync(finalDir, { recursive: true });
+            }
+
+            req.currentMainImageDir = finalDir;
+            cb(null, finalDir);
+        } catch (error) {
+            cb(error);
+        }
+    },
+    filename: (req, file, cb) => {
+        const cleanName = file.originalname.replace(
+            /\s/g,
+            "_",
+        );
+        const fullPath = path.join(
+            req.currentMainImageDir,
+            cleanName,
+        );
+
+        if (fs.existsSync(fullPath)) {
+            return cb(
+                new Error(
+                    `La imagen '${cleanName}' ya existe en la raíz del modelo. Cambia el nombre de tu archivo.`,
+                ),
+            );
+        }
+
+        cb(null, cleanName);
+    },
+});
+
+const uploadMainImageFile = multer({
+    storage: mainImageStorage,
+    fileFilter: imageFileFilter, // Reutilizamos el filtro que ya tienes para PNG/JPG
+});
 
 export {
     uploadModelFile,
     modelUploadFields,
     uploadImageFile,
     handleMultipleImagesUpload,
+    uploadMainImageFile,
 };

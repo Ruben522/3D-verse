@@ -8,21 +8,20 @@ import {
     like,
     unlike,
     uploadModel,
+    patchMainImage,
+    removeMainImage,
 } from "../controllers/models.controller.js";
-import { verifyToken } from "../middlewares/auth.middleware.js"; // Verifica el nombre de tu middleware auth
-import { modelUploadFields } from "../middlewares/upload.middleware.js"; // Verifica el nombre de tu exportación multer
+import { verifyToken } from "../middlewares/auth.middleware.js";
+import {
+    modelUploadFields,
+    uploadMainImageFile,
+} from "../middlewares/upload.middleware.js";
 
 const router = Router();
 
-// Rutas Públicas
 router.get("/", getAll);
 router.get("/:id", getById);
 
-// ----------------------------------------------------------------
-// FLUJO DE 2 PASOS (Protegido con Token)
-// ----------------------------------------------------------------
-
-// PASO 1: Recibe form-data, sube archivos, devuelve JSON con URLs
 router.post(
     "/upload",
     verifyToken,
@@ -30,15 +29,21 @@ router.post(
     uploadModel,
 );
 
-// PASO 2: Recibe raw JSON (con las URLs del Paso 1) y crea en BD
 router.post("/", verifyToken, create);
 
-// ----------------------------------------------------------------
-
-// Modificar / Eliminar / Likes
 router.put("/:id", verifyToken, update);
 router.delete("/:id", verifyToken, remove);
 router.post("/:id/like", verifyToken, like);
 router.delete("/:id/like", verifyToken, unlike);
-
+router.patch(
+    "/:id/main-image",
+    verifyToken,
+    uploadMainImageFile.single("image"),
+    patchMainImage,
+);
+router.delete(
+    "/:id/main-image",
+    verifyToken,
+    removeMainImage,
+);
 export default router;

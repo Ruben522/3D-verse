@@ -6,7 +6,46 @@ import {
     deleteModel,
     addLike,
     removeLike,
+    updateMainImage,
+    deleteMainImage,
 } from "../services/models.service.js";
+
+const patchMainImage = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!req.file)
+            return res
+                .status(400)
+                .json({
+                    error: "Debe proporcionar una imagen",
+                });
+
+        const fullPath = req.file.path.replace(/\\/g, "/");
+        const uploadsIndex = fullPath.indexOf("/uploads/");
+        const imageUrl = fullPath.substring(uploadsIndex);
+
+        const updatedModel = await updateMainImage(
+            id,
+            req.user,
+            imageUrl,
+        );
+        res.status(200).json(updatedModel);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+const removeMainImage = async (req, res) => {
+    try {
+        const response = await deleteMainImage(
+            req.params.id,
+            req.user,
+        );
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
 const formatUploadedFiles = (files, userId, uploadId) => {
     if (!files || !files["main_file"]) {
@@ -147,4 +186,6 @@ export {
     like,
     unlike,
     uploadModel,
+    patchMainImage,
+    removeMainImage,
 };
