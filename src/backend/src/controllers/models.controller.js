@@ -8,32 +8,31 @@ import {
     removeLike,
 } from "../services/models.service.js";
 
-const formatUploadedFiles = (files, userId, folderName) => {
+const formatUploadedFiles = (files, userId, uploadId) => {
     if (!files || !files["main_file"]) {
         throw new Error(
             "El archivo principal 3D es obligatorio",
         );
     }
 
-    const baseUrl = `/uploads/models/${userId}/${folderName}`;
+    const baseUrl = `/uploads/models/${userId}/${uploadId}`;
 
-    const main_file = `${baseUrl}/${files["main_file"][0].filename}`;
-
-    const cover_image = files["cover_image"]
-        ? `${baseUrl}/${files["cover_image"][0].filename}`
-        : null;
-
-    const parts = (files["parts"] || []).map((file) => ({
-        part_name: file.originalname.split(".")[0],
-        file_url: `${baseUrl}/parts/${file.filename}`,
-        file_size: file.size,
-    }));
-
-    const gallery = (files["gallery"] || []).map(
-        (file) => `${baseUrl}/gallery/${file.filename}`,
-    );
-
-    return { main_file, cover_image, parts, gallery };
+    return {
+        // Usamos el nombre original que Multer respetó
+        main_file: `${baseUrl}/${files["main_file"][0].originalname.replace(/\s/g, "_")}`,
+        cover_image: files["cover_image"]
+            ? `${baseUrl}/${files["cover_image"][0].originalname.replace(/\s/g, "_")}`
+            : null,
+        parts: (files["parts"] || []).map((file) => ({
+            part_name: file.originalname.split(".")[0],
+            file_url: `${baseUrl}/parts/${file.originalname.replace(/\s/g, "_")}`,
+            file_size: file.size,
+        })),
+        gallery: (files["gallery"] || []).map(
+            (file) =>
+                `${baseUrl}/gallery/${file.originalname.replace(/\s/g, "_")}`,
+        ),
+    };
 };
 
 const uploadModel = async (req, res) => {
@@ -41,13 +40,12 @@ const uploadModel = async (req, res) => {
         const formattedFiles = formatUploadedFiles(
             req.files,
             req.user.id,
-            req.currentFolder,
+            req.uploadId, // Usamos el ID generado en el middleware
         );
 
         res.status(201).json({
-            message:
-                "Archivos subidos y clasificados correctamente",
-            folder_used: req.currentFolder,
+            message: "Archivos preparados",
+            upload_id: req.uploadId, // El frontend guardará esto si lo necesita
             ...formattedFiles,
         });
     } catch (error) {

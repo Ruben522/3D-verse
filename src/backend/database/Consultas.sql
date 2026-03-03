@@ -11,3 +11,4 @@ SELECT * FROM downloads;
 -- Cambiar mi rol de user a admin
 UPDATE users SET role = 'admin' WHERE name = 'Ruben';
 
+SELECT file_url FROM models WHERE id = '46c6cae8-59af-4250-b6eb-7c901d15cd29';

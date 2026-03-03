@@ -155,28 +155,39 @@ const getModels = async ({ page = 1, limit = 20 }) => {
     };
 };
 
+// src/services/models.service.js
 const deleteModel = async (modelId, user) => {
     const client = await pool.connect();
     try {
         const result = await client.query(
-            `SELECT user_id, file_url FROM models WHERE id = $1`,
+            "SELECT user_id, file_url FROM models WHERE id = $1",
             [modelId],
         );
         if (result.rows.length === 0)
             throw new Error("Modelo no encontrado");
 
+        // Verificamos permisos
         checkPermission(result.rows[0].user_id, user);
 
-        const absoluteFolder = path.join(
-            process.cwd(),
-            path.dirname(result.rows[0].file_url),
+        // 1. Normalizamos la ruta (quitamos la barra inicial para Windows)
+        const relativePath = path.normalize(
+            result.rows[0].file_url.startsWith("/")
+                ? result.rows[0].file_url.slice(1)
+                : result.rows[0].file_url,
         );
 
+        // 2. Calculamos la carpeta absoluta correcta dentro de tu proyecto
+        const absoluteFolder = path.dirname(
+            path.resolve(process.cwd(), relativePath),
+        );
+
+        // 3. Borramos de la BD
         await client.query(
-            `DELETE FROM models WHERE id = $1`,
+            "DELETE FROM models WHERE id = $1",
             [modelId],
         );
 
+        // 4. Borramos la carpeta física (recursive: true borra las subcarpetas parts/ y gallery/)
         if (fs.existsSync(absoluteFolder)) {
             fs.rmSync(absoluteFolder, {
                 recursive: true,

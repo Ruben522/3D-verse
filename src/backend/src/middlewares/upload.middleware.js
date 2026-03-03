@@ -8,28 +8,17 @@ const createStorage = (folder) => {
         destination: (req, file, cb) => {
             const userId = req.user?.id || "unknown";
 
-            let folderName = req.body.folder_name
-                ? req.body.folder_name.replace(
-                      /[^a-zA-Z0-9_-]/g,
-                      "",
-                  )
-                : "modelo";
+            // Generamos nosotros el ID de sesión de subida (único por cada POST)
+            // Usamos un Date.now() simple para la carpeta raíz del modelo
+            if (!req.uploadId) req.uploadId = Date.now();
 
-            const uniqueFolder = `${folderName}_${Date.now()}`;
-            req.currentFolder =
-                req.currentFolder || uniqueFolder;
-
-            // --- LÓGICA DE SUB-CARPETAS ---
             let subFolder = "";
-            if (file.fieldname === "parts") {
+            if (file.fieldname === "parts")
                 subFolder = "/parts";
-            } else if (file.fieldname === "gallery") {
+            else if (file.fieldname === "gallery")
                 subFolder = "/gallery";
-            }
-            // ------------------------------
 
-            // Construimos la ruta: uploads/models/USER_ID/FOLDER_ID/parts (o gallery)
-            const dir = `uploads/${folder}/${userId}/${req.currentFolder}${subFolder}`;
+            const dir = `uploads/${folder}/${userId}/${req.uploadId}${subFolder}`;
 
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, { recursive: true });
@@ -37,11 +26,11 @@ const createStorage = (folder) => {
             cb(null, dir);
         },
         filename: (req, file, cb) => {
-            const uniqueName =
-                Date.now() +
-                "-" +
-                file.originalname.replace(/\s/g, "_");
-            cb(null, uniqueName);
+            const cleanName = file.originalname.replace(
+                /\s/g,
+                "_",
+            );
+            cb(null, cleanName);
         },
     });
 };
