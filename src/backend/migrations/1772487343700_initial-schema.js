@@ -52,7 +52,7 @@ export async function up(pgm) {
         main_color VARCHAR(7),
         description TEXT,
         file_url TEXT NOT NULL,
-        main_image_url TEXT NOT NULL,
+        main_image_url TEXT,
         video_url TEXT,
         license VARCHAR(50) DEFAULT 'All Rights Reserved',
         downloads INTEGER DEFAULT 0,
