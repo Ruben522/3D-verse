@@ -155,6 +155,45 @@ const getModels = async ({ page = 1, limit = 20 }) => {
     };
 };
 
+const getModelsByUser = async (
+    userId,
+    { page = 1, limit = 20 },
+) => {
+    const safeLimit = Math.min(limit, 50);
+    const offset = (page - 1) * safeLimit;
+
+    const modelsQuery = `
+        SELECT m.*, (SELECT COUNT(*) FROM model_likes WHERE model_id = m.id) AS likes,
+        json_build_object('id', u.id, 'username', u.username, 'avatar', u.avatar) AS creator,
+        COALESCE((SELECT json_agg(json_build_object('id', t.id, 'name', t.name)) 
+                  FROM model_tag mt JOIN tags t ON mt.tag_id = t.id WHERE mt.model_id = m.id), '[]'::json) AS tags
+        FROM models m JOIN users u ON m.user_id = u.id 
+        WHERE m.user_id = $1
+        ORDER BY m.created_at DESC LIMIT $2 OFFSET $3
+    `;
+
+    const countResult = await pool.query(
+        `SELECT COUNT(*) FROM models WHERE user_id = $1`,
+        [userId],
+    );
+
+    const modelsResult = await pool.query(modelsQuery, [
+        userId,
+        safeLimit,
+        offset,
+    ]);
+
+    const total = parseInt(countResult.rows[0].count, 10);
+
+    return {
+        page,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: modelsResult.rows,
+    };
+};
+
 // src/services/models.service.js
 const deleteModel = async (modelId, user) => {
     const client = await pool.connect();
@@ -317,7 +356,8 @@ const updateMainImage = async (modelId, user, imageUrl) => {
 
         const oldImageUrl = result.rows[0].main_image_url;
 
-        if (oldImageUrl) {
+        // LA MAGIA ESTÁ AQUÍ: Solo borramos el archivo viejo si las rutas SON DIFERENTES
+        if (oldImageUrl && oldImageUrl !== imageUrl) {
             const relativePath = path.normalize(
                 oldImageUrl.startsWith("/")
                     ? oldImageUrl.slice(1)
@@ -327,6 +367,7 @@ const updateMainImage = async (modelId, user, imageUrl) => {
                 process.cwd(),
                 relativePath,
             );
+
             if (fs.existsSync(absolutePath)) {
                 fs.unlinkSync(absolutePath);
             }
@@ -346,7 +387,6 @@ const updateMainImage = async (modelId, user, imageUrl) => {
         client.release();
     }
 };
-
 const deleteMainImage = async (modelId, user) => {
     const client = await pool.connect();
     try {
@@ -390,11 +430,11 @@ const deleteMainImage = async (modelId, user) => {
         try {
             if (fs.existsSync(absolutePath)) {
                 fs.unlinkSync(absolutePath);
-                message.log(
+                console.log(
                     "Imagen principal eliminada del disco correctamente.",
                 );
             } else {
-                message.log(
+                console.log(
                     "El archivo no existía en el disco, pero se limpió de la BD.",
                 );
             }
@@ -413,6 +453,68 @@ const deleteMainImage = async (modelId, user) => {
     }
 };
 
+const replaceMainFile = async (
+    modelId,
+    user,
+    newFileUrl,
+) => {
+    const client = await pool.connect();
+    try {
+        await client.query("BEGIN");
+
+        const result = await client.query(
+            "SELECT user_id, file_url FROM models WHERE id = $1",
+            [modelId],
+        );
+
+        if (result.rows.length === 0)
+            throw new Error("Modelo no encontrado");
+        checkPermission(result.rows[0].user_id, user);
+
+        const oldFileUrl = result.rows[0].file_url;
+
+        const updateResult = await client.query(
+            "UPDATE models SET file_url = $1 WHERE id = $2 RETURNING *",
+            [newFileUrl, modelId],
+        );
+
+        if (oldFileUrl !== newFileUrl) {
+            const relativePath = path.normalize(
+                oldFileUrl.startsWith("/")
+                    ? oldFileUrl.slice(1)
+                    : oldFileUrl,
+            );
+            const absolutePath = path.resolve(
+                process.cwd(),
+                relativePath,
+            );
+
+            try {
+                if (fs.existsSync(absolutePath)) {
+                    fs.unlinkSync(absolutePath);
+                    console.log(
+                        "-> Archivo principal antiguo eliminado:",
+                        absolutePath,
+                    );
+                }
+            } catch (fsError) {
+                console.error(
+                    "-> Error al borrar el archivo principal antiguo:",
+                    fsError,
+                );
+            }
+        }
+
+        await client.query("COMMIT");
+        return updateResult.rows[0];
+    } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+    } finally {
+        client.release();
+    }
+};
+
 export {
     createModel,
     getModelById,
@@ -423,4 +525,6 @@ export {
     removeLike,
     updateMainImage,
     deleteMainImage,
+    replaceMainFile,
+    getModelsByUser,
 };

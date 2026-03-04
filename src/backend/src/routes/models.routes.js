@@ -10,17 +10,23 @@ import {
     uploadModel,
     patchMainImage,
     removeMainImage,
+    patchMainFile,
+    getByUser,
 } from "../controllers/models.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
 import {
     modelUploadFields,
     uploadMainImageFile,
+    uploadMainFileReplacement,
+    handleMainImageReplacement,
+    handleMainFileReplacement,
 } from "../middlewares/upload.middleware.js";
 
 const router = Router();
 
 router.get("/", getAll);
 router.get("/:id", getById);
+router.get("/user/:userId", getByUser);
 
 router.post(
     "/upload",
@@ -38,12 +44,18 @@ router.delete("/:id/like", verifyToken, unlike);
 router.patch(
     "/:id/main-image",
     verifyToken,
-    uploadMainImageFile.single("image"),
+    handleMainImageReplacement,
     patchMainImage,
 );
 router.delete(
     "/:id/main-image",
     verifyToken,
     removeMainImage,
+);
+router.patch(
+    "/:id/main-file",
+    verifyToken,
+    handleMainFileReplacement,
+    patchMainFile,
 );
 export default router;

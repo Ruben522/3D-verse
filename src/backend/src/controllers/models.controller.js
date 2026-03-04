@@ -8,7 +8,41 @@ import {
     removeLike,
     updateMainImage,
     deleteMainImage,
+    replaceMainFile,
+    getModelsByUser,
 } from "../services/models.service.js";
+
+const patchMainFile = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!req.file) {
+            return res
+                .status(400)
+                .json({
+                    error: "Debe proporcionar el nuevo archivo 3D",
+                });
+        }
+
+        const fullPath = req.file.path.replace(/\\/g, "/");
+        const uploadsIndex = fullPath.indexOf("/uploads/");
+        const newFileUrl = fullPath.substring(uploadsIndex);
+
+        const updatedModel = await replaceMainFile(
+            id,
+            req.user,
+            newFileUrl,
+        );
+
+        res.status(200).json({
+            message:
+                "Archivo principal actualizado correctamente",
+            data: updatedModel,
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
 const patchMainImage = async (req, res) => {
     try {
@@ -117,6 +151,22 @@ const getById = async (req, res) => {
     }
 };
 
+const getByUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+
+        const models = await getModelsByUser(userId, {
+            page,
+            limit,
+        });
+        res.status(200).json(models);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 const getAll = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -188,4 +238,6 @@ export {
     uploadModel,
     patchMainImage,
     removeMainImage,
+    patchMainFile,
+    getByUser,
 };

@@ -8,7 +8,8 @@
 
     Un botón para: "Imágenes extra".
 
-2. Probar a renombrar el modelo para ver si cambia su carpeta
+2. Arreglar el borrado de la imagen principal. Se borra, se cambia pero si ya existe salta error.
+3. 
 
 // Función genérica para usar en tus botones (ej: onClick={() => descargarModelo(id, 'all')})
 const descargarModelo = async (modelId, tipoDescarga = 'main') => {

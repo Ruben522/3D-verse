@@ -314,6 +314,119 @@ const handleMultiplePartsUpload = (req, res, next) => {
     });
 };
 
+const replaceMainFileStorage = multer.diskStorage({
+    destination: async (req, file, cb) => {
+        try {
+            const modelId = req.params.id;
+
+            const result = await pool.query(
+                "SELECT file_url FROM models WHERE id = $1",
+                [modelId],
+            );
+
+            if (result.rows.length === 0) {
+                return cb(
+                    new Error(
+                        "Modelo no encontrado en la base de datos",
+                    ),
+                );
+            }
+
+            const fileUrl = result.rows[0].file_url;
+            const relativePath = fileUrl.startsWith("/")
+                ? fileUrl.slice(1)
+                : fileUrl;
+            const modelFolder = path.dirname(relativePath);
+            const finalDir = path.join(
+                process.cwd(),
+                modelFolder,
+            );
+
+            if (!fs.existsSync(finalDir)) {
+                fs.mkdirSync(finalDir, { recursive: true });
+            }
+
+            cb(null, finalDir);
+        } catch (error) {
+            cb(error);
+        }
+    },
+    filename: (req, file, cb) => {
+        const cleanName = file.originalname.replace(
+            /\s/g,
+            "_",
+        );
+        cb(null, cleanName);
+    },
+});
+
+const mainFileFilter = (req, file, cb) => {
+    const allowedTypes = [".stl", ".glb", ".obj"];
+    const ext = path
+        .extname(file.originalname)
+        .toLowerCase();
+
+    if (allowedTypes.includes(ext)) {
+        cb(null, true);
+    } else {
+        cb(
+            new Error(
+                "Solo se permiten archivos 3D (STL, GLB, OBJ) para el modelo principal.",
+            ),
+        );
+    }
+};
+
+const uploadMainFileReplacement = multer({
+    storage: replaceMainFileStorage,
+    fileFilter: mainFileFilter,
+});
+
+const handleMainImageReplacement = (req, res, next) => {
+    const upload = uploadMainImageFile.single("image");
+
+    upload(req, res, function (err) {
+        if (
+            err instanceof multer.MulterError &&
+            err.code === "LIMIT_UNEXPECTED_FILE"
+        ) {
+            return res
+                .status(400)
+                .json({
+                    error: "Error: Solo puedes subir una (1) imagen para la portada.",
+                });
+        } else if (err) {
+            return res
+                .status(400)
+                .json({ error: err.message });
+        }
+        next();
+    });
+};
+
+const handleMainFileReplacement = (req, res, next) => {
+    const upload =
+        uploadMainFileReplacement.single("main_file");
+
+    upload(req, res, function (err) {
+        if (
+            err instanceof multer.MulterError &&
+            err.code === "LIMIT_UNEXPECTED_FILE"
+        ) {
+            return res
+                .status(400)
+                .json({
+                    error: "Error: Solo puedes subir un (1) archivo 3D principal.",
+                });
+        } else if (err) {
+            return res
+                .status(400)
+                .json({ error: err.message });
+        }
+        next();
+    });
+};
+
 export {
     uploadModelFile,
     modelUploadFields,
@@ -322,4 +435,7 @@ export {
     uploadMainImageFile,
     handleMultiplePartsUpload,
     uploadPartsFile,
+    uploadMainFileReplacement,
+    handleMainImageReplacement,
+    handleMainFileReplacement,
 };

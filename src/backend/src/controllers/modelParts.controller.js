@@ -2,7 +2,6 @@ import {
     createPart,
     getParts,
     getPartsByModelId,
-    updatePart,
     deletePart,
 } from "../services/modelParts.service.js";
 
@@ -91,4 +90,4 @@ const remove = async (req, res) => {
     }
 };
 
-export { create, getAll, getByModel, update, remove };
+export { create, getAll, getByModel, remove };
