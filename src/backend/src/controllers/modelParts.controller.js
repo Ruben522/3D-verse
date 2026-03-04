@@ -4,22 +4,30 @@ import {
     getPartsByModelId,
     deletePart,
 } from "../services/modelParts.service.js";
+import {
+    sendSuccess,
+    sendError,
+} from "../utils/helper/response.helper.js";
 
+/**
+ * Recibe un array de archivos y crea los registros de piezas correspondientes.
+ */
 const create = async (req, res) => {
     try {
         const { modelId } = req.params;
         const user = req.user;
 
         if (!req.files || req.files.length === 0) {
-            return res
-                .status(400)
-                .json({
-                    error: "Debe proporcionar al menos un archivo 3D",
-                });
+            return sendError(
+                res,
+                "Debe proporcionar al menos un archivo 3D",
+                400,
+            );
         }
 
         const uploadedParts = [];
 
+        // Iteramos sobre los archivos recibidos para crear las partes
         for (let i = 0; i < req.files.length; i++) {
             const file = req.files[i];
 
@@ -47,46 +55,69 @@ const create = async (req, res) => {
             uploadedParts.push(newPart);
         }
 
-        res.status(201).json({
-            message: "Piezas añadidas correctamente",
-            data: uploadedParts,
-        });
+        sendSuccess(
+            res,
+            "Piezas añadidas correctamente",
+            uploadedParts,
+            201,
+        );
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        const status =
+            error.message === "Modelo no encontrado"
+                ? 404
+                : 400;
+        sendError(res, error.message, status);
     }
 };
 
+/**
+ * Obtiene todas las piezas del sistema paginadas.
+ */
 const getAll = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
         const parts = await getParts({ page, limit });
-        res.status(200).json(parts);
+        sendSuccess(res, "Piezas recuperadas", parts);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        sendError(res, error.message, 500);
     }
 };
 
+/**
+ * Obtiene todas las piezas pertenecientes a un modelo.
+ */
 const getByModel = async (req, res) => {
     try {
         const parts = await getPartsByModelId(
             req.params.modelId,
         );
-        res.status(200).json(parts);
+        sendSuccess(
+            res,
+            "Piezas del modelo recuperadas",
+            parts,
+        );
     } catch (error) {
-        res.status(404).json({ error: error.message });
+        sendError(res, error.message, 404);
     }
 };
 
+/**
+ * Elimina una pieza específica.
+ */
 const remove = async (req, res) => {
     try {
         const result = await deletePart(
             req.params.id,
             req.user,
         );
-        res.status(200).json(result);
+        sendSuccess(res, result.message);
     } catch (error) {
-        res.status(403).json({ error: error.message });
+        const status =
+            error.message === "Parte no encontrada"
+                ? 404
+                : 403;
+        sendError(res, error.message, status);
     }
 };
 

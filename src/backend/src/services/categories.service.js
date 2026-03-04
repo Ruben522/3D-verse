@@ -4,10 +4,13 @@ import prisma from "../config/prisma.js";
  * Crea una nueva categoría.
  */
 const createCategory = async (name) => {
-    if (!name) throw new Error("El nombre de la categoría es obligatorio");
+    if (!name)
+        throw new Error(
+            "El nombre de la categoría es obligatorio",
+        );
 
     const category = await prisma.categories.create({
-        data: { name }
+        data: { name },
     });
     return category;
 };
@@ -17,7 +20,7 @@ const createCategory = async (name) => {
  */
 const getCategories = async () => {
     const categories = await prisma.categories.findMany({
-        orderBy: { name: 'asc' }
+        orderBy: { name: "asc" },
     });
     return categories;
 };
@@ -29,13 +32,12 @@ const getCategoryById = async (id) => {
     const category = await prisma.categories.findUnique({
         where: { id },
         include: {
-            _count: {
-                select: { model_category: true } // Cuenta cuántos modelos tienen esta categoría
-            }
-        }
+            _count: { select: { model_category: true } },
+        },
     });
 
-    if (!category) throw new Error("Categoría no encontrada");
+    if (!category)
+        throw new Error("Categoría no encontrada");
     return category;
 };
 
@@ -44,13 +46,15 @@ const getCategoryById = async (id) => {
  */
 const updateCategory = async (id, name) => {
     try {
-        const updatedCategory = await prisma.categories.update({
-            where: { id },
-            data: { name }
-        });
+        const updatedCategory =
+            await prisma.categories.update({
+                where: { id },
+                data: { name },
+            });
         return updatedCategory;
     } catch (error) {
-        if (error.code === 'P2025') throw new Error("Categoría no encontrada");
+        if (error.code === "P2025")
+            throw new Error("Categoría no encontrada");
         throw error;
     }
 };
@@ -60,12 +64,13 @@ const updateCategory = async (id, name) => {
  */
 const deleteCategory = async (id) => {
     try {
-        await prisma.categories.delete({
-            where: { id }
-        });
-        return { message: "Categoría eliminada correctamente" };
+        await prisma.categories.delete({ where: { id } });
+        return {
+            message: "Categoría eliminada correctamente",
+        };
     } catch (error) {
-        if (error.code === 'P2025') throw new Error("Categoría no encontrada");
+        if (error.code === "P2025")
+            throw new Error("Categoría no encontrada");
         throw error;
     }
 };
@@ -76,21 +81,19 @@ const deleteCategory = async (id) => {
 const getCategoriesByModel = async (modelId) => {
     const categories = await prisma.categories.findMany({
         where: {
-            model_category: {
-                some: { model_id: modelId }
-            }
+            model_category: { some: { model_id: modelId } },
         },
-        orderBy: { name: 'asc' }
+        orderBy: { name: "asc" },
     });
-    
+
     return categories;
 };
 
-export { 
-    createCategory, 
-    getCategories, 
-    getCategoryById, 
-    updateCategory, 
+export {
+    createCategory,
+    getCategories,
+    getCategoryById,
+    updateCategory,
     deleteCategory,
-    getCategoriesByModel
+    getCategoriesByModel,
 };

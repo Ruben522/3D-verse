@@ -1,132 +1,122 @@
-import pool from "../config/db.js";
+import prisma from "../config/prisma.js";
 import fs from "fs";
 import path from "path";
 import { checkPermission } from "../utils/checkPermission.js";
 
+/**
+ * Añade una nueva pieza (parte) a un modelo existente.
+ * @param {Object} user - El usuario autenticado (para verificar permisos).
+ * @param {string} modelId - El ID del modelo padre.
+ * @param {Object} data - Datos de la pieza (color, part_name, file_url, file_size).
+ * @returns {Promise<Object>} La pieza recién insertada.
+ */
 const createPart = async (user, modelId, data) => {
     const { color, part_name, file_url, file_size } = data;
-    const client = await pool.connect();
 
-    try {
-        await client.query("BEGIN");
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+        select: { user_id: true },
+    });
 
-        const modelResult = await client.query(
-            "SELECT user_id FROM models WHERE id = $1",
-            [modelId],
-        );
+    if (!model) throw new Error("Modelo no encontrado");
 
-        if (modelResult.rows.length === 0)
-            throw new Error("Modelo no encontrado");
+    checkPermission(model.user_id, user);
 
-        checkPermission(modelResult.rows[0].user_id, user);
+    const newPart = await prisma.model_parts.create({
+        data: {
+            model_id: modelId,
+            color: color || null,
+            part_name,
+            file_url,
+            file_size,
+        },
+    });
 
-        const insertResult = await client.query(
-            `INSERT INTO model_parts (model_id, color, part_name, file_url, file_size)
-             VALUES ($1, $2, $3, $4, $5)
-             RETURNING *`,
-            [
-                modelId,
-                color || null,
-                part_name,
-                file_url,
-                file_size,
-            ],
-        );
-
-        await client.query("COMMIT");
-        return insertResult.rows[0];
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+    return newPart;
 };
 
+/**
+ * Obtiene todas las piezas registradas (paginado, para propósitos administrativos).
+ */
 const getParts = async ({ page = 1, limit = 20 }) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const [partsResult, countResult] = await Promise.all([
-        pool.query(
-            `SELECT * FROM model_parts ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
-            [safeLimit, offset],
-        ),
-        pool.query(`SELECT COUNT(*) FROM model_parts`),
+    const [total, partsList] = await prisma.$transaction([
+        prisma.model_parts.count(),
+        prisma.model_parts.findMany({
+            orderBy: { created_at: "desc" },
+            skip: offset,
+            take: safeLimit,
+        }),
     ]);
 
     return {
         page,
         limit: safeLimit,
-        total: parseInt(countResult.rows[0].count, 10),
-        data: partsResult.rows,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: partsList,
     };
 };
 
+/**
+ * Obtiene todas las piezas asociadas a un modelo específico.
+ * @param {string} modelId - El ID del modelo.
+ */
 const getPartsByModelId = async (modelId) => {
-    const result = await pool.query(
-        "SELECT * FROM model_parts WHERE model_id = $1 ORDER BY created_at ASC",
-        [modelId],
-    );
-    return result.rows;
+    const parts = await prisma.model_parts.findMany({
+        where: { model_id: modelId },
+        orderBy: { created_at: "asc" },
+    });
+    return parts;
 };
 
+/**
+ * Elimina una pieza específica tanto de la base de datos como del sistema de archivos.
+ * @param {string} partId - El ID de la pieza a eliminar.
+ * @param {Object} user - El usuario autenticado.
+ */
 const deletePart = async (partId, user) => {
-    const client = await pool.connect();
+    const part = await prisma.model_parts.findUnique({
+        where: { id: partId },
+        include: { models: { select: { user_id: true } } },
+    });
+
+    if (!part) throw new Error("Parte no encontrada");
+
+    checkPermission(part.models.user_id, user);
+
+    await prisma.model_parts.delete({
+        where: { id: partId },
+    });
+
+    const relativePath = path.normalize(
+        part.file_url.startsWith("/")
+            ? part.file_url.slice(1)
+            : part.file_url,
+    );
+    const absolutePath = path.resolve(
+        process.cwd(),
+        relativePath,
+    );
+
     try {
-        await client.query("BEGIN");
-
-        const result = await client.query(
-            `SELECT mp.file_url, m.user_id FROM model_parts mp 
-             JOIN models m ON mp.model_id = m.id WHERE mp.id = $1`,
-            [partId],
-        );
-
-        if (result.rows.length === 0)
-            throw new Error("Parte no encontrada");
-
-        checkPermission(result.rows[0].user_id, user);
-
-        const fileUrl = result.rows[0].file_url;
-
-        await client.query(
-            "DELETE FROM model_parts WHERE id = $1",
-            [partId],
-        );
-
-        const relativePath = path.normalize(
-            fileUrl.startsWith("/")
-                ? fileUrl.slice(1)
-                : fileUrl,
-        );
-        const absolutePath = path.resolve(
-            process.cwd(),
-            relativePath,
-        );
-
-        try {
-            if (fs.existsSync(absolutePath)) {
-                fs.unlinkSync(absolutePath);
-                console.log(
-                    "-> Pieza eliminada físicamente:",
-                    absolutePath,
-                );
-            }
-        } catch (fsError) {
-            console.error(
-                "-> Error al borrar pieza física:",
-                fsError,
+        if (fs.existsSync(absolutePath)) {
+            fs.unlinkSync(absolutePath);
+            console.log(
+                "-> Pieza eliminada físicamente:",
+                absolutePath,
             );
         }
-
-        await client.query("COMMIT");
-        return { message: "Parte eliminada correctamente" };
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
+    } catch (fsError) {
+        console.error(
+            "-> Error al borrar pieza física:",
+            fsError,
+        );
     }
+
+    return { message: "Parte eliminada correctamente" };
 };
 
 export {

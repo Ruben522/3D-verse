@@ -1,132 +1,211 @@
-import pool from "../config/db.js";
+import prisma from "../config/prisma.js";
 
+/**
+ * Permite a un usuario seguir a otro y actualiza los contadores.
+ * @param {string} userIdToFollow - ID del usuario al que se quiere seguir.
+ * @param {string} followerId - ID del usuario que ejecuta la acción (el seguidor).
+ */
 const followUser = async (userIdToFollow, followerId) => {
-    const client = await pool.connect();
+    if (userIdToFollow === followerId)
+        throw new Error("No puedes seguirte a ti mismo");
+
     try {
-        await client.query("BEGIN");
+        // 1. Intentamos crear la relación de seguimiento
+        await prisma.followers.create({
+            data: {
+                user_id: userIdToFollow,
+                follower_id: followerId,
+            },
+        });
 
-        if (userIdToFollow === followerId) throw new Error("No puedes seguirte a ti mismo");
+        // 2. Si tiene éxito, actualizamos los contadores de ambos usuarios en una transacción
+        await prisma.$transaction([
+            prisma.users.update({
+                where: { id: userIdToFollow },
+                data: { followers_count: { increment: 1 } },
+            }),
+            prisma.users.update({
+                where: { id: followerId },
+                data: { following_count: { increment: 1 } },
+            }),
+        ]);
 
-        const insertResult = await client.query(
-            `INSERT INTO followers (user_id, follower_id)
-             VALUES ($1,$2)
-             ON CONFLICT DO NOTHING
-             RETURNING *`,
-            [userIdToFollow, followerId]
-        );
-
-        if (insertResult.rows.length === 0) {
-            await client.query("ROLLBACK");
-            return { message: "Ya sigues a este usuario" };
-        }
-
-        await client.query(
-            "UPDATE users SET followers_count = followers_count + 1 WHERE id = $1",
-            [userIdToFollow]
-        );
-        await client.query(
-            "UPDATE users SET following_count = following_count + 1 WHERE id = $1",
-            [followerId]
-        );
-
-        await client.query("COMMIT");
         return { message: "Ahora sigues a este usuario" };
     } catch (error) {
-        await client.query("ROLLBACK");
+        // P2002 significa que la relación ya existía (Violación de restricción única)
+        if (error.code === "P2002")
+            return { message: "Ya sigues a este usuario" };
         throw error;
-    } finally {
-        client.release();
     }
 };
 
-const unfollowUser = async (userIdToUnfollow, followerId) => {
-    const client = await pool.connect();
+/**
+ * Permite a un usuario dejar de seguir a otro y actualiza los contadores.
+ */
+const unfollowUser = async (
+    userIdToUnfollow,
+    followerId,
+) => {
     try {
-        await client.query("BEGIN");
+        // 1. Borramos la relación usando la clave compuesta generada por Prisma
+        await prisma.followers.delete({
+            where: {
+                user_id_follower_id: {
+                    user_id: userIdToUnfollow,
+                    follower_id: followerId,
+                },
+            },
+        });
 
-        const deleteResult = await client.query(
-            "DELETE FROM followers WHERE user_id = $1 AND follower_id = $2 RETURNING *",
-            [userIdToUnfollow, followerId]
-        );
+        // 2. Decrementamos los contadores (usamos decrement para ser atómicos)
+        // Nota: Asegúrate de que tu frontend y base de datos manejan bien que no baje de 0.
+        await prisma.$transaction([
+            prisma.users.update({
+                where: { id: userIdToUnfollow },
+                data: { followers_count: { decrement: 1 } },
+            }),
+            prisma.users.update({
+                where: { id: followerId },
+                data: { following_count: { decrement: 1 } },
+            }),
+        ]);
 
-        if (deleteResult.rows.length === 0) {
-            await client.query("ROLLBACK");
-            return { message: "No seguías a este usuario" };
-        }
-
-        await client.query(
-            "UPDATE users SET followers_count = GREATEST(followers_count - 1, 0) WHERE id = $1",
-            [userIdToUnfollow]
-        );
-        await client.query(
-            "UPDATE users SET following_count = GREATEST(following_count - 1, 0) WHERE id = $1",
-            [followerId]
-        );
-
-        await client.query("COMMIT");
-        return { message: "Has dejado de seguir al usuario" };
+        return {
+            message: "Has dejado de seguir al usuario",
+        };
     } catch (error) {
-        await client.query("ROLLBACK");
+        // P2025 significa que no se encontró el registro para borrar
+        if (error.code === "P2025")
+            return { message: "No seguías a este usuario" };
         throw error;
-    } finally {
-        client.release();
     }
 };
 
-const getFollowers = async (userId, { page = 1, limit = 20 }) => {
+/**
+ * Obtiene la lista de usuarios que siguen a un usuario específico.
+ */
+const getFollowers = async (
+    userId,
+    { page = 1, limit = 20 },
+) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const query = `
-        SELECT u.id, u.username, u.avatar, u.bio, f.followed_at
-        FROM followers f
-        JOIN users u ON f.follower_id = u.id
-        WHERE f.user_id = $1
-        ORDER BY f.followed_at DESC LIMIT $2 OFFSET $3`;
+    const [total, followersList] =
+        await prisma.$transaction([
+            prisma.followers.count({
+                where: { user_id: userId },
+            }),
+            prisma.followers.findMany({
+                where: { user_id: userId },
+                select: {
+                    followed_at: true,
+                    users_followers_follower_idTousers: {
+                        // Obtenemos la info del seguidor
+                        select: {
+                            id: true,
+                            username: true,
+                            avatar: true,
+                            bio: true,
+                        },
+                    },
+                },
+                orderBy: { followed_at: "desc" },
+                skip: offset,
+                take: safeLimit,
+            }),
+        ]);
 
-    const [result, countResult] = await Promise.all([
-        pool.query(query, [userId, safeLimit, offset]),
-        pool.query("SELECT COUNT(*) FROM followers WHERE user_id = $1", [userId])
-    ]);
+    // Mapeamos para aplanar el resultado y dejarlo como lo espera el frontend
+    const formattedData = followersList.map((f) => ({
+        id: f.users_followers_follower_idTousers.id,
+        username:
+            f.users_followers_follower_idTousers.username,
+        avatar: f.users_followers_follower_idTousers.avatar,
+        bio: f.users_followers_follower_idTousers.bio,
+        followed_at: f.followed_at,
+    }));
 
     return {
         page,
         limit: safeLimit,
-        total: parseInt(countResult.rows[0].count, 10),
-        data: result.rows
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: formattedData,
     };
 };
 
-const getFollowing = async (userId, { page = 1, limit = 20 }) => {
+/**
+ * Obtiene la lista de usuarios a los que sigue un usuario específico.
+ */
+const getFollowing = async (
+    userId,
+    { page = 1, limit = 20 },
+) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const query = `
-        SELECT u.id, u.username, u.avatar, u.bio, f.followed_at
-        FROM followers f
-        JOIN users u ON f.user_id = u.id
-        WHERE f.follower_id = $1
-        ORDER BY f.followed_at DESC LIMIT $2 OFFSET $3`;
+    const [total, followingList] =
+        await prisma.$transaction([
+            prisma.followers.count({
+                where: { follower_id: userId },
+            }),
+            prisma.followers.findMany({
+                where: { follower_id: userId },
+                select: {
+                    followed_at: true,
+                    users_followers_user_idTousers: {
+                        // Obtenemos la info del usuario seguido
+                        select: {
+                            id: true,
+                            username: true,
+                            avatar: true,
+                            bio: true,
+                        },
+                    },
+                },
+                orderBy: { followed_at: "desc" },
+                skip: offset,
+                take: safeLimit,
+            }),
+        ]);
 
-    const [result, countResult] = await Promise.all([
-        pool.query(query, [userId, safeLimit, offset]),
-        pool.query("SELECT COUNT(*) FROM followers WHERE follower_id = $1", [userId])
-    ]);
+    const formattedData = followingList.map((f) => ({
+        id: f.users_followers_user_idTousers.id,
+        username: f.users_followers_user_idTousers.username,
+        avatar: f.users_followers_user_idTousers.avatar,
+        bio: f.users_followers_user_idTousers.bio,
+        followed_at: f.followed_at,
+    }));
 
     return {
         page,
         limit: safeLimit,
-        total: parseInt(countResult.rows[0].count, 10),
-        data: result.rows
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: formattedData,
     };
 };
 
+/**
+ * Verifica si el usuario autenticado está siguiendo a un usuario específico.
+ */
 const checkFollow = async (userIdToCheck, followerId) => {
-    const result = await pool.query(
-        "SELECT 1 FROM followers WHERE user_id = $1 AND follower_id = $2",
-        [userIdToCheck, followerId]
-    );
-    return { isFollowing: result.rows.length > 0 };
+    const exists = await prisma.followers.findUnique({
+        where: {
+            user_id_follower_id: {
+                user_id: userIdToCheck,
+                follower_id: followerId,
+            },
+        },
+    });
+    return { isFollowing: !!exists };
 };
 
-export { followUser, unfollowUser, getFollowers, getFollowing, checkFollow };
+export {
+    followUser,
+    unfollowUser,
+    getFollowers,
+    getFollowing,
+    checkFollow,
+};

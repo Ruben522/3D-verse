@@ -4,33 +4,49 @@ import {
     getUserFavorites,
     checkFavorite,
 } from "../services/favorites.service.js";
+import {
+    sendSuccess,
+    sendError,
+} from "../utils/helper/response.helper.js";
 
+/**
+ * Añade un modelo a los favoritos del usuario autenticado.
+ */
 const favorite = async (req, res) => {
     try {
         const result = await addFavorite(
             req.params.id,
             req.user.id,
         );
-
-        res.status(200).json(result);
+        sendSuccess(res, result.message);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        const status =
+            error.message ===
+            "El modelo solicitado no existe"
+                ? 404
+                : 400;
+        sendError(res, error.message, status);
     }
 };
 
+/**
+ * Elimina un modelo de los favoritos del usuario autenticado.
+ */
 const unfavorite = async (req, res) => {
     try {
         const result = await removeFavorite(
             req.params.id,
             req.user.id,
         );
-
-        res.status(200).json(result);
+        sendSuccess(res, result.message);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        sendError(res, error.message, 400);
     }
 };
 
+/**
+ * Obtiene los favoritos de un usuario de forma pública.
+ */
 const getUserFavoritesPublic = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -38,16 +54,21 @@ const getUserFavoritesPublic = async (req, res) => {
 
         const result = await getUserFavorites(
             req.params.userId,
-            { page, limit }
+            { page, limit },
         );
-
-        res.status(200).json(result);
-
+        sendSuccess(
+            res,
+            "Favoritos del usuario recuperados",
+            result,
+        );
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        sendError(res, error.message, 500);
     }
 };
 
+/**
+ * Obtiene los favoritos del propio usuario autenticado.
+ */
 const getMyFavorites = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -57,24 +78,39 @@ const getMyFavorites = async (req, res) => {
             page,
             limit,
         });
-
-        res.status(200).json(result);
+        sendSuccess(
+            res,
+            "Mis favoritos recuperados",
+            result,
+        );
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        sendError(res, error.message, 500);
     }
 };
 
+/**
+ * Comprueba si un modelo está en los favoritos del usuario autenticado.
+ */
 const check = async (req, res) => {
     try {
         const result = await checkFavorite(
             req.params.id,
             req.user.id,
         );
-
-        res.status(200).json(result);
+        sendSuccess(
+            res,
+            "Comprobación de favorito exitosa",
+            result,
+        );
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        sendError(res, error.message, 500);
     }
 };
 
-export { favorite, unfavorite, getMyFavorites, check, getUserFavoritesPublic };
+export {
+    favorite,
+    unfavorite,
+    getMyFavorites,
+    check,
+    getUserFavoritesPublic,
+};

@@ -4,18 +4,25 @@ import {
     updateImageOrder,
     deleteImage,
 } from "../services/modelsImages.service.js";
+import {
+    sendSuccess,
+    sendError,
+} from "../utils/helper/response.helper.js";
 
+/**
+ * Sube una o varias imágenes a la galería secundaria de un modelo.
+ */
 const uploadImage = async (req, res) => {
     try {
         const { modelId } = req.params;
         const user = req.user;
 
         if (!req.files || req.files.length === 0) {
-            return res
-                .status(400)
-                .json({
-                    error: "Debe proporcionar al menos una imagen",
-                });
+            return sendError(
+                res,
+                "Debe proporcionar al menos una imagen",
+                400,
+            );
         }
 
         const uploadedImages = [];
@@ -41,37 +48,53 @@ const uploadImage = async (req, res) => {
             uploadedImages.push(newImage);
         }
 
-        res.status(201).json({
-            message: "Imágenes subidas correctamente",
-            data: uploadedImages,
-        });
+        sendSuccess(
+            res,
+            "Imágenes subidas correctamente",
+            uploadedImages,
+            201,
+        );
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        const status =
+            error.message === "Modelo no encontrado"
+                ? 404
+                : 400;
+        sendError(res, error.message, status);
     }
 };
 
+/**
+ * Obtiene todas las imágenes de la galería de un modelo específico.
+ */
 const getImages = async (req, res) => {
     try {
         const images = await getModelImages(
             req.params.modelId,
         );
-        res.status(200).json(images);
+        sendSuccess(
+            res,
+            "Imágenes de la galería recuperadas",
+            images,
+        );
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        sendError(res, error.message, 400);
     }
 };
 
+/**
+ * Actualiza el orden de visualización (display_order) de una imagen en la galería.
+ */
 const updateOrder = async (req, res) => {
     try {
         const { id } = req.params;
         const { display_order } = req.body;
 
         if (display_order === undefined) {
-            return res
-                .status(400)
-                .json({
-                    error: "El campo display_order es requerido",
-                });
+            return sendError(
+                res,
+                "El campo display_order es requerido",
+                400,
+            );
         }
 
         const updatedImage = await updateImageOrder(
@@ -79,21 +102,36 @@ const updateOrder = async (req, res) => {
             req.user,
             display_order,
         );
-        res.status(200).json(updatedImage);
+        sendSuccess(
+            res,
+            "Orden de imagen actualizado",
+            updatedImage,
+        );
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        const status =
+            error.message === "Imagen no encontrada"
+                ? 404
+                : 400;
+        sendError(res, error.message, status);
     }
 };
 
+/**
+ * Elimina una imagen de la galería de un modelo (tanto de BD como del disco).
+ */
 const removeImage = async (req, res) => {
     try {
         const response = await deleteImage(
             req.params.id,
             req.user,
         );
-        res.status(200).json(response);
+        sendSuccess(res, response.message);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        const status =
+            error.message === "Imagen no encontrada"
+                ? 404
+                : 403;
+        sendError(res, error.message, status);
     }
 };
 

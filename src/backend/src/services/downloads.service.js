@@ -1,66 +1,104 @@
-import pool from "../config/db.js";
+import prisma from "../config/prisma.js";
 import fs from "fs";
 import path from "path";
 import { checkPermission } from "../utils/checkPermission.js";
 import { getAbsolutePath } from "../utils/helper/file.helper.js";
 
 /**
- * Registra una descarga en el historial y actualiza el contador global del modelo.
+ * Registra una descarga en el historial y actualiza el contador global del modelo de forma atómica.
+ * @param {string} modelId - ID del modelo descargado.
+ * @param {Object|null} user - Usuario que descarga (null si es anónimo).
+ * @param {string} ip - Dirección IP del cliente.
+ * @param {string} userAgent - Navegador/Software usado.
  */
-const recordDownload = async (modelId, user, ip, userAgent) => {
-    const client = await pool.connect();
+const recordDownload = async (
+    modelId,
+    user,
+    ip,
+    userAgent,
+) => {
     try {
-        await client.query("BEGIN");
-
-        const modelResult = await client.query("SELECT id FROM models WHERE id = $1", [modelId]);
-        if (modelResult.rows.length === 0) throw new Error("Modelo no encontrado");
-
-        await client.query(
-            `INSERT INTO downloads (user_id, model_id, ip_address, user_agent) VALUES ($1, $2, $3, $4)`,
-            [user ? user.id : null, modelId, ip, userAgent]
-        );
-
-        const updateResult = await client.query(
-            `UPDATE models SET downloads = downloads + 1 WHERE id = $1 RETURNING file_url, downloads`,
-            [modelId]
-        );
-
-        await client.query("COMMIT");
+        const [downloadRecord, updatedModel] =
+            await prisma.$transaction([
+                prisma.downloads.create({
+                    data: {
+                        model_id: modelId,
+                        user_id: user ? user.id : null,
+                        ip_address: ip,
+                        user_agent: userAgent,
+                    },
+                }),
+                prisma.models.update({
+                    where: { id: modelId },
+                    data: { downloads: { increment: 1 } },
+                    select: {
+                        downloads: true,
+                        file_url: true,
+                    },
+                }),
+            ]);
 
         return {
             message: "Descarga registrada correctamente",
-            downloads_count: updateResult.rows[0].downloads,
-            file_url: updateResult.rows[0].file_url,
+            downloads_count: updatedModel.downloads,
+            file_url: updatedModel.file_url,
         };
     } catch (error) {
-        await client.query("ROLLBACK");
+        if (error.code === "P2025")
+            throw new Error(
+                "El modelo solicitado no existe",
+            );
         throw error;
-    } finally {
-        client.release();
     }
 };
 
 /**
  * Obtiene el historial paginado de descargas de un usuario.
  */
-const getDownloadsHistory = async (userId, { page = 1, limit = 20 }) => {
+const getDownloadsHistory = async (
+    userId,
+    { page = 1, limit = 20 },
+) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const query = `
-        SELECT d.id as download_id, d.created_at as download_date, m.id as model_id, m.title, m.main_image_url
-        FROM downloads d JOIN models m ON d.model_id = m.id
-        WHERE d.user_id = $1 ORDER BY d.created_at DESC LIMIT $2 OFFSET $3`;
-
-    const [downloadsResult, countResult] = await Promise.all([
-        pool.query(query, [userId, safeLimit, offset]),
-        pool.query("SELECT COUNT(*) FROM downloads WHERE user_id = $1", [userId]),
+    const [total, downloads] = await prisma.$transaction([
+        prisma.downloads.count({
+            where: { user_id: userId },
+        }),
+        prisma.downloads.findMany({
+            where: { user_id: userId },
+            select: {
+                id: true,
+                created_at: true,
+                models: {
+                    select: {
+                        id: true,
+                        title: true,
+                        main_image_url: true,
+                    },
+                },
+            },
+            orderBy: { created_at: "desc" },
+            skip: offset,
+            take: safeLimit,
+        }),
     ]);
 
-    const total = parseInt(countResult.rows[0].count, 10);
+    const formattedData = downloads.map((d) => ({
+        download_id: d.id,
+        download_date: d.created_at,
+        model_id: d.models.id,
+        title: d.models.title,
+        main_image_url: d.models.main_image_url,
+    }));
 
     return {
-        page, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit), data: downloadsResult.rows,
+        page,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: formattedData,
     };
 };
 
@@ -68,38 +106,63 @@ const getDownloadsHistory = async (userId, { page = 1, limit = 20 }) => {
  * Obtiene las estadísticas de descargas de un modelo (solo para el creador).
  */
 const getModelDownloadStats = async (modelId, user) => {
-    const client = await pool.connect();
-    try {
-        const modelCheck = await client.query("SELECT user_id FROM models WHERE id = $1", [modelId]);
-        if (modelCheck.rows.length === 0) throw new Error("Modelo no encontrado");
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+    });
+    if (!model)
+        throw new Error("El modelo solicitado no existe");
 
-        checkPermission(modelCheck.rows[0].user_id, user);
+    checkPermission(model.user_id, user);
 
-        const query = `
-            SELECT COUNT(*) as total_downloads, COUNT(DISTINCT user_id) as unique_users,
-                   COUNT(user_id) filter (where user_id is not null) as registered_downloads,
-                   COUNT(*) filter (where user_id is null) as anonymous_downloads
-            FROM downloads WHERE model_id = $1`;
+    const total_downloads = await prisma.downloads.count({
+        where: { model_id: modelId },
+    });
 
-        const result = await client.query(query, [modelId]);
-        return result.rows[0];
-    } finally {
-        client.release();
-    }
+    const registered_downloads =
+        await prisma.downloads.count({
+            where: {
+                model_id: modelId,
+                user_id: { not: null },
+            },
+        });
+
+    const uniqueUsersGroup = await prisma.downloads.groupBy(
+        {
+            by: ["user_id"],
+            where: {
+                model_id: modelId,
+                user_id: { not: null },
+            },
+        },
+    );
+
+    return {
+        total_downloads,
+        unique_users: uniqueUsersGroup.length,
+        registered_downloads,
+        anonymous_downloads:
+            total_downloads - registered_downloads,
+    };
 };
 
 /**
  * Obtiene las rutas físicas absolutas para procesar la descarga.
  */
 const getDownloadInfo = async (modelId) => {
-    const result = await pool.query("SELECT title, file_url FROM models WHERE id = $1", [modelId]);
-    if (result.rows.length === 0) throw new Error("Modelo no encontrado");
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+        select: { title: true, file_url: true },
+    });
 
-    const model = result.rows[0];
+    if (!model)
+        throw new Error("El modelo solicitado no existe");
+
     const absolutePath = getAbsolutePath(model.file_url);
 
     if (!absolutePath || !fs.existsSync(absolutePath)) {
-        throw new Error(`El archivo físico no existe en el servidor.`);
+        throw new Error(
+            `El archivo físico no existe en el servidor.`,
+        );
     }
 
     const extension = path.extname(model.file_url);
@@ -112,4 +175,9 @@ const getDownloadInfo = async (modelId) => {
     };
 };
 
-export { recordDownload, getDownloadsHistory, getModelDownloadStats, getDownloadInfo };
+export {
+    recordDownload,
+    getDownloadsHistory,
+    getModelDownloadStats,
+    getDownloadInfo,
+};

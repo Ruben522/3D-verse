@@ -1,14 +1,26 @@
 import archiver from "archiver";
 import fs from "fs";
 import path from "path";
-import { recordDownload, getDownloadsHistory, getModelDownloadStats, getDownloadInfo } from "../services/downloads.service.js";
-import { sendSuccess, sendError } from "../utils/helper/response.helper.js";
+import {
+    recordDownload,
+    getDownloadsHistory,
+    getModelDownloadStats,
+    getDownloadInfo,
+} from "../services/downloads.service.js";
+import {
+    sendSuccess,
+    sendError,
+} from "../utils/helper/response.helper.js";
 import { getDisplayFileName } from "../utils/helper/file.helper.js";
 
 /**
  * Añade los archivos de una carpeta a un archivo ZIP limpiando sus nombres.
  */
-const appendCleanFolderToArchive = (archive, folderPath, zipSubFolder = "") => {
+const appendCleanFolderToArchive = (
+    archive,
+    folderPath,
+    zipSubFolder = "",
+) => {
     if (!fs.existsSync(folderPath)) return;
 
     const files = fs.readdirSync(folderPath);
@@ -16,7 +28,9 @@ const appendCleanFolderToArchive = (archive, folderPath, zipSubFolder = "") => {
         const filePath = path.join(folderPath, file);
         if (fs.statSync(filePath).isFile()) {
             const cleanName = getDisplayFileName(file);
-            const zipPath = zipSubFolder ? `${zipSubFolder}/${cleanName}` : cleanName;
+            const zipPath = zipSubFolder
+                ? `${zipSubFolder}/${cleanName}`
+                : cleanName;
             archive.file(filePath, { name: zipPath });
         }
     }
@@ -28,39 +42,89 @@ const appendCleanFolderToArchive = (archive, folderPath, zipSubFolder = "") => {
 const record = async (req, res) => {
     try {
         const { modelId } = req.params;
-        const { type } = req.query; 
+        const { type } = req.query;
 
-        await recordDownload(modelId, req.user || null, req.ip, req.headers["user-agent"]);
+        await recordDownload(
+            modelId,
+            req.user || null,
+            req.ip,
+            req.headers["user-agent"],
+        );
+
         const info = await getDownloadInfo(modelId);
 
         if (!type || type === "main") {
-            return res.download(info.absolutePath, info.cleanName);
+            return res.download(
+                info.absolutePath,
+                info.cleanName,
+            );
         }
 
-        const archive = archiver("zip", { zlib: { level: 9 } });
+        const archive = archiver("zip", {
+            zlib: { level: 9 },
+        });
         const baseName = info.cleanName.split(".")[0];
+
         res.attachment(`${baseName}_${type}.zip`);
         archive.pipe(res);
 
         if (type === "all") {
-            appendCleanFolderToArchive(archive, info.modelFolder);
-            appendCleanFolderToArchive(archive, path.join(info.modelFolder, "parts"), "parts");
-            appendCleanFolderToArchive(archive, path.join(info.modelFolder, "gallery"), "gallery");
+            appendCleanFolderToArchive(
+                archive,
+                info.modelFolder,
+            );
+            appendCleanFolderToArchive(
+                archive,
+                path.join(info.modelFolder, "parts"),
+                "parts",
+            );
+            appendCleanFolderToArchive(
+                archive,
+                path.join(info.modelFolder, "gallery"),
+                "gallery",
+            );
         } else if (type === "parts") {
-            const partsDir = path.join(info.modelFolder, "parts");
-            if (!fs.existsSync(partsDir)) return sendError(res, "No hay partes adicionales", 404);
+            const partsDir = path.join(
+                info.modelFolder,
+                "parts",
+            );
+            if (!fs.existsSync(partsDir))
+                return sendError(
+                    res,
+                    "No hay partes adicionales",
+                    404,
+                );
             appendCleanFolderToArchive(archive, partsDir);
         } else if (type === "gallery") {
-            const galleryDir = path.join(info.modelFolder, "gallery");
-            if (!fs.existsSync(galleryDir)) return sendError(res, "No hay galería", 404);
+            const galleryDir = path.join(
+                info.modelFolder,
+                "gallery",
+            );
+            if (!fs.existsSync(galleryDir))
+                return sendError(
+                    res,
+                    "No hay galería",
+                    404,
+                );
             appendCleanFolderToArchive(archive, galleryDir);
         } else {
-            return sendError(res, "Tipo de descarga no válido (use main, all, parts o gallery)");
+            return sendError(
+                res,
+                "Tipo de descarga no válido (use main, all, parts o gallery)",
+                400,
+            );
         }
 
         await archive.finalize();
     } catch (error) {
-        if (!res.headersSent) sendError(res, error.message);
+        if (!res.headersSent) {
+            const status =
+                error.message ===
+                "El modelo solicitado no existe"
+                    ? 404
+                    : 500;
+            sendError(res, error.message, status);
+        }
     }
 };
 
@@ -71,7 +135,11 @@ const getUserHistory = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
-        const history = await getDownloadsHistory(req.user.id, { page, limit });
+
+        const history = await getDownloadsHistory(
+            req.user.id,
+            { page, limit },
+        );
         sendSuccess(res, "Historial recuperado", history);
     } catch (error) {
         sendError(res, error.message, 500);
@@ -83,10 +151,18 @@ const getUserHistory = async (req, res) => {
  */
 const getModelStats = async (req, res) => {
     try {
-        const stats = await getModelDownloadStats(req.params.modelId, req.user);
+        const stats = await getModelDownloadStats(
+            req.params.modelId,
+            req.user,
+        );
         sendSuccess(res, "Estadísticas recuperadas", stats);
     } catch (error) {
-        sendError(res, error.message, 403);
+        const status =
+            error.message ===
+            "El modelo solicitado no existe"
+                ? 404
+                : 403;
+        sendError(res, error.message, status);
     }
 };
 

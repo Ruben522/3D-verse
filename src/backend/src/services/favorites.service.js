@@ -1,98 +1,145 @@
-import pool from "../config/db.js";
+import prisma from "../config/prisma.js";
 
+/**
+ * Añade un modelo a la lista de favoritos de un usuario.
+ * @param {string} modelId - ID del modelo.
+ * @param {string} userId - ID del usuario.
+ */
 const addFavorite = async (modelId, userId) => {
-    const client = await pool.connect();
+    // Verificamos existencia del modelo
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+    });
+    if (!model)
+        throw new Error("El modelo solicitado no existe");
+
     try {
-        await client.query("BEGIN");
-
-        // Verificamos existencia del modelo
-        const modelResult = await client.query("SELECT id FROM models WHERE id = $1", [modelId]);
-        if (modelResult.rows.length === 0) throw new Error("Modelo no encontrado");
-
-        const insertResult = await client.query(
-            `INSERT INTO favorites (user_id, model_id)
-             VALUES ($1,$2)
-             ON CONFLICT DO NOTHING
-             RETURNING *`,
-            [userId, modelId]
-        );
-
-        if (insertResult.rows.length === 0) {
-            await client.query("ROLLBACK");
-            return { message: "Ya estaba en favoritos" };
-        }
-
-        await client.query("COMMIT");
+        await prisma.favorites.create({
+            data: { user_id: userId, model_id: modelId },
+        });
         return { message: "Añadido a favoritos" };
     } catch (error) {
-        await client.query("ROLLBACK");
+        // P2002: Violación de restricción única (ya existe en favoritos)
+        if (error.code === "P2002")
+            return { message: "Ya estaba en favoritos" };
         throw error;
-    } finally {
-        client.release();
     }
 };
 
+/**
+ * Elimina un modelo de la lista de favoritos de un usuario.
+ * @param {string} modelId - ID del modelo.
+ * @param {string} userId - ID del usuario.
+ */
 const removeFavorite = async (modelId, userId) => {
-    const client = await pool.connect();
     try {
-        await client.query("BEGIN");
-
-        const deleteResult = await client.query(
-            "DELETE FROM favorites WHERE user_id = $1 AND model_id = $2 RETURNING *",
-            [userId, modelId]
-        );
-
-        if (deleteResult.rows.length === 0) {
-            await client.query("ROLLBACK");
-            return { message: "No estaba en favoritos" };
-        }
-
-        await client.query("COMMIT");
+        // En Prisma borramos por clave compuesta o Unique (en tu esquema es @@unique([user_id, model_id]))
+        await prisma.favorites.delete({
+            where: {
+                user_id_model_id: {
+                    user_id: userId,
+                    model_id: modelId,
+                },
+            },
+        });
         return { message: "Eliminado de favoritos" };
     } catch (error) {
-        await client.query("ROLLBACK");
+        // P2025: No se encontró el registro para borrar
+        if (error.code === "P2025")
+            return { message: "No estaba en favoritos" };
         throw error;
-    } finally {
-        client.release();
     }
 };
 
-const getUserFavorites = async (userId, { page = 1, limit = 20 }) => {
+/**
+ * Obtiene la lista paginada de modelos favoritos de un usuario.
+ * @param {string} userId - ID del usuario del que se quieren ver los favoritos.
+ * @param {Object} pagination - Opciones de paginación { page, limit }.
+ */
+const getUserFavorites = async (
+    userId,
+    { page = 1, limit = 20 },
+) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const query = `
-        SELECT m.id, m.title, m.main_color, m.description, m.main_image_url, 
-               m.downloads, m.views, m.created_at,
-               json_build_object('id', u.id, 'username', u.username, 'avatar', u.avatar) AS creator
-        FROM favorites f
-        JOIN models m ON f.model_id = m.id
-        JOIN users u ON m.user_id = u.id
-        WHERE f.user_id = $1
-        ORDER BY f.created_at DESC LIMIT $2 OFFSET $3`;
+    const [total, favoritesList] =
+        await prisma.$transaction([
+            prisma.favorites.count({
+                where: { user_id: userId },
+            }),
+            prisma.favorites.findMany({
+                where: { user_id: userId },
+                select: {
+                    models: {
+                        select: {
+                            id: true,
+                            title: true,
+                            main_color: true,
+                            description: true,
+                            main_image_url: true,
+                            downloads: true,
+                            views: true,
+                            created_at: true,
+                            users: {
+                                // El creador del modelo
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true,
+                                },
+                            },
+                        },
+                    },
+                },
+                orderBy: { created_at: "desc" },
+                skip: offset,
+                take: safeLimit,
+            }),
+        ]);
 
-    const [favoritesResult, countResult] = await Promise.all([
-        pool.query(query, [userId, safeLimit, offset]),
-        pool.query("SELECT COUNT(*) FROM favorites WHERE user_id = $1", [userId]),
-    ]);
-
-    const total = parseInt(countResult.rows[0].count, 10);
+    // Aplanamos el resultado para simular el json_build_object de SQL y devolver solo los modelos
+    const formattedData = favoritesList.map((fav) => ({
+        id: fav.models.id,
+        title: fav.models.title,
+        main_color: fav.models.main_color,
+        description: fav.models.description,
+        main_image_url: fav.models.main_image_url,
+        downloads: fav.models.downloads,
+        views: fav.models.views,
+        created_at: fav.models.created_at,
+        creator: fav.models.users,
+    }));
 
     return {
         page,
         limit: safeLimit,
         total,
         totalPages: Math.ceil(total / safeLimit),
-        data: favoritesResult.rows,
+        data: formattedData,
     };
 };
 
+/**
+ * Verifica si un usuario tiene un modelo en sus favoritos.
+ * @param {string} modelId - ID del modelo.
+ * @param {string} userId - ID del usuario.
+ */
 const checkFavorite = async (modelId, userId) => {
-    const result = await pool.query(
-        "SELECT 1 FROM favorites WHERE user_id = $1 AND model_id = $2",
-        [userId, modelId]
-    );
-    return { isFavorite: result.rows.length > 0 };
+    const exists = await prisma.favorites.findUnique({
+        where: {
+            user_id_model_id: {
+                user_id: userId,
+                model_id: modelId,
+            },
+        },
+    });
+    return { isFavorite: !!exists };
 };
 
-export { addFavorite, removeFavorite, getUserFavorites, checkFavorite };
+export {
+    addFavorite,
+    removeFavorite,
+    getUserFavorites,
+    checkFavorite,
+};

@@ -1,138 +1,125 @@
-import pool from "../config/db.js";
+import prisma from "../config/prisma.js";
 import fs from "fs";
 import path from "path";
 import { checkPermission } from "../utils/checkPermission.js";
 
+/**
+ * Añade una nueva imagen a la galería de un modelo.
+ * @param {Object} user - Usuario autenticado (para verificar permisos).
+ * @param {string} modelId - ID del modelo padre.
+ * @param {string} imageUrl - Ruta de la imagen subida.
+ * @param {number} displayOrder - Orden de visualización en la galería.
+ * @returns {Promise<Object>} El registro de la imagen creada.
+ */
 const addImage = async (
     user,
     modelId,
     imageUrl,
     displayOrder = 0,
 ) => {
-    const client = await pool.connect();
-    try {
-        await client.query("BEGIN");
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+        select: { user_id: true },
+    });
 
-        const modelResult = await client.query(
-            "SELECT user_id FROM models WHERE id = $1",
-            [modelId],
-        );
+    if (!model) throw new Error("Modelo no encontrado");
 
-        if (modelResult.rows.length === 0)
-            throw new Error("Modelo no encontrado");
+    checkPermission(model.user_id, user);
 
-        checkPermission(modelResult.rows[0].user_id, user);
+    const newImage = await prisma.model_images.create({
+        data: {
+            model_id: modelId,
+            image_url: imageUrl,
+            display_order: displayOrder,
+        },
+    });
 
-        const insertResult = await client.query(
-            `INSERT INTO model_images (model_id, image_url, display_order)
-             VALUES ($1, $2, $3)
-             RETURNING *`,
-            [modelId, imageUrl, displayOrder],
-        );
-
-        await client.query("COMMIT");
-        return insertResult.rows[0];
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+    return newImage;
 };
 
+/**
+ * Obtiene todas las imágenes de la galería de un modelo.
+ * @param {string} modelId - ID del modelo.
+ * @returns {Promise<Array>} Lista de imágenes ordenadas por display_order y fecha.
+ */
 const getModelImages = async (modelId) => {
-    const result = await pool.query(
-        "SELECT * FROM model_images WHERE model_id = $1 ORDER BY display_order ASC, created_at ASC",
-        [modelId],
-    );
-    return result.rows;
+    const images = await prisma.model_images.findMany({
+        where: { model_id: modelId },
+        orderBy: [
+            { display_order: "asc" },
+            { created_at: "asc" },
+        ],
+    });
+
+    return images;
 };
 
+/**
+ * Actualiza el orden de visualización de una imagen en la galería.
+ * @param {string} imageId - ID de la imagen a actualizar.
+ * @param {Object} user - Usuario autenticado.
+ * @param {number} newDisplayOrder - Nuevo número de orden.
+ * @returns {Promise<Object>} La imagen actualizada.
+ */
 const updateImageOrder = async (
     imageId,
     user,
     newDisplayOrder,
 ) => {
-    const client = await pool.connect();
-    try {
-        await client.query("BEGIN");
+    const image = await prisma.model_images.findUnique({
+        where: { id: imageId },
+        include: { models: { select: { user_id: true } } },
+    });
 
-        const result = await client.query(
-            `SELECT m.user_id FROM model_images mi 
-             JOIN models m ON mi.model_id = m.id 
-             WHERE mi.id = $1`,
-            [imageId],
-        );
+    if (!image) throw new Error("Imagen no encontrada");
 
-        if (result.rows.length === 0)
-            throw new Error("Imagen no encontrada");
+    checkPermission(image.models.user_id, user);
 
-        checkPermission(result.rows[0].user_id, user);
+    const updatedImage = await prisma.model_images.update({
+        where: { id: imageId },
+        data: { display_order: newDisplayOrder },
+    });
 
-        const updateResult = await client.query(
-            "UPDATE model_images SET display_order = $1 WHERE id = $2 RETURNING *",
-            [newDisplayOrder, imageId],
-        );
-
-        await client.query("COMMIT");
-        return updateResult.rows[0];
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+    return updatedImage;
 };
 
+/**
+ * Elimina una imagen de la galería, tanto de la DB como del disco duro.
+ * @param {string} imageId - ID de la imagen a eliminar.
+ * @param {Object} user - Usuario autenticado.
+ * @returns {Promise<Object>} Mensaje de confirmación.
+ */
 const deleteImage = async (imageId, user) => {
-    const client = await pool.connect();
+    const image = await prisma.model_images.findUnique({
+        where: { id: imageId },
+        include: { models: { select: { user_id: true } } },
+    });
+
+    if (!image) throw new Error("Imagen no encontrada");
+
+    checkPermission(image.models.user_id, user);
+
+    await prisma.model_images.delete({
+        where: { id: imageId },
+    });
+
+    const relativePath = path.normalize(
+        image.image_url.startsWith("/")
+            ? image.image_url.slice(1)
+            : image.image_url,
+    );
+    const absolutePath = path.resolve(
+        process.cwd(),
+        relativePath,
+    );
+
     try {
-        await client.query("BEGIN");
-
-        const result = await client.query(
-            `SELECT mi.image_url, m.user_id FROM model_images mi 
-             JOIN models m ON mi.model_id = m.id 
-             WHERE mi.id = $1`,
-            [imageId],
-        );
-
-        if (result.rows.length === 0)
-            throw new Error("Imagen no encontrada");
-
-        checkPermission(result.rows[0].user_id, user);
-
-        // 1. Borramos de la Base de Datos
-        await client.query(
-            "DELETE FROM model_images WHERE id = $1",
-            [imageId],
-        );
-
-        // 2. CORRECCIÓN: Borrado seguro del archivo físico en Windows
-        const relativePath = path.normalize(
-            result.rows[0].image_url.startsWith("/")
-                ? result.rows[0].image_url.slice(1)
-                : result.rows[0].image_url,
-        );
-
-        const absolutePath = path.resolve(
-            process.cwd(),
-            relativePath,
-        );
-
         if (fs.existsSync(absolutePath)) {
-            fs.unlinkSync(absolutePath); // unlinkSync es para borrar archivos sueltos
+            fs.unlinkSync(absolutePath);
         }
+    } catch (fsError) {}
 
-        await client.query("COMMIT");
-        return {
-            message: "Imagen eliminada correctamente",
-        };
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+    return { message: "Imagen eliminada correctamente" };
 };
 
 export {
