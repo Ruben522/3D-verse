@@ -2,228 +2,194 @@ import {
     createModel,
     getModelById,
     getModels,
-    updateModel,
+    getModelsByUser,
     deleteModel,
+    updateModel,
     addLike,
     removeLike,
     updateMainImage,
     deleteMainImage,
     replaceMainFile,
-    getModelsByUser,
 } from "../services/models.service.js";
+import { sendSuccess, sendError } from "../utils/helper/response.helper.js";
 
-const patchMainFile = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        if (!req.file) {
-            return res
-                .status(400)
-                .json({
-                    error: "Debe proporcionar el nuevo archivo 3D",
-                });
-        }
-
-        const fullPath = req.file.path.replace(/\\/g, "/");
-        const uploadsIndex = fullPath.indexOf("/uploads/");
-        const newFileUrl = fullPath.substring(uploadsIndex);
-
-        const updatedModel = await replaceMainFile(
-            id,
-            req.user,
-            newFileUrl,
-        );
-
-        res.status(200).json({
-            message:
-                "Archivo principal actualizado correctamente",
-            data: updatedModel,
-        });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-const patchMainImage = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!req.file)
-            return res
-                .status(400)
-                .json({
-                    error: "Debe proporcionar una imagen",
-                });
-
-        const fullPath = req.file.path.replace(/\\/g, "/");
-        const uploadsIndex = fullPath.indexOf("/uploads/");
-        const imageUrl = fullPath.substring(uploadsIndex);
-
-        const updatedModel = await updateMainImage(
-            id,
-            req.user,
-            imageUrl,
-        );
-        res.status(200).json(updatedModel);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-const removeMainImage = async (req, res) => {
-    try {
-        const response = await deleteMainImage(
-            req.params.id,
-            req.user,
-        );
-        res.status(200).json(response);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
+/**
+ * Formatea los archivos subidos para sincronizar la BD con las rutas generadas por Multer.
+ */
 const formatUploadedFiles = (files, userId, uploadId) => {
     if (!files || !files["main_file"]) {
-        throw new Error(
-            "El archivo principal 3D es obligatorio",
-        );
+        throw new Error("El archivo principal 3D es obligatorio");
     }
 
     const baseUrl = `/uploads/models/${userId}/${uploadId}`;
 
     return {
-        // Usamos el nombre original que Multer respetó
-        main_file: `${baseUrl}/${files["main_file"][0].originalname.replace(/\s/g, "_")}`,
-        cover_image: files["cover_image"]
-            ? `${baseUrl}/${files["cover_image"][0].originalname.replace(/\s/g, "_")}`
-            : null,
+        main_file: `${baseUrl}/${files["main_file"][0].filename}`,
+        cover_image: files["cover_image"] ? `${baseUrl}/${files["cover_image"][0].filename}` : null,
         parts: (files["parts"] || []).map((file) => ({
             part_name: file.originalname.split(".")[0],
-            file_url: `${baseUrl}/parts/${file.originalname.replace(/\s/g, "_")}`,
+            file_url: `${baseUrl}/parts/${file.filename}`,
             file_size: file.size,
         })),
-        gallery: (files["gallery"] || []).map(
-            (file) =>
-                `${baseUrl}/gallery/${file.originalname.replace(/\s/g, "_")}`,
-        ),
+        gallery: (files["gallery"] || []).map((file) => `${baseUrl}/gallery/${file.filename}`),
     };
 };
 
+/**
+ * Prepara y formatea los archivos subidos iniciales.
+ */
 const uploadModel = async (req, res) => {
     try {
-        const formattedFiles = formatUploadedFiles(
-            req.files,
-            req.user.id,
-            req.uploadId, // Usamos el ID generado en el middleware
-        );
-
-        res.status(201).json({
-            message: "Archivos preparados",
-            upload_id: req.uploadId, // El frontend guardará esto si lo necesita
-            ...formattedFiles,
-        });
+        const formattedFiles = formatUploadedFiles(req.files, req.user.id, req.uploadId);
+        sendSuccess(res, "Archivos preparados", { upload_id: req.uploadId, ...formattedFiles }, 201);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        sendError(res, error.message);
     }
 };
 
+/**
+ * Crea el modelo en la base de datos tras subir los archivos.
+ */
 const create = async (req, res) => {
     try {
-        const model = await createModel(
-            req.user.id,
-            req.body,
-        );
-
-        res.status(201).json({
-            message: "Modelo publicado con éxito",
-            data: model,
-        });
+        const model = await createModel(req.user.id, req.body);
+        sendSuccess(res, "Modelo publicado con éxito", model, 201);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        sendError(res, error.message);
     }
 };
 
+/**
+ * Obtiene un modelo específico por ID.
+ */
 const getById = async (req, res) => {
     try {
         const model = await getModelById(req.params.id);
-        res.status(200).json(model);
+        sendSuccess(res, "Modelo recuperado", model);
     } catch (error) {
-        res.status(404).json({ error: error.message });
+        sendError(res, error.message, 404);
     }
 };
 
+/**
+ * Obtiene modelos paginados de un usuario específico.
+ */
 const getByUser = async (req, res) => {
     try {
-        const { userId } = req.params;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
-
-        const models = await getModelsByUser(userId, {
-            page,
-            limit,
-        });
-        res.status(200).json(models);
+        const models = await getModelsByUser(req.params.userId, { page, limit });
+        sendSuccess(res, "Modelos recuperados", models);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        sendError(res, error.message, 500);
     }
 };
 
+/**
+ * Obtiene todos los modelos paginados.
+ */
 const getAll = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
         const models = await getModels({ page, limit });
-        res.status(200).json(models);
+        sendSuccess(res, "Modelos recuperados", models);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        sendError(res, error.message, 500);
     }
 };
 
+/**
+ * Actualiza la información de texto del modelo.
+ */
 const update = async (req, res) => {
     try {
-        const model = await updateModel(
-            req.params.id,
-            req.user,
-            req.body,
-        );
-        res.status(200).json(model);
+        const model = await updateModel(req.params.id, req.user, req.body);
+        sendSuccess(res, "Modelo actualizado", model);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        sendError(res, error.message);
     }
 };
 
+/**
+ * Elimina un modelo completo.
+ */
 const remove = async (req, res) => {
     try {
-        const result = await deleteModel(
-            req.params.id,
-            req.user,
-        );
-        res.status(200).json(result);
+        const result = await deleteModel(req.params.id, req.user);
+        sendSuccess(res, result.message);
     } catch (error) {
-        res.status(403).json({ error: error.message });
+        sendError(res, error.message, 403);
     }
 };
 
+/**
+ * Añade un like.
+ */
 const like = async (req, res) => {
     try {
-        const result = await addLike(
-            req.params.id,
-            req.user.id,
-        );
-        res.status(200).json(result);
+        const result = await addLike(req.params.id, req.user.id);
+        sendSuccess(res, "Like añadido", result);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        sendError(res, error.message);
     }
 };
 
+/**
+ * Elimina un like.
+ */
 const unlike = async (req, res) => {
     try {
-        const result = await removeLike(
-            req.params.id,
-            req.user.id,
-        );
-        res.status(200).json(result);
+        const result = await removeLike(req.params.id, req.user.id);
+        sendSuccess(res, "Like retirado", result);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        sendError(res, error.message);
+    }
+};
+
+/**
+ * Reemplaza el archivo 3D principal de un modelo.
+ */
+const patchMainFile = async (req, res) => {
+    try {
+        if (!req.file) return sendError(res, "Debe proporcionar el nuevo archivo 3D");
+        
+        const fullPath = req.file.path.replace(/\\/g, "/");
+        const newFileUrl = fullPath.substring(fullPath.indexOf("/uploads/"));
+        
+        const updatedModel = await replaceMainFile(req.params.id, req.user, newFileUrl);
+        sendSuccess(res, "Archivo principal actualizado correctamente", updatedModel);
+    } catch (error) {
+        sendError(res, error.message);
+    }
+};
+
+/**
+ * Reemplaza la imagen principal de un modelo.
+ */
+const patchMainImage = async (req, res) => {
+    try {
+        if (!req.file) return sendError(res, "Debe proporcionar una imagen");
+        
+        const fullPath = req.file.path.replace(/\\/g, "/");
+        const imageUrl = fullPath.substring(fullPath.indexOf("/uploads/"));
+        
+        const updatedModel = await updateMainImage(req.params.id, req.user, imageUrl);
+        sendSuccess(res, "Imagen principal actualizada", updatedModel);
+    } catch (error) {
+        sendError(res, error.message);
+    }
+};
+
+/**
+ * Elimina la imagen principal de un modelo.
+ */
+const removeMainImage = async (req, res) => {
+    try {
+        const response = await deleteMainImage(req.params.id, req.user);
+        sendSuccess(res, response.message);
+    } catch (error) {
+        sendError(res, error.message);
     }
 };
 
@@ -231,13 +197,13 @@ export {
     create,
     getById,
     getAll,
+    getByUser,
     update,
     remove,
     like,
     unlike,
     uploadModel,
+    patchMainFile,
     patchMainImage,
     removeMainImage,
-    patchMainFile,
-    getByUser,
 };
