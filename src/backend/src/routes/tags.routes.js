@@ -7,7 +7,7 @@ import {
     getForModel,
 } from "../controllers/tags.controller.js";
 
-import { verifyToken, isAdmin, isOwnerOrAdmin } from "../middlewares/auth.middleware.js";
+import { verifyToken, isOwnerOrAdmin } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
