@@ -1,121 +1,109 @@
-import pool from "../config/db.js";
+import prisma from "../config/prisma.js";
 import { checkPermission } from "../utils/checkPermission.js";
 import { deletePhysicalFile, deletePhysicalFolder } from "../utils/helper/file.helper.js";
 
 /**
- * Crea un nuevo modelo junto con sus piezas, galería y etiquetas.
+ * Crea un nuevo modelo junto con sus piezas, galería, etiquetas y categorías.
  */
 const createModel = async (userId, data) => {
     if (!data) throw new Error("Faltan los datos del modelo");
 
-    const { title, main_color, description, file_url, main_image_url, video_url, license, parts, images, tags } = data;
-    const client = await pool.connect();
+    const { title, main_color, description, file_url, main_image_url, video_url, license, parts, images, tags, categories } = data;
 
-    try {
-        await client.query("BEGIN");
+    // Prisma permite hacer "Nested Writes" (escrituras anidadas).
+    // Crea el modelo y, en la misma operación, inserta las piezas, imágenes y relaciones.
+    const model = await prisma.models.create({
+        data: {
+            user_id: userId,
+            title,
+            main_color: main_color || null,
+            description,
+            file_url,
+            main_image_url: main_image_url || null,
+            video_url,
+            license: license || "All Rights Reserved",
+            
+            // Relaciones One-to-Many
+            model_parts: parts?.length ? {
+                create: parts.map(p => ({
+                    color: p.color || null,
+                    part_name: p.part_name,
+                    file_url: p.file_url,
+                    file_size: p.file_size
+                }))
+            } : undefined,
+            
+            model_images: images?.length ? {
+                create: images.map(img => ({ image_url: img, display_order: 0 }))
+            } : undefined,
 
-        const modelResult = await client.query(
-            `INSERT INTO models (user_id, title, main_color, description, file_url, main_image_url, video_url, license)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
-            [userId, title, main_color || null, description, file_url, main_image_url || null, video_url, license || "All Rights Reserved"]
-        );
+            // Relaciones Many-to-Many (Tags)
+            model_tag: tags?.length ? {
+                create: tags.map(tagId => ({ tag_id: tagId }))
+            } : undefined,
 
-        const model = modelResult.rows[0];
-
-        if (parts?.length > 0) {
-            for (const part of parts) {
-                await client.query(
-                    `INSERT INTO model_parts (model_id, color, part_name, file_url, file_size) VALUES ($1,$2,$3,$4,$5)`,
-                    [model.id, part.color || null, part.part_name, part.file_url, part.file_size]
-                );
-            }
+            // Relaciones Many-to-Many (Categorías) - ¡NUEVO!
+            model_category: categories?.length ? {
+                create: categories.map(catId => ({ category_id: catId }))
+            } : undefined
         }
+    });
 
-        if (images?.length > 0) {
-            for (const image of images) {
-                await client.query(
-                    `INSERT INTO model_images (model_id, image_url, display_order) VALUES ($1,$2,$3)`,
-                    [model.id, image, 0]
-                );
-            }
-        }
-
-        if (tags?.length > 0) {
-            for (const tagId of tags) {
-                await client.query(
-                    `INSERT INTO model_tag (model_id, tag_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                    [model.id, tagId]
-                );
-            }
-        }
-
-        await client.query("COMMIT");
-        return model;
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+    return model;
 };
 
 /**
- * Obtiene un modelo por ID sumando una visita y adjuntando sus relaciones.
+ * Obtiene un modelo por ID, suma una visita y adjunta todas sus relaciones (creador, partes, etc).
  */
 const getModelById = async (modelId) => {
-    const client = await pool.connect();
-    try {
-        await client.query("BEGIN");
+    // Primero, incrementamos las vistas
+    const updatedModel = await prisma.models.update({
+        where: { id: modelId },
+        data: { views: { increment: 1 } },
+        include: {
+            users: { select: { id: true, username: true, avatar: true } },
+            model_parts: true,
+            model_images: { orderBy: { display_order: 'asc' } },
+            model_tag: { include: { tags: true } },
+            model_category: { include: { categories: true } }, // Incluye las categorías reales
+            _count: { select: { model_likes: true } } // Cuenta los likes
+        }
+    });
 
-        const updateResult = await client.query(
-            `UPDATE models SET views = views + 1 WHERE id = $1 RETURNING id`,
-            [modelId]
-        );
-
-        if (updateResult.rows.length === 0) throw new Error("Modelo no encontrado");
-
-        const query = `
-            SELECT m.*, (SELECT COUNT(*) FROM model_likes WHERE model_id = m.id) AS likes,
-            json_build_object('id', u.id, 'username', u.username, 'avatar', u.avatar) AS creator,
-            COALESCE((SELECT json_agg(mp.*) FROM model_parts mp WHERE mp.model_id = m.id), '[]'::json) AS parts,
-            COALESCE((SELECT json_agg(mi.* ORDER BY mi.display_order) FROM model_images mi WHERE mi.model_id = m.id), '[]'::json) AS images,
-            COALESCE((SELECT json_agg(json_build_object('id', t.id, 'name', t.name)) 
-                      FROM model_tag mt JOIN tags t ON mt.tag_id = t.id WHERE mt.model_id = m.id), '[]'::json) AS tags
-            FROM models m JOIN users u ON m.user_id = u.id WHERE m.id = $1
-        `;
-        const result = await client.query(query, [modelId]);
-
-        await client.query("COMMIT");
-        return result.rows[0];
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+    if (!updatedModel) throw new Error("Modelo no encontrado");
+    return updatedModel;
 };
 
 /**
- * Lista modelos paginados con información del creador y etiquetas.
+ * Genera la consulta base (include) que usamos en los listados para no repetir código.
+ */
+const getModelIncludes = () => ({
+    users: { select: { id: true, username: true, avatar: true } },
+    model_tag: { include: { tags: { select: { id: true, name: true } } } },
+    model_category: { include: { categories: { select: { id: true, name: true } } } }, // <--- COMENTA ESTA LÍNEA
+    _count: { select: { model_likes: true } }
+});
+
+/**
+ * Lista modelos de forma paginada.
  */
 const getModels = async ({ page = 1, limit = 20 }) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const modelsQuery = `
-        SELECT m.*, (SELECT COUNT(*) FROM model_likes WHERE model_id = m.id) AS likes,
-        json_build_object('id', u.id, 'username', u.username, 'avatar', u.avatar) AS creator,
-        COALESCE((SELECT json_agg(json_build_object('id', t.id, 'name', t.name)) 
-                  FROM model_tag mt JOIN tags t ON mt.tag_id = t.id WHERE mt.model_id = m.id), '[]'::json) AS tags
-        FROM models m JOIN users u ON m.user_id = u.id ORDER BY m.created_at DESC LIMIT $1 OFFSET $2
-    `;
-
-    const countResult = await pool.query(`SELECT COUNT(*) FROM models`);
-    const modelsResult = await pool.query(modelsQuery, [safeLimit, offset]);
-    const total = parseInt(countResult.rows[0].count, 10);
+    // Prisma permite hacer transacciones para ejecutar el count y el listado a la vez
+    const [total, models] = await prisma.$transaction([
+        prisma.models.count(),
+        prisma.models.findMany({
+            take: safeLimit,
+            skip: offset,
+            orderBy: { created_at: 'desc' },
+            include: getModelIncludes()
+        })
+    ]);
 
     return {
-        page, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit), data: modelsResult.rows,
+        page, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit), data: models
     };
 };
 
@@ -126,20 +114,19 @@ const getModelsByUser = async (userId, { page = 1, limit = 20 }) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const modelsQuery = `
-        SELECT m.*, (SELECT COUNT(*) FROM model_likes WHERE model_id = m.id) AS likes,
-        json_build_object('id', u.id, 'username', u.username, 'avatar', u.avatar) AS creator,
-        COALESCE((SELECT json_agg(json_build_object('id', t.id, 'name', t.name)) 
-                  FROM model_tag mt JOIN tags t ON mt.tag_id = t.id WHERE mt.model_id = m.id), '[]'::json) AS tags
-        FROM models m JOIN users u ON m.user_id = u.id WHERE m.user_id = $1 ORDER BY m.created_at DESC LIMIT $2 OFFSET $3
-    `;
-
-    const countResult = await pool.query(`SELECT COUNT(*) FROM models WHERE user_id = $1`, [userId]);
-    const modelsResult = await pool.query(modelsQuery, [userId, safeLimit, offset]);
-    const total = parseInt(countResult.rows[0].count, 10);
+    const [total, models] = await prisma.$transaction([
+        prisma.models.count({ where: { user_id: userId } }),
+        prisma.models.findMany({
+            where: { user_id: userId },
+            take: safeLimit,
+            skip: offset,
+            orderBy: { created_at: 'desc' },
+            include: getModelIncludes()
+        })
+    ]);
 
     return {
-        page, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit), data: modelsResult.rows,
+        page, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit), data: models
     };
 };
 
@@ -147,183 +134,141 @@ const getModelsByUser = async (userId, { page = 1, limit = 20 }) => {
  * Elimina un modelo de la BD y toda su carpeta física.
  */
 const deleteModel = async (modelId, user) => {
-    const client = await pool.connect();
-    try {
-        const result = await client.query("SELECT user_id, file_url FROM models WHERE id = $1", [modelId]);
-        if (result.rows.length === 0) throw new Error("Modelo no encontrado");
+    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    if (!model) throw new Error("Modelo no encontrado");
 
-        checkPermission(result.rows[0].user_id, user);
+    checkPermission(model.user_id, user);
 
-        const fileUrl = result.rows[0].file_url;
-        await client.query("DELETE FROM models WHERE id = $1", [modelId]);
-        
-        deletePhysicalFolder(fileUrl); // Limpieza física con el helper
+    // Borramos de la DB (las relaciones en CASCADE hacen el resto)
+    await prisma.models.delete({ where: { id: modelId } });
+    
+    // Limpieza física
+    deletePhysicalFolder(model.file_url); 
 
-        return { message: "Modelo y archivos eliminados correctamente" };
-    } finally {
-        client.release();
-    }
+    return { message: "Modelo y archivos eliminados correctamente" };
 };
 
 /**
  * Actualiza la información textual del modelo.
  */
 const updateModel = async (modelId, user, data) => {
-    const client = await pool.connect();
-    try {
-        const result = await client.query(`SELECT user_id FROM models WHERE id = $1`, [modelId]);
-        if (result.rows.length === 0) throw new Error("Modelo no encontrado");
+    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    if (!model) throw new Error("Modelo no encontrado");
 
-        checkPermission(result.rows[0].user_id, user);
+    checkPermission(model.user_id, user);
 
-        const fields = [];
-        const values = [];
-        let index = 1;
-        const allowedFields = ["title", "description", "main_color", "license", "video_url"];
-
-        for (const field of allowedFields) {
-            if (data[field] !== undefined) {
-                fields.push(`${field} = $${index++}`);
-                values.push(data[field]);
-            }
+    // Prisma solo actualiza los campos que le pases en 'data' y que no sean undefined
+    const updatedModel = await prisma.models.update({
+        where: { id: modelId },
+        data: {
+            title: data.title,
+            description: data.description,
+            main_color: data.main_color,
+            license: data.license,
+            video_url: data.video_url,
+            updated_at: new Date()
         }
+    });
 
-        if (fields.length === 0) throw new Error("No hay campos para actualizar");
-
-        const query = `UPDATE models SET ${fields.join(", ")}, updated_at = CURRENT_TIMESTAMP WHERE id = $${index} RETURNING *`;
-        values.push(modelId);
-
-        const updateResult = await client.query(query, values);
-        return updateResult.rows[0];
-    } finally {
-        client.release();
-    }
+    return updatedModel;
 };
 
 /**
  * Añade un like a un modelo.
  */
 const addLike = async (modelId, userId) => {
-    const client = await pool.connect();
     try {
-        await client.query("BEGIN");
-        await client.query(`INSERT INTO model_likes (user_id, model_id) VALUES ($1,$2) ON CONFLICT DO NOTHING`, [userId, modelId]);
-        const countResult = await client.query(`SELECT COUNT(*) FROM model_likes WHERE model_id = $1`, [modelId]);
-        await client.query("COMMIT");
-        return { likes: parseInt(countResult.rows[0].count, 10) };
+        await prisma.model_likes.create({
+            data: { user_id: userId, model_id: modelId }
+        });
     } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
+        // Ignoramos el error P2002 (Violación de restricción única), significa que ya le dio like
+        if (error.code !== 'P2002') throw error;
     }
+
+    const likesCount = await prisma.model_likes.count({ where: { model_id: modelId } });
+    return { likes: likesCount };
 };
 
 /**
  * Elimina un like de un modelo.
  */
 const removeLike = async (modelId, userId) => {
-    const client = await pool.connect();
     try {
-        await client.query("BEGIN");
-        await client.query(`DELETE FROM model_likes WHERE user_id = $1 AND model_id = $2`, [userId, modelId]);
-        const countResult = await client.query(`SELECT COUNT(*) FROM model_likes WHERE model_id = $1`, [modelId]);
-        await client.query("COMMIT");
-        return { likes: parseInt(countResult.rows[0].count, 10) };
+        // Prisma requiere usar las claves compuestas así:
+        await prisma.model_likes.delete({
+            where: {
+                user_id_model_id: { user_id: userId, model_id: modelId }
+            }
+        });
     } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
+        if (error.code !== 'P2025') throw error; // Ignoramos si no existía el like
     }
+
+    const likesCount = await prisma.model_likes.count({ where: { model_id: modelId } });
+    return { likes: likesCount };
 };
 
 /**
  * Reemplaza la imagen de portada en la BD y borra físicamente la anterior.
  */
 const updateMainImage = async (modelId, user, imageUrl) => {
-    const client = await pool.connect();
-    try {
-        await client.query("BEGIN");
-        const result = await client.query("SELECT user_id, main_image_url FROM models WHERE id = $1", [modelId]);
+    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    if (!model) throw new Error("Modelo no encontrado");
+    
+    checkPermission(model.user_id, user);
 
-        if (result.rows.length === 0) throw new Error("Modelo no encontrado");
-        checkPermission(result.rows[0].user_id, user);
+    const updatedModel = await prisma.models.update({
+        where: { id: modelId },
+        data: { main_image_url: imageUrl }
+    });
 
-        const oldImageUrl = result.rows[0].main_image_url;
-        const updateResult = await client.query(
-            "UPDATE models SET main_image_url = $1 WHERE id = $2 RETURNING *",
-            [imageUrl, modelId]
-        );
-
-        if (oldImageUrl && oldImageUrl !== imageUrl) deletePhysicalFile(oldImageUrl);
-
-        await client.query("COMMIT");
-        return updateResult.rows[0];
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
+    if (model.main_image_url && model.main_image_url !== imageUrl) {
+        deletePhysicalFile(model.main_image_url);
     }
+
+    return updatedModel;
 };
 
 /**
  * Borra la imagen principal de la BD y del disco duro.
  */
 const deleteMainImage = async (modelId, user) => {
-    const client = await pool.connect();
-    try {
-        await client.query("BEGIN");
-        const result = await client.query("SELECT user_id, main_image_url FROM models WHERE id = $1", [modelId]);
+    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    if (!model) throw new Error("Modelo no encontrado");
+    
+    checkPermission(model.user_id, user);
+    if (!model.main_image_url) throw new Error("El modelo ya no tiene imagen principal");
 
-        if (result.rows.length === 0) throw new Error("Modelo no encontrado");
-        checkPermission(result.rows[0].user_id, user);
+    await prisma.models.update({
+        where: { id: modelId },
+        data: { main_image_url: null } // Nota: Asegúrate de que tu schema permita que main_image_url sea null (String?)
+    });
 
-        const imageUrl = result.rows[0].main_image_url;
-        if (!imageUrl) throw new Error("El modelo ya no tiene imagen principal");
+    deletePhysicalFile(model.main_image_url);
 
-        await client.query("UPDATE models SET main_image_url = NULL WHERE id = $1", [modelId]);
-        deletePhysicalFile(imageUrl);
-
-        await client.query("COMMIT");
-        return { message: "Imagen principal eliminada correctamente" };
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+    return { message: "Imagen principal eliminada correctamente" };
 };
 
 /**
  * Reemplaza el archivo principal 3D en la BD y borra físicamente el anterior.
  */
 const replaceMainFile = async (modelId, user, newFileUrl) => {
-    const client = await pool.connect();
-    try {
-        await client.query("BEGIN");
-        const result = await client.query("SELECT user_id, file_url FROM models WHERE id = $1", [modelId]);
+    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    if (!model) throw new Error("Modelo no encontrado");
+    
+    checkPermission(model.user_id, user);
 
-        if (result.rows.length === 0) throw new Error("Modelo no encontrado");
-        checkPermission(result.rows[0].user_id, user);
+    const updatedModel = await prisma.models.update({
+        where: { id: modelId },
+        data: { file_url: newFileUrl }
+    });
 
-        const oldFileUrl = result.rows[0].file_url;
-        const updateResult = await client.query(
-            "UPDATE models SET file_url = $1 WHERE id = $2 RETURNING *",
-            [newFileUrl, modelId]
-        );
-
-        if (oldFileUrl && oldFileUrl !== newFileUrl) deletePhysicalFile(oldFileUrl);
-
-        await client.query("COMMIT");
-        return updateResult.rows[0];
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
+    if (model.file_url && model.file_url !== newFileUrl) {
+        deletePhysicalFile(model.file_url);
     }
+
+    return updatedModel;
 };
 
 export {
