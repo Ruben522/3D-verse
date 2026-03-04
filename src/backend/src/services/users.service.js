@@ -1,50 +1,130 @@
-import pool from "../config/db.js";
+import prisma from "../config/prisma.js";
 import path from "path";
 import fs from "fs";
 import { checkPermission } from "../utils/checkPermission.js";
+import { sendSuccess, sendError } from "../utils/helper/response.helper.js"
+
+/**
+ * Obtiene el perfil completo de un usuario, incluyendo estadísticas globales de su impacto.
+ * Esta función "se trae absolutamente todo" lo necesario para un perfil en el frontend.
+ */
 
 const getUserById = async (userId) => {
-    const query = `
-    SELECT 
-      u.id, u.name, u.lastname, u.username, u.avatar,
-      u.bio, u.youtube, u.twitter, u.linkedin, u.github,
-      u.location, u.role, u.followers_count, u.following_count, u.created_at,
-      (SELECT COUNT(*) FROM models m WHERE m.user_id = u.id) AS models_count
-    FROM users u
-    WHERE u.id = $1`;
+    const user = await prisma.users.findUnique({
+        where: { id: userId },
+        include: {
 
-    const result = await pool.query(query, [userId]);
-    if (result.rows.length === 0) throw new Error("Usuario no encontrado");
+            models: {
+                take: 6,
+                orderBy: { created_at: 'desc' },
+                include: {
+                    _count: { select: { model_likes: true } }
+                }
+            },
 
-    return result.rows[0];
+            favorites: {
+                take: 6,
+                orderBy: { created_at: 'desc' },
+                include: {
+                    models: {
+                        include: {
+                            users: { select: { username: true, avatar: true } }
+                        }
+                    }
+                }
+            },
+
+            _count: {
+                select: {
+                    models: true,
+                    favorites: true,
+                    comments: true,
+                    model_likes: true,
+                    followers_followers_user_idTousers: true,
+                    followers_followers_follower_idTousers: true
+                }
+            }
+        }
+    });
+
+    if (!user) throw new Error("Usuario no encontrado");
+
+    const aggregateStats = await prisma.models.aggregate({
+        where: { user_id: userId },
+        _sum: {
+            downloads: true,
+            views: true
+        }
+    });
+
+    const totalLikesReceived = await prisma.model_likes.count({
+        where: { models: { user_id: userId } }
+    });
+
+    return {
+        profile: {
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            lastname: user.lastname,
+            email: user.email,
+            avatar: user.avatar,
+            bio: user.bio,
+            location: user.location,
+            role: user.role,
+            created_at: user.created_at,
+            social: {
+                youtube: user.youtube,
+                twitter: user.twitter,
+                linkedin: user.linkedin,
+                github: user.github
+            }
+        },
+        stats: {
+            total_models: user._count.models,
+            total_followers: user._count.followers_followers_user_idTousers,
+            total_following: user._count.followers_followers_follower_idTousers,
+            total_downloads: aggregateStats._sum.downloads || 0,
+            total_views: aggregateStats._sum.views || 0,
+            total_likes_received: totalLikesReceived,
+            total_favorites_given: user._count.favorites
+        },
+        content: {
+            recent_models: user.models,
+            recent_favorites: user.favorites.map(f => f.models)
+        }
+    };
 };
 
+/**
+ * Obtiene la lista de usuarios paginada.
+ */
 const getUsers = async ({ page = 1, limit = 20 }) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    const usersQuery = `
-    SELECT id, name, lastname, username, avatar, bio, role, followers_count, following_count, created_at
-    FROM users
-    ORDER BY created_at DESC
-    LIMIT $1 OFFSET $2`;
-
-    const [usersResult, countResult] = await Promise.all([
-        pool.query(usersQuery, [safeLimit, offset]),
-        pool.query(`SELECT COUNT(*) FROM users`),
+    const [total, users] = await prisma.$transaction([
+        prisma.users.count(),
+        prisma.users.findMany({
+            select: {
+                id: true, name: true, lastname: true, username: true, avatar: true,
+                bio: true, role: true, followers_count: true, following_count: true, created_at: true,
+                _count: { select: { models: true } }
+            },
+            orderBy: { created_at: 'desc' },
+            skip: offset,
+            take: safeLimit
+        })
     ]);
 
-    const total = parseInt(countResult.rows[0].count, 10);
-
     return {
-        page,
-        limit: safeLimit,
-        total,
-        totalPages: Math.ceil(total / safeLimit),
-        data: usersResult.rows,
+        page, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit), data: users
     };
 };
 
+/**
+ * Actualiza la información del perfil del usuario.
+ */
 const updateUser = async (userId, currentUser, data) => {
     checkPermission(userId, currentUser);
 
@@ -53,68 +133,76 @@ const updateUser = async (userId, currentUser, data) => {
         "youtube", "twitter", "linkedin", "github", "location"
     ];
 
-    const fields = [];
-    const values = [];
-    let index = 1;
-
+    const updateData = {};
     for (const field of allowedFields) {
         if (data[field] !== undefined) {
-            fields.push(`${field} = $${index++}`);
-            values.push(data[field]);
+            updateData[field] = data[field];
         }
     }
 
-    if (fields.length === 0) throw new Error("No hay campos para actualizar");
+    if (Object.keys(updateData).length === 0) throw new Error("No hay campos para actualizar");
+    updateData.updated_at = new Date();
 
-    const query = `
-      UPDATE users
-      SET ${fields.join(", ")}, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $${index}
-      RETURNING id, name, lastname, username, avatar, role, created_at, updated_at`;
-
-    values.push(userId);
-    const result = await pool.query(query, values);
-    return result.rows[0];
-};
-
-const deleteUser = async (userId, currentUser) => {
-    checkPermission(userId, currentUser);
-
-    const client = await pool.connect();
     try {
-        await client.query("BEGIN");
-
-        const folders = [
-            path.join(process.cwd(), "uploads", "models", userId),
-            path.join(process.cwd(), "uploads", "images", userId)
-        ];
-
-        folders.forEach(folder => {
-            if (fs.existsSync(folder)) {
-                fs.rmSync(folder, { recursive: true, force: true });
+        const updatedUser = await prisma.users.update({
+            where: { id: userId },
+            data: updateData,
+            select: { 
+                id: true, name: true, lastname: true, username: true, 
+                avatar: true, role: true, created_at: true, updated_at: true 
             }
         });
-
-        await client.query("DELETE FROM users WHERE id = $1", [userId]);
-
-        await client.query("COMMIT");
-        return { message: "Usuario y todos sus archivos eliminados correctamente" };
+        return updatedUser;
     } catch (error) {
-        await client.query("ROLLBACK");
+        if (error.code === 'P2002') throw new Error("Ese nombre de usuario o email ya está en uso");
+        if (error.code === 'P2025') throw new Error("Usuario no encontrado");
         throw error;
-    } finally {
-        client.release();
     }
 };
 
+/**
+ * Elimina un usuario de la BD y borra por completo sus carpetas físicas.
+ */
+const deleteUser = async (userId, currentUser) => {
+    checkPermission(userId, currentUser);
+
+    const user = await prisma.users.findUnique({ where: { id: userId } });
+    if (!user) throw new Error("Usuario no encontrado");
+
+    await prisma.users.delete({ where: { id: userId } });
+
+    const folders = [
+        path.join(process.cwd(), "uploads", "models", userId),
+        path.join(process.cwd(), "uploads", "images", userId)
+    ];
+
+    folders.forEach(folder => {
+        if (fs.existsSync(folder)) {
+            fs.rmSync(folder, { recursive: true, force: true });
+        }
+    });
+
+    return { message: "Usuario y todos sus archivos eliminados correctamente" };
+};
+
+/**
+ * Obtiene los modelos que el usuario ha marcado como favoritos.
+ */
 const getUserFavorites = async (userId) => {
-    const result = await pool.query(`
-    SELECT m.id, m.title, m.main_image_url, m.downloads, m.views, m.created_at
-    FROM favorites f
-    JOIN models m ON f.model_id = m.id
-    WHERE f.user_id = $1
-    ORDER BY f.created_at DESC`, [userId]);
-    return result.rows;
+    const favorites = await prisma.favorites.findMany({
+        where: { user_id: userId },
+        include: {
+            models: {
+                select: { 
+                    id: true, title: true, main_image_url: true, 
+                    downloads: true, views: true, created_at: true 
+                }
+            }
+        },
+        orderBy: { created_at: 'desc' }
+    });
+
+    return favorites.map(fav => fav.models);
 };
 
 export { getUserFavorites, getUsers, updateUser, deleteUser, getUserById };

@@ -3,31 +3,41 @@ import {
     loginUser,
     getCurrentUser,
 } from "../services/auth.service.js";
+import { sendSuccess, sendError } from "../utils/helper/response.helper.js";
 
+/**
+ * Registra un nuevo usuario en la plataforma.
+ */
 const register = async (req, res) => {
     try {
         const data = await registerUser(req.body);
-        res.status(201).json(data);
+        sendSuccess(res, "Usuario registrado exitosamente", data, 201);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        sendError(res, error.message, 400);
     }
 };
 
+/**
+ * Autentica a un usuario e inicia su sesión.
+ */
 const login = async (req, res) => {
     try {
         const data = await loginUser(req.body);
-        res.status(200).json(data);
+        sendSuccess(res, "Inicio de sesión exitoso", data);
     } catch (error) {
-        res.status(401).json({ error: error.message });
+        sendError(res, error.message, 401);
     }
 };
 
+/**
+ * Obtiene los datos del usuario autenticado actualmente (para validación de sesión/token).
+ */
 const me = async (req, res) => {
     try {
         const user = await getCurrentUser(req.user.id);
-        res.status(200).json(user);
+        sendSuccess(res, "Datos del usuario recuperados", user);
     } catch (error) {
-        res.status(404).json({ error: error.message });
+        sendError(res, error.message, 404);
     }
 };
 

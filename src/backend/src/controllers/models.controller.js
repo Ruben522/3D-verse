@@ -52,6 +52,9 @@ const uploadModel = async (req, res) => {
  */
 const create = async (req, res) => {
     try {
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return sendError(res, "Los datos del modelo son obligatorios", 400);
+        }
         const model = await createModel(req.user.id, req.body);
         sendSuccess(res, "Modelo publicado con éxito", model, 201);
     } catch (error) {
@@ -67,7 +70,11 @@ const getById = async (req, res) => {
         const model = await getModelById(req.params.id);
         sendSuccess(res, "Modelo recuperado", model);
     } catch (error) {
-        sendError(res, error.message, 404);
+        // Manejo específico del error de "No encontrado"
+        if (error.message === "Modelo no encontrado" || error.code === 'P2025') {
+            return sendError(res, "El modelo solicitado no existe", 404);
+        }
+        sendError(res, error.message, 500);
     }
 };
 
@@ -107,6 +114,7 @@ const update = async (req, res) => {
         const model = await updateModel(req.params.id, req.user, req.body);
         sendSuccess(res, "Modelo actualizado", model);
     } catch (error) {
+        if (error.code === 'P2025') return sendError(res, "El modelo no existe", 404);
         sendError(res, error.message);
     }
 };
@@ -119,6 +127,7 @@ const remove = async (req, res) => {
         const result = await deleteModel(req.params.id, req.user);
         sendSuccess(res, result.message);
     } catch (error) {
+        if (error.code === 'P2025') return sendError(res, "El modelo no existe", 404);
         sendError(res, error.message, 403);
     }
 };
