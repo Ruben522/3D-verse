@@ -14,7 +14,12 @@ import {
 import { getDisplayFileName } from "../utils/helper/file.helper.js";
 
 /**
- * Añade los archivos de una carpeta a un archivo ZIP limpiando sus nombres.
+ * Añade recursivamente los archivos de una carpeta a un ZIP, limpiando nombres de archivo.
+ * Ignora subcarpetas (solo archivos directos).
+ *
+ * @param {archiver.Archiver} archive - Instancia del ZIP en curso
+ * @param {string} folderPath - Ruta absoluta de la carpeta a comprimir
+ * @param {string} [zipSubFolder=""] - Subcarpeta dentro del ZIP (ej: "parts", "gallery")
  */
 const appendCleanFolderToArchive = (
     archive,
@@ -37,7 +42,12 @@ const appendCleanFolderToArchive = (
 };
 
 /**
- * Procesa la descarga de un modelo (archivo individual o ZIP comprimido y limpio).
+ * Registra la descarga y devuelve el archivo solicitado (individual o ZIP comprimido).
+ * Soporta tipos: main (por defecto), all, parts, gallery.
+ * Limpia nombres de archivo y registra IP, user-agent y usuario (si autenticado).
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const record = async (req, res) => {
     try {
@@ -88,29 +98,31 @@ const record = async (req, res) => {
                 info.modelFolder,
                 "parts",
             );
-            if (!fs.existsSync(partsDir))
+            if (!fs.existsSync(partsDir)) {
                 return sendError(
                     res,
-                    "No hay partes adicionales",
+                    "No hay partes adicionales.",
                     404,
                 );
+            }
             appendCleanFolderToArchive(archive, partsDir);
         } else if (type === "gallery") {
             const galleryDir = path.join(
                 info.modelFolder,
                 "gallery",
             );
-            if (!fs.existsSync(galleryDir))
+            if (!fs.existsSync(galleryDir)) {
                 return sendError(
                     res,
-                    "No hay galería",
+                    "No hay galería disponible.",
                     404,
                 );
+            }
             appendCleanFolderToArchive(archive, galleryDir);
         } else {
             return sendError(
                 res,
-                "Tipo de descarga no válido (use main, all, parts o gallery)",
+                "Tipo de descarga no válido. Usa: main, all, parts o gallery.",
                 400,
             );
         }
@@ -118,18 +130,22 @@ const record = async (req, res) => {
         await archive.finalize();
     } catch (error) {
         if (!res.headersSent) {
-            const status =
-                error.message ===
-                "El modelo solicitado no existe"
-                    ? 404
-                    : 500;
-            sendError(res, error.message, status);
+            const status = error.message.includes(
+                "El modelo solicitado no existe",
+            )
+                ? 404
+                : 500;
+            sendError(res, error.message + ".", status);
         }
     }
 };
 
 /**
- * Obtiene el historial de descargas del usuario autenticado.
+ * Obtiene el historial paginado de descargas del usuario autenticado.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getUserHistory = async (req, res) => {
     try {
@@ -140,14 +156,22 @@ const getUserHistory = async (req, res) => {
             req.user.id,
             { page, limit },
         );
-        sendSuccess(res, "Historial recuperado", history);
+        sendSuccess(
+            res,
+            "Historial de descargas recuperado correctamente.",
+            history,
+        );
     } catch (error) {
-        sendError(res, error.message, 500);
+        sendError(res, error.message + ".", 500);
     }
 };
 
 /**
- * Obtiene las estadísticas de descarga de un modelo.
+ * Obtiene estadísticas detalladas de descargas de un modelo (total, únicos, anónimos, etc.).
+ * Requiere ser propietario del modelo o administrador.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getModelStats = async (req, res) => {
     try {
@@ -155,14 +179,18 @@ const getModelStats = async (req, res) => {
             req.params.modelId,
             req.user,
         );
-        sendSuccess(res, "Estadísticas recuperadas", stats);
+        sendSuccess(
+            res,
+            "Estadísticas de descargas recuperadas correctamente.",
+            stats,
+        );
     } catch (error) {
-        const status =
-            error.message ===
-            "El modelo solicitado no existe"
-                ? 404
-                : 403;
-        sendError(res, error.message, status);
+        const status = error.message.includes(
+            "El modelo solicitado no existe",
+        )
+            ? 404
+            : 403;
+        sendError(res, error.message + ".", status);
     }
 };
 

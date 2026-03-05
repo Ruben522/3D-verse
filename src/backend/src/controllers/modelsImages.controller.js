@@ -11,6 +11,11 @@ import {
 
 /**
  * Sube una o varias imágenes a la galería secundaria de un modelo.
+ * Requiere autenticación y que el usuario sea propietario o admin.
+ * Crea entradas en la tabla model_images con orden secuencial.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const uploadImage = async (req, res) => {
     try {
@@ -20,7 +25,7 @@ const uploadImage = async (req, res) => {
         if (!req.files || req.files.length === 0) {
             return sendError(
                 res,
-                "Debe proporcionar al menos una imagen",
+                "Debe proporcionar al menos una imagen.",
                 400,
             );
         }
@@ -31,7 +36,6 @@ const uploadImage = async (req, res) => {
 
         for (let i = 0; i < req.files.length; i++) {
             const file = req.files[i];
-
             const fullPath = file.path.replace(/\\/g, "/");
             const uploadsIndex =
                 fullPath.indexOf("/uploads/");
@@ -44,27 +48,31 @@ const uploadImage = async (req, res) => {
                 imageUrl,
                 baseOrder + i,
             );
-
             uploadedImages.push(newImage);
         }
 
         sendSuccess(
             res,
-            "Imágenes subidas correctamente",
+            "Imágenes subidas correctamente.",
             uploadedImages,
             201,
         );
     } catch (error) {
-        const status =
-            error.message === "Modelo no encontrado"
-                ? 404
-                : 400;
+        const status = error.message.includes(
+            "Modelo no encontrado",
+        )
+            ? 404
+            : 400;
         sendError(res, error.message, status);
     }
 };
 
 /**
- * Obtiene todas las imágenes de la galería de un modelo específico.
+ * Obtiene todas las imágenes de la galería de un modelo, ordenadas por display_order.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getImages = async (req, res) => {
     try {
@@ -73,7 +81,7 @@ const getImages = async (req, res) => {
         );
         sendSuccess(
             res,
-            "Imágenes de la galería recuperadas",
+            "Imágenes de la galería recuperadas.",
             images,
         );
     } catch (error) {
@@ -82,7 +90,11 @@ const getImages = async (req, res) => {
 };
 
 /**
- * Actualiza el orden de visualización (display_order) de una imagen en la galería.
+ * Actualiza el orden de visualización (display_order) de una imagen específica.
+ * Requiere autenticación y permiso sobre el modelo.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const updateOrder = async (req, res) => {
     try {
@@ -92,7 +104,7 @@ const updateOrder = async (req, res) => {
         if (display_order === undefined) {
             return sendError(
                 res,
-                "El campo display_order es requerido",
+                "El campo display_order es requerido.",
                 400,
             );
         }
@@ -104,20 +116,25 @@ const updateOrder = async (req, res) => {
         );
         sendSuccess(
             res,
-            "Orden de imagen actualizado",
+            "Orden de imagen actualizado.",
             updatedImage,
         );
     } catch (error) {
-        const status =
-            error.message === "Imagen no encontrada"
-                ? 404
-                : 400;
+        const status = error.message.includes(
+            "Imagen no encontrada",
+        )
+            ? 404
+            : 400;
         sendError(res, error.message, status);
     }
 };
 
 /**
- * Elimina una imagen de la galería de un modelo (tanto de BD como del disco).
+ * Elimina una imagen de la galería (de la base de datos y del sistema de archivos).
+ * Requiere autenticación y permiso sobre el modelo.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const removeImage = async (req, res) => {
     try {
@@ -127,10 +144,11 @@ const removeImage = async (req, res) => {
         );
         sendSuccess(res, response.message);
     } catch (error) {
-        const status =
-            error.message === "Imagen no encontrada"
-                ? 404
-                : 403;
+        const status = error.message.includes(
+            "Imagen no encontrada",
+        )
+            ? 404
+            : 403;
         sendError(res, error.message, status);
     }
 };

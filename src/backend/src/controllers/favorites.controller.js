@@ -11,6 +11,11 @@ import {
 
 /**
  * Añade un modelo a los favoritos del usuario autenticado.
+ * Idempotente: si ya estaba marcado como favorito, devuelve mensaje informativo.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const favorite = async (req, res) => {
     try {
@@ -18,19 +23,24 @@ const favorite = async (req, res) => {
             req.params.id,
             req.user.id,
         );
-        sendSuccess(res, result.message);
+        sendSuccess(res, result.message + ".", null);
     } catch (error) {
-        const status =
-            error.message ===
-            "El modelo solicitado no existe"
-                ? 404
-                : 400;
-        sendError(res, error.message, status);
+        const status = error.message.includes(
+            "El modelo solicitado no existe",
+        )
+            ? 404
+            : 400;
+        sendError(res, error.message + ".", status);
     }
 };
 
 /**
  * Elimina un modelo de los favoritos del usuario autenticado.
+ * Idempotente: si no estaba en favoritos, devuelve mensaje informativo.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const unfavorite = async (req, res) => {
     try {
@@ -38,14 +48,18 @@ const unfavorite = async (req, res) => {
             req.params.id,
             req.user.id,
         );
-        sendSuccess(res, result.message);
+        sendSuccess(res, result.message + ".", null);
     } catch (error) {
-        sendError(res, error.message, 400);
+        sendError(res, error.message + ".", 400);
     }
 };
 
 /**
- * Obtiene los favoritos de un usuario de forma pública.
+ * Obtiene la lista paginada de favoritos de un usuario específico.
+ * Endpoint público (cualquiera puede ver los favoritos de otros usuarios).
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getUserFavoritesPublic = async (req, res) => {
     try {
@@ -58,16 +72,20 @@ const getUserFavoritesPublic = async (req, res) => {
         );
         sendSuccess(
             res,
-            "Favoritos del usuario recuperados",
+            "Favoritos del usuario recuperados correctamente.",
             result,
         );
     } catch (error) {
-        sendError(res, error.message, 500);
+        sendError(res, error.message + ".", 500);
     }
 };
 
 /**
- * Obtiene los favoritos del propio usuario autenticado.
+ * Obtiene la lista paginada de favoritos del usuario autenticado.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getMyFavorites = async (req, res) => {
     try {
@@ -80,16 +98,20 @@ const getMyFavorites = async (req, res) => {
         });
         sendSuccess(
             res,
-            "Mis favoritos recuperados",
+            "Mis favoritos recuperados correctamente.",
             result,
         );
     } catch (error) {
-        sendError(res, error.message, 500);
+        sendError(res, error.message + ".", 500);
     }
 };
 
 /**
- * Comprueba si un modelo está en los favoritos del usuario autenticado.
+ * Comprueba si un modelo está marcado como favorito por el usuario autenticado.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const check = async (req, res) => {
     try {
@@ -99,11 +121,11 @@ const check = async (req, res) => {
         );
         sendSuccess(
             res,
-            "Comprobación de favorito exitosa",
+            "Comprobación de favorito realizada correctamente.",
             result,
         );
     } catch (error) {
-        sendError(res, error.message, 500);
+        sendError(res, error.message + ".", 500);
     }
 };
 

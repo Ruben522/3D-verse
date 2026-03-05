@@ -58,7 +58,6 @@ const registerUser = async ({
  * @returns {Promise<Object>} Objeto con los datos públicos del usuario y su token JWT.
  */
 const loginUser = async ({ email, password }) => {
-    // Buscamos al usuario por su email
     const user = await prisma.users.findUnique({
         where: { email },
     });

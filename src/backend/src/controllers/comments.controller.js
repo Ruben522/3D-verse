@@ -10,7 +10,11 @@ import {
 } from "../utils/helper/response.helper.js";
 
 /**
- * Crea un nuevo comentario en un modelo.
+ * Crea un nuevo comentario en un modelo específico.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const create = async (req, res) => {
     try {
@@ -19,7 +23,7 @@ const create = async (req, res) => {
         if (!content || content.trim() === "") {
             return sendError(
                 res,
-                "El comentario no puede estar vacío",
+                "El comentario no puede estar vacío.",
                 400,
             );
         }
@@ -32,23 +36,27 @@ const create = async (req, res) => {
 
         sendSuccess(
             res,
-            "Comentario publicado",
+            "Comentario publicado correctamente.",
             comment,
             201,
         );
     } catch (error) {
-        if (
-            error.message ===
-            "El modelo solicitado no existe"
-        ) {
-            return sendError(res, error.message, 404);
-        }
-        sendError(res, error.message, 400);
+        const status = error.message.includes(
+            "El modelo solicitado no existe",
+        )
+            ? 404
+            : 400;
+        sendError(res, error.message + ".", status);
     }
 };
 
 /**
  * Obtiene los comentarios de un modelo de forma paginada.
+ * Ordenados por fecha descendente (más recientes primero).
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getByModel = async (req, res) => {
     try {
@@ -59,19 +67,22 @@ const getByModel = async (req, res) => {
             req.params.modelId,
             { page, limit },
         );
-
         sendSuccess(
             res,
-            "Comentarios recuperados",
+            "Comentarios recuperados correctamente.",
             comments,
         );
     } catch (error) {
-        sendError(res, error.message, 500);
+        sendError(res, error.message + ".", 500);
     }
 };
 
 /**
- * Actualiza el texto de un comentario existente.
+ * Actualiza el contenido de un comentario existente.
+ * Requiere autenticación y que el usuario sea el autor del comentario o administrador.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const update = async (req, res) => {
     try {
@@ -80,7 +91,7 @@ const update = async (req, res) => {
         if (!content || content.trim() === "") {
             return sendError(
                 res,
-                "El comentario no puede estar vacío",
+                "El comentario no puede estar vacío.",
                 400,
             );
         }
@@ -91,17 +102,27 @@ const update = async (req, res) => {
             content.trim(),
         );
 
-        sendSuccess(res, "Comentario actualizado", updated);
+        sendSuccess(
+            res,
+            "Comentario actualizado correctamente.",
+            updated,
+        );
     } catch (error) {
-        if (error.message === "El comentario no existe") {
-            return sendError(res, error.message, 404);
-        }
-        sendError(res, error.message, 403);
+        const status = error.message.includes(
+            "El comentario no existe",
+        )
+            ? 404
+            : 403;
+        sendError(res, error.message + ".", status);
     }
 };
 
 /**
- * Elimina un comentario.
+ * Elimina un comentario específico.
+ * Requiere autenticación y que el usuario sea el autor del comentario o administrador.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const remove = async (req, res) => {
     try {
@@ -109,13 +130,14 @@ const remove = async (req, res) => {
             req.params.commentId,
             req.user,
         );
-
         sendSuccess(res, result.message);
     } catch (error) {
-        if (error.message === "El comentario no existe") {
-            return sendError(res, error.message, 404);
-        }
-        sendError(res, error.message, 403);
+        const status = error.message.includes(
+            "El comentario no existe",
+        )
+            ? 404
+            : 403;
+        sendError(res, error.message + ".", status);
     }
 };
 

@@ -11,7 +11,12 @@ import {
 } from "../utils/helper/response.helper.js";
 
 /**
- * Permite al usuario autenticado seguir a otro creador.
+ * Permite al usuario autenticado seguir a otro usuario.
+ * Idempotente: si ya se seguía, devuelve mensaje informativo.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const follow = async (req, res) => {
     try {
@@ -19,14 +24,19 @@ const follow = async (req, res) => {
             req.params.userId,
             req.user.id,
         );
-        sendSuccess(res, result.message, null);
+        sendSuccess(res, result.message + ".", null);
     } catch (error) {
-        sendError(res, error.message, 400);
+        sendError(res, error.message + ".", 400);
     }
 };
 
 /**
- * Permite al usuario autenticado dejar de seguir a otro creador.
+ * Permite al usuario autenticado dejar de seguir a otro usuario.
+ * Idempotente: si no se seguía, devuelve mensaje informativo.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const unfollow = async (req, res) => {
     try {
@@ -34,14 +44,18 @@ const unfollow = async (req, res) => {
             req.params.userId,
             req.user.id,
         );
-        sendSuccess(res, result.message, null);
+        sendSuccess(res, result.message + ".", null);
     } catch (error) {
-        sendError(res, error.message, 400);
+        sendError(res, error.message + ".", 400);
     }
 };
 
 /**
- * Obtiene la lista de seguidores de un usuario.
+ * Obtiene la lista paginada de seguidores de un usuario específico.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const followers = async (req, res) => {
     try {
@@ -52,14 +66,22 @@ const followers = async (req, res) => {
             req.params.userId,
             { page, limit },
         );
-        sendSuccess(res, "Seguidores recuperados", result);
+        sendSuccess(
+            res,
+            "Seguidores recuperados correctamente.",
+            result,
+        );
     } catch (error) {
-        sendError(res, error.message, 500);
+        sendError(res, error.message + ".", 500);
     }
 };
 
 /**
- * Obtiene la lista de usuarios a los que sigue un usuario en concreto.
+ * Obtiene la lista paginada de usuarios a los que sigue un usuario específico.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const following = async (req, res) => {
     try {
@@ -70,14 +92,22 @@ const following = async (req, res) => {
             req.params.userId,
             { page, limit },
         );
-        sendSuccess(res, "Siguiendo recuperados", result);
+        sendSuccess(
+            res,
+            "Siguiendo recuperados correctamente.",
+            result,
+        );
     } catch (error) {
-        sendError(res, error.message, 500);
+        sendError(res, error.message + ".", 500);
     }
 };
 
 /**
- * Comprueba si el usuario autenticado sigue al usuario proporcionado.
+ * Comprueba si el usuario autenticado sigue al usuario indicado.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const check = async (req, res) => {
     try {
@@ -85,9 +115,13 @@ const check = async (req, res) => {
             req.params.userId,
             req.user.id,
         );
-        sendSuccess(res, "Comprobación exitosa", result);
+        sendSuccess(
+            res,
+            "Comprobación realizada correctamente.",
+            result,
+        );
     } catch (error) {
-        sendError(res, error.message, 500);
+        sendError(res, error.message + ".", 500);
     }
 };
 

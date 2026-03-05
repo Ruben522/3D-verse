@@ -11,7 +11,11 @@ import {
 } from "../utils/helper/response.helper.js";
 
 /**
- * Obtiene todos los tags asociados a un modelo.
+ * Obtiene todos los tags asociados a un modelo específico.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getForModel = async (req, res) => {
     try {
@@ -20,7 +24,7 @@ const getForModel = async (req, res) => {
         );
         sendSuccess(
             res,
-            "Tags del modelo recuperados",
+            "Tags del modelo recuperados.",
             tags,
         );
     } catch (error) {
@@ -29,34 +33,55 @@ const getForModel = async (req, res) => {
 };
 
 /**
- * Añade un nuevo tag a un modelo.
+ * Añade un nuevo tag (o usa uno existente) a un modelo.
+ * Requiere autenticación y que el usuario sea propietario del modelo o admin.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const addToModel = async (req, res) => {
     try {
         const { name } = req.body;
 
-        if (!name || name.trim() === "") {
-            return sendError(res, "Tag inválido", 400);
+        if (
+            !name ||
+            typeof name !== "string" ||
+            name.trim() === ""
+        ) {
+            return sendError(
+                res,
+                "El nombre del tag es obligatorio.",
+                400,
+            );
         }
 
         const result = await addTagToModel(
             req.params.modelId,
             req.user,
-            name,
+            name.trim(),
         );
 
-        sendSuccess(res, result.message, result.tag);
+        sendSuccess(
+            res,
+            result.message,
+            result.tag || null,
+        );
     } catch (error) {
-        const status =
-            error.message === "Modelo no encontrado"
-                ? 404
-                : 400;
+        const status = error.message.includes(
+            "Modelo no encontrado",
+        )
+            ? 404
+            : 400;
         sendError(res, error.message, status);
     }
 };
 
 /**
- * Elimina un tag de un modelo.
+ * Elimina la asociación de un tag específico con un modelo.
+ * Requiere autenticación y que el usuario sea propietario del modelo o admin.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const removeFromModel = async (req, res) => {
     try {
@@ -68,23 +93,28 @@ const removeFromModel = async (req, res) => {
 
         sendSuccess(res, result.message);
     } catch (error) {
-        const status =
-            error.message === "Modelo no encontrado"
-                ? 404
-                : 403;
+        const status = error.message.includes(
+            "Modelo no encontrado.",
+        )
+            ? 404
+            : 403;
         sendError(res, error.message, status);
     }
 };
 
 /**
- * Obtiene todos los tags creados en la plataforma.
+ * Obtiene la lista completa de todos los tags existentes en la plataforma.
+ * Ordenados alfabéticamente. Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getAll = async (req, res) => {
     try {
         const tags = await getAllTags();
         sendSuccess(
             res,
-            "Todos los tags recuperados",
+            "Todos los tags recuperados.",
             tags,
         );
     } catch (error) {
@@ -93,7 +123,11 @@ const getAll = async (req, res) => {
 };
 
 /**
- * Elimina un tag permanentemente de la plataforma (Solo Admin).
+ * Elimina un tag permanentemente del sistema (incluyendo todas sus asociaciones).
+ * Requiere rol de administrador.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const remove = async (req, res) => {
     try {
@@ -101,21 +135,21 @@ const remove = async (req, res) => {
             req.params.tagId,
             req.user,
         );
-
         sendSuccess(res, result.message);
     } catch (error) {
-        const status =
-            error.message === "Tag no encontrado"
-                ? 404
-                : 403;
+        const status = error.message.includes(
+            "Tag no encontrado.",
+        )
+            ? 404
+            : 403;
         sendError(res, error.message, status);
     }
 };
 
 export {
+    getForModel,
     addToModel,
     removeFromModel,
     getAll,
     remove,
-    getForModel,
 };
