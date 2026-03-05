@@ -54,205 +54,213 @@
     *   [Parameters][50]
 *   [remove][51]
     *   [Parameters][52]
-*   [sendSuccess][53]
+*   [addToModel][53]
     *   [Parameters][54]
-*   [sendError][55]
+*   [addToModel][55]
     *   [Parameters][56]
-*   [appendCleanFolderToArchive][57]
+*   [removeFromModel][57]
     *   [Parameters][58]
-*   [record][59]
+*   [removeFromModel][59]
     *   [Parameters][60]
-*   [getUserHistory][61]
+*   [appendCleanFolderToArchive][61]
     *   [Parameters][62]
-*   [getModelStats][63]
+*   [record][63]
     *   [Parameters][64]
-*   [getAbsolutePath][65]
+*   [getUserHistory][65]
     *   [Parameters][66]
-*   [deletePhysicalFile][67]
+*   [getModelStats][67]
     *   [Parameters][68]
-*   [deletePhysicalFolder][69]
+*   [favorite][69]
     *   [Parameters][70]
-*   [getDisplayFileName][71]
+*   [unfavorite][71]
     *   [Parameters][72]
-*   [favorite][73]
+*   [getUserFavoritesPublic][73]
     *   [Parameters][74]
-*   [unfavorite][75]
+*   [getMyFavorites][75]
     *   [Parameters][76]
-*   [getUserFavoritesPublic][77]
+*   [check][77]
     *   [Parameters][78]
-*   [getMyFavorites][79]
+*   [check][79]
     *   [Parameters][80]
-*   [check][81]
+*   [follow][81]
     *   [Parameters][82]
-*   [check][83]
+*   [unfollow][83]
     *   [Parameters][84]
-*   [follow][85]
+*   [followers][85]
     *   [Parameters][86]
-*   [unfollow][87]
+*   [following][87]
     *   [Parameters][88]
-*   [followers][89]
+*   [formatUploadedFiles][89]
     *   [Parameters][90]
-*   [following][91]
+*   [uploadModel][91]
     *   [Parameters][92]
-*   [formatUploadedFiles][93]
+*   [getById][93]
     *   [Parameters][94]
-*   [uploadModel][95]
+*   [getById][95]
     *   [Parameters][96]
-*   [getById][97]
+*   [getByUser][97]
     *   [Parameters][98]
-*   [getById][99]
+*   [like][99]
     *   [Parameters][100]
-*   [getByUser][101]
+*   [unlike][101]
     *   [Parameters][102]
-*   [like][103]
+*   [patchMainFile][103]
     *   [Parameters][104]
-*   [unlike][105]
+*   [patchMainImage][105]
     *   [Parameters][106]
-*   [patchMainFile][107]
+*   [removeMainImage][107]
     *   [Parameters][108]
-*   [patchMainImage][109]
+*   [uploadImage][109]
     *   [Parameters][110]
-*   [removeMainImage][111]
+*   [getImages][111]
     *   [Parameters][112]
-*   [uploadImage][113]
+*   [updateOrder][113]
     *   [Parameters][114]
-*   [getImages][115]
+*   [removeImage][115]
     *   [Parameters][116]
-*   [updateOrder][117]
+*   [getForModel][117]
     *   [Parameters][118]
-*   [removeImage][119]
+*   [getFavorites][119]
     *   [Parameters][120]
-*   [getForModel][121]
+*   [getModelBaseDirectory][121]
     *   [Parameters][122]
-*   [addToModel][123]
+*   [cleanFileName][123]
     *   [Parameters][124]
-*   [removeFromModel][125]
+*   [createInitialStorage][125]
     *   [Parameters][126]
-*   [getFavorites][127]
+*   [createDynamicStorage][127]
     *   [Parameters][128]
-*   [getModelBaseDirectory][129]
+*   [createFilter][129]
     *   [Parameters][130]
-*   [cleanFileName][131]
+*   [createUploadWrapper][131]
     *   [Parameters][132]
-*   [createInitialStorage][133]
+*   [registerUser][133]
     *   [Parameters][134]
-*   [createDynamicStorage][135]
+*   [loginUser][135]
     *   [Parameters][136]
-*   [createFilter][137]
+*   [getCurrentUser][137]
     *   [Parameters][138]
-*   [createUploadWrapper][139]
+*   [createCategory][139]
     *   [Parameters][140]
-*   [registerUser][141]
-    *   [Parameters][142]
-*   [loginUser][143]
-    *   [Parameters][144]
-*   [getCurrentUser][145]
-    *   [Parameters][146]
-*   [createCategory][147]
-    *   [Parameters][148]
-*   [getCategories][149]
-*   [getCategoryById][150]
+*   [getCategories][141]
+*   [getCategoryById][142]
+    *   [Parameters][143]
+*   [updateCategory][144]
+    *   [Parameters][145]
+*   [deleteCategory][146]
+    *   [Parameters][147]
+*   [getCategoriesByModel][148]
+    *   [Parameters][149]
+*   [addCategoryToModel][150]
     *   [Parameters][151]
-*   [updateCategory][152]
+*   [removeCategoryFromModel][152]
     *   [Parameters][153]
-*   [deleteCategory][154]
+*   [createComment][154]
     *   [Parameters][155]
-*   [getCategoriesByModel][156]
+*   [getModelComments][156]
     *   [Parameters][157]
-*   [createComment][158]
+*   [updateComment][158]
     *   [Parameters][159]
-*   [getModelComments][160]
+*   [deleteComment][160]
     *   [Parameters][161]
-*   [updateComment][162]
+*   [recordDownload][162]
     *   [Parameters][163]
-*   [deleteComment][164]
+*   [getDownloadsHistory][164]
     *   [Parameters][165]
-*   [recordDownload][166]
+*   [getModelDownloadStats][166]
     *   [Parameters][167]
-*   [getDownloadsHistory][168]
+*   [getDownloadInfo][168]
     *   [Parameters][169]
-*   [getModelDownloadStats][170]
+*   [addFavorite][170]
     *   [Parameters][171]
-*   [getDownloadInfo][172]
+*   [removeFavorite][172]
     *   [Parameters][173]
-*   [addFavorite][174]
+*   [getUserFavorites][174]
     *   [Parameters][175]
-*   [removeFavorite][176]
+*   [getUserFavorites][176]
     *   [Parameters][177]
-*   [getUserFavorites][178]
+*   [checkFavorite][178]
     *   [Parameters][179]
-*   [getUserFavorites][180]
+*   [followUser][180]
     *   [Parameters][181]
-*   [checkFavorite][182]
+*   [unfollowUser][182]
     *   [Parameters][183]
-*   [followUser][184]
+*   [getFollowers][184]
     *   [Parameters][185]
-*   [unfollowUser][186]
+*   [getFollowing][186]
     *   [Parameters][187]
-*   [getFollowers][188]
+*   [checkFollow][188]
     *   [Parameters][189]
-*   [getFollowing][190]
+*   [createPart][190]
     *   [Parameters][191]
-*   [checkFollow][192]
+*   [getParts][192]
     *   [Parameters][193]
-*   [createPart][194]
+*   [getPartsByModelId][194]
     *   [Parameters][195]
-*   [getParts][196]
+*   [deletePart][196]
     *   [Parameters][197]
-*   [getPartsByModelId][198]
+*   [createModel][198]
     *   [Parameters][199]
-*   [deletePart][200]
+*   [getModelById][200]
     *   [Parameters][201]
-*   [createModel][202]
-    *   [Parameters][203]
-*   [getModelById][204]
-    *   [Parameters][205]
-*   [getModelIncludes][206]
-*   [getModels][207]
+*   [getModelIncludes][202]
+*   [getModels][203]
+    *   [Parameters][204]
+*   [getModelsByUser][205]
+    *   [Parameters][206]
+*   [deleteModel][207]
     *   [Parameters][208]
-*   [getModelsByUser][209]
+*   [updateModel][209]
     *   [Parameters][210]
-*   [deleteModel][211]
+*   [addLike][211]
     *   [Parameters][212]
-*   [updateModel][213]
+*   [removeLike][213]
     *   [Parameters][214]
-*   [addLike][215]
+*   [updateMainImage][215]
     *   [Parameters][216]
-*   [removeLike][217]
+*   [deleteMainImage][217]
     *   [Parameters][218]
-*   [updateMainImage][219]
+*   [replaceMainFile][219]
     *   [Parameters][220]
-*   [deleteMainImage][221]
+*   [addImage][221]
     *   [Parameters][222]
-*   [replaceMainFile][223]
+*   [getModelImages][223]
     *   [Parameters][224]
-*   [addImage][225]
+*   [updateImageOrder][225]
     *   [Parameters][226]
-*   [getModelImages][227]
+*   [deleteImage][227]
     *   [Parameters][228]
-*   [updateImageOrder][229]
+*   [normalizeTag][229]
     *   [Parameters][230]
-*   [deleteImage][231]
+*   [getTagsForModel][231]
     *   [Parameters][232]
-*   [normalizeTag][233]
+*   [addTagToModel][233]
     *   [Parameters][234]
-*   [getTagsForModel][235]
+*   [removeTagFromModel][235]
     *   [Parameters][236]
-*   [addTagToModel][237]
+*   [removeTag][237]
     *   [Parameters][238]
-*   [removeTagFromModel][239]
-    *   [Parameters][240]
-*   [removeTag][241]
-    *   [Parameters][242]
-*   [getAllTags][243]
-*   [getUserById][244]
+*   [getAllTags][239]
+*   [getUserById][240]
+    *   [Parameters][241]
+*   [getUsers][242]
+    *   [Parameters][243]
+*   [updateUser][244]
     *   [Parameters][245]
-*   [getUsers][246]
+*   [deleteUser][246]
     *   [Parameters][247]
-*   [updateUser][248]
+*   [getAbsolutePath][248]
     *   [Parameters][249]
-*   [deleteUser][250]
+*   [deletePhysicalFile][250]
     *   [Parameters][251]
+*   [deletePhysicalFolder][252]
+    *   [Parameters][253]
+*   [getDisplayFileName][254]
+    *   [Parameters][255]
+*   [sendSuccess][256]
+    *   [Parameters][257]
+*   [sendError][258]
+    *   [Parameters][259]
 
 ## register
 
@@ -488,26 +496,41 @@ Elimina por completo un usuario y todos sus archivos asociados.
 *   `req` &#x20;
 *   `res` &#x20;
 
-## sendSuccess
+## addToModel
 
-Envía una respuesta de éxito estándar.
-
-### Parameters
-
-*   `res` &#x20;
-*   `message` &#x20;
-*   `data`   (optional, default `null`)
-*   `statusCode`   (optional, default `200`)
-
-## sendError
-
-Envía una respuesta de error estándar.
+Añade una categoría a un modelo.
 
 ### Parameters
 
+*   `req` &#x20;
 *   `res` &#x20;
-*   `errorMessage` &#x20;
-*   `statusCode`   (optional, default `400`)
+
+## addToModel
+
+Añade un nuevo tag a un modelo.
+
+### Parameters
+
+*   `req` &#x20;
+*   `res` &#x20;
+
+## removeFromModel
+
+Elimina una categoría de un modelo.
+
+### Parameters
+
+*   `req` &#x20;
+*   `res` &#x20;
+
+## removeFromModel
+
+Elimina un tag de un modelo.
+
+### Parameters
+
+*   `req` &#x20;
+*   `res` &#x20;
 
 ## appendCleanFolderToArchive
 
@@ -545,38 +568,6 @@ Obtiene las estadísticas de descarga de un modelo.
 
 *   `req` &#x20;
 *   `res` &#x20;
-
-## getAbsolutePath
-
-Resuelve la ruta absoluta de un archivo a partir de su URL en la base de datos.
-
-### Parameters
-
-*   `fileUrl` &#x20;
-
-## deletePhysicalFile
-
-Borra un archivo físico del disco de forma segura.
-
-### Parameters
-
-*   `fileUrl` &#x20;
-
-## deletePhysicalFolder
-
-Borra una carpeta completa y todo su contenido (ej: al borrar un modelo entero).
-
-### Parameters
-
-*   `fileUrl` &#x20;
-
-## getDisplayFileName
-
-Extrae el nombre limpio del archivo para mostrarlo al usuario (sin prefijos ni fechas).
-
-### Parameters
-
-*   `serverFileName` &#x20;
 
 ## favorite
 
@@ -804,24 +795,6 @@ Obtiene todos los tags asociados a un modelo.
 *   `req` &#x20;
 *   `res` &#x20;
 
-## addToModel
-
-Añade un nuevo tag a un modelo.
-
-### Parameters
-
-*   `req` &#x20;
-*   `res` &#x20;
-
-## removeFromModel
-
-Elimina un tag de un modelo.
-
-### Parameters
-
-*   `req` &#x20;
-*   `res` &#x20;
-
 ## getFavorites
 
 Obtiene la lista completa de modelos que un usuario ha marcado como favoritos.
@@ -865,7 +838,7 @@ Crea almacenamiento dinámico para añadir o reemplazar archivos.
 *   `subFolder`   (optional, default `""`)
 *   `checkExists`   (optional, default `false`)
 *   `prefix`   (optional, default `""`)
-*   `useTimestamp` **[boolean][252]** Si es true, añade una marca de tiempo para evitar el borrado fatal de Multer. (optional, default `false`)
+*   `useTimestamp` **[boolean][260]** Si es true, añade una marca de tiempo para evitar el borrado fatal de Multer. (optional, default `false`)
 
 ## createFilter
 
@@ -891,7 +864,7 @@ Registra un nuevo usuario en la plataforma.
 
 ### Parameters
 
-*   `userData` **[Object][253]** Datos del usuario (name, lastname, username, email, password).
+*   `userData` **[Object][261]** Datos del usuario (name, lastname, username, email, password).
 
     *   `userData.name` &#x20;
     *   `userData.lastname` &#x20;
@@ -899,7 +872,7 @@ Registra un nuevo usuario en la plataforma.
     *   `userData.email` &#x20;
     *   `userData.password` &#x20;
 
-Returns **[Promise][254]<[Object][253]>** Objeto con los datos públicos del usuario y su token JWT.
+Returns **[Promise][262]<[Object][261]>** Objeto con los datos públicos del usuario y su token JWT.
 
 ## loginUser
 
@@ -907,12 +880,12 @@ Autentica a un usuario verificando sus credenciales.
 
 ### Parameters
 
-*   `credentials` **[Object][253]** Email y contraseña del usuario.
+*   `credentials` **[Object][261]** Email y contraseña del usuario.
 
     *   `credentials.email` &#x20;
     *   `credentials.password` &#x20;
 
-Returns **[Promise][254]<[Object][253]>** Objeto con los datos públicos del usuario y su token JWT.
+Returns **[Promise][262]<[Object][261]>** Objeto con los datos públicos del usuario y su token JWT.
 
 ## getCurrentUser
 
@@ -920,9 +893,9 @@ Obtiene los datos básicos del usuario actualmente autenticado (usado para valid
 
 ### Parameters
 
-*   `userId` **[string][255]** ID del usuario extraído del token.
+*   `userId` **[string][263]** ID del usuario extraído del token.
 
-Returns **[Promise][254]<[Object][253]>** Datos del usuario (excluyendo datos sensibles).
+Returns **[Promise][262]<[Object][261]>** Datos del usuario (excluyendo datos sensibles).
 
 ## createCategory
 
@@ -969,17 +942,37 @@ Obtiene todas las categorías asociadas a un modelo específico.
 
 *   `modelId` &#x20;
 
+## addCategoryToModel
+
+Añade una categoría existente a un modelo.
+
+### Parameters
+
+*   `modelId` **[string][263]** ID del modelo.
+*   `categoryId` **[string][263]** ID de la categoría.
+*   `user` **[object][261]** Usuario autenticado.
+
+## removeCategoryFromModel
+
+Elimina una categoría de un modelo.
+
+### Parameters
+
+*   `modelId` **[string][263]** ID del modelo.
+*   `categoryId` **[string][263]** ID de la categoría.
+*   `user` **[object][261]** Usuario autenticado.
+
 ## createComment
 
 Crea un nuevo comentario en un modelo.
 
 ### Parameters
 
-*   `modelId` **[string][255]** ID del modelo comentado.
-*   `userId` **[string][255]** ID del usuario que comenta.
-*   `content` **[string][255]** Contenido del comentario.
+*   `modelId` **[string][263]** ID del modelo comentado.
+*   `userId` **[string][263]** ID del usuario que comenta.
+*   `content` **[string][263]** Contenido del comentario.
 
-Returns **[Promise][254]<[Object][253]>** El comentario recién creado.
+Returns **[Promise][262]<[Object][261]>** El comentario recién creado.
 
 ## getModelComments
 
@@ -987,13 +980,13 @@ Obtiene los comentarios de un modelo de forma paginada junto con los datos del a
 
 ### Parameters
 
-*   `modelId` **[string][255]** ID del modelo.
-*   `pagination` **[Object][253]** Objeto con page y limit.
+*   `modelId` **[string][263]** ID del modelo.
+*   `pagination` **[Object][261]** Objeto con page y limit.
 
     *   `pagination.page`   (optional, default `1`)
     *   `pagination.limit`   (optional, default `20`)
 
-Returns **[Promise][254]<[Object][253]>** Resultado paginado con los comentarios.
+Returns **[Promise][262]<[Object][261]>** Resultado paginado con los comentarios.
 
 ## updateComment
 
@@ -1001,11 +994,11 @@ Actualiza el contenido de un comentario.
 
 ### Parameters
 
-*   `commentId` **[string][255]** ID del comentario.
-*   `user` **[Object][253]** Usuario que realiza la petición (para verificar permisos).
-*   `content` **[string][255]** Nuevo texto del comentario.
+*   `commentId` **[string][263]** ID del comentario.
+*   `user` **[Object][261]** Usuario que realiza la petición (para verificar permisos).
+*   `content` **[string][263]** Nuevo texto del comentario.
 
-Returns **[Promise][254]<[Object][253]>** El comentario actualizado.
+Returns **[Promise][262]<[Object][261]>** El comentario actualizado.
 
 ## deleteComment
 
@@ -1013,10 +1006,10 @@ Elimina un comentario.
 
 ### Parameters
 
-*   `commentId` **[string][255]** ID del comentario.
-*   `user` **[Object][253]** Usuario que realiza la petición.
+*   `commentId` **[string][263]** ID del comentario.
+*   `user` **[Object][261]** Usuario que realiza la petición.
 
-Returns **[Promise][254]<[Object][253]>** Mensaje de éxito.
+Returns **[Promise][262]<[Object][261]>** Mensaje de éxito.
 
 ## recordDownload
 
@@ -1024,10 +1017,10 @@ Registra una descarga en el historial y actualiza el contador global del modelo 
 
 ### Parameters
 
-*   `modelId` **[string][255]** ID del modelo descargado.
-*   `user` **([Object][253] | null)** Usuario que descarga (null si es anónimo).
-*   `ip` **[string][255]** Dirección IP del cliente.
-*   `userAgent` **[string][255]** Navegador/Software usado.
+*   `modelId` **[string][263]** ID del modelo descargado.
+*   `user` **([Object][261] | null)** Usuario que descarga (null si es anónimo).
+*   `ip` **[string][263]** Dirección IP del cliente.
+*   `userAgent` **[string][263]** Navegador/Software usado.
 
 ## getDownloadsHistory
 
@@ -1036,7 +1029,7 @@ Obtiene el historial paginado de descargas de un usuario.
 ### Parameters
 
 *   `userId` &#x20;
-*   `$1` **[Object][253]**&#x20;
+*   `$1` **[Object][261]**&#x20;
 
     *   `$1.page`   (optional, default `1`)
     *   `$1.limit`   (optional, default `20`)
@@ -1064,8 +1057,8 @@ Añade un modelo a la lista de favoritos de un usuario.
 
 ### Parameters
 
-*   `modelId` **[string][255]** ID del modelo.
-*   `userId` **[string][255]** ID del usuario.
+*   `modelId` **[string][263]** ID del modelo.
+*   `userId` **[string][263]** ID del usuario.
 
 ## removeFavorite
 
@@ -1073,8 +1066,8 @@ Elimina un modelo de la lista de favoritos de un usuario.
 
 ### Parameters
 
-*   `modelId` **[string][255]** ID del modelo.
-*   `userId` **[string][255]** ID del usuario.
+*   `modelId` **[string][263]** ID del modelo.
+*   `userId` **[string][263]** ID del usuario.
 
 ## getUserFavorites
 
@@ -1082,8 +1075,8 @@ Obtiene la lista paginada de modelos favoritos de un usuario.
 
 ### Parameters
 
-*   `userId` **[string][255]** ID del usuario del que se quieren ver los favoritos.
-*   `pagination` **[Object][253]** Opciones de paginación { page, limit }.
+*   `userId` **[string][263]** ID del usuario del que se quieren ver los favoritos.
+*   `pagination` **[Object][261]** Opciones de paginación { page, limit }.
 
     *   `pagination.page`   (optional, default `1`)
     *   `pagination.limit`   (optional, default `20`)
@@ -1102,8 +1095,8 @@ Verifica si un usuario tiene un modelo en sus favoritos.
 
 ### Parameters
 
-*   `modelId` **[string][255]** ID del modelo.
-*   `userId` **[string][255]** ID del usuario.
+*   `modelId` **[string][263]** ID del modelo.
+*   `userId` **[string][263]** ID del usuario.
 
 ## followUser
 
@@ -1111,8 +1104,8 @@ Permite a un usuario seguir a otro y actualiza los contadores.
 
 ### Parameters
 
-*   `userIdToFollow` **[string][255]** ID del usuario al que se quiere seguir.
-*   `followerId` **[string][255]** ID del usuario que ejecuta la acción (el seguidor).
+*   `userIdToFollow` **[string][263]** ID del usuario al que se quiere seguir.
+*   `followerId` **[string][263]** ID del usuario que ejecuta la acción (el seguidor).
 
 ## unfollowUser
 
@@ -1130,7 +1123,7 @@ Obtiene la lista de usuarios que siguen a un usuario específico.
 ### Parameters
 
 *   `userId` &#x20;
-*   `$1` **[Object][253]**&#x20;
+*   `$1` **[Object][261]**&#x20;
 
     *   `$1.page`   (optional, default `1`)
     *   `$1.limit`   (optional, default `20`)
@@ -1142,7 +1135,7 @@ Obtiene la lista de usuarios a los que sigue un usuario específico.
 ### Parameters
 
 *   `userId` &#x20;
-*   `$1` **[Object][253]**&#x20;
+*   `$1` **[Object][261]**&#x20;
 
     *   `$1.page`   (optional, default `1`)
     *   `$1.limit`   (optional, default `20`)
@@ -1162,11 +1155,11 @@ Añade una nueva pieza (parte) a un modelo existente.
 
 ### Parameters
 
-*   `user` **[Object][253]** El usuario autenticado (para verificar permisos).
-*   `modelId` **[string][255]** El ID del modelo padre.
-*   `data` **[Object][253]** Datos de la pieza (color, part\_name, file\_url, file\_size).
+*   `user` **[Object][261]** El usuario autenticado (para verificar permisos).
+*   `modelId` **[string][263]** El ID del modelo padre.
+*   `data` **[Object][261]** Datos de la pieza (color, part\_name, file\_url, file\_size).
 
-Returns **[Promise][254]<[Object][253]>** La pieza recién insertada.
+Returns **[Promise][262]<[Object][261]>** La pieza recién insertada.
 
 ## getParts
 
@@ -1174,7 +1167,7 @@ Obtiene todas las piezas registradas (paginado, para propósitos administrativos
 
 ### Parameters
 
-*   `$0` **[Object][253]**&#x20;
+*   `$0` **[Object][261]**&#x20;
 
     *   `$0.page`   (optional, default `1`)
     *   `$0.limit`   (optional, default `20`)
@@ -1185,7 +1178,7 @@ Obtiene todas las piezas asociadas a un modelo específico.
 
 ### Parameters
 
-*   `modelId` **[string][255]** El ID del modelo.
+*   `modelId` **[string][263]** El ID del modelo.
 
 ## deletePart
 
@@ -1193,8 +1186,8 @@ Elimina una pieza específica tanto de la base de datos como del sistema de arch
 
 ### Parameters
 
-*   `partId` **[string][255]** El ID de la pieza a eliminar.
-*   `user` **[Object][253]** El usuario autenticado.
+*   `partId` **[string][263]** El ID de la pieza a eliminar.
+*   `user` **[Object][261]** El usuario autenticado.
 
 ## createModel
 
@@ -1223,7 +1216,7 @@ Lista modelos de forma paginada.
 
 ### Parameters
 
-*   `$0` **[Object][253]**&#x20;
+*   `$0` **[Object][261]**&#x20;
 
     *   `$0.page`   (optional, default `1`)
     *   `$0.limit`   (optional, default `20`)
@@ -1235,7 +1228,7 @@ Lista modelos creados por un usuario específico de forma paginada.
 ### Parameters
 
 *   `userId` &#x20;
-*   `$1` **[Object][253]**&#x20;
+*   `$1` **[Object][261]**&#x20;
 
     *   `$1.page`   (optional, default `1`)
     *   `$1.limit`   (optional, default `20`)
@@ -1312,12 +1305,12 @@ Añade una nueva imagen a la galería de un modelo.
 
 ### Parameters
 
-*   `user` **[Object][253]** Usuario autenticado (para verificar permisos).
-*   `modelId` **[string][255]** ID del modelo padre.
-*   `imageUrl` **[string][255]** Ruta de la imagen subida.
-*   `displayOrder` **[number][256]** Orden de visualización en la galería. (optional, default `0`)
+*   `user` **[Object][261]** Usuario autenticado (para verificar permisos).
+*   `modelId` **[string][263]** ID del modelo padre.
+*   `imageUrl` **[string][263]** Ruta de la imagen subida.
+*   `displayOrder` **[number][264]** Orden de visualización en la galería. (optional, default `0`)
 
-Returns **[Promise][254]<[Object][253]>** El registro de la imagen creada.
+Returns **[Promise][262]<[Object][261]>** El registro de la imagen creada.
 
 ## getModelImages
 
@@ -1325,9 +1318,9 @@ Obtiene todas las imágenes de la galería de un modelo.
 
 ### Parameters
 
-*   `modelId` **[string][255]** ID del modelo.
+*   `modelId` **[string][263]** ID del modelo.
 
-Returns **[Promise][254]<[Array][257]>** Lista de imágenes ordenadas por display\_order y fecha.
+Returns **[Promise][262]<[Array][265]>** Lista de imágenes ordenadas por display\_order y fecha.
 
 ## updateImageOrder
 
@@ -1335,11 +1328,11 @@ Actualiza el orden de visualización de una imagen en la galería.
 
 ### Parameters
 
-*   `imageId` **[string][255]** ID de la imagen a actualizar.
-*   `user` **[Object][253]** Usuario autenticado.
-*   `newDisplayOrder` **[number][256]** Nuevo número de orden.
+*   `imageId` **[string][263]** ID de la imagen a actualizar.
+*   `user` **[Object][261]** Usuario autenticado.
+*   `newDisplayOrder` **[number][264]** Nuevo número de orden.
 
-Returns **[Promise][254]<[Object][253]>** La imagen actualizada.
+Returns **[Promise][262]<[Object][261]>** La imagen actualizada.
 
 ## deleteImage
 
@@ -1347,10 +1340,10 @@ Elimina una imagen de la galería, tanto de la DB como del disco duro.
 
 ### Parameters
 
-*   `imageId` **[string][255]** ID de la imagen a eliminar.
-*   `user` **[Object][253]** Usuario autenticado.
+*   `imageId` **[string][263]** ID de la imagen a eliminar.
+*   `user` **[Object][261]** Usuario autenticado.
 
-Returns **[Promise][254]<[Object][253]>** Mensaje de confirmación.
+Returns **[Promise][262]<[Object][261]>** Mensaje de confirmación.
 
 ## normalizeTag
 
@@ -1366,7 +1359,7 @@ Obtiene todos los tags asociados a un modelo.
 
 ### Parameters
 
-*   `modelId` **[string][255]** ID del modelo.
+*   `modelId` **[string][263]** ID del modelo.
 
 ## addTagToModel
 
@@ -1416,7 +1409,7 @@ Obtiene la lista de usuarios paginada.
 
 ### Parameters
 
-*   `$0` **[Object][253]**&#x20;
+*   `$0` **[Object][261]**&#x20;
 
     *   `$0.page`   (optional, default `1`)
     *   `$0.limit`   (optional, default `20`)
@@ -1439,6 +1432,59 @@ Elimina un usuario de la BD y borra por completo sus carpetas físicas.
 
 *   `userId` &#x20;
 *   `currentUser` &#x20;
+
+## getAbsolutePath
+
+Resuelve la ruta absoluta de un archivo a partir de su URL en la base de datos.
+
+### Parameters
+
+*   `fileUrl` &#x20;
+
+## deletePhysicalFile
+
+Borra un archivo físico del disco de forma segura.
+
+### Parameters
+
+*   `fileUrl` &#x20;
+
+## deletePhysicalFolder
+
+Borra una carpeta completa y todo su contenido (ej: al borrar un modelo entero).
+
+### Parameters
+
+*   `fileUrl` &#x20;
+
+## getDisplayFileName
+
+Extrae el nombre limpio del archivo para mostrarlo al usuario (sin prefijos ni fechas).
+
+### Parameters
+
+*   `serverFileName` &#x20;
+
+## sendSuccess
+
+Envía una respuesta de éxito estándar.
+
+### Parameters
+
+*   `res` &#x20;
+*   `message` &#x20;
+*   `data`   (optional, default `null`)
+*   `statusCode`   (optional, default `200`)
+
+## sendError
+
+Envía una respuesta de error estándar.
+
+### Parameters
+
+*   `res` &#x20;
+*   `errorMessage` &#x20;
+*   `statusCode`   (optional, default `400`)
 
 [1]: #register
 
@@ -1544,412 +1590,428 @@ Elimina un usuario de la BD y borra por completo sus carpetas físicas.
 
 [52]: #parameters-25
 
-[53]: #sendsuccess
+[53]: #addtomodel
 
 [54]: #parameters-26
 
-[55]: #senderror
+[55]: #addtomodel-1
 
 [56]: #parameters-27
 
-[57]: #appendcleanfoldertoarchive
+[57]: #removefrommodel
 
 [58]: #parameters-28
 
-[59]: #record
+[59]: #removefrommodel-1
 
 [60]: #parameters-29
 
-[61]: #getuserhistory
+[61]: #appendcleanfoldertoarchive
 
 [62]: #parameters-30
 
-[63]: #getmodelstats
+[63]: #record
 
 [64]: #parameters-31
 
-[65]: #getabsolutepath
+[65]: #getuserhistory
 
 [66]: #parameters-32
 
-[67]: #deletephysicalfile
+[67]: #getmodelstats
 
 [68]: #parameters-33
 
-[69]: #deletephysicalfolder
+[69]: #favorite
 
 [70]: #parameters-34
 
-[71]: #getdisplayfilename
+[71]: #unfavorite
 
 [72]: #parameters-35
 
-[73]: #favorite
+[73]: #getuserfavoritespublic
 
 [74]: #parameters-36
 
-[75]: #unfavorite
+[75]: #getmyfavorites
 
 [76]: #parameters-37
 
-[77]: #getuserfavoritespublic
+[77]: #check
 
 [78]: #parameters-38
 
-[79]: #getmyfavorites
+[79]: #check-1
 
 [80]: #parameters-39
 
-[81]: #check
+[81]: #follow
 
 [82]: #parameters-40
 
-[83]: #check-1
+[83]: #unfollow
 
 [84]: #parameters-41
 
-[85]: #follow
+[85]: #followers
 
 [86]: #parameters-42
 
-[87]: #unfollow
+[87]: #following
 
 [88]: #parameters-43
 
-[89]: #followers
+[89]: #formatuploadedfiles
 
 [90]: #parameters-44
 
-[91]: #following
+[91]: #uploadmodel
 
 [92]: #parameters-45
 
-[93]: #formatuploadedfiles
+[93]: #getbyid
 
 [94]: #parameters-46
 
-[95]: #uploadmodel
+[95]: #getbyid-1
 
 [96]: #parameters-47
 
-[97]: #getbyid
+[97]: #getbyuser
 
 [98]: #parameters-48
 
-[99]: #getbyid-1
+[99]: #like
 
 [100]: #parameters-49
 
-[101]: #getbyuser
+[101]: #unlike
 
 [102]: #parameters-50
 
-[103]: #like
+[103]: #patchmainfile
 
 [104]: #parameters-51
 
-[105]: #unlike
+[105]: #patchmainimage
 
 [106]: #parameters-52
 
-[107]: #patchmainfile
+[107]: #removemainimage
 
 [108]: #parameters-53
 
-[109]: #patchmainimage
+[109]: #uploadimage
 
 [110]: #parameters-54
 
-[111]: #removemainimage
+[111]: #getimages
 
 [112]: #parameters-55
 
-[113]: #uploadimage
+[113]: #updateorder
 
 [114]: #parameters-56
 
-[115]: #getimages
+[115]: #removeimage
 
 [116]: #parameters-57
 
-[117]: #updateorder
+[117]: #getformodel
 
 [118]: #parameters-58
 
-[119]: #removeimage
+[119]: #getfavorites
 
 [120]: #parameters-59
 
-[121]: #getformodel
+[121]: #getmodelbasedirectory
 
 [122]: #parameters-60
 
-[123]: #addtomodel
+[123]: #cleanfilename
 
 [124]: #parameters-61
 
-[125]: #removefrommodel
+[125]: #createinitialstorage
 
 [126]: #parameters-62
 
-[127]: #getfavorites
+[127]: #createdynamicstorage
 
 [128]: #parameters-63
 
-[129]: #getmodelbasedirectory
+[129]: #createfilter
 
 [130]: #parameters-64
 
-[131]: #cleanfilename
+[131]: #createuploadwrapper
 
 [132]: #parameters-65
 
-[133]: #createinitialstorage
+[133]: #registeruser
 
 [134]: #parameters-66
 
-[135]: #createdynamicstorage
+[135]: #loginuser
 
 [136]: #parameters-67
 
-[137]: #createfilter
+[137]: #getcurrentuser
 
 [138]: #parameters-68
 
-[139]: #createuploadwrapper
+[139]: #createcategory
 
 [140]: #parameters-69
 
-[141]: #registeruser
+[141]: #getcategories
 
-[142]: #parameters-70
+[142]: #getcategorybyid
 
-[143]: #loginuser
+[143]: #parameters-70
 
-[144]: #parameters-71
+[144]: #updatecategory
 
-[145]: #getcurrentuser
+[145]: #parameters-71
 
-[146]: #parameters-72
+[146]: #deletecategory
 
-[147]: #createcategory
+[147]: #parameters-72
 
-[148]: #parameters-73
+[148]: #getcategoriesbymodel
 
-[149]: #getcategories
+[149]: #parameters-73
 
-[150]: #getcategorybyid
+[150]: #addcategorytomodel
 
 [151]: #parameters-74
 
-[152]: #updatecategory
+[152]: #removecategoryfrommodel
 
 [153]: #parameters-75
 
-[154]: #deletecategory
+[154]: #createcomment
 
 [155]: #parameters-76
 
-[156]: #getcategoriesbymodel
+[156]: #getmodelcomments
 
 [157]: #parameters-77
 
-[158]: #createcomment
+[158]: #updatecomment
 
 [159]: #parameters-78
 
-[160]: #getmodelcomments
+[160]: #deletecomment
 
 [161]: #parameters-79
 
-[162]: #updatecomment
+[162]: #recorddownload
 
 [163]: #parameters-80
 
-[164]: #deletecomment
+[164]: #getdownloadshistory
 
 [165]: #parameters-81
 
-[166]: #recorddownload
+[166]: #getmodeldownloadstats
 
 [167]: #parameters-82
 
-[168]: #getdownloadshistory
+[168]: #getdownloadinfo
 
 [169]: #parameters-83
 
-[170]: #getmodeldownloadstats
+[170]: #addfavorite
 
 [171]: #parameters-84
 
-[172]: #getdownloadinfo
+[172]: #removefavorite
 
 [173]: #parameters-85
 
-[174]: #addfavorite
+[174]: #getuserfavorites
 
 [175]: #parameters-86
 
-[176]: #removefavorite
+[176]: #getuserfavorites-1
 
 [177]: #parameters-87
 
-[178]: #getuserfavorites
+[178]: #checkfavorite
 
 [179]: #parameters-88
 
-[180]: #getuserfavorites-1
+[180]: #followuser
 
 [181]: #parameters-89
 
-[182]: #checkfavorite
+[182]: #unfollowuser
 
 [183]: #parameters-90
 
-[184]: #followuser
+[184]: #getfollowers
 
 [185]: #parameters-91
 
-[186]: #unfollowuser
+[186]: #getfollowing
 
 [187]: #parameters-92
 
-[188]: #getfollowers
+[188]: #checkfollow
 
 [189]: #parameters-93
 
-[190]: #getfollowing
+[190]: #createpart
 
 [191]: #parameters-94
 
-[192]: #checkfollow
+[192]: #getparts
 
 [193]: #parameters-95
 
-[194]: #createpart
+[194]: #getpartsbymodelid
 
 [195]: #parameters-96
 
-[196]: #getparts
+[196]: #deletepart
 
 [197]: #parameters-97
 
-[198]: #getpartsbymodelid
+[198]: #createmodel
 
 [199]: #parameters-98
 
-[200]: #deletepart
+[200]: #getmodelbyid
 
 [201]: #parameters-99
 
-[202]: #createmodel
+[202]: #getmodelincludes
 
-[203]: #parameters-100
+[203]: #getmodels
 
-[204]: #getmodelbyid
+[204]: #parameters-100
 
-[205]: #parameters-101
+[205]: #getmodelsbyuser
 
-[206]: #getmodelincludes
+[206]: #parameters-101
 
-[207]: #getmodels
+[207]: #deletemodel
 
 [208]: #parameters-102
 
-[209]: #getmodelsbyuser
+[209]: #updatemodel
 
 [210]: #parameters-103
 
-[211]: #deletemodel
+[211]: #addlike
 
 [212]: #parameters-104
 
-[213]: #updatemodel
+[213]: #removelike
 
 [214]: #parameters-105
 
-[215]: #addlike
+[215]: #updatemainimage
 
 [216]: #parameters-106
 
-[217]: #removelike
+[217]: #deletemainimage
 
 [218]: #parameters-107
 
-[219]: #updatemainimage
+[219]: #replacemainfile
 
 [220]: #parameters-108
 
-[221]: #deletemainimage
+[221]: #addimage
 
 [222]: #parameters-109
 
-[223]: #replacemainfile
+[223]: #getmodelimages
 
 [224]: #parameters-110
 
-[225]: #addimage
+[225]: #updateimageorder
 
 [226]: #parameters-111
 
-[227]: #getmodelimages
+[227]: #deleteimage
 
 [228]: #parameters-112
 
-[229]: #updateimageorder
+[229]: #normalizetag
 
 [230]: #parameters-113
 
-[231]: #deleteimage
+[231]: #gettagsformodel
 
 [232]: #parameters-114
 
-[233]: #normalizetag
+[233]: #addtagtomodel
 
 [234]: #parameters-115
 
-[235]: #gettagsformodel
+[235]: #removetagfrommodel
 
 [236]: #parameters-116
 
-[237]: #addtagtomodel
+[237]: #removetag
 
 [238]: #parameters-117
 
-[239]: #removetagfrommodel
+[239]: #getalltags
 
-[240]: #parameters-118
+[240]: #getuserbyid
 
-[241]: #removetag
+[241]: #parameters-118
 
-[242]: #parameters-119
+[242]: #getusers
 
-[243]: #getalltags
+[243]: #parameters-119
 
-[244]: #getuserbyid
+[244]: #updateuser
 
 [245]: #parameters-120
 
-[246]: #getusers
+[246]: #deleteuser
 
 [247]: #parameters-121
 
-[248]: #updateuser
+[248]: #getabsolutepath
 
 [249]: #parameters-122
 
-[250]: #deleteuser
+[250]: #deletephysicalfile
 
 [251]: #parameters-123
 
-[252]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[252]: #deletephysicalfolder
 
-[253]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[253]: #parameters-124
 
-[254]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[254]: #getdisplayfilename
 
-[255]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[255]: #parameters-125
 
-[256]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[256]: #sendsuccess
 
-[257]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[257]: #parameters-126
+
+[258]: #senderror
+
+[259]: #parameters-127
+
+[260]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[261]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[262]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+[263]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[264]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[265]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
