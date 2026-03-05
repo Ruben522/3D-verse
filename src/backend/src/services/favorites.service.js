@@ -6,7 +6,6 @@ import prisma from "../config/prisma.js";
  * @param {string} userId - ID del usuario.
  */
 const addFavorite = async (modelId, userId) => {
-    // Verificamos existencia del modelo
     const model = await prisma.models.findUnique({
         where: { id: modelId },
     });
@@ -19,7 +18,6 @@ const addFavorite = async (modelId, userId) => {
         });
         return { message: "Añadido a favoritos" };
     } catch (error) {
-        // P2002: Violación de restricción única (ya existe en favoritos)
         if (error.code === "P2002")
             return { message: "Ya estaba en favoritos" };
         throw error;
@@ -33,7 +31,6 @@ const addFavorite = async (modelId, userId) => {
  */
 const removeFavorite = async (modelId, userId) => {
     try {
-        // En Prisma borramos por clave compuesta o Unique (en tu esquema es @@unique([user_id, model_id]))
         await prisma.favorites.delete({
             where: {
                 user_id_model_id: {
@@ -44,7 +41,6 @@ const removeFavorite = async (modelId, userId) => {
         });
         return { message: "Eliminado de favoritos" };
     } catch (error) {
-        // P2025: No se encontró el registro para borrar
         if (error.code === "P2025")
             return { message: "No estaba en favoritos" };
         throw error;
@@ -82,7 +78,6 @@ const getUserFavorites = async (
                             views: true,
                             created_at: true,
                             users: {
-                                // El creador del modelo
                                 select: {
                                     id: true,
                                     username: true,
@@ -98,7 +93,6 @@ const getUserFavorites = async (
             }),
         ]);
 
-    // Aplanamos el resultado para simular el json_build_object de SQL y devolver solo los modelos
     const formattedData = favoritesList.map((fav) => ({
         id: fav.models.id,
         title: fav.models.title,

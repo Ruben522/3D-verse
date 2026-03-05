@@ -11,6 +11,8 @@ SELECT * FROM downloads;
 SELECT * FROM models;
 
 SELECT * FROM categories;
+
+SELECT * FROM model_images WHERE id = '72c8cb7c-e5b6-4a16-a044-c5864bbb2146';
 -- Cambiar mi rol de user a admin
 UPDATE users SET role = 'admin' WHERE name = 'Ruben';
 

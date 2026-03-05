@@ -10,7 +10,6 @@ const followUser = async (userIdToFollow, followerId) => {
         throw new Error("No puedes seguirte a ti mismo");
 
     try {
-        // 1. Intentamos crear la relación de seguimiento
         await prisma.followers.create({
             data: {
                 user_id: userIdToFollow,
@@ -18,7 +17,6 @@ const followUser = async (userIdToFollow, followerId) => {
             },
         });
 
-        // 2. Si tiene éxito, actualizamos los contadores de ambos usuarios en una transacción
         await prisma.$transaction([
             prisma.users.update({
                 where: { id: userIdToFollow },
@@ -32,7 +30,6 @@ const followUser = async (userIdToFollow, followerId) => {
 
         return { message: "Ahora sigues a este usuario" };
     } catch (error) {
-        // P2002 significa que la relación ya existía (Violación de restricción única)
         if (error.code === "P2002")
             return { message: "Ya sigues a este usuario" };
         throw error;
@@ -47,7 +44,6 @@ const unfollowUser = async (
     followerId,
 ) => {
     try {
-        // 1. Borramos la relación usando la clave compuesta generada por Prisma
         await prisma.followers.delete({
             where: {
                 user_id_follower_id: {
@@ -57,8 +53,6 @@ const unfollowUser = async (
             },
         });
 
-        // 2. Decrementamos los contadores (usamos decrement para ser atómicos)
-        // Nota: Asegúrate de que tu frontend y base de datos manejan bien que no baje de 0.
         await prisma.$transaction([
             prisma.users.update({
                 where: { id: userIdToUnfollow },
@@ -74,7 +68,6 @@ const unfollowUser = async (
             message: "Has dejado de seguir al usuario",
         };
     } catch (error) {
-        // P2025 significa que no se encontró el registro para borrar
         if (error.code === "P2025")
             return { message: "No seguías a este usuario" };
         throw error;

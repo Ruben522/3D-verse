@@ -44,4 +44,8 @@ app.get("/", (req, res) => {
     res.send("Bienvenido a la API de 3D-verse");
 });
 
+BigInt.prototype.toJSON = function () {
+    return Number(this);
+};
+
 export default app;

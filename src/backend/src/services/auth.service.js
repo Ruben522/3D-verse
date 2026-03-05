@@ -1,5 +1,8 @@
 import prisma from "../config/prisma.js";
-import { hashPassword, comparePassword } from "../utils/hashPassword.js";
+import {
+    hashPassword,
+    comparePassword,
+} from "../utils/hashPassword.js";
 import { generateToken } from "../utils/generateToken.js";
 
 /**
@@ -7,11 +10,16 @@ import { generateToken } from "../utils/generateToken.js";
  * @param {Object} userData - Datos del usuario (name, lastname, username, email, password).
  * @returns {Promise<Object>} Objeto con los datos públicos del usuario y su token JWT.
  */
-const registerUser = async ({ name, lastname, username, email, password }) => {
+const registerUser = async ({
+    name,
+    lastname,
+    username,
+    email,
+    password,
+}) => {
     const hashed = await hashPassword(password);
 
     try {
-        // Prisma maneja la inserción y devuelve solo los campos seleccionados (sin el password_hash)
         const user = await prisma.users.create({
             data: {
                 name,
@@ -19,14 +27,13 @@ const registerUser = async ({ name, lastname, username, email, password }) => {
                 username,
                 email,
                 password_hash: hashed,
-                // El campo 'role' asume 'user' por defecto gracias al @default(user) en tu schema.prisma
             },
             select: {
                 id: true,
                 username: true,
                 email: true,
-                role: true
-            }
+                role: true,
+            },
         });
 
         const token = generateToken({
@@ -36,9 +43,10 @@ const registerUser = async ({ name, lastname, username, email, password }) => {
 
         return { user, token };
     } catch (error) {
-        // P2002 significa que falló una restricción UNIQUE (email o username ya existen)
-        if (error.code === 'P2002') {
-            throw new Error("El nombre de usuario o el email ya están en uso");
+        if (error.code === "P2002") {
+            throw new Error(
+                "El nombre de usuario o el email ya están en uso",
+            );
         }
         throw error;
     }
@@ -52,15 +60,17 @@ const registerUser = async ({ name, lastname, username, email, password }) => {
 const loginUser = async ({ email, password }) => {
     // Buscamos al usuario por su email
     const user = await prisma.users.findUnique({
-        where: { email }
+        where: { email },
     });
 
     if (!user) {
         throw new Error("Credenciales inválidas");
     }
 
-    // Comparamos contraseñas
-    const validPassword = await comparePassword(password, user.password_hash);
+    const validPassword = await comparePassword(
+        password,
+        user.password_hash,
+    );
 
     if (!validPassword) {
         throw new Error("Credenciales inválidas");
@@ -98,8 +108,8 @@ const getCurrentUser = async (userId) => {
             email: true,
             role: true,
             avatar: true,
-            created_at: true
-        }
+            created_at: true,
+        },
     });
 
     if (!user) {

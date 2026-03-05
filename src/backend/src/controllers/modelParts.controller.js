@@ -27,7 +27,6 @@ const create = async (req, res) => {
 
         const uploadedParts = [];
 
-        // Iteramos sobre los archivos recibidos para crear las partes
         for (let i = 0; i < req.files.length; i++) {
             const file = req.files[i];
 

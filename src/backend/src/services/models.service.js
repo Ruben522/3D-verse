@@ -1,17 +1,31 @@
 import prisma from "../config/prisma.js";
 import { checkPermission } from "../utils/checkPermission.js";
-import { deletePhysicalFile, deletePhysicalFolder } from "../utils/helper/file.helper.js";
+import {
+    deletePhysicalFile,
+    deletePhysicalFolder,
+} from "../utils/helper/file.helper.js";
 
 /**
  * Crea un nuevo modelo junto con sus piezas, galería, etiquetas y categorías.
  */
 const createModel = async (userId, data) => {
-    if (!data) throw new Error("Faltan los datos del modelo");
+    if (!data)
+        throw new Error("Faltan los datos del modelo");
 
-    const { title, main_color, description, file_url, main_image_url, video_url, license, parts, images, tags, categories } = data;
+    const {
+        title,
+        main_color,
+        description,
+        file_url,
+        main_image_url,
+        video_url,
+        license,
+        parts,
+        images,
+        tags,
+        categories,
+    } = data;
 
-    // Prisma permite hacer "Nested Writes" (escrituras anidadas).
-    // Crea el modelo y, en la misma operación, inserta las piezas, imágenes y relaciones.
     const model = await prisma.models.create({
         data: {
             user_id: userId,
@@ -22,31 +36,43 @@ const createModel = async (userId, data) => {
             main_image_url: main_image_url || null,
             video_url,
             license: license || "All Rights Reserved",
-            
-            // Relaciones One-to-Many
-            model_parts: parts?.length ? {
-                create: parts.map(p => ({
-                    color: p.color || null,
-                    part_name: p.part_name,
-                    file_url: p.file_url,
-                    file_size: p.file_size
-                }))
-            } : undefined,
-            
-            model_images: images?.length ? {
-                create: images.map(img => ({ image_url: img, display_order: 0 }))
-            } : undefined,
 
-            // Relaciones Many-to-Many (Tags)
-            model_tag: tags?.length ? {
-                create: tags.map(tagId => ({ tag_id: tagId }))
-            } : undefined,
+            model_parts: parts?.length
+                ? {
+                      create: parts.map((p) => ({
+                          color: p.color || null,
+                          part_name: p.part_name,
+                          file_url: p.file_url,
+                          file_size: p.file_size,
+                      })),
+                  }
+                : undefined,
 
-            // Relaciones Many-to-Many (Categorías) - ¡NUEVO!
-            model_category: categories?.length ? {
-                create: categories.map(catId => ({ category_id: catId }))
-            } : undefined
-        }
+            model_images: images?.length
+                ? {
+                      create: images.map((img) => ({
+                          image_url: img,
+                          display_order: 0,
+                      })),
+                  }
+                : undefined,
+
+            model_tag: tags?.length
+                ? {
+                      create: tags.map((tagId) => ({
+                          tag_id: tagId,
+                      })),
+                  }
+                : undefined,
+
+            model_category: categories?.length
+                ? {
+                      create: categories.map((catId) => ({
+                          category_id: catId,
+                      })),
+                  }
+                : undefined,
+        },
     });
 
     return model;
@@ -56,21 +82,31 @@ const createModel = async (userId, data) => {
  * Obtiene un modelo por ID, suma una visita y adjunta todas sus relaciones (creador, partes, etc).
  */
 const getModelById = async (modelId) => {
-    // Primero, incrementamos las vistas
     const updatedModel = await prisma.models.update({
         where: { id: modelId },
         data: { views: { increment: 1 } },
         include: {
-            users: { select: { id: true, username: true, avatar: true } },
+            users: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatar: true,
+                },
+            },
             model_parts: true,
-            model_images: { orderBy: { display_order: 'asc' } },
+            model_images: {
+                orderBy: { display_order: "asc" },
+            },
             model_tag: { include: { tags: true } },
-            model_category: { include: { categories: true } }, // Incluye las categorías reales
-            _count: { select: { model_likes: true } } // Cuenta los likes
-        }
+            model_category: {
+                include: { categories: true },
+            },
+            _count: { select: { model_likes: true } },
+        },
     });
 
-    if (!updatedModel) throw new Error("Modelo no encontrado");
+    if (!updatedModel)
+        throw new Error("Modelo no encontrado");
     return updatedModel;
 };
 
@@ -78,10 +114,22 @@ const getModelById = async (modelId) => {
  * Genera la consulta base (include) que usamos en los listados para no repetir código.
  */
 const getModelIncludes = () => ({
-    users: { select: { id: true, username: true, avatar: true } },
-    model_tag: { include: { tags: { select: { id: true, name: true } } } },
-    model_category: { include: { categories: { select: { id: true, name: true } } } }, // <--- COMENTA ESTA LÍNEA
-    _count: { select: { model_likes: true } }
+    users: {
+        select: { id: true, username: true, avatar: true },
+    },
+    model_tag: {
+        include: {
+            tags: { select: { id: true, name: true } },
+        },
+    },
+    model_category: {
+        include: {
+            categories: {
+                select: { id: true, name: true },
+            },
+        },
+    },
+    _count: { select: { model_likes: true } },
 });
 
 /**
@@ -91,26 +139,32 @@ const getModels = async ({ page = 1, limit = 20 }) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
-    // Prisma permite hacer transacciones para ejecutar el count y el listado a la vez
     const [total, models] = await prisma.$transaction([
         prisma.models.count(),
         prisma.models.findMany({
             take: safeLimit,
             skip: offset,
-            orderBy: { created_at: 'desc' },
-            include: getModelIncludes()
-        })
+            orderBy: { created_at: "desc" },
+            include: getModelIncludes(),
+        }),
     ]);
 
     return {
-        page, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit), data: models
+        page,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: models,
     };
 };
 
 /**
  * Lista modelos creados por un usuario específico de forma paginada.
  */
-const getModelsByUser = async (userId, { page = 1, limit = 20 }) => {
+const getModelsByUser = async (
+    userId,
+    { page = 1, limit = 20 },
+) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
@@ -120,13 +174,17 @@ const getModelsByUser = async (userId, { page = 1, limit = 20 }) => {
             where: { user_id: userId },
             take: safeLimit,
             skip: offset,
-            orderBy: { created_at: 'desc' },
-            include: getModelIncludes()
-        })
+            orderBy: { created_at: "desc" },
+            include: getModelIncludes(),
+        }),
     ]);
 
     return {
-        page, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit), data: models
+        page,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: models,
     };
 };
 
@@ -134,30 +192,34 @@ const getModelsByUser = async (userId, { page = 1, limit = 20 }) => {
  * Elimina un modelo de la BD y toda su carpeta física.
  */
 const deleteModel = async (modelId, user) => {
-    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+    });
     if (!model) throw new Error("Modelo no encontrado");
 
     checkPermission(model.user_id, user);
 
-    // Borramos de la DB (las relaciones en CASCADE hacen el resto)
     await prisma.models.delete({ where: { id: modelId } });
-    
-    // Limpieza física
-    deletePhysicalFolder(model.file_url); 
 
-    return { message: "Modelo y archivos eliminados correctamente" };
+    deletePhysicalFolder(model.file_url);
+
+    return {
+        message:
+            "Modelo y archivos eliminados correctamente",
+    };
 };
 
 /**
  * Actualiza la información textual del modelo.
  */
 const updateModel = async (modelId, user, data) => {
-    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+    });
     if (!model) throw new Error("Modelo no encontrado");
 
     checkPermission(model.user_id, user);
 
-    // Prisma solo actualiza los campos que le pases en 'data' y que no sean undefined
     const updatedModel = await prisma.models.update({
         where: { id: modelId },
         data: {
@@ -166,8 +228,8 @@ const updateModel = async (modelId, user, data) => {
             main_color: data.main_color,
             license: data.license,
             video_url: data.video_url,
-            updated_at: new Date()
-        }
+            updated_at: new Date(),
+        },
     });
 
     return updatedModel;
@@ -179,14 +241,15 @@ const updateModel = async (modelId, user, data) => {
 const addLike = async (modelId, userId) => {
     try {
         await prisma.model_likes.create({
-            data: { user_id: userId, model_id: modelId }
+            data: { user_id: userId, model_id: modelId },
         });
     } catch (error) {
-        // Ignoramos el error P2002 (Violación de restricción única), significa que ya le dio like
-        if (error.code !== 'P2002') throw error;
+        if (error.code !== "P2002") throw error;
     }
 
-    const likesCount = await prisma.model_likes.count({ where: { model_id: modelId } });
+    const likesCount = await prisma.model_likes.count({
+        where: { model_id: modelId },
+    });
     return { likes: likesCount };
 };
 
@@ -195,17 +258,21 @@ const addLike = async (modelId, userId) => {
  */
 const removeLike = async (modelId, userId) => {
     try {
-        // Prisma requiere usar las claves compuestas así:
         await prisma.model_likes.delete({
             where: {
-                user_id_model_id: { user_id: userId, model_id: modelId }
-            }
+                user_id_model_id: {
+                    user_id: userId,
+                    model_id: modelId,
+                },
+            },
         });
     } catch (error) {
-        if (error.code !== 'P2025') throw error; // Ignoramos si no existía el like
+        if (error.code !== "P2025") throw error;
     }
 
-    const likesCount = await prisma.model_likes.count({ where: { model_id: modelId } });
+    const likesCount = await prisma.model_likes.count({
+        where: { model_id: modelId },
+    });
     return { likes: likesCount };
 };
 
@@ -213,17 +280,22 @@ const removeLike = async (modelId, userId) => {
  * Reemplaza la imagen de portada en la BD y borra físicamente la anterior.
  */
 const updateMainImage = async (modelId, user, imageUrl) => {
-    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+    });
     if (!model) throw new Error("Modelo no encontrado");
-    
+
     checkPermission(model.user_id, user);
 
     const updatedModel = await prisma.models.update({
         where: { id: modelId },
-        data: { main_image_url: imageUrl }
+        data: { main_image_url: imageUrl },
     });
 
-    if (model.main_image_url && model.main_image_url !== imageUrl) {
+    if (
+        model.main_image_url &&
+        model.main_image_url !== imageUrl
+    ) {
         deletePhysicalFile(model.main_image_url);
     }
 
@@ -234,34 +306,47 @@ const updateMainImage = async (modelId, user, imageUrl) => {
  * Borra la imagen principal de la BD y del disco duro.
  */
 const deleteMainImage = async (modelId, user) => {
-    const model = await prisma.models.findUnique({ where: { id: modelId } });
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+    });
     if (!model) throw new Error("Modelo no encontrado");
-    
+
     checkPermission(model.user_id, user);
-    if (!model.main_image_url) throw new Error("El modelo ya no tiene imagen principal");
+    if (!model.main_image_url)
+        throw new Error(
+            "El modelo ya no tiene imagen principal",
+        );
 
     await prisma.models.update({
         where: { id: modelId },
-        data: { main_image_url: null } // Nota: Asegúrate de que tu schema permita que main_image_url sea null (String?)
+        data: { main_image_url: null },
     });
 
     deletePhysicalFile(model.main_image_url);
 
-    return { message: "Imagen principal eliminada correctamente" };
+    return {
+        message: "Imagen principal eliminada correctamente",
+    };
 };
 
 /**
  * Reemplaza el archivo principal 3D en la BD y borra físicamente el anterior.
  */
-const replaceMainFile = async (modelId, user, newFileUrl) => {
-    const model = await prisma.models.findUnique({ where: { id: modelId } });
+const replaceMainFile = async (
+    modelId,
+    user,
+    newFileUrl,
+) => {
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+    });
     if (!model) throw new Error("Modelo no encontrado");
-    
+
     checkPermission(model.user_id, user);
 
     const updatedModel = await prisma.models.update({
         where: { id: modelId },
-        data: { file_url: newFileUrl }
+        data: { file_url: newFileUrl },
     });
 
     if (model.file_url && model.file_url !== newFileUrl) {

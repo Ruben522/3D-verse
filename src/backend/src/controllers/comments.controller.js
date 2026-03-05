@@ -96,7 +96,7 @@ const update = async (req, res) => {
         if (error.message === "El comentario no existe") {
             return sendError(res, error.message, 404);
         }
-        sendError(res, error.message, 403); // 403 cubre fallos de permisos o validación
+        sendError(res, error.message, 403);
     }
 };
 

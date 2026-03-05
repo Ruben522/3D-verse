@@ -4,9 +4,12 @@ import {
     getCategoryById,
     updateCategory,
     deleteCategory,
-    getCategoriesByModel
+    getCategoriesByModel,
 } from "../services/categories.service.js";
-import { sendSuccess, sendError } from "../utils/helper/response.helper.js";
+import {
+    sendSuccess,
+    sendError,
+} from "../utils/helper/response.helper.js";
 
 /**
  * Crea una nueva categoría.
@@ -15,11 +18,18 @@ const create = async (req, res) => {
     try {
         const { name } = req.body;
         const category = await createCategory(name);
-        sendSuccess(res, "Categoría creada con éxito", category, 201);
+        sendSuccess(
+            res,
+            "Categoría creada con éxito",
+            category,
+            201,
+        );
     } catch (error) {
-        // Prisma lanza un error si el nombre ya existe (violación de UNIQUE constraint)
-        if (error.code === 'P2002') {
-            return sendError(res, "Ya existe una categoría con ese nombre");
+        if (error.code === "P2002") {
+            return sendError(
+                res,
+                "Ya existe una categoría con ese nombre",
+            );
         }
         sendError(res, error.message);
     }
@@ -31,7 +41,11 @@ const create = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         const categories = await getCategories();
-        sendSuccess(res, "Categorías recuperadas", categories);
+        sendSuccess(
+            res,
+            "Categorías recuperadas",
+            categories,
+        );
     } catch (error) {
         sendError(res, error.message, 500);
     }
@@ -42,7 +56,9 @@ const getAll = async (req, res) => {
  */
 const getOne = async (req, res) => {
     try {
-        const category = await getCategoryById(req.params.id);
+        const category = await getCategoryById(
+            req.params.id,
+        );
         sendSuccess(res, "Categoría recuperada", category);
     } catch (error) {
         sendError(res, error.message, 404);
@@ -54,8 +70,14 @@ const getOne = async (req, res) => {
  */
 const getByModel = async (req, res) => {
     try {
-        const categories = await getCategoriesByModel(req.params.modelId);
-        sendSuccess(res, "Categorías del modelo recuperadas", categories);
+        const categories = await getCategoriesByModel(
+            req.params.modelId,
+        );
+        sendSuccess(
+            res,
+            "Categorías del modelo recuperadas",
+            categories,
+        );
     } catch (error) {
         sendError(res, error.message, 500);
     }
@@ -67,12 +89,23 @@ const getByModel = async (req, res) => {
 const update = async (req, res) => {
     try {
         const { name } = req.body;
-        if (!name) return sendError(res, "El nuevo nombre es obligatorio");
+        if (!name)
+            return sendError(
+                res,
+                "El nuevo nombre es obligatorio",
+            );
 
-        const category = await updateCategory(req.params.id, name);
+        const category = await updateCategory(
+            req.params.id,
+            name,
+        );
         sendSuccess(res, "Categoría actualizada", category);
     } catch (error) {
-        if (error.code === 'P2002') return sendError(res, "Ya existe otra categoría con ese nombre");
+        if (error.code === "P2002")
+            return sendError(
+                res,
+                "Ya existe otra categoría con ese nombre",
+            );
         sendError(res, error.message);
     }
 };
@@ -89,4 +122,11 @@ const remove = async (req, res) => {
     }
 };
 
-export { create, getAll, getOne, getByModel, update, remove };
+export {
+    create,
+    getAll,
+    getOne,
+    getByModel,
+    update,
+    remove,
+};
