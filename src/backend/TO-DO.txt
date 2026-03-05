@@ -1,4 +1,4 @@
-1. Para que un usuario peuda subir los modelos.
+1. Para que un usuario pueda subir los modelos.
 
     Un recuadro grande que diga: "Sube el modelo completo (.glb)".
 
@@ -7,66 +7,3 @@
     Un recuadro para: "Foto de portada".
 
     Un botón para: "Imágenes extra".
-
-2. Arreglar el borrado de la imagen principal. Se borra, se cambia pero si ya existe salta error.
-3. 
-
-// Función genérica para usar en tus botones (ej: onClick={() => descargarModelo(id, 'all')})
-const descargarModelo = async (modelId, tipoDescarga = 'main') => {
-    try {
-        // 1. Hacemos la petición POST a tu backend
-        const response = await fetch(`http://localhost:3000/api/downloads/${modelId}?type=${tipoDescarga}`, {
-            method: 'POST',
-            headers: {
-                // Si el usuario está logueado, le pasas el token. (Tu endpoint usa optionalToken)
-                'Authorization': `Bearer ${localStorage.getItem('token')}` 
-            }
-        });
-
-        if (!response.ok) throw new Error("Error al intentar descargar");
-
-        // 2. Aquí está la magia: convertimos la respuesta en un archivo binario (Blob)
-        const blob = await response.blob();
-
-        // 3. (Toque Pro) Leemos el nombre exacto que le pusiste en el Backend
-        // Buscamos la cabecera "Content-Disposition" (ej: attachment; filename="Figura_all.zip")
-        const headerDisposition = response.headers.get('content-disposition');
-        let filename = 'descarga'; 
-        if (headerDisposition && headerDisposition.includes('filename=')) {
-            // Extraemos el nombre y le quitamos las comillas si las tiene
-            filename = headerDisposition.split('filename=')[1].replace(/"/g, '');
-        }
-
-        // 4. Creamos una URL temporal en la memoria del navegador para este archivo
-        const urlTemporal = window.URL.createObjectURL(blob);
-
-        // 5. Creamos un enlace invisible <a> en el HTML
-        const enlaceFantasma = document.createElement('a');
-        enlaceFantasma.style.display = 'none';
-        enlaceFantasma.href = urlTemporal;
-        enlaceFantasma.download = filename; // Le asignamos el nombre correcto
-
-        // 6. Lo metemos en el documento, simulamos un clic y lo borramos
-        document.body.appendChild(enlaceFantasma);
-        enlaceFantasma.click(); // ¡Aquí le salta la descarga al usuario!
-        
-        // 7. Limpiamos la memoria
-        document.body.removeChild(enlaceFantasma);
-        window.URL.revokeObjectURL(urlTemporal);
-
-    } catch (error) {
-        console.error("Hubo un problema con la descarga:", error);
-        alert("No se pudo descargar el archivo");
-    }
-};
-
-¿Cómo lo verás en tu interfaz?
-Simplemente tendrás varios botones en tu ModelCard o ModelDetails en el Frontend que llamarán a esta misma función cambiando el parámetro:
-
-Botón "Descargar Modelo": onClick={() => descargarModelo(modelo.id, 'main')}
-
-Botón "Descargar Proyecto (ZIP)": onClick={() => descargarModelo(modelo.id, 'all')}
-
-Botón "Descargar Solo Piezas": onClick={() => descargarModelo(modelo.id, 'parts')}
-
-¡El backend que has construido hace todo el trabajo pesado! El frontend solo tiene que recoger el paquete y presentárselo al usuario.

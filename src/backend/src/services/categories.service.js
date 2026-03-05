@@ -1,4 +1,5 @@
 import prisma from "../config/prisma.js";
+import { checkPermission } from "../utils/checkPermission.js";
 
 /**
  * Crea una nueva categoría.
@@ -89,6 +90,89 @@ const getCategoriesByModel = async (modelId) => {
     return categories;
 };
 
+/**
+ * Añade una categoría existente a un modelo.
+ * @param {string} modelId - ID del modelo.
+ * @param {string} categoryId - ID de la categoría.
+ * @param {object} user - Usuario autenticado.
+ */
+const addCategoryToModel = async (
+    modelId,
+    categoryId,
+    user,
+) => {
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+        select: { user_id: true },
+    });
+
+    if (!model) throw new Error("Modelo no encontrado");
+    checkPermission(model.user_id, user);
+
+    try {
+        await prisma.model_category.create({
+            data: {
+                model_id: modelId,
+                category_id: categoryId,
+            },
+        });
+
+        return {
+            message:
+                "Categoría añadida al modelo correctamente",
+        };
+    } catch (error) {
+        if (error.code === "P2002") {
+            return {
+                message:
+                    "El modelo ya tiene esta categoría asignada",
+            };
+        }
+        throw error;
+    }
+};
+
+/**
+ * Elimina una categoría de un modelo.
+ * @param {string} modelId - ID del modelo.
+ * @param {string} categoryId - ID de la categoría.
+ * @param {object} user - Usuario autenticado.
+ */
+const removeCategoryFromModel = async (
+    modelId,
+    categoryId,
+    user,
+) => {
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+        select: { user_id: true },
+    });
+
+    if (!model) throw new Error("Modelo no encontrado");
+    checkPermission(model.user_id, user);
+
+    try {
+        await prisma.model_category.delete({
+            where: {
+                model_id_category_id: {
+                    model_id: modelId,
+                    category_id: categoryId,
+                },
+            },
+        });
+        return {
+            message: "Categoría eliminada del modelo",
+        };
+    } catch (error) {
+        if (error.code === "P2025")
+            return {
+                message:
+                    "La categoría no estaba en el modelo",
+            };
+        throw error;
+    }
+};
+
 export {
     createCategory,
     getCategories,
@@ -96,4 +180,6 @@ export {
     updateCategory,
     deleteCategory,
     getCategoriesByModel,
+    addCategoryToModel,
+    removeCategoryFromModel,
 };

@@ -11,6 +11,7 @@ import tagsRoutes from "./routes/tags.routes.js";
 import modelPartsRoutes from "./routes/modelParts.routes.js";
 import downloadsRoutes from "./routes/downloads.routes.js";
 import modelImagesRoutes from "./routes/modelsImages.routes.js";
+import categoriesRoutes from "./routes/categories.routes.js";
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use("/tags", tagsRoutes);
 app.use("/model-parts", modelPartsRoutes);
 app.use("/downloads", downloadsRoutes);
 app.use("/model-images", modelImagesRoutes);
+app.use("/categories", categoriesRoutes);
 
 app.get("/", (req, res) => {
     res.send("Bienvenido a la API de 3D-verse");

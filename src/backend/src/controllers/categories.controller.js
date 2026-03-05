@@ -5,6 +5,8 @@ import {
     updateCategory,
     deleteCategory,
     getCategoriesByModel,
+    addCategoryToModel,
+    removeCategoryFromModel,
 } from "../services/categories.service.js";
 import {
     sendSuccess,
@@ -122,6 +124,58 @@ const remove = async (req, res) => {
     }
 };
 
+/**
+ * Añade una categoría a un modelo.
+ */
+const addToModel = async (req, res) => {
+    try {
+        const { categoryId } = req.body; // O lo puedes sacar de req.params dependiendo de tu ruta
+
+        if (!categoryId) {
+            return sendError(
+                res,
+                "El ID de la categoría es obligatorio",
+                400,
+            );
+        }
+
+        const result = await addCategoryToModel(
+            req.params.modelId,
+            categoryId,
+            req.user,
+        );
+
+        sendSuccess(res, result.message, null, 201);
+    } catch (error) {
+        const status =
+            error.message === "Modelo no encontrado"
+                ? 404
+                : 403;
+        sendError(res, error.message, status);
+    }
+};
+
+/**
+ * Elimina una categoría de un modelo.
+ */
+const removeFromModel = async (req, res) => {
+    try {
+        const result = await removeCategoryFromModel(
+            req.params.modelId,
+            req.params.categoryId,
+            req.user,
+        );
+
+        sendSuccess(res, result.message);
+    } catch (error) {
+        const status =
+            error.message === "Modelo no encontrado"
+                ? 404
+                : 403;
+        sendError(res, error.message, status);
+    }
+};
+
 export {
     create,
     getAll,
@@ -129,4 +183,6 @@ export {
     getByModel,
     update,
     remove,
+    addToModel,
+    removeFromModel,
 };

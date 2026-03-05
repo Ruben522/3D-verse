@@ -5,9 +5,14 @@ import {
     getOne,
     getByModel,
     update,
-    remove
+    remove,
+    addToModel,
+    removeFromModel,
 } from "../controllers/categories.controller.js";
-import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
+import {
+    verifyToken,
+    isAdmin,
+} from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -16,8 +21,17 @@ router.get("/", getAll);
 router.get("/model/:modelId", getByModel);
 router.get("/:id", getOne);
 
-router.post("/", verifyToken, create);
-router.put("/:id", verifyToken, update);
-router.delete("/:id", verifyToken, remove);
-
+router.post("/", verifyToken, isAdmin, create);
+router.put("/:id", verifyToken, isAdmin, update);
+router.delete("/:id", verifyToken, isAdmin, remove);
+router.post(
+    "/:modelId/categories",
+    verifyToken,
+    addToModel,
+);
+router.delete(
+    "/:modelId/categories/:categoryId",
+    verifyToken,
+    removeFromModel,
+);
 export default router;
