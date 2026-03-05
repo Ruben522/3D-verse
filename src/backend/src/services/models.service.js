@@ -22,9 +22,13 @@ const createModel = async (userId, data) => {
         license,
         parts,
         images,
+        gallery, // 👈 FIX 1: Capturamos 'gallery' porque el frontend recibe ese nombre del controlador
         tags,
         categories,
     } = data;
+
+    // Unificamos por si el frontend lo envía como 'gallery' o como 'images'
+    const galleryImages = images || gallery;
 
     const model = await prisma.models.create({
         data: {
@@ -48,11 +52,12 @@ const createModel = async (userId, data) => {
                   }
                 : undefined,
 
-            model_images: images?.length
+            model_images: galleryImages?.length
                 ? {
-                      create: images.map((img) => ({
+                      // 👈 FIX 2: Usamos el 'index' para que cada imagen tenga un número de orden distinto
+                      create: galleryImages.map((img, index) => ({
                           image_url: img,
-                          display_order: 0,
+                          display_order: index, 
                       })),
                   }
                 : undefined,
