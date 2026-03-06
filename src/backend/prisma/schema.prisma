@@ -11,11 +11,15 @@ model comments {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id    String    @db.Uuid
   model_id   String    @db.Uuid
+  parent_comment_id String?    @db.Uuid
   content    String
   created_at DateTime? @default(now()) @db.Timestamp(6)
   updated_at DateTime? @default(now()) @db.Timestamp(6)
   models     models    @relation(fields: [model_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  parent_comment    comments?  @relation("CommentReplies", fields: [parent_comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  replies           comments[] @relation("CommentReplies")
 
   @@index([model_id], map: "idx_comments_model_id")
   @@index([user_id], map: "idx_comments_user_id")

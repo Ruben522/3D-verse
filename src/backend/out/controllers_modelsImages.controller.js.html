@@ -39,6 +39,11 @@ import {
 
 /**
  * Sube una o varias imágenes a la galería secundaria de un modelo.
+ * Requiere autenticación y que el usuario sea propietario o admin.
+ * Crea entradas en la tabla model_images con orden secuencial.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const uploadImage = async (req, res) => {
     try {
@@ -48,7 +53,7 @@ const uploadImage = async (req, res) => {
         if (!req.files || req.files.length === 0) {
             return sendError(
                 res,
-                "Debe proporcionar al menos una imagen",
+                "Debe proporcionar al menos una imagen.",
                 400,
             );
         }
@@ -59,7 +64,6 @@ const uploadImage = async (req, res) => {
 
         for (let i = 0; i &lt; req.files.length; i++) {
             const file = req.files[i];
-
             const fullPath = file.path.replace(/\\/g, "/");
             const uploadsIndex =
                 fullPath.indexOf("/uploads/");
@@ -72,27 +76,31 @@ const uploadImage = async (req, res) => {
                 imageUrl,
                 baseOrder + i,
             );
-
             uploadedImages.push(newImage);
         }
 
         sendSuccess(
             res,
-            "Imágenes subidas correctamente",
+            "Imágenes subidas correctamente.",
             uploadedImages,
             201,
         );
     } catch (error) {
-        const status =
-            error.message === "Modelo no encontrado"
-                ? 404
-                : 400;
+        const status = error.message.includes(
+            "Modelo no encontrado",
+        )
+            ? 404
+            : 400;
         sendError(res, error.message, status);
     }
 };
 
 /**
- * Obtiene todas las imágenes de la galería de un modelo específico.
+ * Obtiene todas las imágenes de la galería de un modelo, ordenadas por display_order.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const getImages = async (req, res) => {
     try {
@@ -101,7 +109,7 @@ const getImages = async (req, res) => {
         );
         sendSuccess(
             res,
-            "Imágenes de la galería recuperadas",
+            "Imágenes de la galería recuperadas.",
             images,
         );
     } catch (error) {
@@ -110,7 +118,11 @@ const getImages = async (req, res) => {
 };
 
 /**
- * Actualiza el orden de visualización (display_order) de una imagen en la galería.
+ * Actualiza el orden de visualización (display_order) de una imagen específica.
+ * Requiere autenticación y permiso sobre el modelo.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const updateOrder = async (req, res) => {
     try {
@@ -120,7 +132,7 @@ const updateOrder = async (req, res) => {
         if (display_order === undefined) {
             return sendError(
                 res,
-                "El campo display_order es requerido",
+                "El campo display_order es requerido.",
                 400,
             );
         }
@@ -132,20 +144,25 @@ const updateOrder = async (req, res) => {
         );
         sendSuccess(
             res,
-            "Orden de imagen actualizado",
+            "Orden de imagen actualizado.",
             updatedImage,
         );
     } catch (error) {
-        const status =
-            error.message === "Imagen no encontrada"
-                ? 404
-                : 400;
+        const status = error.message.includes(
+            "Imagen no encontrada",
+        )
+            ? 404
+            : 400;
         sendError(res, error.message, status);
     }
 };
 
 /**
- * Elimina una imagen de la galería de un modelo (tanto de BD como del disco).
+ * Elimina una imagen de la galería (de la base de datos y del sistema de archivos).
+ * Requiere autenticación y permiso sobre el modelo.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
  */
 const removeImage = async (req, res) => {
     try {
@@ -155,10 +172,11 @@ const removeImage = async (req, res) => {
         );
         sendSuccess(res, response.message);
     } catch (error) {
-        const status =
-            error.message === "Imagen no encontrada"
-                ? 404
-                : 403;
+        const status = error.message.includes(
+            "Imagen no encontrada",
+        )
+            ? 404
+            : 403;
         sendError(res, error.message, status);
     }
 };
@@ -174,13 +192,13 @@ export { uploadImage, getImages, updateOrder, removeImage };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addFavorite">addFavorite</a></li><li><a href="global.html#addImage">addImage</a></li><li><a href="global.html#addLike">addLike</a></li><li><a href="global.html#addTagToModel">addTagToModel</a></li><li><a href="global.html#addToModel">addToModel</a></li><li><a href="global.html#appendCleanFolderToArchive">appendCleanFolderToArchive</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#checkFavorite">checkFavorite</a></li><li><a href="global.html#checkFollow">checkFollow</a></li><li><a href="global.html#cleanFileName">cleanFileName</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createCategory">createCategory</a></li><li><a href="global.html#createComment">createComment</a></li><li><a href="global.html#createDynamicStorage">createDynamicStorage</a></li><li><a href="global.html#createFilter">createFilter</a></li><li><a href="global.html#createInitialStorage">createInitialStorage</a></li><li><a href="global.html#createModel">createModel</a></li><li><a href="global.html#createPart">createPart</a></li><li><a href="global.html#createUploadWrapper">createUploadWrapper</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#deleteComment">deleteComment</a></li><li><a href="global.html#deleteImage">deleteImage</a></li><li><a href="global.html#deleteMainImage">deleteMainImage</a></li><li><a href="global.html#deleteModel">deleteModel</a></li><li><a href="global.html#deletePart">deletePart</a></li><li><a href="global.html#deletePhysicalFile">deletePhysicalFile</a></li><li><a href="global.html#deletePhysicalFolder">deletePhysicalFolder</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#favorite">favorite</a></li><li><a href="global.html#follow">follow</a></li><li><a href="global.html#followUser">followUser</a></li><li><a href="global.html#followers">followers</a></li><li><a href="global.html#following">following</a></li><li><a href="global.html#formatUploadedFiles">formatUploadedFiles</a></li><li><a href="global.html#getAbsolutePath">getAbsolutePath</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getAllTags">getAllTags</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#getByModel">getByModel</a></li><li><a href="global.html#getByUser">getByUser</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoriesByModel">getCategoriesByModel</a></li><li><a href="global.html#getCategoryById">getCategoryById</a></li><li><a href="global.html#getCurrentUser">getCurrentUser</a></li><li><a href="global.html#getDisplayFileName">getDisplayFileName</a></li><li><a href="global.html#getDownloadInfo">getDownloadInfo</a></li><li><a href="global.html#getDownloadsHistory">getDownloadsHistory</a></li><li><a href="global.html#getFavorites">getFavorites</a></li><li><a href="global.html#getFollowers">getFollowers</a></li><li><a href="global.html#getFollowing">getFollowing</a></li><li><a href="global.html#getForModel">getForModel</a></li><li><a href="global.html#getImages">getImages</a></li><li><a href="global.html#getModelBaseDirectory">getModelBaseDirectory</a></li><li><a href="global.html#getModelById">getModelById</a></li><li><a href="global.html#getModelComments">getModelComments</a></li><li><a href="global.html#getModelDownloadStats">getModelDownloadStats</a></li><li><a href="global.html#getModelImages">getModelImages</a></li><li><a href="global.html#getModelIncludes">getModelIncludes</a></li><li><a href="global.html#getModelStats">getModelStats</a></li><li><a href="global.html#getModels">getModels</a></li><li><a href="global.html#getModelsByUser">getModelsByUser</a></li><li><a href="global.html#getMyFavorites">getMyFavorites</a></li><li><a href="global.html#getOne">getOne</a></li><li><a href="global.html#getParts">getParts</a></li><li><a href="global.html#getPartsByModelId">getPartsByModelId</a></li><li><a href="global.html#getTagsForModel">getTagsForModel</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#getUserFavoritesPublic">getUserFavoritesPublic</a></li><li><a href="global.html#getUserHistory">getUserHistory</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#like">like</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#me">me</a></li><li><a href="global.html#normalizeTag">normalizeTag</a></li><li><a href="global.html#patchMainFile">patchMainFile</a></li><li><a href="global.html#patchMainImage">patchMainImage</a></li><li><a href="global.html#record">record</a></li><li><a href="global.html#recordDownload">recordDownload</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#removeFavorite">removeFavorite</a></li><li><a href="global.html#removeFromModel">removeFromModel</a></li><li><a href="global.html#removeImage">removeImage</a></li><li><a href="global.html#removeLike">removeLike</a></li><li><a href="global.html#removeMainImage">removeMainImage</a></li><li><a href="global.html#removeTag">removeTag</a></li><li><a href="global.html#removeTagFromModel">removeTagFromModel</a></li><li><a href="global.html#replaceMainFile">replaceMainFile</a></li><li><a href="global.html#sendError">sendError</a></li><li><a href="global.html#sendSuccess">sendSuccess</a></li><li><a href="global.html#unfavorite">unfavorite</a></li><li><a href="global.html#unfollow">unfollow</a></li><li><a href="global.html#unfollowUser">unfollowUser</a></li><li><a href="global.html#unlike">unlike</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateCategory">updateCategory</a></li><li><a href="global.html#updateComment">updateComment</a></li><li><a href="global.html#updateImageOrder">updateImageOrder</a></li><li><a href="global.html#updateMainImage">updateMainImage</a></li><li><a href="global.html#updateModel">updateModel</a></li><li><a href="global.html#updateOrder">updateOrder</a></li><li><a href="global.html#updateUser">updateUser</a></li><li><a href="global.html#uploadImage">uploadImage</a></li><li><a href="global.html#uploadModel">uploadModel</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addCategoryToModel">addCategoryToModel</a></li><li><a href="global.html#addFavorite">addFavorite</a></li><li><a href="global.html#addImage">addImage</a></li><li><a href="global.html#addLike">addLike</a></li><li><a href="global.html#addTagToModel">addTagToModel</a></li><li><a href="global.html#addToModel">addToModel</a></li><li><a href="global.html#appendCleanFolderToArchive">appendCleanFolderToArchive</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#checkFavorite">checkFavorite</a></li><li><a href="global.html#checkFollow">checkFollow</a></li><li><a href="global.html#checkPermission">checkPermission</a></li><li><a href="global.html#cleanFileName">cleanFileName</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createCategory">createCategory</a></li><li><a href="global.html#createComment">createComment</a></li><li><a href="global.html#createDynamicStorage">createDynamicStorage</a></li><li><a href="global.html#createFilter">createFilter</a></li><li><a href="global.html#createInitialStorage">createInitialStorage</a></li><li><a href="global.html#createModel">createModel</a></li><li><a href="global.html#createPart">createPart</a></li><li><a href="global.html#createUploadWrapper">createUploadWrapper</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#deleteComment">deleteComment</a></li><li><a href="global.html#deleteImage">deleteImage</a></li><li><a href="global.html#deleteMainImage">deleteMainImage</a></li><li><a href="global.html#deleteModel">deleteModel</a></li><li><a href="global.html#deletePart">deletePart</a></li><li><a href="global.html#deletePhysicalFile">deletePhysicalFile</a></li><li><a href="global.html#deletePhysicalFolder">deletePhysicalFolder</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#favorite">favorite</a></li><li><a href="global.html#follow">follow</a></li><li><a href="global.html#followUser">followUser</a></li><li><a href="global.html#followers">followers</a></li><li><a href="global.html#following">following</a></li><li><a href="global.html#formatUploadedFiles">formatUploadedFiles</a></li><li><a href="global.html#generateToken">generateToken</a></li><li><a href="global.html#getAbsolutePath">getAbsolutePath</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getAllPublicUsers">getAllPublicUsers</a></li><li><a href="global.html#getAllTags">getAllTags</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#getByModel">getByModel</a></li><li><a href="global.html#getByUser">getByUser</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoriesByModel">getCategoriesByModel</a></li><li><a href="global.html#getCategoryById">getCategoryById</a></li><li><a href="global.html#getCurrentUser">getCurrentUser</a></li><li><a href="global.html#getDisplayFileName">getDisplayFileName</a></li><li><a href="global.html#getDownloadInfo">getDownloadInfo</a></li><li><a href="global.html#getDownloadsHistory">getDownloadsHistory</a></li><li><a href="global.html#getFavorites">getFavorites</a></li><li><a href="global.html#getFollowers">getFollowers</a></li><li><a href="global.html#getFollowing">getFollowing</a></li><li><a href="global.html#getForModel">getForModel</a></li><li><a href="global.html#getImages">getImages</a></li><li><a href="global.html#getModelBaseDirectory">getModelBaseDirectory</a></li><li><a href="global.html#getModelById">getModelById</a></li><li><a href="global.html#getModelComments">getModelComments</a></li><li><a href="global.html#getModelDownloadStats">getModelDownloadStats</a></li><li><a href="global.html#getModelImages">getModelImages</a></li><li><a href="global.html#getModelIncludes">getModelIncludes</a></li><li><a href="global.html#getModelStats">getModelStats</a></li><li><a href="global.html#getModels">getModels</a></li><li><a href="global.html#getModelsByUser">getModelsByUser</a></li><li><a href="global.html#getMyFavorites">getMyFavorites</a></li><li><a href="global.html#getOne">getOne</a></li><li><a href="global.html#getParts">getParts</a></li><li><a href="global.html#getPartsByModelId">getPartsByModelId</a></li><li><a href="global.html#getPublicUsers">getPublicUsers</a></li><li><a href="global.html#getTagsForModel">getTagsForModel</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#getUserFavoritesPublic">getUserFavoritesPublic</a></li><li><a href="global.html#getUserHistory">getUserHistory</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#isAdmin">isAdmin</a></li><li><a href="global.html#isOwnerOrAdmin">isOwnerOrAdmin</a></li><li><a href="global.html#like">like</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#me">me</a></li><li><a href="global.html#modelUploadFields">modelUploadFields</a></li><li><a href="global.html#normalizeTag">normalizeTag</a></li><li><a href="global.html#optionalToken">optionalToken</a></li><li><a href="global.html#patchMainFile">patchMainFile</a></li><li><a href="global.html#patchMainImage">patchMainImage</a></li><li><a href="global.html#record">record</a></li><li><a href="global.html#recordDownload">recordDownload</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#removeCategoryFromModel">removeCategoryFromModel</a></li><li><a href="global.html#removeFavorite">removeFavorite</a></li><li><a href="global.html#removeFromModel">removeFromModel</a></li><li><a href="global.html#removeImage">removeImage</a></li><li><a href="global.html#removeLike">removeLike</a></li><li><a href="global.html#removeMainImage">removeMainImage</a></li><li><a href="global.html#removeTag">removeTag</a></li><li><a href="global.html#removeTagFromModel">removeTagFromModel</a></li><li><a href="global.html#replaceMainFile">replaceMainFile</a></li><li><a href="global.html#reply">reply</a></li><li><a href="global.html#replyToComment">replyToComment</a></li><li><a href="global.html#sendError">sendError</a></li><li><a href="global.html#sendSuccess">sendSuccess</a></li><li><a href="global.html#unfavorite">unfavorite</a></li><li><a href="global.html#unfollow">unfollow</a></li><li><a href="global.html#unfollowUser">unfollowUser</a></li><li><a href="global.html#unlike">unlike</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateCategory">updateCategory</a></li><li><a href="global.html#updateComment">updateComment</a></li><li><a href="global.html#updateImageOrder">updateImageOrder</a></li><li><a href="global.html#updateMainImage">updateMainImage</a></li><li><a href="global.html#updateModel">updateModel</a></li><li><a href="global.html#updateOrder">updateOrder</a></li><li><a href="global.html#updateUser">updateUser</a></li><li><a href="global.html#uploadImage">uploadImage</a></li><li><a href="global.html#uploadImageFile">uploadImageFile</a></li><li><a href="global.html#uploadMainFileReplacement">uploadMainFileReplacement</a></li><li><a href="global.html#uploadMainImageFile">uploadMainImageFile</a></li><li><a href="global.html#uploadModel">uploadModel</a></li><li><a href="global.html#uploadModelFile">uploadModelFile</a></li><li><a href="global.html#uploadPartsFile">uploadPartsFile</a></li><li><a href="global.html#validateUserFields">validateUserFields</a></li><li><a href="global.html#verifyToken">verifyToken</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Mar 05 2026 18:18:42 GMT+0100 (hora estándar de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Mar 06 2026 14:29:09 GMT+0100 (hora estándar de Europa central)
 </footer>
 
 <script> prettyPrint(); </script>

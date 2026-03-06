@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: services/auth.service.js</title>
+    <title>JSDoc: Source: middlewares/auth.middleware.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: services/auth.service.js</h1>
+    <h1 class="page-title">Source: middlewares/auth.middleware.js</h1>
 
     
 
@@ -26,128 +26,134 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import prisma from "../config/prisma.js";
-import {
-    hashPassword,
-    comparePassword,
-} from "../utils/hashPassword.js";
-import { generateToken } from "../utils/generateToken.js";
-import { validateUserFields } from "../utils/validateUserFields.js";
+            <pre class="prettyprint source linenums"><code>import jwt from "jsonwebtoken";
+
 /**
- * Registra un nuevo usuario en la plataforma.
- * @param {Object} userData - Datos del usuario (name, lastname, username, email, password).
- * @returns {Promise&lt;Object>} Objeto con los datos públicos del usuario y su token JWT.
+ * Middleware obligatorio: verifica que exista un token Bearer válido.
+ * Si es válido, adjunta el payload decodificado en `req.user`.
+ * Si falla, responde con 401 o 403 y detiene la cadena.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
  */
-const registerUser = async ({
-    name,
-    lastname,
-    username,
-    email,
-    password,
-}) => {
-    validateUserFields({ name, username, email, password });
-    const hashed = await hashPassword(password);
+const verifyToken = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res
+            .status(401)
+            .json({
+                error: "Token requerido o formato inválido",
+            });
+    }
+
+    const token = authHeader.split(" ")[1];
 
     try {
-        const user = await prisma.users.create({
-            data: {
-                name,
-                lastname,
-                username,
-                email,
-                password_hash: hashed,
-            },
-            select: {
-                id: true,
-                username: true,
-                email: true,
-                role: true,
-            },
-        });
-
-        const token = generateToken({
-            id: user.id,
-            role: user.role,
-        });
-
-        return { user, token };
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET,
+        );
+        req.user = decoded;
+        next();
     } catch (error) {
-        if (error.code === "P2002") {
-            throw new Error(
-                "El nombre de usuario o el email ya están en uso",
-            );
-        }
-        throw error;
+        return res
+            .status(403)
+            .json({ error: "Token inválido o expirado" });
     }
 };
 
 /**
- * Autentica a un usuario verificando sus credenciales.
- * @param {Object} credentials - Email y contraseña del usuario.
- * @returns {Promise&lt;Object>} Objeto con los datos públicos del usuario y su token JWT.
+ * Middleware opcional: intenta verificar el token Bearer si existe.
+ * Adjunta `req.user` (objeto decodificado o `null` si no hay token o es inválido).
+ * Nunca falla la petición, siempre llama a `next()`.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
  */
-const loginUser = async ({ email, password }) => {
-    const user = await prisma.users.findUnique({
-        where: { email },
-    });
+const optionalToken = (req, res, next) => {
+    const authHeader = req.headers.authorization;
 
-    if (!user) {
-        throw new Error("Credenciales inválidas");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        req.user = null;
+        return next();
     }
 
-    const validPassword = await comparePassword(
-        password,
-        user.password_hash,
-    );
+    const token = authHeader.split(" ")[1];
 
-    if (!validPassword) {
-        throw new Error("Credenciales inválidas");
-    }
-
-    const token = generateToken({
-        id: user.id,
-        role: user.role,
-    });
-
-    return {
-        user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-        },
+    jwt.verify(
         token,
-    };
+        process.env.JWT_SECRET,
+        (err, decoded) => {
+            req.user = err ? null : decoded;
+            next();
+        },
+    );
 };
 
 /**
- * Obtiene los datos básicos del usuario actualmente autenticado (usado para validar sesiones).
- * @param {string} userId - ID del usuario extraído del token.
- * @returns {Promise&lt;Object>} Datos del usuario (excluyendo datos sensibles).
+ * Middleware de autorización: requiere que el usuario esté autenticado
+ * y tenga rol "admin".
+ * Responde 403 si no es administrador.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
  */
-const getCurrentUser = async (userId) => {
-    const user = await prisma.users.findUnique({
-        where: { id: userId },
-        select: {
-            id: true,
-            name: true,
-            lastname: true,
-            username: true,
-            email: true,
-            role: true,
-            avatar: true,
-            created_at: true,
-        },
-    });
-
-    if (!user) {
-        throw new Error("Usuario no encontrado");
+const isAdmin = (req, res, next) => {
+    if (!req.user || req.user.role !== "admin") {
+        return res
+            .status(403)
+            .json({
+                error: "Acceso denegado: se requieren privilegios de administrador",
+            });
     }
-
-    return user;
+    next();
 };
 
-export { registerUser, loginUser, getCurrentUser };
+/**
+ * Middleware de autorización: permite el acceso solo si el usuario autenticado
+ * es el propietario del recurso (por ID en params) o es administrador.
+ * Usa `req.params.id` como ID del recurso a proteger.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ */
+const isOwnerOrAdmin = (req, res, next) => {
+    if (!req.user) {
+        return res
+            .status(401)
+            .json({ error: "No autenticado" });
+    }
+
+    const userIdFromToken = req.user.id;
+    const resourceIdFromParams =
+        req.params.id || req.params.userId; // más flexible
+    const userRole = req.user.role;
+
+    if (
+        userIdFromToken === resourceIdFromParams ||
+        userRole === "admin"
+    ) {
+        return next();
+    }
+
+    return res
+        .status(403)
+        .json({
+            error: "No tienes permiso para gestionar este recurso",
+        });
+};
+
+export {
+    verifyToken,
+    optionalToken,
+    isAdmin,
+    isOwnerOrAdmin,
+};
 </code></pre>
         </article>
     </section>

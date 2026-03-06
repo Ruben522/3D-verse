@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: services/auth.service.js</title>
+    <title>JSDoc: Source: utils/checkPermission.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: services/auth.service.js</h1>
+    <h1 class="page-title">Source: utils/checkPermission.js</h1>
 
     
 
@@ -26,128 +26,37 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import prisma from "../config/prisma.js";
-import {
-    hashPassword,
-    comparePassword,
-} from "../utils/hashPassword.js";
-import { generateToken } from "../utils/generateToken.js";
-import { validateUserFields } from "../utils/validateUserFields.js";
-/**
- * Registra un nuevo usuario en la plataforma.
- * @param {Object} userData - Datos del usuario (name, lastname, username, email, password).
- * @returns {Promise&lt;Object>} Objeto con los datos públicos del usuario y su token JWT.
+            <pre class="prettyprint source linenums"><code>/**
+ * Verifica si el usuario actual tiene permiso para actuar sobre un recurso.
+ * Permite la acción si el usuario es propietario o tiene rol de administrador.
+ * Puedes extender la lógica agregando más condiciones en el futuro.
+ *
+ * @param {string} resourceOwnerId - ID del propietario del recurso
+ * @param {Object} currentUser - Objeto del usuario autenticado
+ * @param {string} currentUser.id - ID del usuario
+ * @param {string} currentUser.role - Rol del usuario ("user", "admin", etc.)
+ * @throws {Error} Con status 403 si no tiene permiso
  */
-const registerUser = async ({
-    name,
-    lastname,
-    username,
-    email,
-    password,
-}) => {
-    validateUserFields({ name, username, email, password });
-    const hashed = await hashPassword(password);
+const checkPermission = (resourceOwnerId, currentUser) => {
+    if (!currentUser) {
+        const error = new Error("Usuario no autenticado.");
+        error.status = 401;
+        throw error;
+    }
 
-    try {
-        const user = await prisma.users.create({
-            data: {
-                name,
-                lastname,
-                username,
-                email,
-                password_hash: hashed,
-            },
-            select: {
-                id: true,
-                username: true,
-                email: true,
-                role: true,
-            },
-        });
+    const isOwner = resourceOwnerId === currentUser.id;
+    const isAdmin = currentUser.role === "admin";
 
-        const token = generateToken({
-            id: user.id,
-            role: user.role,
-        });
-
-        return { user, token };
-    } catch (error) {
-        if (error.code === "P2002") {
-            throw new Error(
-                "El nombre de usuario o el email ya están en uso",
-            );
-        }
+    if (!isOwner &amp;&amp; !isAdmin) {
+        const error = new Error(
+            "No tienes permiso para realizar esta acción.",
+        );
+        error.status = 403;
         throw error;
     }
 };
 
-/**
- * Autentica a un usuario verificando sus credenciales.
- * @param {Object} credentials - Email y contraseña del usuario.
- * @returns {Promise&lt;Object>} Objeto con los datos públicos del usuario y su token JWT.
- */
-const loginUser = async ({ email, password }) => {
-    const user = await prisma.users.findUnique({
-        where: { email },
-    });
-
-    if (!user) {
-        throw new Error("Credenciales inválidas");
-    }
-
-    const validPassword = await comparePassword(
-        password,
-        user.password_hash,
-    );
-
-    if (!validPassword) {
-        throw new Error("Credenciales inválidas");
-    }
-
-    const token = generateToken({
-        id: user.id,
-        role: user.role,
-    });
-
-    return {
-        user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-        },
-        token,
-    };
-};
-
-/**
- * Obtiene los datos básicos del usuario actualmente autenticado (usado para validar sesiones).
- * @param {string} userId - ID del usuario extraído del token.
- * @returns {Promise&lt;Object>} Datos del usuario (excluyendo datos sensibles).
- */
-const getCurrentUser = async (userId) => {
-    const user = await prisma.users.findUnique({
-        where: { id: userId },
-        select: {
-            id: true,
-            name: true,
-            lastname: true,
-            username: true,
-            email: true,
-            role: true,
-            avatar: true,
-            created_at: true,
-        },
-    });
-
-    if (!user) {
-        throw new Error("Usuario no encontrado");
-    }
-
-    return user;
-};
-
-export { registerUser, loginUser, getCurrentUser };
+export { checkPermission };
 </code></pre>
         </article>
     </section>

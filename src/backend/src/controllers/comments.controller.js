@@ -3,6 +3,7 @@ import {
     getModelComments,
     updateComment,
     deleteComment,
+    replyToComment,
 } from "../services/comments.service.js";
 import {
     sendSuccess,
@@ -141,4 +142,45 @@ const remove = async (req, res) => {
     }
 };
 
-export { create, getByModel, update, remove };
+/**
+ * Responde a un comentario existente.
+ * Requiere autenticación.
+ *
+ * @param {import("express").Request} req - Objeto de petición de Express.
+ * @param {import("express").Response} res - Objeto de respuesta de Express.
+ */
+const reply = async (req, res) => {
+    try {
+        const { content } = req.body;
+
+        if (!content || content.trim() === "") {
+            return sendError(
+                res,
+                "La respuesta no puede estar vacía.",
+                400,
+            );
+        }
+
+        const replyData = await replyToComment(
+            req.params.commentId,
+            req.user.id,
+            content.trim(),
+        );
+
+        sendSuccess(
+            res,
+            "Respuesta publicada correctamente.",
+            replyData,
+            201,
+        );
+    } catch (error) {
+        const status = error.message.includes(
+            "El comentario original no existe",
+        )
+            ? 404
+            : 400;
+        sendError(res, error.message + ".", status);
+    }
+};
+
+export { create, getByModel, update, remove, reply };

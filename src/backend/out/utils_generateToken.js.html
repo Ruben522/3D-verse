@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: services/auth.service.js</title>
+    <title>JSDoc: Source: utils/generateToken.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: services/auth.service.js</h1>
+    <h1 class="page-title">Source: utils/generateToken.js</h1>
 
     
 
@@ -26,128 +26,35 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import prisma from "../config/prisma.js";
-import {
-    hashPassword,
-    comparePassword,
-} from "../utils/hashPassword.js";
-import { generateToken } from "../utils/generateToken.js";
-import { validateUserFields } from "../utils/validateUserFields.js";
-/**
- * Registra un nuevo usuario en la plataforma.
- * @param {Object} userData - Datos del usuario (name, lastname, username, email, password).
- * @returns {Promise&lt;Object>} Objeto con los datos públicos del usuario y su token JWT.
- */
-const registerUser = async ({
-    name,
-    lastname,
-    username,
-    email,
-    password,
-}) => {
-    validateUserFields({ name, username, email, password });
-    const hashed = await hashPassword(password);
-
-    try {
-        const user = await prisma.users.create({
-            data: {
-                name,
-                lastname,
-                username,
-                email,
-                password_hash: hashed,
-            },
-            select: {
-                id: true,
-                username: true,
-                email: true,
-                role: true,
-            },
-        });
-
-        const token = generateToken({
-            id: user.id,
-            role: user.role,
-        });
-
-        return { user, token };
-    } catch (error) {
-        if (error.code === "P2002") {
-            throw new Error(
-                "El nombre de usuario o el email ya están en uso",
-            );
-        }
-        throw error;
-    }
-};
+            <pre class="prettyprint source linenums"><code>import jwt from "jsonwebtoken";
 
 /**
- * Autentica a un usuario verificando sus credenciales.
- * @param {Object} credentials - Email y contraseña del usuario.
- * @returns {Promise&lt;Object>} Objeto con los datos públicos del usuario y su token JWT.
+ * Genera un token JWT firmado con el payload proporcionado.
+ * Incluye validación básica de variables de entorno y manejo seguro de expiración.
+ *
+ * @param {Object} payload - Información del usuario a codificar (id, username, role, etc.)
+ * @param {Object} [options] - Opciones adicionales (no recomendado sobreescribir expiresIn normalmente)
+ * @param {string} [options.expiresIn] - Tiempo de expiración personalizado (ej: "1h", "30d")
+ * @returns {string} Token JWT válido
+ * @throws {Error} Si falta JWT_SECRET o hay error durante la generación
  */
-const loginUser = async ({ email, password }) => {
-    const user = await prisma.users.findUnique({
-        where: { email },
-    });
-
-    if (!user) {
-        throw new Error("Credenciales inválidas");
+const generateToken = (payload, options = {}) => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        throw new Error(
+            "JWT_SECRET no está configurado en las variables de entorno.",
+        );
     }
 
-    const validPassword = await comparePassword(
-        password,
-        user.password_hash,
-    );
+    const expiresIn =
+        options.expiresIn ||
+        process.env.JWT_EXPIRES ||
+        "14d";
 
-    if (!validPassword) {
-        throw new Error("Credenciales inválidas");
-    }
-
-    const token = generateToken({
-        id: user.id,
-        role: user.role,
-    });
-
-    return {
-        user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-        },
-        token,
-    };
+    return jwt.sign(payload, secret, { expiresIn });
 };
 
-/**
- * Obtiene los datos básicos del usuario actualmente autenticado (usado para validar sesiones).
- * @param {string} userId - ID del usuario extraído del token.
- * @returns {Promise&lt;Object>} Datos del usuario (excluyendo datos sensibles).
- */
-const getCurrentUser = async (userId) => {
-    const user = await prisma.users.findUnique({
-        where: { id: userId },
-        select: {
-            id: true,
-            name: true,
-            lastname: true,
-            username: true,
-            email: true,
-            role: true,
-            avatar: true,
-            created_at: true,
-        },
-    });
-
-    if (!user) {
-        throw new Error("Usuario no encontrado");
-    }
-
-    return user;
-};
-
-export { registerUser, loginUser, getCurrentUser };
+export { generateToken };
 </code></pre>
         </article>
     </section>

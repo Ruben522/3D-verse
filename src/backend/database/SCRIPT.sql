@@ -154,6 +154,20 @@ CREATE TABLE model_likes (
     FOREIGN KEY (model_id) REFERENCES models(id) ON DELETE CASCADE
 );
 
+CREATE TABLE categories (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE model_category (
+    model_id uuid NOT NULL,
+    category_id uuid NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (model_id, category_id),
+    FOREIGN KEY (model_id) REFERENCES models(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
 
 -- ÍNDICES para mejorar rendimiento
 CREATE INDEX idx_model_likes_user_id ON model_likes(user_id);
@@ -171,3 +185,5 @@ CREATE INDEX idx_model_images_model_id ON model_images(model_id);
 CREATE INDEX idx_model_tag_tag_id ON model_tag(tag_id);
 CREATE INDEX idx_followers_user_id ON followers(user_id);
 CREATE INDEX idx_followers_follower_id ON followers(follower_id);
+CREATE INDEX idx_model_category_category_id ON model_category(category_id);
+CREATE INDEX idx_model_category_model_id ON model_category(model_id);

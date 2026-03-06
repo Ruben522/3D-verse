@@ -143,9 +143,51 @@ const deleteComment = async (commentId, user) => {
     };
 };
 
+/**
+ * Crea una respuesta a un comentario existente.
+ * Hereda automáticamente el model_id del comentario padre.
+ * * @param {string} commentId - ID del comentario al que se va a responder (comentario padre).
+ * @param {string} userId - ID del usuario que escribe la respuesta.
+ * @param {string} content - Texto del contenido de la respuesta.
+ * @returns {Promise<Object>} El nuevo comentario (respuesta) creado.
+ */
+const replyToComment = async (
+    commentId,
+    userId,
+    content,
+) => {
+    const parentComment = await prisma.comments.findUnique({
+        where: { id: commentId },
+    });
+
+    if (!parentComment)
+        throw new Error("El comentario original no existe");
+
+    const newReply = await prisma.comments.create({
+        data: {
+            user_id: userId,
+            model_id: parentComment.model_id,
+            parent_comment_id: commentId,
+            content,
+        },
+        select: {
+            id: true,
+            user_id: true,
+            model_id: true,
+            parent_comment_id: true,
+            content: true,
+            created_at: true,
+            updated_at: true,
+        },
+    });
+
+    return newReply;
+};
+
 export {
     createComment,
     getModelComments,
     updateComment,
     deleteComment,
+    replyToComment,
 };

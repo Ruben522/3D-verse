@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: services/auth.service.js</title>
+    <title>JSDoc: Source: utils/validateUserFields.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: services/auth.service.js</h1>
+    <h1 class="page-title">Source: utils/validateUserFields.js</h1>
 
     
 
@@ -26,128 +26,79 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import prisma from "../config/prisma.js";
-import {
-    hashPassword,
-    comparePassword,
-} from "../utils/hashPassword.js";
-import { generateToken } from "../utils/generateToken.js";
-import { validateUserFields } from "../utils/validateUserFields.js";
-/**
- * Registra un nuevo usuario en la plataforma.
- * @param {Object} userData - Datos del usuario (name, lastname, username, email, password).
- * @returns {Promise&lt;Object>} Objeto con los datos públicos del usuario y su token JWT.
+            <pre class="prettyprint source linenums"><code>/**
+ * Valida los campos de un usuario durante registro o actualización.
+ * Lanza un error con todos los mensajes concatenados si alguna validación falla.
+ *
+ * @param {Object} fields - Campos a validar
+ * @param {boolean} [isUpdate=false] - true si es actualización (campos opcionales)
+ * @throws {Error} Si hay errores de validación
  */
-const registerUser = async ({
-    name,
-    lastname,
-    username,
-    email,
-    password,
-}) => {
-    validateUserFields({ name, username, email, password });
-    const hashed = await hashPassword(password);
+const validateUserFields = (fields, isUpdate = false) => {
+    const errors = [];
 
-    try {
-        const user = await prisma.users.create({
-            data: {
-                name,
-                lastname,
-                username,
-                email,
-                password_hash: hashed,
-            },
-            select: {
-                id: true,
-                username: true,
-                email: true,
-                role: true,
-            },
-        });
+    // Helper para añadir error solo si el campo está presente o es obligatorio
+    const addError = (condition, message) => {
+        if (condition) errors.push(message);
+    };
 
-        const token = generateToken({
-            id: user.id,
-            role: user.role,
-        });
-
-        return { user, token };
-    } catch (error) {
-        if (error.code === "P2002") {
-            throw new Error(
-                "El nombre de usuario o el email ya están en uso",
-            );
-        }
-        throw error;
-    }
-};
-
-/**
- * Autentica a un usuario verificando sus credenciales.
- * @param {Object} credentials - Email y contraseña del usuario.
- * @returns {Promise&lt;Object>} Objeto con los datos públicos del usuario y su token JWT.
- */
-const loginUser = async ({ email, password }) => {
-    const user = await prisma.users.findUnique({
-        where: { email },
-    });
-
-    if (!user) {
-        throw new Error("Credenciales inválidas");
-    }
-
-    const validPassword = await comparePassword(
-        password,
-        user.password_hash,
+    // username
+    addError(
+        !isUpdate &amp;&amp; !fields.username?.trim(),
+        "El nombre de usuario es obligatorio.",
+    );
+    addError(
+        fields.username?.trim() &amp;&amp;
+            fields.username.trim().length &lt; 3,
+        "El nombre de usuario debe tener al menos 3 caracteres.",
     );
 
-    if (!validPassword) {
-        throw new Error("Credenciales inválidas");
+    // name
+    addError(
+        !isUpdate &amp;&amp; !fields.name?.trim(),
+        "El nombre es obligatorio.",
+    );
+    addError(
+        fields.name?.trim() &amp;&amp;
+            fields.name.trim().length &lt; 3,
+        "El nombre debe tener al menos 3 caracteres.",
+    );
+    addError(
+        fields.name?.trim() &amp;&amp;
+            /\d/.test(fields.name.trim()),
+        "El nombre no puede contener números.",
+    );
+
+    // email
+    addError(
+        !isUpdate &amp;&amp; !fields.email?.trim(),
+        "El correo electrónico es obligatorio.",
+    );
+    addError(
+        fields.email?.trim() &amp;&amp;
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                fields.email.trim(),
+            ),
+        "El correo electrónico no tiene un formato válido.",
+    );
+
+    // password (solo relevante en registro por ahora)
+    addError(
+        !isUpdate &amp;&amp; !fields.password?.trim(),
+        "La contraseña es obligatoria.",
+    );
+    addError(
+        fields.password?.trim() &amp;&amp;
+            fields.password.trim().length &lt; 6,
+        "La contraseña debe tener al menos 6 caracteres.",
+    );
+
+    if (errors.length > 0) {
+        throw new Error(errors.join(" "));
     }
-
-    const token = generateToken({
-        id: user.id,
-        role: user.role,
-    });
-
-    return {
-        user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-        },
-        token,
-    };
 };
 
-/**
- * Obtiene los datos básicos del usuario actualmente autenticado (usado para validar sesiones).
- * @param {string} userId - ID del usuario extraído del token.
- * @returns {Promise&lt;Object>} Datos del usuario (excluyendo datos sensibles).
- */
-const getCurrentUser = async (userId) => {
-    const user = await prisma.users.findUnique({
-        where: { id: userId },
-        select: {
-            id: true,
-            name: true,
-            lastname: true,
-            username: true,
-            email: true,
-            role: true,
-            avatar: true,
-            created_at: true,
-        },
-    });
-
-    if (!user) {
-        throw new Error("Usuario no encontrado");
-    }
-
-    return user;
-};
-
-export { registerUser, loginUser, getCurrentUser };
+export { validateUserFields };
 </code></pre>
         </article>
     </section>

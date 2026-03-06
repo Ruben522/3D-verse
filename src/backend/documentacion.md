@@ -62,209 +62,243 @@
     *   [Parameters][58]
 *   [removeFromModel][59]
     *   [Parameters][60]
-*   [appendCleanFolderToArchive][61]
+*   [reply][61]
     *   [Parameters][62]
-*   [record][63]
+*   [appendCleanFolderToArchive][63]
     *   [Parameters][64]
-*   [getUserHistory][65]
+*   [record][65]
     *   [Parameters][66]
-*   [getModelStats][67]
+*   [getUserHistory][67]
     *   [Parameters][68]
-*   [favorite][69]
+*   [getModelStats][69]
     *   [Parameters][70]
-*   [unfavorite][71]
+*   [favorite][71]
     *   [Parameters][72]
-*   [getUserFavoritesPublic][73]
+*   [unfavorite][73]
     *   [Parameters][74]
-*   [getMyFavorites][75]
+*   [getUserFavoritesPublic][75]
     *   [Parameters][76]
-*   [check][77]
+*   [getMyFavorites][77]
     *   [Parameters][78]
 *   [check][79]
     *   [Parameters][80]
-*   [follow][81]
+*   [check][81]
     *   [Parameters][82]
-*   [unfollow][83]
+*   [follow][83]
     *   [Parameters][84]
-*   [followers][85]
+*   [unfollow][85]
     *   [Parameters][86]
-*   [following][87]
+*   [followers][87]
     *   [Parameters][88]
-*   [formatUploadedFiles][89]
+*   [following][89]
     *   [Parameters][90]
-*   [uploadModel][91]
+*   [formatUploadedFiles][91]
     *   [Parameters][92]
-*   [getById][93]
+*   [uploadModel][93]
     *   [Parameters][94]
 *   [getById][95]
     *   [Parameters][96]
-*   [getByUser][97]
+*   [getById][97]
     *   [Parameters][98]
-*   [like][99]
+*   [getByUser][99]
     *   [Parameters][100]
-*   [unlike][101]
+*   [like][101]
     *   [Parameters][102]
-*   [patchMainFile][103]
+*   [unlike][103]
     *   [Parameters][104]
-*   [patchMainImage][105]
+*   [patchMainFile][105]
     *   [Parameters][106]
-*   [removeMainImage][107]
+*   [patchMainImage][107]
     *   [Parameters][108]
-*   [uploadImage][109]
+*   [removeMainImage][109]
     *   [Parameters][110]
-*   [getImages][111]
+*   [uploadImage][111]
     *   [Parameters][112]
-*   [updateOrder][113]
+*   [getImages][113]
     *   [Parameters][114]
-*   [removeImage][115]
+*   [updateOrder][115]
     *   [Parameters][116]
-*   [getForModel][117]
+*   [removeImage][117]
     *   [Parameters][118]
-*   [getFavorites][119]
+*   [getForModel][119]
     *   [Parameters][120]
-*   [getModelBaseDirectory][121]
+*   [getFavorites][121]
     *   [Parameters][122]
-*   [cleanFileName][123]
+*   [getAllPublicUsers][123]
     *   [Parameters][124]
-*   [createInitialStorage][125]
+*   [verifyToken][125]
     *   [Parameters][126]
-*   [createDynamicStorage][127]
+*   [optionalToken][127]
     *   [Parameters][128]
-*   [createFilter][129]
+*   [isAdmin][129]
     *   [Parameters][130]
-*   [createUploadWrapper][131]
+*   [isOwnerOrAdmin][131]
     *   [Parameters][132]
-*   [registerUser][133]
+*   [getModelBaseDirectory][133]
     *   [Parameters][134]
-*   [loginUser][135]
+*   [cleanFileName][135]
     *   [Parameters][136]
-*   [getCurrentUser][137]
+*   [createInitialStorage][137]
     *   [Parameters][138]
-*   [createCategory][139]
+*   [createDynamicStorage][139]
     *   [Parameters][140]
-*   [getCategories][141]
-*   [getCategoryById][142]
-    *   [Parameters][143]
-*   [updateCategory][144]
-    *   [Parameters][145]
-*   [deleteCategory][146]
-    *   [Parameters][147]
-*   [getCategoriesByModel][148]
-    *   [Parameters][149]
-*   [addCategoryToModel][150]
-    *   [Parameters][151]
-*   [removeCategoryFromModel][152]
-    *   [Parameters][153]
-*   [createComment][154]
-    *   [Parameters][155]
-*   [getModelComments][156]
-    *   [Parameters][157]
-*   [updateComment][158]
-    *   [Parameters][159]
-*   [deleteComment][160]
+*   [createFilter][141]
+    *   [Parameters][142]
+*   [uploadModelFile][143]
+*   [modelUploadFields][144]
+*   [uploadImageFile][145]
+*   [uploadPartsFile][146]
+*   [uploadMainImageFile][147]
+*   [uploadMainFileReplacement][148]
+*   [createUploadWrapper][149]
+    *   [Parameters][150]
+*   [registerUser][151]
+    *   [Parameters][152]
+*   [loginUser][153]
+    *   [Parameters][154]
+*   [getCurrentUser][155]
+    *   [Parameters][156]
+*   [createCategory][157]
+    *   [Parameters][158]
+*   [getCategories][159]
+*   [getCategoryById][160]
     *   [Parameters][161]
-*   [recordDownload][162]
+*   [updateCategory][162]
     *   [Parameters][163]
-*   [getDownloadsHistory][164]
+*   [deleteCategory][164]
     *   [Parameters][165]
-*   [getModelDownloadStats][166]
+*   [getCategoriesByModel][166]
     *   [Parameters][167]
-*   [getDownloadInfo][168]
+*   [addCategoryToModel][168]
     *   [Parameters][169]
-*   [addFavorite][170]
+*   [removeCategoryFromModel][170]
     *   [Parameters][171]
-*   [removeFavorite][172]
+*   [createComment][172]
     *   [Parameters][173]
-*   [getUserFavorites][174]
+*   [getModelComments][174]
     *   [Parameters][175]
-*   [getUserFavorites][176]
+*   [updateComment][176]
     *   [Parameters][177]
-*   [checkFavorite][178]
+*   [deleteComment][178]
     *   [Parameters][179]
-*   [followUser][180]
+*   [replyToComment][180]
     *   [Parameters][181]
-*   [unfollowUser][182]
+*   [recordDownload][182]
     *   [Parameters][183]
-*   [getFollowers][184]
+*   [getDownloadsHistory][184]
     *   [Parameters][185]
-*   [getFollowing][186]
+*   [getModelDownloadStats][186]
     *   [Parameters][187]
-*   [checkFollow][188]
+*   [getDownloadInfo][188]
     *   [Parameters][189]
-*   [createPart][190]
+*   [addFavorite][190]
     *   [Parameters][191]
-*   [getParts][192]
+*   [removeFavorite][192]
     *   [Parameters][193]
-*   [getPartsByModelId][194]
+*   [getUserFavorites][194]
     *   [Parameters][195]
-*   [deletePart][196]
+*   [getUserFavorites][196]
     *   [Parameters][197]
-*   [createModel][198]
+*   [checkFavorite][198]
     *   [Parameters][199]
-*   [getModelById][200]
+*   [followUser][200]
     *   [Parameters][201]
-*   [getModelIncludes][202]
-*   [getModels][203]
-    *   [Parameters][204]
-*   [getModelsByUser][205]
-    *   [Parameters][206]
-*   [deleteModel][207]
+*   [unfollowUser][202]
+    *   [Parameters][203]
+*   [getFollowers][204]
+    *   [Parameters][205]
+    *   [Properties][206]
+*   [getFollowing][207]
     *   [Parameters][208]
-*   [updateModel][209]
-    *   [Parameters][210]
-*   [addLike][211]
-    *   [Parameters][212]
-*   [removeLike][213]
-    *   [Parameters][214]
-*   [updateMainImage][215]
-    *   [Parameters][216]
-*   [deleteMainImage][217]
+    *   [Properties][209]
+*   [checkFollow][210]
+    *   [Parameters][211]
+*   [createPart][212]
+    *   [Parameters][213]
+*   [getParts][214]
+    *   [Parameters][215]
+    *   [Properties][216]
+*   [getPartsByModelId][217]
     *   [Parameters][218]
-*   [replaceMainFile][219]
+*   [deletePart][219]
     *   [Parameters][220]
-*   [addImage][221]
+*   [createModel][221]
     *   [Parameters][222]
-*   [getModelImages][223]
+*   [getModelById][223]
     *   [Parameters][224]
-*   [updateImageOrder][225]
-    *   [Parameters][226]
-*   [deleteImage][227]
-    *   [Parameters][228]
-*   [normalizeTag][229]
-    *   [Parameters][230]
-*   [getTagsForModel][231]
-    *   [Parameters][232]
-*   [addTagToModel][233]
-    *   [Parameters][234]
-*   [removeTagFromModel][235]
-    *   [Parameters][236]
-*   [removeTag][237]
-    *   [Parameters][238]
-*   [getAllTags][239]
-*   [getUserById][240]
+*   [getModelIncludes][225]
+*   [getModels][226]
+    *   [Parameters][227]
+*   [getModelsByUser][228]
+    *   [Parameters][229]
+*   [deleteModel][230]
+    *   [Parameters][231]
+*   [updateModel][232]
+    *   [Parameters][233]
+*   [addLike][234]
+    *   [Parameters][235]
+*   [removeLike][236]
+    *   [Parameters][237]
+*   [updateMainImage][238]
+    *   [Parameters][239]
+*   [deleteMainImage][240]
     *   [Parameters][241]
-*   [getUsers][242]
+*   [replaceMainFile][242]
     *   [Parameters][243]
-*   [updateUser][244]
+*   [addImage][244]
     *   [Parameters][245]
-*   [deleteUser][246]
+*   [getModelImages][246]
     *   [Parameters][247]
-*   [getAbsolutePath][248]
+*   [updateImageOrder][248]
     *   [Parameters][249]
-*   [deletePhysicalFile][250]
+*   [deleteImage][250]
     *   [Parameters][251]
-*   [deletePhysicalFolder][252]
+*   [normalizeTag][252]
     *   [Parameters][253]
-*   [getDisplayFileName][254]
+*   [getTagsForModel][254]
     *   [Parameters][255]
-*   [sendSuccess][256]
+*   [addTagToModel][256]
     *   [Parameters][257]
-*   [sendError][258]
+*   [removeTagFromModel][258]
     *   [Parameters][259]
+*   [removeTag][260]
+    *   [Parameters][261]
+*   [getAllTags][262]
+*   [getUserById][263]
+    *   [Parameters][264]
+*   [getUsers][265]
+    *   [Parameters][266]
+    *   [Properties][267]
+*   [getPublicUsers][268]
+    *   [Parameters][269]
+    *   [Properties][270]
+*   [updateUser][271]
+    *   [Parameters][272]
+*   [deleteUser][273]
+    *   [Parameters][274]
+*   [checkPermission][275]
+    *   [Parameters][276]
+*   [generateToken][277]
+    *   [Parameters][278]
+*   [getAbsolutePath][279]
+    *   [Parameters][280]
+*   [deletePhysicalFile][281]
+    *   [Parameters][282]
+*   [deletePhysicalFolder][283]
+    *   [Parameters][284]
+*   [getDisplayFileName][285]
+    *   [Parameters][286]
+*   [sendSuccess][287]
+    *   [Parameters][288]
+*   [sendError][289]
+    *   [Parameters][290]
+*   [validateUserFields][291]
+    *   [Parameters][292]
 
 ## register
 
 Registra un nuevo usuario en la plataforma.
+Crea cuenta y devuelve datos básicos + token JWT.
 
 ### Parameters
 
@@ -273,7 +307,8 @@ Registra un nuevo usuario en la plataforma.
 
 ## login
 
-Autentica a un usuario e inicia su sesión.
+Autentica a un usuario e inicia sesión.
+Devuelve token JWT y datos básicos del usuario si las credenciales son válidas.
 
 ### Parameters
 
@@ -282,7 +317,9 @@ Autentica a un usuario e inicia su sesión.
 
 ## me
 
-Obtiene los datos del usuario autenticado actualmente (para validación de sesión/token).
+Obtiene los datos completos del usuario autenticado actualmente.
+Útil para validar sesión activa y obtener información del perfil propio.
+Requiere token válido en Authorization header.
 
 ### Parameters
 
@@ -291,7 +328,8 @@ Obtiene los datos del usuario autenticado actualmente (para validación de sesi�
 
 ## create
 
-Crea una nueva categoría.
+Crea una nueva categoría en el sistema.
+Requiere nombre único.
 
 ### Parameters
 
@@ -300,7 +338,8 @@ Crea una nueva categoría.
 
 ## create
 
-Crea un nuevo comentario en un modelo.
+Crea un nuevo comentario en un modelo específico.
+Requiere autenticación.
 
 ### Parameters
 
@@ -309,7 +348,9 @@ Crea un nuevo comentario en un modelo.
 
 ## create
 
-Recibe un array de archivos y crea los registros de piezas correspondientes.
+Crea una o varias piezas (parts) para un modelo a partir de archivos 3D subidos.
+Requiere autenticación y que el usuario sea propietario del modelo o admin.
+Genera automáticamente el nombre de la pieza desde el nombre del archivo.
 
 ### Parameters
 
@@ -318,7 +359,8 @@ Recibe un array de archivos y crea los registros de piezas correspondientes.
 
 ## create
 
-Crea el modelo en la base de datos tras subir los archivos.
+Crea el registro del modelo en la base de datos usando los datos enviados y las rutas preparadas.
+Requiere autenticación.
 
 ### Parameters
 
@@ -327,7 +369,8 @@ Crea el modelo en la base de datos tras subir los archivos.
 
 ## getAll
 
-Obtiene todas las categorías.
+Obtiene la lista completa de categorías ordenadas alfabéticamente.
+Endpoint público.
 
 ### Parameters
 
@@ -336,7 +379,8 @@ Obtiene todas las categorías.
 
 ## getAll
 
-Obtiene todas las piezas del sistema paginadas.
+Obtiene una lista paginada de todas las piezas registradas en el sistema.
+Útil principalmente para administración.
 
 ### Parameters
 
@@ -345,7 +389,8 @@ Obtiene todas las piezas del sistema paginadas.
 
 ## getAll
 
-Obtiene todos los modelos paginados.
+Obtiene todos los modelos paginados de la plataforma.
+Endpoint público.
 
 ### Parameters
 
@@ -354,7 +399,8 @@ Obtiene todos los modelos paginados.
 
 ## getAll
 
-Obtiene todos los tags creados en la plataforma.
+Obtiene la lista completa de todos los tags existentes en la plataforma.
+Ordenados alfabéticamente. Endpoint público.
 
 ### Parameters
 
@@ -364,6 +410,7 @@ Obtiene todos los tags creados en la plataforma.
 ## getAll
 
 Obtiene una lista paginada de todos los usuarios de la plataforma.
+Endpoint público (útil para búsqueda de creadores, rankings, etc.).
 
 ### Parameters
 
@@ -372,7 +419,8 @@ Obtiene una lista paginada de todos los usuarios de la plataforma.
 
 ## getOne
 
-Obtiene una categoría por su ID.
+Obtiene una categoría específica por su ID, incluyendo conteo de modelos asociados.
+Endpoint público.
 
 ### Parameters
 
@@ -381,7 +429,8 @@ Obtiene una categoría por su ID.
 
 ## getByModel
 
-Obtiene todas las categorías asignadas a un modelo.
+Obtiene todas las categorías asignadas a un modelo específico.
+Endpoint público.
 
 ### Parameters
 
@@ -391,6 +440,8 @@ Obtiene todas las categorías asignadas a un modelo.
 ## getByModel
 
 Obtiene los comentarios de un modelo de forma paginada.
+Ordenados por fecha descendente (más recientes primero).
+Endpoint público.
 
 ### Parameters
 
@@ -399,7 +450,8 @@ Obtiene los comentarios de un modelo de forma paginada.
 
 ## getByModel
 
-Obtiene todas las piezas pertenecientes a un modelo.
+Obtiene todas las piezas asociadas a un modelo específico.
+Endpoint público.
 
 ### Parameters
 
@@ -408,7 +460,8 @@ Obtiene todas las piezas pertenecientes a un modelo.
 
 ## update
 
-Actualiza el nombre de una categoría.
+Actualiza el nombre de una categoría existente.
+El nombre debe seguir siendo único.
 
 ### Parameters
 
@@ -417,7 +470,8 @@ Actualiza el nombre de una categoría.
 
 ## update
 
-Actualiza el texto de un comentario existente.
+Actualiza el contenido de un comentario existente.
+Requiere autenticación y que el usuario sea el autor del comentario o administrador.
 
 ### Parameters
 
@@ -426,7 +480,8 @@ Actualiza el texto de un comentario existente.
 
 ## update
 
-Actualiza la información de texto del modelo.
+Actualiza los campos textuales y metadatos básicos de un modelo.
+Requiere ser propietario o administrador.
 
 ### Parameters
 
@@ -435,7 +490,8 @@ Actualiza la información de texto del modelo.
 
 ## update
 
-Actualiza la información pública del perfil de un usuario.
+Actualiza los datos públicos del perfil del usuario.
+Requiere autenticación y que el usuario sea el propietario o admin.
 
 ### Parameters
 
@@ -444,7 +500,7 @@ Actualiza la información pública del perfil de un usuario.
 
 ## remove
 
-Elimina una categoría.
+Elimina una categoría del sistema (las asociaciones con modelos se eliminan automáticamente por CASCADE).
 
 ### Parameters
 
@@ -453,7 +509,8 @@ Elimina una categoría.
 
 ## remove
 
-Elimina un comentario.
+Elimina un comentario específico.
+Requiere autenticación y que el usuario sea el autor del comentario o administrador.
 
 ### Parameters
 
@@ -462,7 +519,8 @@ Elimina un comentario.
 
 ## remove
 
-Elimina una pieza específica.
+Elimina una pieza específica (de la base de datos y del sistema de archivos).
+Requiere autenticación y que el usuario sea propietario del modelo o admin.
 
 ### Parameters
 
@@ -471,7 +529,8 @@ Elimina una pieza específica.
 
 ## remove
 
-Elimina un modelo completo.
+Elimina un modelo completo (BD + archivos físicos).
+Requiere ser propietario o administrador.
 
 ### Parameters
 
@@ -480,7 +539,8 @@ Elimina un modelo completo.
 
 ## remove
 
-Elimina un tag permanentemente de la plataforma (Solo Admin).
+Elimina un tag permanentemente del sistema (incluyendo todas sus asociaciones).
+Requiere rol de administrador.
 
 ### Parameters
 
@@ -489,7 +549,8 @@ Elimina un tag permanentemente de la plataforma (Solo Admin).
 
 ## remove
 
-Elimina por completo un usuario y todos sus archivos asociados.
+Elimina completamente un usuario y todos sus archivos asociados.
+Requiere autenticación y que el usuario sea el propietario o admin.
 
 ### Parameters
 
@@ -498,7 +559,8 @@ Elimina por completo un usuario y todos sus archivos asociados.
 
 ## addToModel
 
-Añade una categoría a un modelo.
+Asocia una categoría existente a un modelo.
+Requiere autenticación y que el usuario sea propietario del modelo o admin.
 
 ### Parameters
 
@@ -507,7 +569,8 @@ Añade una categoría a un modelo.
 
 ## addToModel
 
-Añade un nuevo tag a un modelo.
+Añade un nuevo tag (o usa uno existente) a un modelo.
+Requiere autenticación y que el usuario sea propietario del modelo o admin.
 
 ### Parameters
 
@@ -516,7 +579,8 @@ Añade un nuevo tag a un modelo.
 
 ## removeFromModel
 
-Elimina una categoría de un modelo.
+Elimina la asociación entre una categoría y un modelo.
+Requiere autenticación y que el usuario sea propietario del modelo o admin.
 
 ### Parameters
 
@@ -525,7 +589,18 @@ Elimina una categoría de un modelo.
 
 ## removeFromModel
 
-Elimina un tag de un modelo.
+Elimina la asociación de un tag específico con un modelo.
+Requiere autenticación y que el usuario sea propietario del modelo o admin.
+
+### Parameters
+
+*   `req` &#x20;
+*   `res` &#x20;
+
+## reply
+
+Responde a un comentario existente.
+Requiere autenticación.
 
 ### Parameters
 
@@ -534,17 +609,20 @@ Elimina un tag de un modelo.
 
 ## appendCleanFolderToArchive
 
-Añade los archivos de una carpeta a un archivo ZIP limpiando sus nombres.
+Añade recursivamente los archivos de una carpeta a un ZIP, limpiando nombres de archivo.
+Ignora subcarpetas (solo archivos directos).
 
 ### Parameters
 
-*   `archive` &#x20;
-*   `folderPath` &#x20;
-*   `zipSubFolder`   (optional, default `""`)
+*   `archive` **archiver.Archiver** Instancia del ZIP en curso
+*   `folderPath` **[string][293]** Ruta absoluta de la carpeta a comprimir
+*   `zipSubFolder` **[string][293]** Subcarpeta dentro del ZIP (ej: "parts", "gallery") (optional, default `""`)
 
 ## record
 
-Procesa la descarga de un modelo (archivo individual o ZIP comprimido y limpio).
+Registra la descarga y devuelve el archivo solicitado (individual o ZIP comprimido).
+Soporta tipos: main (por defecto), all, parts, gallery.
+Limpia nombres de archivo y registra IP, user-agent y usuario (si autenticado).
 
 ### Parameters
 
@@ -553,7 +631,8 @@ Procesa la descarga de un modelo (archivo individual o ZIP comprimido y limpio).
 
 ## getUserHistory
 
-Obtiene el historial de descargas del usuario autenticado.
+Obtiene el historial paginado de descargas del usuario autenticado.
+Requiere autenticación.
 
 ### Parameters
 
@@ -562,7 +641,8 @@ Obtiene el historial de descargas del usuario autenticado.
 
 ## getModelStats
 
-Obtiene las estadísticas de descarga de un modelo.
+Obtiene estadísticas detalladas de descargas de un modelo (total, únicos, anónimos, etc.).
+Requiere ser propietario del modelo o administrador.
 
 ### Parameters
 
@@ -572,6 +652,8 @@ Obtiene las estadísticas de descarga de un modelo.
 ## favorite
 
 Añade un modelo a los favoritos del usuario autenticado.
+Idempotente: si ya estaba marcado como favorito, devuelve mensaje informativo.
+Requiere autenticación.
 
 ### Parameters
 
@@ -581,6 +663,8 @@ Añade un modelo a los favoritos del usuario autenticado.
 ## unfavorite
 
 Elimina un modelo de los favoritos del usuario autenticado.
+Idempotente: si no estaba en favoritos, devuelve mensaje informativo.
+Requiere autenticación.
 
 ### Parameters
 
@@ -589,7 +673,8 @@ Elimina un modelo de los favoritos del usuario autenticado.
 
 ## getUserFavoritesPublic
 
-Obtiene los favoritos de un usuario de forma pública.
+Obtiene la lista paginada de favoritos de un usuario específico.
+Endpoint público (cualquiera puede ver los favoritos de otros usuarios).
 
 ### Parameters
 
@@ -598,7 +683,8 @@ Obtiene los favoritos de un usuario de forma pública.
 
 ## getMyFavorites
 
-Obtiene los favoritos del propio usuario autenticado.
+Obtiene la lista paginada de favoritos del usuario autenticado.
+Requiere autenticación.
 
 ### Parameters
 
@@ -607,7 +693,8 @@ Obtiene los favoritos del propio usuario autenticado.
 
 ## check
 
-Comprueba si un modelo está en los favoritos del usuario autenticado.
+Comprueba si un modelo está marcado como favorito por el usuario autenticado.
+Requiere autenticación.
 
 ### Parameters
 
@@ -616,7 +703,8 @@ Comprueba si un modelo está en los favoritos del usuario autenticado.
 
 ## check
 
-Comprueba si el usuario autenticado sigue al usuario proporcionado.
+Comprueba si el usuario autenticado sigue al usuario indicado.
+Requiere autenticación.
 
 ### Parameters
 
@@ -625,7 +713,9 @@ Comprueba si el usuario autenticado sigue al usuario proporcionado.
 
 ## follow
 
-Permite al usuario autenticado seguir a otro creador.
+Permite al usuario autenticado seguir a otro usuario.
+Idempotente: si ya se seguía, devuelve mensaje informativo.
+Requiere autenticación.
 
 ### Parameters
 
@@ -634,7 +724,9 @@ Permite al usuario autenticado seguir a otro creador.
 
 ## unfollow
 
-Permite al usuario autenticado dejar de seguir a otro creador.
+Permite al usuario autenticado dejar de seguir a otro usuario.
+Idempotente: si no se seguía, devuelve mensaje informativo.
+Requiere autenticación.
 
 ### Parameters
 
@@ -643,7 +735,8 @@ Permite al usuario autenticado dejar de seguir a otro creador.
 
 ## followers
 
-Obtiene la lista de seguidores de un usuario.
+Obtiene la lista paginada de seguidores de un usuario específico.
+Endpoint público.
 
 ### Parameters
 
@@ -652,7 +745,8 @@ Obtiene la lista de seguidores de un usuario.
 
 ## following
 
-Obtiene la lista de usuarios a los que sigue un usuario en concreto.
+Obtiene la lista paginada de usuarios a los que sigue un usuario específico.
+Endpoint público.
 
 ### Parameters
 
@@ -661,17 +755,25 @@ Obtiene la lista de usuarios a los que sigue un usuario en concreto.
 
 ## formatUploadedFiles
 
-Formatea los archivos subidos para sincronizar la BD con las rutas generadas por Multer.
+Formatea las rutas de los archivos subidos por Multer para que coincidan con la estructura esperada por la base de datos.
+Valida que exista el archivo principal 3D.
 
 ### Parameters
 
-*   `files` &#x20;
-*   `userId` &#x20;
-*   `uploadId` &#x20;
+*   `files` **[Object][294]** Objeto de archivos subidos por Multer (req.files).
+*   `userId` **[string][293]** ID del usuario que sube.
+*   `uploadId` **([number][295] | [string][293])** Identificador temporal de la subida.
+
+<!---->
+
+*   Throws **[Error][296]** Si falta el archivo principal (main\_file).
+
+Returns **[Object][294]** Objeto con rutas formateadas: main\_file, cover\_image, parts y gallery.
 
 ## uploadModel
 
-Prepara y formatea los archivos subidos iniciales.
+Prepara y devuelve las rutas de los archivos subidos en la creación inicial del modelo.
+No guarda en BD aún (solo organiza archivos).
 
 ### Parameters
 
@@ -680,7 +782,8 @@ Prepara y formatea los archivos subidos iniciales.
 
 ## getById
 
-Obtiene un modelo específico por ID.
+Obtiene los datos completos de un modelo por su ID (incluye relaciones).
+Endpoint público.
 
 ### Parameters
 
@@ -689,7 +792,8 @@ Obtiene un modelo específico por ID.
 
 ## getById
 
-Obtiene el perfil completo de un usuario por su ID, junto con sus estadísticas.
+Obtiene el perfil completo público de un usuario por ID.
+Cualquiera puede verlo (sin email ni datos privados).
 
 ### Parameters
 
@@ -698,7 +802,8 @@ Obtiene el perfil completo de un usuario por su ID, junto con sus estadísticas.
 
 ## getByUser
 
-Obtiene modelos paginados de un usuario específico.
+Obtiene los modelos paginados creados por un usuario específico.
+Endpoint público.
 
 ### Parameters
 
@@ -707,7 +812,8 @@ Obtiene modelos paginados de un usuario específico.
 
 ## like
 
-Añade un like.
+Registra un like del usuario autenticado al modelo.
+Idempotente (si ya existe, no falla).
 
 ### Parameters
 
@@ -716,7 +822,8 @@ Añade un like.
 
 ## unlike
 
-Elimina un like.
+Retira el like del usuario autenticado al modelo.
+Idempotente (si no existía, no falla).
 
 ### Parameters
 
@@ -725,7 +832,9 @@ Elimina un like.
 
 ## patchMainFile
 
-Reemplaza el archivo 3D principal de un modelo.
+Reemplaza el archivo 3D principal del modelo.
+Borra el archivo anterior del disco.
+Requiere ser propietario o admin.
 
 ### Parameters
 
@@ -734,7 +843,9 @@ Reemplaza el archivo 3D principal de un modelo.
 
 ## patchMainImage
 
-Reemplaza la imagen principal de un modelo.
+Reemplaza la imagen de portada (main\_image) del modelo.
+Borra la imagen anterior del disco.
+Requiere ser propietario o admin.
 
 ### Parameters
 
@@ -743,7 +854,8 @@ Reemplaza la imagen principal de un modelo.
 
 ## removeMainImage
 
-Elimina la imagen principal de un modelo.
+Elimina la imagen de portada del modelo (BD + disco).
+Requiere ser propietario o admin.
 
 ### Parameters
 
@@ -753,6 +865,8 @@ Elimina la imagen principal de un modelo.
 ## uploadImage
 
 Sube una o varias imágenes a la galería secundaria de un modelo.
+Requiere autenticación y que el usuario sea propietario o admin.
+Crea entradas en la tabla model\_images con orden secuencial.
 
 ### Parameters
 
@@ -761,7 +875,8 @@ Sube una o varias imágenes a la galería secundaria de un modelo.
 
 ## getImages
 
-Obtiene todas las imágenes de la galería de un modelo específico.
+Obtiene todas las imágenes de la galería de un modelo, ordenadas por display\_order.
+Endpoint público.
 
 ### Parameters
 
@@ -770,7 +885,8 @@ Obtiene todas las imágenes de la galería de un modelo específico.
 
 ## updateOrder
 
-Actualiza el orden de visualización (display\_order) de una imagen en la galería.
+Actualiza el orden de visualización (display\_order) de una imagen específica.
+Requiere autenticación y permiso sobre el modelo.
 
 ### Parameters
 
@@ -779,7 +895,8 @@ Actualiza el orden de visualización (display\_order) de una imagen en la galer�
 
 ## removeImage
 
-Elimina una imagen de la galería de un modelo (tanto de BD como del disco).
+Elimina una imagen de la galería (de la base de datos y del sistema de archivos).
+Requiere autenticación y permiso sobre el modelo.
 
 ### Parameters
 
@@ -788,7 +905,8 @@ Elimina una imagen de la galería de un modelo (tanto de BD como del disco).
 
 ## getForModel
 
-Obtiene todos los tags asociados a un modelo.
+Obtiene todos los tags asociados a un modelo específico.
+Endpoint público.
 
 ### Parameters
 
@@ -797,33 +915,104 @@ Obtiene todos los tags asociados a un modelo.
 
 ## getFavorites
 
-Obtiene la lista completa de modelos que un usuario ha marcado como favoritos.
+Obtiene la lista de modelos marcados como favoritos por un usuario.
+No requiere autenticación (público).
 
 ### Parameters
 
 *   `req` &#x20;
 *   `res` &#x20;
 
-## getModelBaseDirectory
+## getAllPublicUsers
 
-Obtiene el directorio base de un modelo desde la BD usando Prisma.
+Obtiene lista pública de usuarios (tarjetas para página "Desarrolladores").
+Solo campos seguros y visibles.
 
 ### Parameters
 
-*   `modelId` &#x20;
+*   `req` &#x20;
+*   `res` &#x20;
+
+## verifyToken
+
+Middleware obligatorio: verifica que exista un token Bearer válido.
+Si es válido, adjunta el payload decodificado en `req.user`.
+Si falla, responde con 401 o 403 y detiene la cadena.
+
+### Parameters
+
+*   `req` &#x20;
+*   `res` &#x20;
+*   `next` &#x20;
+
+## optionalToken
+
+Middleware opcional: intenta verificar el token Bearer si existe.
+Adjunta `req.user` (objeto decodificado o `null` si no hay token o es inválido).
+Nunca falla la petición, siempre llama a `next()`.
+
+### Parameters
+
+*   `req` &#x20;
+*   `res` &#x20;
+*   `next` &#x20;
+
+## isAdmin
+
+Middleware de autorización: requiere que el usuario esté autenticado
+y tenga rol "admin".
+Responde 403 si no es administrador.
+
+### Parameters
+
+*   `req` &#x20;
+*   `res` &#x20;
+*   `next` &#x20;
+
+## isOwnerOrAdmin
+
+Middleware de autorización: permite el acceso solo si el usuario autenticado
+es el propietario del recurso (por ID en params) o es administrador.
+Usa `req.params.id` como ID del recurso a proteger.
+
+### Parameters
+
+*   `req` &#x20;
+*   `res` &#x20;
+*   `next` &#x20;
+
+## getModelBaseDirectory
+
+Obtiene la carpeta base física de un modelo (donde están main\_file, gallery, parts, etc.)
+a partir de la ruta almacenada en la BD.
+
+### Parameters
+
+*   `modelId` **[string][293]**&#x20;
+
+<!---->
+
+*   Throws **[Error][296]** Si el modelo no existe
+
+Returns **[Promise][297]<[string][293]>** Ruta absoluta al directorio base del modelo
 
 ## cleanFileName
 
-Limpia el nombre del archivo y le añade un prefijo opcional.
+Limpia y normaliza el nombre del archivo (reemplaza espacios por \_)
 
 ### Parameters
 
-*   `name` &#x20;
-*   `prefix`   (optional, default `""`)
+*   `name` **[string][293]** Nombre original del archivo
+*   `prefix` **[string][293]** Prefijo opcional (ej: "cover\_", "main\_") (optional, default `""`)
+
+Returns **[string][293]** Nombre limpio
 
 ## createInitialStorage
 
-Crea el almacenamiento para subir un modelo nuevo por primera vez.
+Storage de Multer para la creación inicial de un modelo (subida múltiple de archivos).
+Crea carpetas dinámicas: /uploads/models/:userId/:timestamp/\[parts|gallery]
+
+Type: multer.StorageEngine
 
 ### Parameters
 
@@ -831,32 +1020,61 @@ Crea el almacenamiento para subir un modelo nuevo por primera vez.
 
 ## createDynamicStorage
 
-Crea almacenamiento dinámico para añadir o reemplazar archivos.
+Storage dinámico para subir/reemplazar archivos en modelos ya existentes.
+Usa la ruta almacenada en BD para determinar el destino.
 
 ### Parameters
 
-*   `subFolder`   (optional, default `""`)
-*   `checkExists`   (optional, default `false`)
-*   `prefix`   (optional, default `""`)
-*   `useTimestamp` **[boolean][260]** Si es true, añade una marca de tiempo para evitar el borrado fatal de Multer. (optional, default `false`)
+*   `subFolder` **[string][293]** Subcarpeta adicional (gallery, parts, etc.) (optional, default `""`)
+*   `checkExists` **[boolean][298]** Verificar si el archivo ya existe (optional, default `false`)
+*   `prefix` **[string][293]** Prefijo para el nombre del archivo (optional, default `""`)
+*   `useTimestamp` **[boolean][298]** Añadir timestamp para evitar sobreescritura accidental (optional, default `false`)
+
+Returns **multer.StorageEngine**&#x20;
 
 ## createFilter
 
-Genera un filtro de extensiones permitidas.
+Crea filtro de Multer para validar extensiones permitidas
 
 ### Parameters
 
-*   `allowedTypes` &#x20;
-*   `errorMsg` &#x20;
+*   `allowedTypes` **[Array][299]<[string][293]>** Extensiones permitidas (con punto)
+*   `errorMsg` **[string][293]** Mensaje de error personalizado
+
+Returns **multer.FileFilter**&#x20;
+
+## uploadModelFile
+
+Subida inicial completa de modelo (main + cover + parts + gallery)
+
+## modelUploadFields
+
+Configuración de campos múltiples para subida inicial
+
+## uploadImageFile
+
+Añadir múltiples imágenes a la galería (máx 10)
+
+## uploadPartsFile
+
+Añadir múltiples partes 3D (máx 10)
+
+## uploadMainImageFile
+
+Reemplazar imagen de portada (única)
+
+## uploadMainFileReplacement
+
+Reemplazar archivo principal 3D (único)
 
 ## createUploadWrapper
 
-Envoltorio para capturar errores de límite de Multer.
+Wrapper que captura errores comunes de Multer y responde con JSON 400
 
 ### Parameters
 
-*   `uploadFn` &#x20;
-*   `limitErrorMsg` &#x20;
+*   `uploadFn` **[Function][300]** Función multer (single/array/fields)
+*   `limitErrorMsg` **[string][293]?** Mensaje personalizado para LIMIT\_UNEXPECTED\_FILE
 
 ## registerUser
 
@@ -864,7 +1082,7 @@ Registra un nuevo usuario en la plataforma.
 
 ### Parameters
 
-*   `userData` **[Object][261]** Datos del usuario (name, lastname, username, email, password).
+*   `userData` **[Object][294]** Datos del usuario (name, lastname, username, email, password).
 
     *   `userData.name` &#x20;
     *   `userData.lastname` &#x20;
@@ -872,7 +1090,7 @@ Registra un nuevo usuario en la plataforma.
     *   `userData.email` &#x20;
     *   `userData.password` &#x20;
 
-Returns **[Promise][262]<[Object][261]>** Objeto con los datos públicos del usuario y su token JWT.
+Returns **[Promise][297]<[Object][294]>** Objeto con los datos públicos del usuario y su token JWT.
 
 ## loginUser
 
@@ -880,12 +1098,12 @@ Autentica a un usuario verificando sus credenciales.
 
 ### Parameters
 
-*   `credentials` **[Object][261]** Email y contraseña del usuario.
+*   `credentials` **[Object][294]** Email y contraseña del usuario.
 
     *   `credentials.email` &#x20;
     *   `credentials.password` &#x20;
 
-Returns **[Promise][262]<[Object][261]>** Objeto con los datos públicos del usuario y su token JWT.
+Returns **[Promise][297]<[Object][294]>** Objeto con los datos públicos del usuario y su token JWT.
 
 ## getCurrentUser
 
@@ -893,74 +1111,123 @@ Obtiene los datos básicos del usuario actualmente autenticado (usado para valid
 
 ### Parameters
 
-*   `userId` **[string][263]** ID del usuario extraído del token.
+*   `userId` **[string][293]** ID del usuario extraído del token.
 
-Returns **[Promise][262]<[Object][261]>** Datos del usuario (excluyendo datos sensibles).
+Returns **[Promise][297]<[Object][294]>** Datos del usuario (excluyendo datos sensibles).
 
 ## createCategory
 
-Crea una nueva categoría.
+Crea una nueva categoría en el sistema.
+El nombre debe ser único (restringido por índice único en la base de datos).
 
 ### Parameters
 
-*   `name` &#x20;
+*   `name` **[string][293]** Nombre de la categoría (obligatorio)
+
+<!---->
+
+*   Throws **[Error][296]** Si el nombre está vacío o no se proporciona
+*   Throws **[Error][296]** Si ya existe una categoría con ese nombre (error P2002 de Prisma)
+
+Returns **[Promise][297]<[Object][294]>** Categoría recién creada
 
 ## getCategories
 
-Obtiene todas las categorías ordenadas alfabéticamente.
+Obtiene la lista completa de categorías ordenadas alfabéticamente por nombre.
+
+Returns **[Promise][297]<[Array][299]<{id: [string][293], name: [string][293], created\_at: [Date][301], updated\_at: [Date][301]}>>** Lista de todas las categorías
 
 ## getCategoryById
 
-Obtiene una categoría por ID, incluyendo cuántos modelos la están usando.
+Obtiene una categoría por su ID, incluyendo el conteo de modelos que la utilizan.
 
 ### Parameters
 
-*   `id` &#x20;
+*   `id` **[string][293]** ID de la categoría
+
+<!---->
+
+*   Throws **[Error][296]** "Categoría no encontrada" si no existe
+
+Returns **[Promise][297]<[Object][294]>** Categoría con propiedad \_count.model\_category
 
 ## updateCategory
 
-Actualiza el nombre de una categoría.
+Actualiza el nombre de una categoría existente.
 
 ### Parameters
 
-*   `id` &#x20;
-*   `name` &#x20;
+*   `id` **[string][293]** ID de la categoría a actualizar
+*   `name` **[string][293]** Nuevo nombre de la categoría
+
+<!---->
+
+*   Throws **[Error][296]** "Categoría no encontrada" si el ID no existe (P2025)
+*   Throws **[Error][296]** Si ya existe otra categoría con el nuevo nombre (P2002)
+
+Returns **[Promise][297]<[Object][294]>** Categoría actualizada
 
 ## deleteCategory
 
-Elimina una categoría. (La tabla puente model\_category se limpiará sola por el CASCADE).
+Elimina una categoría del sistema.
+Gracias a la restricción ON DELETE CASCADE en model\_category,
+las relaciones con modelos se eliminan automáticamente.
 
 ### Parameters
 
-*   `id` &#x20;
+*   `id` **[string][293]** ID de la categoría a eliminar
+
+<!---->
+
+*   Throws **[Error][296]** "Categoría no encontrada" si el ID no existe (P2025)
+
+Returns **[Promise][297]<{message: [string][293]}>** Mensaje de confirmación
 
 ## getCategoriesByModel
 
-Obtiene todas las categorías asociadas a un modelo específico.
+Obtiene todas las categorías asignadas a un modelo específico.
 
 ### Parameters
 
-*   `modelId` &#x20;
+*   `modelId` **[string][293]** ID del modelo
+
+Returns **[Promise][297]<[Array][299]<{id: [string][293], name: [string][293]}>>** Lista de categorías del modelo
 
 ## addCategoryToModel
 
-Añade una categoría existente a un modelo.
+Asocia una categoría existente a un modelo.
+Solo el propietario del modelo o un administrador puede ejecutar esta acción.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo.
-*   `categoryId` **[string][263]** ID de la categoría.
-*   `user` **[object][261]** Usuario autenticado.
+*   `modelId` **[string][293]** ID del modelo
+*   `categoryId` **[string][293]** ID de la categoría a asignar
+*   `user` **[Object][294]** Usuario autenticado que realiza la acción
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado"
+*   Throws **[Error][296]** Si el usuario no tiene permiso sobre el modelo
+
+Returns **[Promise][297]<{message: [string][293]}>** Resultado de la operación
 
 ## removeCategoryFromModel
 
-Elimina una categoría de un modelo.
+Elimina la asociación entre una categoría y un modelo.
+Solo el propietario del modelo o un administrador puede ejecutar esta acción.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo.
-*   `categoryId` **[string][263]** ID de la categoría.
-*   `user` **[object][261]** Usuario autenticado.
+*   `modelId` **[string][293]** ID del modelo
+*   `categoryId` **[string][293]** ID de la categoría a desasociar
+*   `user` **[Object][294]** Usuario autenticado que realiza la acción
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado"
+*   Throws **[Error][296]** Si el usuario no tiene permiso sobre el modelo
+
+Returns **[Promise][297]<{message: [string][293]}>** Resultado de la operación
 
 ## createComment
 
@@ -968,11 +1235,11 @@ Crea un nuevo comentario en un modelo.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo comentado.
-*   `userId` **[string][263]** ID del usuario que comenta.
-*   `content` **[string][263]** Contenido del comentario.
+*   `modelId` **[string][293]** ID del modelo comentado.
+*   `userId` **[string][293]** ID del usuario que comenta.
+*   `content` **[string][293]** Contenido del comentario.
 
-Returns **[Promise][262]<[Object][261]>** El comentario recién creado.
+Returns **[Promise][297]<[Object][294]>** El comentario recién creado.
 
 ## getModelComments
 
@@ -980,13 +1247,13 @@ Obtiene los comentarios de un modelo de forma paginada junto con los datos del a
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo.
-*   `pagination` **[Object][261]** Objeto con page y limit.
+*   `modelId` **[string][293]** ID del modelo.
+*   `pagination` **[Object][294]** Objeto con page y limit.
 
     *   `pagination.page`   (optional, default `1`)
     *   `pagination.limit`   (optional, default `20`)
 
-Returns **[Promise][262]<[Object][261]>** Resultado paginado con los comentarios.
+Returns **[Promise][297]<[Object][294]>** Resultado paginado con los comentarios.
 
 ## updateComment
 
@@ -994,11 +1261,11 @@ Actualiza el contenido de un comentario.
 
 ### Parameters
 
-*   `commentId` **[string][263]** ID del comentario.
-*   `user` **[Object][261]** Usuario que realiza la petición (para verificar permisos).
-*   `content` **[string][263]** Nuevo texto del comentario.
+*   `commentId` **[string][293]** ID del comentario.
+*   `user` **[Object][294]** Usuario que realiza la petición (para verificar permisos).
+*   `content` **[string][293]** Nuevo texto del comentario.
 
-Returns **[Promise][262]<[Object][261]>** El comentario actualizado.
+Returns **[Promise][297]<[Object][294]>** El comentario actualizado.
 
 ## deleteComment
 
@@ -1006,50 +1273,93 @@ Elimina un comentario.
 
 ### Parameters
 
-*   `commentId` **[string][263]** ID del comentario.
-*   `user` **[Object][261]** Usuario que realiza la petición.
+*   `commentId` **[string][293]** ID del comentario.
+*   `user` **[Object][294]** Usuario que realiza la petición.
 
-Returns **[Promise][262]<[Object][261]>** Mensaje de éxito.
+Returns **[Promise][297]<[Object][294]>** Mensaje de éxito.
+
+## replyToComment
+
+Crea una respuesta a un comentario existente.
+Hereda automáticamente el model\_id del comentario padre.
+
+*   @param {string} commentId - ID del comentario al que se va a responder (comentario padre).
+
+### Parameters
+
+*   `commentId` &#x20;
+*   `userId` **[string][293]** ID del usuario que escribe la respuesta.
+*   `content` **[string][293]** Texto del contenido de la respuesta.
+
+Returns **[Promise][297]<[Object][294]>** El nuevo comentario (respuesta) creado.
 
 ## recordDownload
 
-Registra una descarga en el historial y actualiza el contador global del modelo de forma atómica.
+Registra una descarga del modelo en la base de datos y actualiza el contador
+de descargas totales del modelo de forma atómica (transacción).
+Devuelve también la URL del archivo para que el cliente pueda proceder con la descarga.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo descargado.
-*   `user` **([Object][261] | null)** Usuario que descarga (null si es anónimo).
-*   `ip` **[string][263]** Dirección IP del cliente.
-*   `userAgent` **[string][263]** Navegador/Software usado.
+*   `modelId` **[string][293]** ID del modelo que se está descargando
+*   `user` **([Object][294] | null)** Objeto del usuario autenticado (null si es descarga anónima)
+*   `ip` **[string][293]** Dirección IP del cliente (para registro y prevención de abuso)
+*   `userAgent` **[string][293]** Cadena User-Agent del navegador o cliente
+
+<!---->
+
+*   Throws **[Error][296]** "El modelo solicitado no existe" (código P2025)
+*   Throws **[Error][296]** Error genérico de base de datos si ocurre otro problema
+
+Returns **[Promise][297]<{message: [string][293], downloads\_count: [number][295], file\_url: [string][293]}>** Información de confirmación y datos necesarios para la descarga
 
 ## getDownloadsHistory
 
-Obtiene el historial paginado de descargas de un usuario.
+Obtiene el historial paginado de descargas realizadas por un usuario específico.
+Solo muestra descargas registradas (no anónimas).
 
 ### Parameters
 
-*   `userId` &#x20;
-*   `$1` **[Object][261]**&#x20;
+*   `userId` **[string][293]** ID del usuario cuyos descargas se consultan
+*   `options` **[Object][294]?** Opciones de paginación (optional, default `{}`)
 
-    *   `$1.page`   (optional, default `1`)
-    *   `$1.limit`   (optional, default `20`)
+    *   `options.page` **[number][295]** Página solicitada (base 1) (optional, default `1`)
+    *   `options.limit` **[number][295]** Cantidad de registros por página (máx. 50) (optional, default `20`)
 
 ## getModelDownloadStats
 
-Obtiene las estadísticas de descargas de un modelo (solo para el creador).
+Obtiene estadísticas detalladas de descargas de un modelo específico.
+Solo accesible por el creador del modelo o administradores.
+Incluye total, descargas registradas, usuarios únicos y descargas anónimas.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `user` &#x20;
+*   `modelId` **[string][293]** ID del modelo cuyas estadísticas se consultan
+*   `user` **[Object][294]** Usuario autenticado que realiza la consulta
+
+<!---->
+
+*   Throws **[Error][296]** "El modelo solicitado no existe"
+*   Throws **[Error][296]** Si el usuario no tiene permiso (propietario o admin)
+
+Returns **[Promise][297]<{total\_downloads: [number][295], unique\_users: [number][295], registered\_downloads: [number][295], anonymous\_downloads: [number][295]}>** Estadísticas de descargas
 
 ## getDownloadInfo
 
-Obtiene las rutas físicas absolutas para procesar la descarga.
+Obtiene información necesaria para servir el archivo de descarga:
+ruta absoluta en disco, nombre limpio sugerido y carpeta del modelo.
+Verifica que el archivo físico exista antes de retornar.
 
 ### Parameters
 
-*   `modelId` &#x20;
+*   `modelId` **[string][293]** ID del modelo cuyo archivo se va a descargar
+
+<!---->
+
+*   Throws **[Error][296]** "El modelo solicitado no existe"
+*   Throws **[Error][296]** "El archivo físico no existe en el servidor" si el archivo no se encuentra
+
+Returns **[Promise][297]<{absolutePath: [string][293], cleanName: [string][293], modelFolder: [string][293]}>** Información para servir el archivo
 
 ## addFavorite
 
@@ -1057,8 +1367,8 @@ Añade un modelo a la lista de favoritos de un usuario.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo.
-*   `userId` **[string][263]** ID del usuario.
+*   `modelId` **[string][293]** ID del modelo.
+*   `userId` **[string][293]** ID del usuario.
 
 ## removeFavorite
 
@@ -1066,8 +1376,8 @@ Elimina un modelo de la lista de favoritos de un usuario.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo.
-*   `userId` **[string][263]** ID del usuario.
+*   `modelId` **[string][293]** ID del modelo.
+*   `userId` **[string][293]** ID del usuario.
 
 ## getUserFavorites
 
@@ -1075,19 +1385,22 @@ Obtiene la lista paginada de modelos favoritos de un usuario.
 
 ### Parameters
 
-*   `userId` **[string][263]** ID del usuario del que se quieren ver los favoritos.
-*   `pagination` **[Object][261]** Opciones de paginación { page, limit }.
+*   `userId` **[string][293]** ID del usuario del que se quieren ver los favoritos.
+*   `pagination` **[Object][294]** Opciones de paginación { page, limit }.
 
     *   `pagination.page`   (optional, default `1`)
     *   `pagination.limit`   (optional, default `20`)
 
 ## getUserFavorites
 
-Obtiene los modelos que el usuario ha marcado como favoritos.
+Obtiene la lista completa de modelos que el usuario ha marcado como favoritos.
+Devuelve solo la información relevante de cada modelo.
 
 ### Parameters
 
-*   `userId` &#x20;
+*   `userId` **[string][293]** ID del usuario cuyos favoritos se desean obtener
+
+Returns **[Promise][297]<[Array][299]<[Object][294]>>** Array de modelos favoritos
 
 ## checkFavorite
 
@@ -1095,209 +1408,372 @@ Verifica si un usuario tiene un modelo en sus favoritos.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo.
-*   `userId` **[string][263]** ID del usuario.
+*   `modelId` **[string][293]** ID del modelo.
+*   `userId` **[string][293]** ID del usuario.
 
 ## followUser
 
-Permite a un usuario seguir a otro y actualiza los contadores.
+Permite que un usuario siga a otro usuario.
+Actualiza los contadores de seguidores y seguidos en una transacción.
+Es idempotente: si ya se seguía, retorna mensaje informativo sin error.
 
 ### Parameters
 
-*   `userIdToFollow` **[string][263]** ID del usuario al que se quiere seguir.
-*   `followerId` **[string][263]** ID del usuario que ejecuta la acción (el seguidor).
+*   `userIdToFollow` **[string][293]** ID del usuario que se desea seguir
+*   `followerId` **[string][293]** ID del usuario que realiza la acción (el seguidor)
+
+<!---->
+
+*   Throws **[Error][296]** Si se intenta seguir a uno mismo
+*   Throws **[Error][296]** Error genérico de base de datos (excepto duplicado P2002)
+
+Returns **[Promise][297]<{message: [string][293]}>** Mensaje de resultado
 
 ## unfollowUser
 
-Permite a un usuario dejar de seguir a otro y actualiza los contadores.
+Permite que un usuario deje de seguir a otro.
+Actualiza los contadores de seguidores y seguidos en una transacción.
+Es idempotente: si no se seguía, retorna mensaje informativo sin error.
 
 ### Parameters
 
-*   `userIdToUnfollow` &#x20;
-*   `followerId` &#x20;
+*   `userIdToUnfollow` **[string][293]** ID del usuario que se desea dejar de seguir
+*   `followerId` **[string][293]** ID del usuario que realiza la acción
+
+<!---->
+
+*   Throws **[Error][296]** Error genérico de base de datos (excepto no encontrado P2025)
+
+Returns **[Promise][297]<{message: [string][293]}>** Mensaje de resultado
 
 ## getFollowers
 
-Obtiene la lista de usuarios que siguen a un usuario específico.
+Obtiene la lista paginada de usuarios que siguen a un usuario específico.
+Devuelve información básica del seguidor + fecha en que comenzó a seguir.
 
 ### Parameters
 
-*   `userId` &#x20;
-*   `$1` **[Object][261]**&#x20;
+*   `userId` **[string][293]** ID del usuario cuyos seguidores se quieren obtener
+*   `options` **[Object][294]?** Opciones de paginación (optional, default `{}`)
 
-    *   `$1.page`   (optional, default `1`)
-    *   `$1.limit`   (optional, default `20`)
+    *   `options.page` **[number][295]** Página solicitada (base 1) (optional, default `1`)
+    *   `options.limit` **[number][295]** Cantidad de registros por página (máx 50) (optional, default `20`)
+
+### Properties
+
+*   `page` **[number][295]** Página actual
+*   `limit` **[number][295]** Registros por página
+*   `total` **[number][295]** Total de seguidores
+*   `totalPages` **[number][295]** Total de páginas
+
+Returns **[Promise][297]<[Object][294]>** Resultado paginado
 
 ## getFollowing
 
-Obtiene la lista de usuarios a los que sigue un usuario específico.
+Obtiene la lista paginada de usuarios que un usuario específico está siguiendo.
+Devuelve información básica del usuario seguido + fecha en que se comenzó a seguir.
 
 ### Parameters
 
-*   `userId` &#x20;
-*   `$1` **[Object][261]**&#x20;
+*   `userId` **[string][293]** ID del usuario cuyos seguidos se quieren obtener
+*   `options` **[Object][294]?** Opciones de paginación (optional, default `{}`)
 
-    *   `$1.page`   (optional, default `1`)
-    *   `$1.limit`   (optional, default `20`)
+    *   `options.page` **[number][295]** Página solicitada (optional, default `1`)
+    *   `options.limit` **[number][295]** Cantidad de registros por página (máx 50) (optional, default `20`)
+
+### Properties
+
+*   `page` **[number][295]** Página actual
+*   `limit` **[number][295]** Registros por página
+*   `total` **[number][295]** Total de usuarios seguidos
+*   `totalPages` **[number][295]** Total de páginas
+
+Returns **[Promise][297]<[Object][294]>** Resultado paginado
 
 ## checkFollow
 
-Verifica si el usuario autenticado está siguiendo a un usuario específico.
+Verifica si un usuario está siguiendo a otro usuario específico.
 
 ### Parameters
 
-*   `userIdToCheck` &#x20;
-*   `followerId` &#x20;
+*   `userIdToCheck` **[string][293]** ID del usuario que podría estar siendo seguido
+*   `followerId` **[string][293]** ID del posible seguidor
+
+Returns **[Promise][297]<{isFollowing: [boolean][298]}>** Resultado de la verificación
 
 ## createPart
 
-Añade una nueva pieza (parte) a un modelo existente.
+Añade una nueva pieza (parte/componente) a un modelo existente.
+Solo el propietario del modelo o un administrador puede realizar esta acción.
 
 ### Parameters
 
-*   `user` **[Object][261]** El usuario autenticado (para verificar permisos).
-*   `modelId` **[string][263]** El ID del modelo padre.
-*   `data` **[Object][261]** Datos de la pieza (color, part\_name, file\_url, file\_size).
+*   `user` **[Object][294]** Usuario autenticado que realiza la acción
+*   `modelId` **[string][293]** ID del modelo al que se añadirá la pieza
+*   `data` **[Object][294]** Datos de la pieza a crear
 
-Returns **[Promise][262]<[Object][261]>** La pieza recién insertada.
+    *   `data.color` **[string][293]?** Color de la pieza (opcional)
+    *   `data.part_name` **[string][293]** Nombre de la pieza (obligatorio)
+    *   `data.file_url` **[string][293]** URL/ruta del archivo de la pieza (obligatorio)
+    *   `data.file_size` **[number][295]?** Tamaño del archivo en bytes (opcional)
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado" si el modelo no existe
+*   Throws **[Error][296]** Si el usuario no tiene permiso sobre el modelo
+*   Throws **[Error][296]** Si faltan campos obligatorios (part\_name o file\_url)
+
+Returns **[Promise][297]<[Object][294]>** La pieza recién creada
 
 ## getParts
 
-Obtiene todas las piezas registradas (paginado, para propósitos administrativos).
+Obtiene una lista paginada de TODAS las piezas registradas en el sistema.
+Útil principalmente para propósitos administrativos o auditoría.
 
 ### Parameters
 
-*   `$0` **[Object][261]**&#x20;
+*   `options` **[Object][294]?** Opciones de paginación
 
-    *   `$0.page`   (optional, default `1`)
-    *   `$0.limit`   (optional, default `20`)
+    *   `options.page` **[number][295]** Número de página (base 1) (optional, default `1`)
+    *   `options.limit` **[number][295]** Cantidad de registros por página (máximo 50) (optional, default `20`)
+
+### Properties
+
+*   `page` **[number][295]** Página actual
+*   `limit` **[number][295]** Registros por página
+*   `total` **[number][295]** Total de piezas en el sistema
+*   `totalPages` **[number][295]** Total de páginas disponibles
+*   `data` **[Array][299]<[Object][294]>** Lista de piezas
+
+Returns **[Promise][297]<[Object][294]>** Objeto con paginación y lista de piezas
 
 ## getPartsByModelId
 
-Obtiene todas las piezas asociadas a un modelo específico.
+Obtiene todas las piezas asociadas a un modelo específico,
+ordenadas por fecha de creación ascendente.
 
 ### Parameters
 
-*   `modelId` **[string][263]** El ID del modelo.
+*   `modelId` **[string][293]** ID del modelo cuyas piezas se desean obtener
+
+Returns **[Promise][297]<[Array][299]<[Object][294]>>** Lista de piezas del modelo
 
 ## deletePart
 
 Elimina una pieza específica tanto de la base de datos como del sistema de archivos.
+Solo el propietario del modelo o un administrador puede eliminarla.
 
 ### Parameters
 
-*   `partId` **[string][263]** El ID de la pieza a eliminar.
-*   `user` **[Object][261]** El usuario autenticado.
+*   `partId` **[string][293]** ID de la pieza a eliminar
+*   `user` **[Object][294]** Usuario autenticado que realiza la acción
+
+<!---->
+
+*   Throws **[Error][296]** "Parte no encontrada" si la pieza no existe
+*   Throws **[Error][296]** Si el usuario no tiene permiso sobre el modelo propietario
+
+Returns **[Promise][297]<{message: [string][293]}>** Mensaje de confirmación
 
 ## createModel
 
-Crea un nuevo modelo junto con sus piezas, galería, etiquetas y categorías.
+Crea un nuevo modelo en la base de datos junto con sus relaciones:
+partes (model\_parts), imágenes de galería (model\_images), etiquetas (model\_tag)
+y categorías (model\_category).
 
 ### Parameters
 
-*   `userId` &#x20;
-*   `data` &#x20;
+*   `userId` **[string][293]** ID del usuario creador del modelo
+*   `data` **[Object][294]** Datos del modelo y sus relaciones
+
+    *   `data.title` **[string][293]** Título del modelo (obligatorio)
+    *   `data.main_color` **[string][293]?** Color principal (hex o nombre)
+    *   `data.description` **[string][293]?** Descripción detallada
+    *   `data.file_url` **[string][293]** URL del archivo principal 3D
+    *   `data.main_image_url` **[string][293]?** URL de la imagen de portada
+    *   `data.video_url` **[string][293]?** URL de video demostración (opcional)
+    *   `data.license` **[string][293]?** Licencia (por defecto: "All Rights Reserved")
+    *   `data.parts` **[Array][299]<[Object][294]>?** Lista de partes/componentes
+    *   `data.images` **[Array][299]<[string][293]>?** Lista de URLs de imágenes (alternativa a gallery)
+    *   `data.gallery` **[Array][299]<[string][293]>?** Lista de URLs de imágenes (nombre usado por frontend)
+    *   `data.tags` **[Array][299]<[string][293]>?** IDs de etiquetas existentes
+    *   `data.categories` **[Array][299]<[string][293]>?** IDs de categorías existentes
+
+<!---->
+
+*   Throws **[Error][296]** Si faltan datos obligatorios o hay error en la transacción
+
+Returns **[Promise][297]<[Object][294]>** Modelo creado con sus datos básicos (sin relaciones expandidas)
 
 ## getModelById
 
-Obtiene un modelo por ID, suma una visita y adjunta todas sus relaciones (creador, partes, etc).
+Obtiene un modelo por su ID, incrementa el contador de vistas en 1
+y devuelve el modelo completo con todas sus relaciones principales.
 
 ### Parameters
 
-*   `modelId` &#x20;
+*   `modelId` **[string][293]** ID del modelo a consultar
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado" si no existe
+
+Returns **[Promise][297]<[Object][294]>** Modelo con relaciones: creador, partes, imágenes ordenadas,
+tags, categorías y conteo de likes
 
 ## getModelIncludes
 
-Genera la consulta base (include) que usamos en los listados para no repetir código.
+Devuelve el objeto de inclusión (include) estándar para consultas de listado de modelos.
+Centraliza las relaciones más usadas para evitar repetir código.
+
+Returns **[Object][294]** Configuración de include para prisma.models.findMany / findUnique
 
 ## getModels
 
-Lista modelos de forma paginada.
+Obtiene una lista paginada de todos los modelos públicos,
+ordenados por fecha de creación descendente (más recientes primero).
 
 ### Parameters
 
-*   `$0` **[Object][261]**&#x20;
+*   `options` **[Object][294]?** Opciones de paginación
 
-    *   `$0.page`   (optional, default `1`)
-    *   `$0.limit`   (optional, default `20`)
+    *   `options.page` **[number][295]** Página solicitada (base 1) (optional, default `1`)
+    *   `options.limit` **[number][295]** Elementos por página (máx. 50) (optional, default `20`)
+
+Returns **[Promise][297]<[Object][294]>** Objeto paginado con metadata y lista de modelos
 
 ## getModelsByUser
 
-Lista modelos creados por un usuario específico de forma paginada.
+Obtiene una lista paginada de los modelos creados por un usuario específico.
 
 ### Parameters
 
-*   `userId` &#x20;
-*   `$1` **[Object][261]**&#x20;
+*   `userId` **[string][293]** ID del usuario propietario
+*   `options` **[Object][294]?** Opciones de paginación
 
-    *   `$1.page`   (optional, default `1`)
-    *   `$1.limit`   (optional, default `20`)
+    *   `options.page` **[number][295]** Página solicitada (optional, default `1`)
+    *   `options.limit` **[number][295]** Elementos por página (máx. 50) (optional, default `20`)
+
+Returns **[Promise][297]<[Object][294]>** Objeto paginado con metadata y lista de modelos del usuario
 
 ## deleteModel
 
-Elimina un modelo de la BD y toda su carpeta física.
+Elimina un modelo de la base de datos y su carpeta física completa
+(incluyendo archivo principal y todas las imágenes asociadas).
+Requiere permisos de propietario o administrador.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `user` &#x20;
+*   `modelId` **[string][293]** ID del modelo a eliminar
+*   `user` **[Object][294]** Usuario autenticado que ejecuta la acción
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado"
+*   Throws **[Error][296]** Si no tiene permisos suficientes
+
+Returns **[Promise][297]<{message: [string][293]}>** Mensaje de confirmación
 
 ## updateModel
 
-Actualiza la información textual del modelo.
+Actualiza los campos textuales y de metadatos básicos del modelo.
+No maneja archivos ni relaciones complejas (partes, imágenes, tags, etc).
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `user` &#x20;
-*   `data` &#x20;
+*   `modelId` **[string][293]** ID del modelo a actualizar
+*   `user` **[Object][294]** Usuario autenticado (debe ser propietario)
+*   `data` **[Object][294]** Campos a actualizar
+
+    *   `data.title` **[string][293]?** Nuevo título
+    *   `data.description` **[string][293]?** Nueva descripción
+    *   `data.main_color` **[string][293]?** Nuevo color principal
+    *   `data.license` **[string][293]?** Nueva licencia
+    *   `data.video_url` **[string][293]?** Nueva URL de video
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado"
+*   Throws **[Error][296]** Si no tiene permisos
+
+Returns **[Promise][297]<[Object][294]>** Modelo actualizado
 
 ## addLike
 
-Añade un like a un modelo.
+Registra un like del usuario al modelo (si no existe ya).
+Idempotente: si ya existe el like, no hace nada.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `userId` &#x20;
+*   `modelId` **[string][293]** ID del modelo
+*   `userId` **[string][293]** ID del usuario que da like
+
+Returns **[Promise][297]<{likes: [number][295]}>** Cantidad actual de likes
 
 ## removeLike
 
-Elimina un like de un modelo.
+Elimina el like de un usuario a un modelo (si existe).
+Idempotente: si no existía, no hace nada.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `userId` &#x20;
+*   `modelId` **[string][293]** ID del modelo
+*   `userId` **[string][293]** ID del usuario que retira el like
+
+Returns **[Promise][297]<{likes: [number][295]}>** Cantidad actual de likes
 
 ## updateMainImage
 
-Reemplaza la imagen de portada en la BD y borra físicamente la anterior.
+Actualiza la imagen principal (portada) del modelo.
+Borra físicamente la imagen anterior si existía y era diferente.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `user` &#x20;
-*   `imageUrl` &#x20;
+*   `modelId` **[string][293]** ID del modelo
+*   `user` **[Object][294]** Usuario autenticado (debe ser propietario)
+*   `imageUrl` **[string][293]** Nueva URL de la imagen principal
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado"
+*   Throws **[Error][296]** Si no tiene permisos
+
+Returns **[Promise][297]<[Object][294]>** Modelo actualizado
 
 ## deleteMainImage
 
-Borra la imagen principal de la BD y del disco duro.
+Elimina la imagen principal del modelo tanto de la BD como del sistema de archivos.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `user` &#x20;
+*   `modelId` **[string][293]** ID del modelo
+*   `user` **[Object][294]** Usuario autenticado (debe ser propietario)
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado"
+*   Throws **[Error][296]** "El modelo ya no tiene imagen principal"
+*   Throws **[Error][296]** Si no tiene permisos
+
+Returns **[Promise][297]<{message: [string][293]}>** Mensaje de confirmación
 
 ## replaceMainFile
 
-Reemplaza el archivo principal 3D en la BD y borra físicamente el anterior.
+Reemplaza el archivo principal 3D del modelo.
+Borra físicamente el archivo anterior si existía y era diferente.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `user` &#x20;
-*   `newFileUrl` &#x20;
+*   `modelId` **[string][293]** ID del modelo
+*   `user` **[Object][294]** Usuario autenticado (debe ser propietario)
+*   `newFileUrl` **[string][293]** Nueva URL del archivo 3D
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado"
+*   Throws **[Error][296]** Si no tiene permisos
+
+Returns **[Promise][297]<[Object][294]>** Modelo actualizado
 
 ## addImage
 
@@ -1305,12 +1781,12 @@ Añade una nueva imagen a la galería de un modelo.
 
 ### Parameters
 
-*   `user` **[Object][261]** Usuario autenticado (para verificar permisos).
-*   `modelId` **[string][263]** ID del modelo padre.
-*   `imageUrl` **[string][263]** Ruta de la imagen subida.
-*   `displayOrder` **[number][264]** Orden de visualización en la galería. (optional, default `0`)
+*   `user` **[Object][294]** Usuario autenticado (para verificar permisos).
+*   `modelId` **[string][293]** ID del modelo padre.
+*   `imageUrl` **[string][293]** Ruta de la imagen subida.
+*   `displayOrder` **[number][295]** Orden de visualización en la galería. (optional, default `0`)
 
-Returns **[Promise][262]<[Object][261]>** El registro de la imagen creada.
+Returns **[Promise][297]<[Object][294]>** El registro de la imagen creada.
 
 ## getModelImages
 
@@ -1318,9 +1794,9 @@ Obtiene todas las imágenes de la galería de un modelo.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo.
+*   `modelId` **[string][293]** ID del modelo.
 
-Returns **[Promise][262]<[Array][265]>** Lista de imágenes ordenadas por display\_order y fecha.
+Returns **[Promise][297]<[Array][299]>** Lista de imágenes ordenadas por display\_order y fecha.
 
 ## updateImageOrder
 
@@ -1328,11 +1804,11 @@ Actualiza el orden de visualización de una imagen en la galería.
 
 ### Parameters
 
-*   `imageId` **[string][263]** ID de la imagen a actualizar.
-*   `user` **[Object][261]** Usuario autenticado.
-*   `newDisplayOrder` **[number][264]** Nuevo número de orden.
+*   `imageId` **[string][293]** ID de la imagen a actualizar.
+*   `user` **[Object][294]** Usuario autenticado.
+*   `newDisplayOrder` **[number][295]** Nuevo número de orden.
 
-Returns **[Promise][262]<[Object][261]>** La imagen actualizada.
+Returns **[Promise][297]<[Object][294]>** La imagen actualizada.
 
 ## deleteImage
 
@@ -1340,151 +1816,318 @@ Elimina una imagen de la galería, tanto de la DB como del disco duro.
 
 ### Parameters
 
-*   `imageId` **[string][263]** ID de la imagen a eliminar.
-*   `user` **[Object][261]** Usuario autenticado.
+*   `imageId` **[string][293]** ID de la imagen a eliminar.
+*   `user` **[Object][294]** Usuario autenticado.
 
-Returns **[Promise][262]<[Object][261]>** Mensaje de confirmación.
+Returns **[Promise][297]<[Object][294]>** Mensaje de confirmación.
 
 ## normalizeTag
 
-Normaliza un tag (minúsculas y sin espacios al inicio/fin).
+Normaliza el nombre de un tag: elimina espacios al inicio y final y convierte todo a minúsculas.
+Se usa para mantener consistencia en los nombres de tags.
 
 ### Parameters
 
-*   `name` &#x20;
+*   `name` **[string][293]** Nombre del tag a normalizar
+
+Returns **[string][293]** El nombre normalizado (minúsculas, sin espacios sobrantes)
 
 ## getTagsForModel
 
-Obtiene todos los tags asociados a un modelo.
+Obtiene todos los tags asociados a un modelo específico.
 
 ### Parameters
 
-*   `modelId` **[string][263]** ID del modelo.
+*   `modelId` **[string][293]** ID del modelo cuyos tags se desean recuperar
+
+Returns **[Promise][297]<[Array][299]<{id: [string][293], name: [string][293]}>>** Lista de tags asociados al modelo, ordenados alfabéticamente
 
 ## addTagToModel
 
-Añade un tag a un modelo (lo crea si no existe).
+Añade un tag a un modelo. Si el tag no existe en el sistema, lo crea automáticamente.
+Solo el propietario del modelo o un administrador puede ejecutar esta acción.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `user` &#x20;
-*   `tagName` &#x20;
+*   `modelId` **[string][293]** ID del modelo al que se añadirá el tag
+*   `user` **[Object][294]** Objeto del usuario autenticado que realiza la acción
+*   `tagName` **[string][293]** Nombre del tag a añadir (se normalizará internamente)
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado" si el modelo no existe
+*   Throws **[Error][296]** Si el usuario no tiene permiso sobre el modelo
+*   Throws **[Error][296]** Error genérico de base de datos si ocurre otro problema
 
 ## removeTagFromModel
 
-Elimina un tag de un modelo específico.
+Elimina la relación entre un tag y un modelo específico.
+Solo el propietario del modelo o un administrador puede realizar esta acción.
 
 ### Parameters
 
-*   `modelId` &#x20;
-*   `tagId` &#x20;
-*   `user` &#x20;
+*   `modelId` **[string][293]** ID del modelo del que se quitará el tag
+*   `tagId` **[string][293]** ID del tag a remover del modelo
+*   `user` **[Object][294]** Objeto del usuario autenticado que realiza la acción
+
+<!---->
+
+*   Throws **[Error][296]** "Modelo no encontrado" si el modelo no existe
+*   Throws **[Error][296]** Si el usuario no tiene permiso sobre el modelo
+*   Throws **[Error][296]** Error genérico de base de datos si ocurre otro problema
+
+Returns **[Promise][297]<{message: [string][293]}>** Mensaje de resultado de la operación
 
 ## removeTag
 
-Elimina un tag del sistema por completo (Solo Admin).
+Elimina un tag completamente del sistema (incluyendo todas sus relaciones con modelos).
+Acción restringida exclusivamente a usuarios con rol de administrador.
 
 ### Parameters
 
-*   `tagId` &#x20;
-*   `user` &#x20;
+*   `tagId` **[string][293]** ID del tag a eliminar
+*   `user` **[Object][294]** Objeto del usuario autenticado (debe ser admin)
+
+<!---->
+
+*   Throws **[Error][296]** "Acción permitida solo para administradores" si el usuario no es admin
+*   Throws **[Error][296]** "Tag no encontrado" si el tag no existe
+*   Throws **[Error][296]** Error genérico de base de datos si ocurre otro problema
+
+Returns **[Promise][297]<{message: [string][293]}>** Mensaje de confirmación
 
 ## getAllTags
 
-Obtiene la lista completa de tags del sistema.
+Obtiene la lista completa de todos los tags existentes en el sistema.
+Útil para autocompletado, listas desplegables o mostrar tags populares.
+
+Returns **[Promise][297]<[Array][299]<{id: [string][293], name: [string][293]}>>** Lista de todos los tags, ordenados alfabéticamente
 
 ## getUserById
 
 Obtiene el perfil completo de un usuario, incluyendo estadísticas globales de su impacto.
-Esta función "se trae absolutamente todo" lo necesario para un perfil en el frontend.
+Esta función trae absolutamente todo lo necesario para mostrar un perfil completo en el frontend:
+datos personales, redes sociales, estadísticas agregadas y contenido reciente (modelos propios y favoritos).
 
 ### Parameters
 
-*   `userId` &#x20;
+*   `userId` **[string][293]** ID del usuario cuyo perfil se desea obtener
+
+<!---->
+
+*   Throws **[Error][296]** Si el usuario no existe
+
+Returns **[Promise][297]<[Object][294]>** Objeto con tres secciones principales: profile, stats y content
 
 ## getUsers
 
-Obtiene la lista de usuarios paginada.
+Obtiene una lista paginada de usuarios con información básica y conteo de modelos.
+Ordenados por fecha de creación descendente (los más recientes primero).
 
 ### Parameters
 
-*   `$0` **[Object][261]**&#x20;
+*   `options` **[Object][294]?** Opciones de paginación
 
-    *   `$0.page`   (optional, default `1`)
-    *   `$0.limit`   (optional, default `20`)
+    *   `options.page` **[number][295]** Número de página (comienza en 1) (optional, default `1`)
+    *   `options.limit` **[number][295]** Cantidad de usuarios por página (máximo 50) (optional, default `20`)
+
+### Properties
+
+*   `page` **[number][295]** Página actual
+*   `limit` **[number][295]** Registros por página
+*   `total` **[number][295]** Total de usuarios en la base de datos
+*   `totalPages` **[number][295]** Total de páginas disponibles
+*   `data` **[Array][299]<[Object][294]>** Lista de usuarios
+
+Returns **[Promise][297]<[Object][294]>** Objeto con paginación y lista de usuarios
+
+## getPublicUsers
+
+Obtiene una lista paginada de usuarios con información básica y conteo de modelos.
+Ordenados por fecha de creación descendente (los más recientes primero).
+
+### Parameters
+
+*   `options` **[Object][294]?** Opciones de paginación
+
+    *   `options.page` **[number][295]** Número de página (comienza en 1) (optional, default `1`)
+    *   `options.limit` **[number][295]** Cantidad de usuarios por página (máximo 50) (optional, default `20`)
+
+### Properties
+
+*   `page` **[number][295]** Página actual
+*   `limit` **[number][295]** Registros por página
+*   `total` **[number][295]** Total de usuarios en la base de datos
+*   `totalPages` **[number][295]** Total de páginas disponibles
+*   `data` **[Array][299]<[Object][294]>** Lista de usuarios
+
+Returns **[Promise][297]<[Object][294]>** Objeto con paginación y lista de usuarios
 
 ## updateUser
 
-Actualiza la información del perfil del usuario.
+Actualiza los datos de un usuario. Solo permite modificar campos permitidos.
+Requiere que el usuario autenticado tenga permiso para modificar el perfil.
 
 ### Parameters
 
-*   `userId` &#x20;
-*   `currentUser` &#x20;
-*   `data` &#x20;
+*   `userId` **[string][293]** ID del usuario a actualizar
+*   `currentUser` **[Object][294]** Usuario autenticado que realiza la acción
+*   `data` **[Object][294]** Objeto con los campos a actualizar
+
+    *   `data.name` **[string][293]?** Nombre
+    *   `data.lastname` **[string][293]?** Apellido
+    *   `data.username` **[string][293]?** Nombre de usuario (único)
+    *   `data.avatar` **[string][293]?** URL del avatar
+    *   `data.bio` **[string][293]?** Biografía
+    *   `data.youtube` **[string][293]?** URL de YouTube
+    *   `data.twitter` **[string][293]?** URL de Twitter/X
+    *   `data.linkedin` **[string][293]?** URL de LinkedIn
+    *   `data.github` **[string][293]?** URL de GitHub
+    *   `data.location` **[string][293]?** Ubicación
+
+<!---->
+
+*   Throws **[Error][296]** Si no hay campos para actualizar
+*   Throws **[Error][296]** Si el nombre de usuario ya está en uso (código P2002)
+*   Throws **[Error][296]** Si el usuario no existe (código P2025)
+
+Returns **[Promise][297]<[Object][294]>** Usuario actualizado con campos seleccionados
 
 ## deleteUser
 
-Elimina un usuario de la BD y borra por completo sus carpetas físicas.
+Elimina completamente a un usuario y todos sus archivos asociados en el sistema de archivos
+(carpetas de modelos e imágenes en /uploads).
+Requiere permisos de administración o ser el propio usuario.
 
 ### Parameters
 
-*   `userId` &#x20;
-*   `currentUser` &#x20;
+*   `userId` **[string][293]** ID del usuario a eliminar
+*   `currentUser` **[Object][294]** Usuario autenticado que realiza la acción
+
+<!---->
+
+*   Throws **[Error][296]** Si el usuario no existe
+
+Returns **[Promise][297]<[Object][294]>** Mensaje de confirmación
+
+## checkPermission
+
+Verifica si el usuario actual tiene permiso para actuar sobre un recurso.
+Permite la acción si el usuario es propietario o tiene rol de administrador.
+Puedes extender la lógica agregando más condiciones en el futuro.
+
+### Parameters
+
+*   `resourceOwnerId` **[string][293]** ID del propietario del recurso
+*   `currentUser` **[Object][294]** Objeto del usuario autenticado
+
+    *   `currentUser.id` **[string][293]** ID del usuario
+    *   `currentUser.role` **[string][293]** Rol del usuario ("user", "admin", etc.)
+
+<!---->
+
+*   Throws **[Error][296]** Con status 403 si no tiene permiso
+
+## generateToken
+
+Genera un token JWT firmado con el payload proporcionado.
+Incluye validación básica de variables de entorno y manejo seguro de expiración.
+
+### Parameters
+
+*   `payload` **[Object][294]** Información del usuario a codificar (id, username, role, etc.)
+*   `options` **[Object][294]?** Opciones adicionales (no recomendado sobreescribir expiresIn normalmente) (optional, default `{}`)
+
+    *   `options.expiresIn` **[string][293]?** Tiempo de expiración personalizado (ej: "1h", "30d")
+
+<!---->
+
+*   Throws **[Error][296]** Si falta JWT\_SECRET o hay error durante la generación
+
+Returns **[string][293]** Token JWT válido
 
 ## getAbsolutePath
 
-Resuelve la ruta absoluta de un archivo a partir de su URL en la base de datos.
+Convierte una URL relativa almacenada en la BD (ej: /uploads/models/...) en una ruta absoluta del sistema de archivos.
 
 ### Parameters
 
-*   `fileUrl` &#x20;
+*   `fileUrl` **([string][293] | null)** URL relativa del archivo (puede empezar con / o no)
+
+Returns **([string][293] | null)** Ruta absoluta completa o null si no se proporciona URL
 
 ## deletePhysicalFile
 
-Borra un archivo físico del disco de forma segura.
+Elimina un archivo físico del disco de forma segura.
+No lanza error si el archivo no existe o falla la eliminación (solo registra en consola).
 
 ### Parameters
 
-*   `fileUrl` &#x20;
+*   `fileUrl` **[string][293]** URL relativa del archivo a eliminar
+
+Returns **[boolean][298]** true si se eliminó correctamente, false si no existía o falló
 
 ## deletePhysicalFolder
 
-Borra una carpeta completa y todo su contenido (ej: al borrar un modelo entero).
+Elimina una carpeta completa y todo su contenido recursivamente.
+Útil al borrar un modelo entero (incluye main file, parts, gallery, etc.).
+No lanza error si la carpeta no existe o falla (solo registra en consola).
 
 ### Parameters
 
-*   `fileUrl` &#x20;
+*   `fileUrl` **[string][293]** URL relativa de cualquier archivo dentro de la carpeta a eliminar
+
+Returns **[boolean][298]** true si se eliminó la carpeta, false si no existía o falló
 
 ## getDisplayFileName
 
-Extrae el nombre limpio del archivo para mostrarlo al usuario (sin prefijos ni fechas).
+Limpia el nombre del archivo para mostrarlo al usuario o en descargas.
+Elimina prefijos internos como "main\_", "cover\_" o timestamps "123456\_".
 
 ### Parameters
 
-*   `serverFileName` &#x20;
+*   `serverFileName` **[string][293]** Nombre del archivo tal como está guardado en el servidor
+
+Returns **[string][293]** Nombre limpio y legible para el usuario
 
 ## sendSuccess
 
-Envía una respuesta de éxito estándar.
+Envía una respuesta JSON de éxito estandarizada.
+Formato: { message: string, data?: any }
+Útil para mantener consistencia en todas las respuestas exitosas de la API.
 
 ### Parameters
 
 *   `res` &#x20;
-*   `message` &#x20;
-*   `data`   (optional, default `null`)
-*   `statusCode`   (optional, default `200`)
+*   `message` **[string][293]** Mensaje descriptivo del éxito
+*   `data` **any** Datos opcionales a devolver (objeto, array, etc.) (optional, default `null`)
+*   `statusCode` **[number][295]** Código HTTP de estado (200 OK por defecto) (optional, default `200`)
 
 ## sendError
 
-Envía una respuesta de error estándar.
+Envía una respuesta JSON de error estandarizada.
+Formato: { error: string }
+Útil para mantener consistencia en respuestas de error de la API.
 
 ### Parameters
 
 *   `res` &#x20;
-*   `errorMessage` &#x20;
-*   `statusCode`   (optional, default `400`)
+*   `errorMessage` **[string][293]** Mensaje descriptivo del error
+*   `statusCode` **[number][295]** Código HTTP de error (400 Bad Request por defecto) (optional, default `400`)
+
+## validateUserFields
+
+Valida los campos de un usuario durante registro o actualización.
+Lanza un error con todos los mensajes concatenados si alguna validación falla.
+
+### Parameters
+
+*   `fields` **[Object][294]** Campos a validar
+*   `isUpdate` **[boolean][298]** true si es actualización (campos opcionales) (optional, default `false`)
+
+<!---->
+
+*   Throws **[Error][296]** Si hay errores de validación
 
 [1]: #register
 
@@ -1606,412 +2249,484 @@ Envía una respuesta de error estándar.
 
 [60]: #parameters-29
 
-[61]: #appendcleanfoldertoarchive
+[61]: #reply
 
 [62]: #parameters-30
 
-[63]: #record
+[63]: #appendcleanfoldertoarchive
 
 [64]: #parameters-31
 
-[65]: #getuserhistory
+[65]: #record
 
 [66]: #parameters-32
 
-[67]: #getmodelstats
+[67]: #getuserhistory
 
 [68]: #parameters-33
 
-[69]: #favorite
+[69]: #getmodelstats
 
 [70]: #parameters-34
 
-[71]: #unfavorite
+[71]: #favorite
 
 [72]: #parameters-35
 
-[73]: #getuserfavoritespublic
+[73]: #unfavorite
 
 [74]: #parameters-36
 
-[75]: #getmyfavorites
+[75]: #getuserfavoritespublic
 
 [76]: #parameters-37
 
-[77]: #check
+[77]: #getmyfavorites
 
 [78]: #parameters-38
 
-[79]: #check-1
+[79]: #check
 
 [80]: #parameters-39
 
-[81]: #follow
+[81]: #check-1
 
 [82]: #parameters-40
 
-[83]: #unfollow
+[83]: #follow
 
 [84]: #parameters-41
 
-[85]: #followers
+[85]: #unfollow
 
 [86]: #parameters-42
 
-[87]: #following
+[87]: #followers
 
 [88]: #parameters-43
 
-[89]: #formatuploadedfiles
+[89]: #following
 
 [90]: #parameters-44
 
-[91]: #uploadmodel
+[91]: #formatuploadedfiles
 
 [92]: #parameters-45
 
-[93]: #getbyid
+[93]: #uploadmodel
 
 [94]: #parameters-46
 
-[95]: #getbyid-1
+[95]: #getbyid
 
 [96]: #parameters-47
 
-[97]: #getbyuser
+[97]: #getbyid-1
 
 [98]: #parameters-48
 
-[99]: #like
+[99]: #getbyuser
 
 [100]: #parameters-49
 
-[101]: #unlike
+[101]: #like
 
 [102]: #parameters-50
 
-[103]: #patchmainfile
+[103]: #unlike
 
 [104]: #parameters-51
 
-[105]: #patchmainimage
+[105]: #patchmainfile
 
 [106]: #parameters-52
 
-[107]: #removemainimage
+[107]: #patchmainimage
 
 [108]: #parameters-53
 
-[109]: #uploadimage
+[109]: #removemainimage
 
 [110]: #parameters-54
 
-[111]: #getimages
+[111]: #uploadimage
 
 [112]: #parameters-55
 
-[113]: #updateorder
+[113]: #getimages
 
 [114]: #parameters-56
 
-[115]: #removeimage
+[115]: #updateorder
 
 [116]: #parameters-57
 
-[117]: #getformodel
+[117]: #removeimage
 
 [118]: #parameters-58
 
-[119]: #getfavorites
+[119]: #getformodel
 
 [120]: #parameters-59
 
-[121]: #getmodelbasedirectory
+[121]: #getfavorites
 
 [122]: #parameters-60
 
-[123]: #cleanfilename
+[123]: #getallpublicusers
 
 [124]: #parameters-61
 
-[125]: #createinitialstorage
+[125]: #verifytoken
 
 [126]: #parameters-62
 
-[127]: #createdynamicstorage
+[127]: #optionaltoken
 
 [128]: #parameters-63
 
-[129]: #createfilter
+[129]: #isadmin
 
 [130]: #parameters-64
 
-[131]: #createuploadwrapper
+[131]: #isowneroradmin
 
 [132]: #parameters-65
 
-[133]: #registeruser
+[133]: #getmodelbasedirectory
 
 [134]: #parameters-66
 
-[135]: #loginuser
+[135]: #cleanfilename
 
 [136]: #parameters-67
 
-[137]: #getcurrentuser
+[137]: #createinitialstorage
 
 [138]: #parameters-68
 
-[139]: #createcategory
+[139]: #createdynamicstorage
 
 [140]: #parameters-69
 
-[141]: #getcategories
+[141]: #createfilter
 
-[142]: #getcategorybyid
+[142]: #parameters-70
 
-[143]: #parameters-70
+[143]: #uploadmodelfile
 
-[144]: #updatecategory
+[144]: #modeluploadfields
 
-[145]: #parameters-71
+[145]: #uploadimagefile
 
-[146]: #deletecategory
+[146]: #uploadpartsfile
 
-[147]: #parameters-72
+[147]: #uploadmainimagefile
 
-[148]: #getcategoriesbymodel
+[148]: #uploadmainfilereplacement
 
-[149]: #parameters-73
+[149]: #createuploadwrapper
 
-[150]: #addcategorytomodel
+[150]: #parameters-71
 
-[151]: #parameters-74
+[151]: #registeruser
 
-[152]: #removecategoryfrommodel
+[152]: #parameters-72
 
-[153]: #parameters-75
+[153]: #loginuser
 
-[154]: #createcomment
+[154]: #parameters-73
 
-[155]: #parameters-76
+[155]: #getcurrentuser
 
-[156]: #getmodelcomments
+[156]: #parameters-74
 
-[157]: #parameters-77
+[157]: #createcategory
 
-[158]: #updatecomment
+[158]: #parameters-75
 
-[159]: #parameters-78
+[159]: #getcategories
 
-[160]: #deletecomment
+[160]: #getcategorybyid
 
-[161]: #parameters-79
+[161]: #parameters-76
 
-[162]: #recorddownload
+[162]: #updatecategory
 
-[163]: #parameters-80
+[163]: #parameters-77
 
-[164]: #getdownloadshistory
+[164]: #deletecategory
 
-[165]: #parameters-81
+[165]: #parameters-78
 
-[166]: #getmodeldownloadstats
+[166]: #getcategoriesbymodel
 
-[167]: #parameters-82
+[167]: #parameters-79
 
-[168]: #getdownloadinfo
+[168]: #addcategorytomodel
 
-[169]: #parameters-83
+[169]: #parameters-80
 
-[170]: #addfavorite
+[170]: #removecategoryfrommodel
 
-[171]: #parameters-84
+[171]: #parameters-81
 
-[172]: #removefavorite
+[172]: #createcomment
 
-[173]: #parameters-85
+[173]: #parameters-82
 
-[174]: #getuserfavorites
+[174]: #getmodelcomments
 
-[175]: #parameters-86
+[175]: #parameters-83
 
-[176]: #getuserfavorites-1
+[176]: #updatecomment
 
-[177]: #parameters-87
+[177]: #parameters-84
 
-[178]: #checkfavorite
+[178]: #deletecomment
 
-[179]: #parameters-88
+[179]: #parameters-85
 
-[180]: #followuser
+[180]: #replytocomment
 
-[181]: #parameters-89
+[181]: #parameters-86
 
-[182]: #unfollowuser
+[182]: #recorddownload
 
-[183]: #parameters-90
+[183]: #parameters-87
 
-[184]: #getfollowers
+[184]: #getdownloadshistory
 
-[185]: #parameters-91
+[185]: #parameters-88
 
-[186]: #getfollowing
+[186]: #getmodeldownloadstats
 
-[187]: #parameters-92
+[187]: #parameters-89
 
-[188]: #checkfollow
+[188]: #getdownloadinfo
 
-[189]: #parameters-93
+[189]: #parameters-90
 
-[190]: #createpart
+[190]: #addfavorite
 
-[191]: #parameters-94
+[191]: #parameters-91
 
-[192]: #getparts
+[192]: #removefavorite
 
-[193]: #parameters-95
+[193]: #parameters-92
 
-[194]: #getpartsbymodelid
+[194]: #getuserfavorites
 
-[195]: #parameters-96
+[195]: #parameters-93
 
-[196]: #deletepart
+[196]: #getuserfavorites-1
 
-[197]: #parameters-97
+[197]: #parameters-94
 
-[198]: #createmodel
+[198]: #checkfavorite
 
-[199]: #parameters-98
+[199]: #parameters-95
 
-[200]: #getmodelbyid
+[200]: #followuser
 
-[201]: #parameters-99
+[201]: #parameters-96
 
-[202]: #getmodelincludes
+[202]: #unfollowuser
 
-[203]: #getmodels
+[203]: #parameters-97
 
-[204]: #parameters-100
+[204]: #getfollowers
 
-[205]: #getmodelsbyuser
+[205]: #parameters-98
 
-[206]: #parameters-101
+[206]: #properties
 
-[207]: #deletemodel
+[207]: #getfollowing
 
-[208]: #parameters-102
+[208]: #parameters-99
 
-[209]: #updatemodel
+[209]: #properties-1
 
-[210]: #parameters-103
+[210]: #checkfollow
 
-[211]: #addlike
+[211]: #parameters-100
 
-[212]: #parameters-104
+[212]: #createpart
 
-[213]: #removelike
+[213]: #parameters-101
 
-[214]: #parameters-105
+[214]: #getparts
 
-[215]: #updatemainimage
+[215]: #parameters-102
 
-[216]: #parameters-106
+[216]: #properties-2
 
-[217]: #deletemainimage
+[217]: #getpartsbymodelid
 
-[218]: #parameters-107
+[218]: #parameters-103
 
-[219]: #replacemainfile
+[219]: #deletepart
 
-[220]: #parameters-108
+[220]: #parameters-104
 
-[221]: #addimage
+[221]: #createmodel
 
-[222]: #parameters-109
+[222]: #parameters-105
 
-[223]: #getmodelimages
+[223]: #getmodelbyid
 
-[224]: #parameters-110
+[224]: #parameters-106
 
-[225]: #updateimageorder
+[225]: #getmodelincludes
 
-[226]: #parameters-111
+[226]: #getmodels
 
-[227]: #deleteimage
+[227]: #parameters-107
 
-[228]: #parameters-112
+[228]: #getmodelsbyuser
 
-[229]: #normalizetag
+[229]: #parameters-108
 
-[230]: #parameters-113
+[230]: #deletemodel
 
-[231]: #gettagsformodel
+[231]: #parameters-109
 
-[232]: #parameters-114
+[232]: #updatemodel
 
-[233]: #addtagtomodel
+[233]: #parameters-110
 
-[234]: #parameters-115
+[234]: #addlike
 
-[235]: #removetagfrommodel
+[235]: #parameters-111
 
-[236]: #parameters-116
+[236]: #removelike
 
-[237]: #removetag
+[237]: #parameters-112
 
-[238]: #parameters-117
+[238]: #updatemainimage
 
-[239]: #getalltags
+[239]: #parameters-113
 
-[240]: #getuserbyid
+[240]: #deletemainimage
 
-[241]: #parameters-118
+[241]: #parameters-114
 
-[242]: #getusers
+[242]: #replacemainfile
 
-[243]: #parameters-119
+[243]: #parameters-115
 
-[244]: #updateuser
+[244]: #addimage
 
-[245]: #parameters-120
+[245]: #parameters-116
 
-[246]: #deleteuser
+[246]: #getmodelimages
 
-[247]: #parameters-121
+[247]: #parameters-117
 
-[248]: #getabsolutepath
+[248]: #updateimageorder
 
-[249]: #parameters-122
+[249]: #parameters-118
 
-[250]: #deletephysicalfile
+[250]: #deleteimage
 
-[251]: #parameters-123
+[251]: #parameters-119
 
-[252]: #deletephysicalfolder
+[252]: #normalizetag
 
-[253]: #parameters-124
+[253]: #parameters-120
 
-[254]: #getdisplayfilename
+[254]: #gettagsformodel
 
-[255]: #parameters-125
+[255]: #parameters-121
 
-[256]: #sendsuccess
+[256]: #addtagtomodel
 
-[257]: #parameters-126
+[257]: #parameters-122
 
-[258]: #senderror
+[258]: #removetagfrommodel
 
-[259]: #parameters-127
+[259]: #parameters-123
 
-[260]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[260]: #removetag
 
-[261]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[261]: #parameters-124
 
-[262]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[262]: #getalltags
 
-[263]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[263]: #getuserbyid
 
-[264]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[264]: #parameters-125
 
-[265]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[265]: #getusers
+
+[266]: #parameters-126
+
+[267]: #properties-3
+
+[268]: #getpublicusers
+
+[269]: #parameters-127
+
+[270]: #properties-4
+
+[271]: #updateuser
+
+[272]: #parameters-128
+
+[273]: #deleteuser
+
+[274]: #parameters-129
+
+[275]: #checkpermission
+
+[276]: #parameters-130
+
+[277]: #generatetoken
+
+[278]: #parameters-131
+
+[279]: #getabsolutepath
+
+[280]: #parameters-132
+
+[281]: #deletephysicalfile
+
+[282]: #parameters-133
+
+[283]: #deletephysicalfolder
+
+[284]: #parameters-134
+
+[285]: #getdisplayfilename
+
+[286]: #parameters-135
+
+[287]: #sendsuccess
+
+[288]: #parameters-136
+
+[289]: #senderror
+
+[290]: #parameters-137
+
+[291]: #validateuserfields
+
+[292]: #parameters-138
+
+[293]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[294]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[295]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[296]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error
+
+[297]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+[298]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[299]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[300]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+
+[301]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date
