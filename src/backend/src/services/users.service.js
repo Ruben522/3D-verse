@@ -2,10 +2,6 @@ import prisma from "../config/prisma.js";
 import path from "path";
 import fs from "fs";
 import { checkPermission } from "../utils/checkPermission.js";
-import {
-    sendSuccess,
-    sendError,
-} from "../utils/helper/response.helper.js";
 
 /**
  * Obtiene el perfil completo de un usuario, incluyendo estadísticas globales de su impacto.
@@ -29,7 +25,6 @@ const getUserById = async (userId) => {
                     },
                 },
             },
-
             favorites: {
                 take: 6,
                 orderBy: { created_at: "desc" },
@@ -46,7 +41,6 @@ const getUserById = async (userId) => {
                     },
                 },
             },
-
             _count: {
                 select: {
                     models: true,
@@ -76,13 +70,9 @@ const getUserById = async (userId) => {
         profile: {
             id: user.id,
             username: user.username,
-            name: user.name,
-            lastname: user.lastname,
-            email: user.email,
             avatar: user.avatar,
             bio: user.bio,
             location: user.location,
-            role: user.role,
             created_at: user.created_at,
             social: {
                 youtube: user.youtube,
@@ -113,7 +103,6 @@ const getUserById = async (userId) => {
         },
     };
 };
-
 /**
  * Obtiene una lista paginada de usuarios con información básica y conteo de modelos.
  * Ordenados por fecha de creación descendente (los más recientes primero).
@@ -146,6 +135,50 @@ const getUsers = async ({ page = 1, limit = 20 }) => {
                 followers_count: true,
                 following_count: true,
                 created_at: true,
+                _count: { select: { models: true } },
+            },
+            orderBy: { created_at: "desc" },
+            skip: offset,
+            take: safeLimit,
+        }),
+    ]);
+
+    return {
+        page,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: users,
+    };
+};
+
+/**
+ * Obtiene una lista paginada de usuarios con información básica y conteo de modelos.
+ * Ordenados por fecha de creación descendente (los más recientes primero).
+ *
+ * @param {Object} [options] - Opciones de paginación
+ * @param {number} [options.page=1] - Número de página (comienza en 1)
+ * @param {number} [options.limit=20] - Cantidad de usuarios por página (máximo 50)
+ * @returns {Promise<Object>} Objeto con paginación y lista de usuarios
+ * @property {number} page - Página actual
+ * @property {number} limit - Registros por página
+ * @property {number} total - Total de usuarios en la base de datos
+ * @property {number} totalPages - Total de páginas disponibles
+ * @property {Array<Object>} data - Lista de usuarios
+ */
+const getPublicUsers = async ({ page = 1, limit = 20 }) => {
+    const safeLimit = Math.min(limit, 50);
+    const offset = (page - 1) * safeLimit;
+
+    const [total, users] = await prisma.$transaction([
+        prisma.users.count(),
+        prisma.users.findMany({
+            select: {
+                id: true,
+                username: true,
+                avatar: true,
+                bio: true,
+                followers_count: true,
                 _count: { select: { models: true } },
             },
             orderBy: { created_at: "desc" },
@@ -323,4 +356,5 @@ export {
     updateUser,
     deleteUser,
     getUserById,
+    getPublicUsers,
 };

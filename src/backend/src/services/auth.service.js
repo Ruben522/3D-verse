@@ -4,7 +4,7 @@ import {
     comparePassword,
 } from "../utils/hashPassword.js";
 import { generateToken } from "../utils/generateToken.js";
-
+import { validateUserFields } from "../utils/validateUserFields.js";
 /**
  * Registra un nuevo usuario en la plataforma.
  * @param {Object} userData - Datos del usuario (name, lastname, username, email, password).
@@ -17,6 +17,7 @@ const registerUser = async ({
     email,
     password,
 }) => {
+    validateUserFields({ name, username, email, password });
     const hashed = await hashPassword(password);
 
     try {
