@@ -15,6 +15,7 @@ import {
     sendSuccess,
     sendError,
 } from "../utils/helper/response.helper.js";
+import { deletePhysicalFolder } from "../utils/helper/file.helper.js";
 
 /**
  * Formatea las rutas de los archivos subidos por Multer para que coincidan con la estructura esperada por la base de datos.
@@ -73,6 +74,14 @@ const uploadModel = async (req, res) => {
             201,
         );
     } catch (error) {
+        if (req.body.main_file) {
+            sendError(
+                res,
+                "Ha ocurrido un erorr inesperado, se eliminará la carpeta residual.",
+                500,
+            );
+            deletePhysicalFolder(req.body.main_file);
+        }
         sendError(res, error.message, 400);
     }
 };
