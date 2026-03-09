@@ -61,8 +61,12 @@ const getModelComments = async (
                 users: {
                     select: {
                         id: true,
-                        username: true,
-                        avatar: true,
+                        profile: {
+                            select: {
+                                username: true,
+                                avatar: true,
+                            },
+                        },
                     },
                 },
             },
@@ -77,7 +81,11 @@ const getModelComments = async (
         content: c.content,
         created_at: c.created_at,
         updated_at: c.updated_at,
-        author: c.users,
+        author: {
+            id: c.users?.id,
+            username: c.users?.profile?.username || "Usuario Desconocido",
+            avatar: c.users?.profile?.avatar || null,
+        },
     }));
 
     return {

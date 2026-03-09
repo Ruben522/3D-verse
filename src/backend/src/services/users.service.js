@@ -16,14 +16,13 @@ const getUserById = async (userId) => {
     const user = await prisma.users.findUnique({
         where: { id: userId },
         include: {
+            profile: true,
             models: {
                 take: 6,
                 orderBy: { created_at: "desc" },
                 include: {
-                    _count: {
-                        select: { model_likes: true },
-                    },
-                },
+                    _count: { select: { model_likes: true } }
+                }
             },
             favorites: {
                 take: 6,
@@ -33,13 +32,12 @@ const getUserById = async (userId) => {
                         include: {
                             users: {
                                 select: {
-                                    username: true,
-                                    avatar: true,
-                                },
-                            },
-                        },
-                    },
-                },
+                                    profile: { select: { username: true, avatar: true } }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             _count: {
                 select: {
@@ -48,59 +46,62 @@ const getUserById = async (userId) => {
                     comments: true,
                     model_likes: true,
                     followers_followers_user_idTousers: true,
-                    followers_followers_follower_idTousers: true,
-                },
-            },
-        },
+                    followers_followers_follower_idTousers: true
+                }
+            }
+        }
     });
 
-    if (!user) throw new Error("Usuario no encontrado");
+    if (!user) throw new Error("Usuario no encontrado.");
 
     const aggregateStats = await prisma.models.aggregate({
         where: { user_id: userId },
-        _sum: { downloads: true, views: true },
+        _sum: { downloads: true, views: true }
     });
 
-    const totalLikesReceived =
-        await prisma.model_likes.count({
-            where: { models: { user_id: userId } },
-        });
+    const totalLikesReceived = await prisma.model_likes.count({
+        where: { models: { user_id: userId } }
+    });
+
+    const p = user.profile || {};
 
     return {
         profile: {
             id: user.id,
-            username: user.username,
-            avatar: user.avatar,
-            bio: user.bio,
-            location: user.location,
+            username: p.username,
+            name: p.name,
+            lastname: p.lastname,
+            avatar: p.avatar,
+            bio: p.bio,
+            location: p.location,
             created_at: user.created_at,
             social: {
-                youtube: user.youtube,
-                twitter: user.twitter,
-                linkedin: user.linkedin,
-                github: user.github,
+                youtube: p.youtube,
+                twitter: p.twitter,
+                linkedin: p.linkedin,
+                github: p.github
             },
+            customization: {
+                banner_url: p.banner_url,
+                card_bg_color: p.card_bg_color,
+                page_bg_url: p.page_bg_url,
+                badge_url: p.badge_url,
+                primary_color: p.primary_color
+            }
         },
         stats: {
             total_models: user._count.models,
-            total_followers:
-                user._count
-                    .followers_followers_user_idTousers,
-            total_following:
-                user._count
-                    .followers_followers_follower_idTousers,
-            total_downloads:
-                aggregateStats._sum.downloads || 0,
+            total_followers: p.followers_count || 0,
+            total_following: p.following_count || 0,
+            total_downloads: aggregateStats._sum.downloads || 0,
             total_views: aggregateStats._sum.views || 0,
             total_likes_received: totalLikesReceived,
-            total_favorites_given: user._count.favorites,
+            total_favorites_given: user._count.favorites
         },
         content: {
             recent_models: user.models,
-            recent_favorites: user.favorites.map(
-                (f) => f.models,
-            ),
-        },
+            recent_favorites: user.favorites.map(f => f.models)
+        }
     };
 };
 /**
@@ -126,29 +127,43 @@ const getUsers = async ({ page = 1, limit = 20 }) => {
         prisma.users.findMany({
             select: {
                 id: true,
-                name: true,
-                lastname: true,
-                username: true,
-                avatar: true,
-                bio: true,
+                email: true,
                 role: true,
-                followers_count: true,
-                following_count: true,
                 created_at: true,
-                _count: { select: { models: true } },
+                profile: {
+                    select: {
+                        username: true,
+                        name: true,
+                        lastname: true,
+                        avatar: true,
+                        bio: true,
+                        followers_count: true,
+                        following_count: true
+                    }
+                },
+                _count: { select: { models: true } }
             },
             orderBy: { created_at: "desc" },
             skip: offset,
-            take: safeLimit,
-        }),
+            take: safeLimit
+        })
     ]);
+
+    const flattened = users.map(u => ({
+        id: u.id,
+        email: u.email,
+        role: u.role,
+        created_at: u.created_at,
+        models_count: u._count.models,
+        ...u.profile
+    }));
 
     return {
         page,
         limit: safeLimit,
         total,
         totalPages: Math.ceil(total / safeLimit),
-        data: users,
+        data: flattened
     };
 };
 
@@ -175,24 +190,38 @@ const getPublicUsers = async ({ page = 1, limit = 20 }) => {
         prisma.users.findMany({
             select: {
                 id: true,
-                username: true,
-                avatar: true,
-                bio: true,
-                followers_count: true,
-                _count: { select: { models: true } },
+                profile: {
+                    select: {
+                        username: true,
+                        avatar: true,
+                        bio: true,
+                        followers_count: true,
+                        banner_url: true,
+                        card_bg_color: true,
+                        badge_url: true,
+                        primary_color: true
+                    }
+                },
+                _count: { select: { models: true } }
             },
             orderBy: { created_at: "desc" },
             skip: offset,
-            take: safeLimit,
-        }),
+            take: safeLimit
+        })
     ]);
+
+    const flattened = users.map(u => ({
+        id: u.id,
+        models_count: u._count.models,
+        ...u.profile
+    }));
 
     return {
         page,
         limit: safeLimit,
         total,
         totalPages: Math.ceil(total / safeLimit),
-        data: users,
+        data: flattened
     };
 };
 
@@ -221,57 +250,59 @@ const getPublicUsers = async ({ page = 1, limit = 20 }) => {
 const updateUser = async (userId, currentUser, data) => {
     checkPermission(userId, currentUser);
 
-    const allowedFields = [
-        "name",
-        "lastname",
-        "username",
-        "avatar",
-        "bio",
-        "youtube",
-        "twitter",
-        "linkedin",
-        "github",
-        "location",
+    const userFields = ["username"]; // Solo username se puede cambiar en users si lo necesitas
+    const profileFields = [
+        "name", "lastname", "avatar", "bio", "location",
+        "youtube", "twitter", "linkedin", "github",
+        "banner_url", "card_bg_color", "page_bg_url", "badge_url", "primary_color"
     ];
 
-    const updateData = {};
-    for (const field of allowedFields) {
-        if (data[field] !== undefined) {
-            updateData[field] = data[field];
+    const userUpdate = {};
+    const profileUpdate = {};
+
+    for (const field in data) {
+        if (userFields.includes(field)) {
+            userUpdate[field] = data[field];
+        } else if (profileFields.includes(field)) {
+            profileUpdate[field] = data[field];
         }
     }
 
-    if (Object.keys(updateData).length === 0)
-        throw new Error("No hay campos para actualizar");
-    updateData.updated_at = new Date();
+    if (Object.keys(userUpdate).length === 0 && Object.keys(profileUpdate).length === 0) {
+        throw new Error("No hay campos para actualizar.");
+    }
+
+    userUpdate.updated_at = new Date();
+    profileUpdate.updated_at = new Date();
 
     try {
-        const updatedUser = await prisma.users.update({
+        const updated = await prisma.users.update({
             where: { id: userId },
-            data: updateData,
-            select: {
-                id: true,
-                name: true,
-                lastname: true,
-                username: true,
-                avatar: true,
-                role: true,
-                created_at: true,
-                updated_at: true,
+            data: {
+                ...userUpdate,
+                profile: {
+                    update: profileUpdate
+                }
             },
+            include: { profile: true }
         });
-        return updatedUser;
+
+        return {
+            id: updated.id,
+            username: updated.username || updated.profile.username,
+            role: updated.role,
+            ...updated.profile
+        };
     } catch (error) {
-        if (error.code === "P2002")
-            throw new Error(
-                "Ese nombre de usuario o email ya está en uso",
-            );
-        if (error.code === "P2025")
-            throw new Error("Usuario no encontrado");
+        if (error.code === "P2002") {
+            throw new Error("Ese nombre de usuario ya está en uso.");
+        }
+        if (error.code === "P2025") {
+            throw new Error("Usuario no encontrado.");
+        }
         throw error;
     }
 };
-
 /**
  * Elimina completamente a un usuario y todos sus archivos asociados en el sistema de archivos
  * (carpetas de modelos e imágenes en /uploads).
@@ -285,41 +316,24 @@ const updateUser = async (userId, currentUser, data) => {
 const deleteUser = async (userId, currentUser) => {
     checkPermission(userId, currentUser);
 
-    const user = await prisma.users.findUnique({
-        where: { id: userId },
-    });
-    if (!user) throw new Error("Usuario no encontrado");
+    const user = await prisma.users.findUnique({ where: { id: userId } });
+    if (!user) throw new Error("Usuario no encontrado.");
 
     await prisma.users.delete({ where: { id: userId } });
 
     const folders = [
-        path.join(
-            process.cwd(),
-            "uploads",
-            "models",
-            userId,
-        ),
-        path.join(
-            process.cwd(),
-            "uploads",
-            "images",
-            userId,
-        ),
+        path.join(process.cwd(), "uploads", "models", userId),
+        path.join(process.cwd(), "uploads", "images", userId),
+        path.join(process.cwd(), "uploads", "profiles", userId) // ← para banners, badges, etc.
     ];
 
-    folders.forEach((folder) => {
+    folders.forEach(folder => {
         if (fs.existsSync(folder)) {
-            fs.rmSync(folder, {
-                recursive: true,
-                force: true,
-            });
+            fs.rmSync(folder, { recursive: true, force: true });
         }
     });
 
-    return {
-        message:
-            "Usuario y todos sus archivos eliminados correctamente",
-    };
+    return { message: "Usuario, perfil y archivos eliminados correctamente." };
 };
 
 /**
@@ -340,14 +354,14 @@ const getUserFavorites = async (userId) => {
                     main_image_url: true,
                     downloads: true,
                     views: true,
-                    created_at: true,
-                },
-            },
+                    created_at: true
+                }
+            }
         },
-        orderBy: { created_at: "desc" },
+        orderBy: { created_at: "desc" }
     });
 
-    return favorites.map((fav) => fav.models);
+    return favorites.map(fav => fav.models);
 };
 
 export {
