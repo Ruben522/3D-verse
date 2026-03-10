@@ -17,7 +17,8 @@ const colores = [
 
 const SelectorColores = ({ selectedColor, onSelect }) => {
   return (
-    <div className="flex flex-wrap justify-center gap-3">
+    // CAMBIO AQUÍ: justify-start en lugar de justify-center para que se alinee a la izquierda
+    <div className="flex flex-wrap justify-start items-center gap-3">
       {colores.map((c) => (
         <button
           key={c.name}
@@ -33,7 +34,8 @@ const SelectorColores = ({ selectedColor, onSelect }) => {
       {/* Divisor visual opcional */}
       <div className="w-px h-8 bg-gray-200 mx-1" />
 
-      <div className="relative group">
+      {/* Input de color personalizado */}
+      <div className="relative group flex items-center">
         <input
           type="color"
           value={selectedColor}
@@ -41,7 +43,6 @@ const SelectorColores = ({ selectedColor, onSelect }) => {
           className="w-10 h-8 rounded-lg cursor-pointer border-2 border-gray-200 p-0 overflow-hidden"
           title="Color personalizado"
         />
-        {/* Pequeño icono o tooltip opcional para indicar que es el personalizado */}
         <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
           Personalizado
         </span>

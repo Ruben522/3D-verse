@@ -12,31 +12,73 @@ const ModelsContext = ({ children }) => {
     totalPages: 1,
   });
 
-  const API_URL = "http://localhost:3000/models";
+  const backendUrl = "http://localhost:3000" 
+  const apiUrl = `${backendUrl}/models`;
 
-  const { get, isLoading, error } = useAPI();
+  const { isLoading,
+    error,
+    get,
+    post,
+    put,
+    patch,
+    remove, } = useAPI();
 
-  const normalizeModelData = (model) => ({
+  const normalizeModelDataOld = (model) => ({
     ...model,
-    displayTitle: model.title || "Untitled",
-    displayImage: model.main_image_url || model.image_url,
-    creatorName: model.creator?.username || "MakerPro",
-    avatarUrl: model.creator?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${model.id}`,
-    likes: model.likes || 0,
+    displayTitle: model.title || "No hay titulo",
+    displayImage: model.main_image_url || model.displayImage,
+    authorName: model.author.username || model.authorName,
+    avatarUrl: model.author.avatar,
+    fileUrl: model.file_url,
+    likes: model._count.model_likes || 0,
     downloads: model.downloads || 0,
+    views: model.views,
+    mainColor: model.main_color,
+    license: model.license,
+
     publishDate: model.created_at ? new Date(model.created_at).toLocaleDateString() : "Unknown",
   });
 
+const normalizeModelData = (model) => {
+  return {
+    id: model.id,
+    username: model.author?.username || "Desconocido",
+    avatarUrl: model.author?.avatar || null,
+    createdDate: new Date(model.created_at).toLocaleDateString(),
+    description: model.description,
+    downloads: model.downloads || 0,
+    fileUrl: model.file_url ? `${backendUrl}${model.file_url}` : null,
+    imageUrl: model.main_image_url ? `${backendUrl}${model.main_image_url}` : null,
+    title: model.title,
+    updated_at: model.updated_at,
+    videoUrl: model.video_url,
+    views: model.views,
+    license: model.license,
+    mainColor: model.main_color,
+    likes: model._count?.model_likes || 0,
+    categories: model.model_category?.map((c) => c.categories?.name) || [],
+    tags: model.model_tag?.map((t) => t.tags?.name) || [],
+    gallery: model.model_images
+      ?.sort((a, b) => a.display_order - b.display_order)
+      .map((img) => `${backendUrl}${img.image_url}`) || [],
+    parts: model.model_parts?.map((p) => ({
+      id: p.id,
+      name: p.part_name,
+      fileUrl: p.file_url ? `${backendUrl}${p.file_url}` : null,
+      color: p.color,
+    })) || [],
+  };
+};
+
   const getModels = async () => {
     try {
-      const data = await get(API_URL);
-      const normalizedData = data.data.map(normalizeModelData);
-
+      const data = await get(apiUrl);
+      const normalizedData = data.data.data.map(normalizeModelData);
       setModels(normalizedData);
       setPagination({
-        page: data.page,
-        total: data.total,
-        totalPages: data.totalPages,
+        page: data.data.page,
+        total: data.data.total,
+        totalPages: data.data.totalPages,
       });
     } catch (err) {
       console.error(err);
@@ -45,8 +87,9 @@ const ModelsContext = ({ children }) => {
 
   const getModelById = async (id) => {
     try {
-      const data = await get(`${API_URL}/${id}`);
-      setCurrentModel(normalizeModelData(data));
+      setCurrentModel(null);
+      const data = await get(`${apiUrl}/${id}`);
+      setCurrentModel(normalizeModelData(data.data));
     } catch (err) {
       console.error(err);
     }

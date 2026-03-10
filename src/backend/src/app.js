@@ -29,7 +29,6 @@ app.use(express.json());
 configureStaticFiles(app);
 
 // RUTAS
-app.use("/uploads", express.static("uploads"));
 app.use("/auth", authRoutes);
 app.use("/models", modelsRoutes);
 app.use("/users", usersRoutes);

@@ -11,20 +11,20 @@ const ModelCard = ({ model }) => {
     >
       <div className="relative w-full aspect-[4/3] bg-gray-50 overflow-hidden">
         <img
-          src={model.displayImage}
-          alt={model.displayTitle}
+          src={model.imageUrl}
+          alt={model.title}
           className="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500"
         />
       </div>
 
       <div className="p-4 flex flex-col gap-3">
         <h3 className="text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-primary-600 transition-colors">
-          {model.displayTitle}
+          {model.title}
         </h3>
 
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <img src={model.avatarUrl} alt={model.creatorName} className="w-6 h-6 rounded-full" />
-          <span className="truncate">by {model.creatorName}</span>
+          <img src={model.avatarUrl} alt={model.avatarUrl} className="w-6 h-6 rounded-full" />
+          <span className="truncate">{model.username}</span>
         </div>
 
         <div className="flex justify-between items-center pt-3 border-t border-gray-100 text-gray-400 text-sm">

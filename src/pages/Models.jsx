@@ -6,13 +6,14 @@ const Models = () => {
   const { models, isLoading, error } = useModels();
   
   return (
+    
     <div className="min-h-screen bg-surface">
       <div className="bg-white border-b border-gray-200 mb-8">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <h1 className="text-3xl font-bold text-gray-900">
             Explorar Diseños
           </h1>
-
+          {console.log(models)}
           <div className="flex gap-4 mt-4 text-sm font-medium text-gray-500 overflow-x-auto pb-2">
             <button className="px-4 py-2 bg-gray-900 text-white rounded-full">
               Populares

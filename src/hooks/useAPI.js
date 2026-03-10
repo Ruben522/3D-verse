@@ -14,11 +14,13 @@ export const useAPI = () => {
         },
         ...options,
       });
-      
+
       if (!response.ok) {
-        throw new Error(`Request error ${response.status}: ${response.statusText}`);
+        throw new Error(
+          `Request error ${response.status}: ${response.statusText}`,
+        );
       }
-      
+
       return await response.json();
     } catch (err) {
       setError(err.message);
@@ -29,25 +31,29 @@ export const useAPI = () => {
   };
 
   const get = (url) => request(url, { method: "GET" });
-  
-  const post = (url, body) => request(url, { 
-    method: "POST", 
-    body: JSON.stringify(body) 
-  });
-  
-  const put = (url, body) => request(url, { 
-    method: "PUT", 
-    body: JSON.stringify(body) 
-  });
-  
-  const patch = (url, body) => request(url, { 
-    method: "PATCH", 
-    body: JSON.stringify(body) 
-  });
-  
-  const remove = (url) => request(url, { 
-    method: "DELETE" 
-  });
+
+  const post = (url, body) =>
+    request(url, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+  const put = (url, body) =>
+    request(url, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+
+  const patch = (url, body) =>
+    request(url, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
+
+  const remove = (url) =>
+    request(url, {
+      method: "DELETE",
+    });
 
   return {
     isLoading,
