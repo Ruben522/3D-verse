@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: services/downloads.service.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: services/downloads.service.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import prisma from "../config/prisma.js";
+import fs from "fs";
+import path from "path";
+import { checkPermission } from "../utils/checkPermission.js";
+import { getAbsolutePath } from "../utils/helper/file.helper.js";
+
+/**
+ * Registra una descarga del modelo en la base de datos y actualiza el contador
+ * de descargas totales del modelo de forma atómica (transacción).
+ * Devuelve también la URL del archivo para que el cliente pueda proceder con la descarga.
+ *
+ * @param {string} modelId - ID del modelo que se está descargando
+ * @param {Object|null} user - Objeto del usuario autenticado (null si es descarga anónima)
+ * @param {string} ip - Dirección IP del cliente (para registro y prevención de abuso)
+ * @param {string} userAgent - Cadena User-Agent del navegador o cliente
+ * @returns {Promise&lt;{
+ *   message: string,
+ *   downloads_count: number,
+ *   file_url: string
+ * }>} Información de confirmación y datos necesarios para la descarga
+ * @throws {Error} "El modelo solicitado no existe" (código P2025)
+ * @throws {Error} Error genérico de base de datos si ocurre otro problema
+ */
+const recordDownload = async (
+    modelId,
+    user,
+    ip,
+    userAgent,
+) => {
+    try {
+        const [downloadRecord, updatedModel] =
+            await prisma.$transaction([
+                prisma.downloads.create({
+                    data: {
+                        model_id: modelId,
+                        user_id: user ? user.id : null,
+                        ip_address: ip,
+                        user_agent: userAgent,
+                    },
+                }),
+                prisma.models.update({
+                    where: { id: modelId },
+                    data: { downloads: { increment: 1 } },
+                    select: {
+                        downloads: true,
+                        file_url: true,
+                    },
+                }),
+            ]);
+
+        return {
+            message: "Descarga registrada correctamente",
+            downloads_count: updatedModel.downloads,
+            file_url: updatedModel.file_url,
+        };
+    } catch (error) {
+        if (error.code === "P2025") {
+            throw new Error(
+                "El modelo solicitado no existe",
+            );
+        }
+        throw error;
+    }
+};
+
+/**
+ * Obtiene el historial paginado de descargas realizadas por un usuario específico.
+ * Solo muestra descargas registradas (no anónimas).
+ *
+ * @param {string} userId - ID del usuario cuyos descargas se consultan
+ * @param {Object} [options] - Opciones de paginación
+ * @param {number} [options.page=1] - Página solicitada (base 1)
+ * @param {number} [options.limit=20] - Cantidad de registros por página (máx. 50)
+ * @returns {Promise&lt;{
+ *   page: number,
+ *   limit: number,
+ *   total: number,
+ *   totalPages: number,
+ *   data: Array&lt;{
+ *     download_id: string,
+ *     download_date: Date,
+ *     model_id: string,
+ *     title: string,
+ *     main_image_url: string|null
+ *   }>
+ * }>} Resultado paginado con información básica de los modelos descargados
+ */
+const getDownloadsHistory = async (
+    userId,
+    { page = 1, limit = 20 } = {},
+) => {
+    const safeLimit = Math.min(limit, 50);
+    const offset = (page - 1) * safeLimit;
+
+    const [total, downloads] = await prisma.$transaction([
+        prisma.downloads.count({
+            where: { user_id: userId },
+        }),
+        prisma.downloads.findMany({
+            where: { user_id: userId },
+            select: {
+                id: true,
+                created_at: true,
+                models: {
+                    select: {
+                        id: true,
+                        title: true,
+                        main_image_url: true,
+                    },
+                },
+            },
+            orderBy: { created_at: "desc" },
+            skip: offset,
+            take: safeLimit,
+        }),
+    ]);
+
+    const formattedData = downloads.map((d) => ({
+        download_id: d.id,
+        download_date: d.created_at,
+        model_id: d.models.id,
+        title: d.models.title,
+        main_image_url: d.models.main_image_url,
+    }));
+
+    return {
+        page,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: formattedData,
+    };
+};
+
+/**
+ * Obtiene estadísticas detalladas de descargas de un modelo específico.
+ * Solo accesible por el creador del modelo o administradores.
+ * Incluye total, descargas registradas, usuarios únicos y descargas anónimas.
+ *
+ * @param {string} modelId - ID del modelo cuyas estadísticas se consultan
+ * @param {Object} user - Usuario autenticado que realiza la consulta
+ * @returns {Promise&lt;{
+ *   total_downloads: number,
+ *   unique_users: number,
+ *   registered_downloads: number,
+ *   anonymous_downloads: number
+ * }>} Estadísticas de descargas
+ * @throws {Error} "El modelo solicitado no existe"
+ * @throws {Error} Si el usuario no tiene permiso (propietario o admin)
+ */
+const getModelDownloadStats = async (modelId, user) => {
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+    });
+
+    if (!model) {
+        throw new Error("El modelo solicitado no existe");
+    }
+
+    checkPermission(model.user_id, user);
+
+    const total_downloads = await prisma.downloads.count({
+        where: { model_id: modelId },
+    });
+
+    const registered_downloads =
+        await prisma.downloads.count({
+            where: {
+                model_id: modelId,
+                user_id: { not: null },
+            },
+        });
+
+    const uniqueUsersGroup = await prisma.downloads.groupBy(
+        {
+            by: ["user_id"],
+            where: {
+                model_id: modelId,
+                user_id: { not: null },
+            },
+        },
+    );
+
+    return {
+        total_downloads,
+        unique_users: uniqueUsersGroup.length,
+        registered_downloads,
+        anonymous_downloads:
+            total_downloads - registered_downloads,
+    };
+};
+
+/**
+ * Obtiene información necesaria para servir el archivo de descarga:
+ * ruta absoluta en disco, nombre limpio sugerido y carpeta del modelo.
+ * Verifica que el archivo físico exista antes de retornar.
+ *
+ * @param {string} modelId - ID del modelo cuyo archivo se va a descargar
+ * @returns {Promise&lt;{
+ *   absolutePath: string,
+ *   cleanName: string,
+ *   modelFolder: string
+ * }>} Información para servir el archivo
+ * @throws {Error} "El modelo solicitado no existe"
+ * @throws {Error} "El archivo físico no existe en el servidor" si el archivo no se encuentra
+ */
+const getDownloadInfo = async (modelId) => {
+    const model = await prisma.models.findUnique({
+        where: { id: modelId },
+        select: { title: true, file_url: true },
+    });
+
+    if (!model) {
+        throw new Error("El modelo solicitado no existe");
+    }
+
+    const absolutePath = getAbsolutePath(model.file_url);
+
+    if (!absolutePath || !fs.existsSync(absolutePath)) {
+        throw new Error(
+            "El archivo físico no existe en el servidor",
+        );
+    }
+
+    const extension = path.extname(model.file_url);
+    const cleanName = `${model.title.replace(/\s/g, "_")}${extension}`;
+
+    return {
+        absolutePath,
+        cleanName,
+        modelFolder: path.dirname(absolutePath),
+    };
+};
+
+export {
+    recordDownload,
+    getDownloadsHistory,
+    getModelDownloadStats,
+    getDownloadInfo,
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addCategoryToModel">addCategoryToModel</a></li><li><a href="global.html#addFavorite">addFavorite</a></li><li><a href="global.html#addImage">addImage</a></li><li><a href="global.html#addLike">addLike</a></li><li><a href="global.html#addTagToModel">addTagToModel</a></li><li><a href="global.html#addToModel">addToModel</a></li><li><a href="global.html#appendCleanFolderToArchive">appendCleanFolderToArchive</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#checkFavorite">checkFavorite</a></li><li><a href="global.html#checkFollow">checkFollow</a></li><li><a href="global.html#checkPermission">checkPermission</a></li><li><a href="global.html#cleanFileName">cleanFileName</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createCategory">createCategory</a></li><li><a href="global.html#createComment">createComment</a></li><li><a href="global.html#createDynamicStorage">createDynamicStorage</a></li><li><a href="global.html#createFilter">createFilter</a></li><li><a href="global.html#createInitialStorage">createInitialStorage</a></li><li><a href="global.html#createModel">createModel</a></li><li><a href="global.html#createPart">createPart</a></li><li><a href="global.html#createUploadWrapper">createUploadWrapper</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#deleteComment">deleteComment</a></li><li><a href="global.html#deleteImage">deleteImage</a></li><li><a href="global.html#deleteMainImage">deleteMainImage</a></li><li><a href="global.html#deleteModel">deleteModel</a></li><li><a href="global.html#deletePart">deletePart</a></li><li><a href="global.html#deletePhysicalFile">deletePhysicalFile</a></li><li><a href="global.html#deletePhysicalFolder">deletePhysicalFolder</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#favorite">favorite</a></li><li><a href="global.html#follow">follow</a></li><li><a href="global.html#followUser">followUser</a></li><li><a href="global.html#followers">followers</a></li><li><a href="global.html#following">following</a></li><li><a href="global.html#formatUploadedFiles">formatUploadedFiles</a></li><li><a href="global.html#generateToken">generateToken</a></li><li><a href="global.html#getAbsolutePath">getAbsolutePath</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getAllPublicUsers">getAllPublicUsers</a></li><li><a href="global.html#getAllTags">getAllTags</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#getByModel">getByModel</a></li><li><a href="global.html#getByUser">getByUser</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoriesByModel">getCategoriesByModel</a></li><li><a href="global.html#getCategoryById">getCategoryById</a></li><li><a href="global.html#getCurrentUser">getCurrentUser</a></li><li><a href="global.html#getDisplayFileName">getDisplayFileName</a></li><li><a href="global.html#getDownloadInfo">getDownloadInfo</a></li><li><a href="global.html#getDownloadsHistory">getDownloadsHistory</a></li><li><a href="global.html#getFavorites">getFavorites</a></li><li><a href="global.html#getFollowers">getFollowers</a></li><li><a href="global.html#getFollowing">getFollowing</a></li><li><a href="global.html#getForModel">getForModel</a></li><li><a href="global.html#getImages">getImages</a></li><li><a href="global.html#getModelBaseDirectory">getModelBaseDirectory</a></li><li><a href="global.html#getModelById">getModelById</a></li><li><a href="global.html#getModelComments">getModelComments</a></li><li><a href="global.html#getModelDownloadStats">getModelDownloadStats</a></li><li><a href="global.html#getModelImages">getModelImages</a></li><li><a href="global.html#getModelIncludes">getModelIncludes</a></li><li><a href="global.html#getModelStats">getModelStats</a></li><li><a href="global.html#getModels">getModels</a></li><li><a href="global.html#getModelsByUser">getModelsByUser</a></li><li><a href="global.html#getMyFavorites">getMyFavorites</a></li><li><a href="global.html#getOne">getOne</a></li><li><a href="global.html#getParts">getParts</a></li><li><a href="global.html#getPartsByModelId">getPartsByModelId</a></li><li><a href="global.html#getPublicUsers">getPublicUsers</a></li><li><a href="global.html#getTagsForModel">getTagsForModel</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#getUserFavoritesPublic">getUserFavoritesPublic</a></li><li><a href="global.html#getUserHistory">getUserHistory</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#isAdmin">isAdmin</a></li><li><a href="global.html#isOwnerOrAdmin">isOwnerOrAdmin</a></li><li><a href="global.html#like">like</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#me">me</a></li><li><a href="global.html#modelUploadFields">modelUploadFields</a></li><li><a href="global.html#normalizeTag">normalizeTag</a></li><li><a href="global.html#optionalToken">optionalToken</a></li><li><a href="global.html#patchMainFile">patchMainFile</a></li><li><a href="global.html#patchMainImage">patchMainImage</a></li><li><a href="global.html#record">record</a></li><li><a href="global.html#recordDownload">recordDownload</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#removeCategoryFromModel">removeCategoryFromModel</a></li><li><a href="global.html#removeFavorite">removeFavorite</a></li><li><a href="global.html#removeFromModel">removeFromModel</a></li><li><a href="global.html#removeImage">removeImage</a></li><li><a href="global.html#removeLike">removeLike</a></li><li><a href="global.html#removeMainImage">removeMainImage</a></li><li><a href="global.html#removeTag">removeTag</a></li><li><a href="global.html#removeTagFromModel">removeTagFromModel</a></li><li><a href="global.html#replaceMainFile">replaceMainFile</a></li><li><a href="global.html#reply">reply</a></li><li><a href="global.html#replyToComment">replyToComment</a></li><li><a href="global.html#sendError">sendError</a></li><li><a href="global.html#sendSuccess">sendSuccess</a></li><li><a href="global.html#unfavorite">unfavorite</a></li><li><a href="global.html#unfollow">unfollow</a></li><li><a href="global.html#unfollowUser">unfollowUser</a></li><li><a href="global.html#unlike">unlike</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateCategory">updateCategory</a></li><li><a href="global.html#updateComment">updateComment</a></li><li><a href="global.html#updateImageOrder">updateImageOrder</a></li><li><a href="global.html#updateMainImage">updateMainImage</a></li><li><a href="global.html#updateModel">updateModel</a></li><li><a href="global.html#updateOrder">updateOrder</a></li><li><a href="global.html#updateUser">updateUser</a></li><li><a href="global.html#uploadImage">uploadImage</a></li><li><a href="global.html#uploadImageFile">uploadImageFile</a></li><li><a href="global.html#uploadMainFileReplacement">uploadMainFileReplacement</a></li><li><a href="global.html#uploadMainImageFile">uploadMainImageFile</a></li><li><a href="global.html#uploadModel">uploadModel</a></li><li><a href="global.html#uploadModelFile">uploadModelFile</a></li><li><a href="global.html#uploadPartsFile">uploadPartsFile</a></li><li><a href="global.html#validateUserFields">validateUserFields</a></li><li><a href="global.html#verifyToken">verifyToken</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Mar 06 2026 14:29:09 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

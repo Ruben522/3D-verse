@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controllers/categories.controller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: controllers/categories.controller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+    createCategory,
+    getCategories,
+    getCategoryById,
+    updateCategory,
+    deleteCategory,
+    getCategoriesByModel,
+    addCategoryToModel,
+    removeCategoryFromModel,
+} from "../services/categories.service.js";
+import {
+    sendSuccess,
+    sendError,
+} from "../utils/helper/response.helper.js";
+
+/**
+ * Crea una nueva categoría en el sistema.
+ * Requiere nombre único.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const create = async (req, res) => {
+    try {
+        const { name } = req.body;
+
+        if (
+            !name ||
+            typeof name !== "string" ||
+            name.trim() === ""
+        ) {
+            return sendError(
+                res,
+                "El nombre de la categoría es obligatorio y no puede estar vacío.",
+                400,
+            );
+        }
+
+        const category = await createCategory(name.trim());
+        sendSuccess(
+            res,
+            "Categoría creada con éxito.",
+            category,
+            201,
+        );
+    } catch (error) {
+        if (error.code === "P2002") {
+            return sendError(
+                res,
+                "Ya existe una categoría con ese nombre.",
+                409,
+            );
+        }
+        sendError(res, error.message + ".", 400);
+    }
+};
+
+/**
+ * Obtiene la lista completa de categorías ordenadas alfabéticamente.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getAll = async (req, res) => {
+    try {
+        const categories = await getCategories();
+        sendSuccess(
+            res,
+            "Categorías recuperadas correctamente.",
+            categories,
+        );
+    } catch (error) {
+        sendError(res, error.message + ".", 500);
+    }
+};
+
+/**
+ * Obtiene una categoría específica por su ID, incluyendo conteo de modelos asociados.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getOne = async (req, res) => {
+    try {
+        const category = await getCategoryById(
+            req.params.id,
+        );
+        sendSuccess(
+            res,
+            "Categoría recuperada correctamente.",
+            category,
+        );
+    } catch (error) {
+        sendError(res, error.message + ".", 404);
+    }
+};
+
+/**
+ * Obtiene todas las categorías asignadas a un modelo específico.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getByModel = async (req, res) => {
+    try {
+        const categories = await getCategoriesByModel(
+            req.params.modelId,
+        );
+        sendSuccess(
+            res,
+            "Categorías del modelo recuperadas correctamente.",
+            categories,
+        );
+    } catch (error) {
+        sendError(res, error.message + ".", 404);
+    }
+};
+
+/**
+ * Actualiza el nombre de una categoría existente.
+ * El nombre debe seguir siendo único.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const update = async (req, res) => {
+    try {
+        const { name } = req.body;
+
+        if (
+            !name ||
+            typeof name !== "string" ||
+            name.trim() === ""
+        ) {
+            return sendError(
+                res,
+                "El nuevo nombre es obligatorio y no puede estar vacío.",
+                400,
+            );
+        }
+
+        const category = await updateCategory(
+            req.params.id,
+            name.trim(),
+        );
+        sendSuccess(
+            res,
+            "Categoría actualizada correctamente.",
+            category,
+        );
+    } catch (error) {
+        if (error.code === "P2002") {
+            return sendError(
+                res,
+                "Ya existe otra categoría con ese nombre.",
+                409,
+            );
+        }
+        if (
+            error.code === "P2025" ||
+            error.message.includes("no encontrada")
+        ) {
+            return sendError(
+                res,
+                "Categoría no encontrada.",
+                404,
+            );
+        }
+        sendError(res, error.message + ".", 400);
+    }
+};
+
+/**
+ * Elimina una categoría del sistema (las asociaciones con modelos se eliminan automáticamente por CASCADE).
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const remove = async (req, res) => {
+    try {
+        const result = await deleteCategory(req.params.id);
+        sendSuccess(res, result.message);
+    } catch (error) {
+        sendError(res, error.message + ".", 404);
+    }
+};
+
+/**
+ * Asocia una categoría existente a un modelo.
+ * Requiere autenticación y que el usuario sea propietario del modelo o admin.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const addToModel = async (req, res) => {
+    try {
+        const { categoryId } = req.body;
+
+        if (!categoryId) {
+            return sendError(
+                res,
+                "El ID de la categoría es obligatorio.",
+                400,
+            );
+        }
+
+        const result = await addCategoryToModel(
+            req.params.modelId,
+            categoryId,
+            req.user,
+        );
+
+        sendSuccess(res, result.message + ".", null, 201);
+    } catch (error) {
+        const status = error.message.includes(
+            "Modelo no encontrado",
+        )
+            ? 404
+            : 403;
+        sendError(res, error.message + ".", status);
+    }
+};
+
+/**
+ * Elimina la asociación entre una categoría y un modelo.
+ * Requiere autenticación y que el usuario sea propietario del modelo o admin.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const removeFromModel = async (req, res) => {
+    try {
+        const result = await removeCategoryFromModel(
+            req.params.modelId,
+            req.params.categoryId,
+            req.user,
+        );
+
+        sendSuccess(res, result.message + ".");
+    } catch (error) {
+        const status = error.message.includes(
+            "Modelo no encontrado",
+        )
+            ? 404
+            : 403;
+        sendError(res, error.message + ".", status);
+    }
+};
+
+export {
+    create,
+    getAll,
+    getOne,
+    getByModel,
+    update,
+    remove,
+    addToModel,
+    removeFromModel,
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addCategoryToModel">addCategoryToModel</a></li><li><a href="global.html#addFavorite">addFavorite</a></li><li><a href="global.html#addImage">addImage</a></li><li><a href="global.html#addLike">addLike</a></li><li><a href="global.html#addTagToModel">addTagToModel</a></li><li><a href="global.html#addToModel">addToModel</a></li><li><a href="global.html#appendCleanFolderToArchive">appendCleanFolderToArchive</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#checkFavorite">checkFavorite</a></li><li><a href="global.html#checkFollow">checkFollow</a></li><li><a href="global.html#checkPermission">checkPermission</a></li><li><a href="global.html#cleanFileName">cleanFileName</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createCategory">createCategory</a></li><li><a href="global.html#createComment">createComment</a></li><li><a href="global.html#createDynamicStorage">createDynamicStorage</a></li><li><a href="global.html#createFilter">createFilter</a></li><li><a href="global.html#createInitialStorage">createInitialStorage</a></li><li><a href="global.html#createModel">createModel</a></li><li><a href="global.html#createPart">createPart</a></li><li><a href="global.html#createUploadWrapper">createUploadWrapper</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#deleteComment">deleteComment</a></li><li><a href="global.html#deleteImage">deleteImage</a></li><li><a href="global.html#deleteMainImage">deleteMainImage</a></li><li><a href="global.html#deleteModel">deleteModel</a></li><li><a href="global.html#deletePart">deletePart</a></li><li><a href="global.html#deletePhysicalFile">deletePhysicalFile</a></li><li><a href="global.html#deletePhysicalFolder">deletePhysicalFolder</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#favorite">favorite</a></li><li><a href="global.html#follow">follow</a></li><li><a href="global.html#followUser">followUser</a></li><li><a href="global.html#followers">followers</a></li><li><a href="global.html#following">following</a></li><li><a href="global.html#formatUploadedFiles">formatUploadedFiles</a></li><li><a href="global.html#generateToken">generateToken</a></li><li><a href="global.html#getAbsolutePath">getAbsolutePath</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getAllPublicUsers">getAllPublicUsers</a></li><li><a href="global.html#getAllTags">getAllTags</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#getByModel">getByModel</a></li><li><a href="global.html#getByUser">getByUser</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoriesByModel">getCategoriesByModel</a></li><li><a href="global.html#getCategoryById">getCategoryById</a></li><li><a href="global.html#getCurrentUser">getCurrentUser</a></li><li><a href="global.html#getDisplayFileName">getDisplayFileName</a></li><li><a href="global.html#getDownloadInfo">getDownloadInfo</a></li><li><a href="global.html#getDownloadsHistory">getDownloadsHistory</a></li><li><a href="global.html#getFavorites">getFavorites</a></li><li><a href="global.html#getFollowers">getFollowers</a></li><li><a href="global.html#getFollowing">getFollowing</a></li><li><a href="global.html#getForModel">getForModel</a></li><li><a href="global.html#getImages">getImages</a></li><li><a href="global.html#getModelBaseDirectory">getModelBaseDirectory</a></li><li><a href="global.html#getModelById">getModelById</a></li><li><a href="global.html#getModelComments">getModelComments</a></li><li><a href="global.html#getModelDownloadStats">getModelDownloadStats</a></li><li><a href="global.html#getModelImages">getModelImages</a></li><li><a href="global.html#getModelIncludes">getModelIncludes</a></li><li><a href="global.html#getModelStats">getModelStats</a></li><li><a href="global.html#getModels">getModels</a></li><li><a href="global.html#getModelsByUser">getModelsByUser</a></li><li><a href="global.html#getMyFavorites">getMyFavorites</a></li><li><a href="global.html#getOne">getOne</a></li><li><a href="global.html#getParts">getParts</a></li><li><a href="global.html#getPartsByModelId">getPartsByModelId</a></li><li><a href="global.html#getPublicUsers">getPublicUsers</a></li><li><a href="global.html#getTagsForModel">getTagsForModel</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#getUserFavoritesPublic">getUserFavoritesPublic</a></li><li><a href="global.html#getUserHistory">getUserHistory</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#isAdmin">isAdmin</a></li><li><a href="global.html#isOwnerOrAdmin">isOwnerOrAdmin</a></li><li><a href="global.html#like">like</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#me">me</a></li><li><a href="global.html#modelUploadFields">modelUploadFields</a></li><li><a href="global.html#normalizeTag">normalizeTag</a></li><li><a href="global.html#optionalToken">optionalToken</a></li><li><a href="global.html#patchMainFile">patchMainFile</a></li><li><a href="global.html#patchMainImage">patchMainImage</a></li><li><a href="global.html#record">record</a></li><li><a href="global.html#recordDownload">recordDownload</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#removeCategoryFromModel">removeCategoryFromModel</a></li><li><a href="global.html#removeFavorite">removeFavorite</a></li><li><a href="global.html#removeFromModel">removeFromModel</a></li><li><a href="global.html#removeImage">removeImage</a></li><li><a href="global.html#removeLike">removeLike</a></li><li><a href="global.html#removeMainImage">removeMainImage</a></li><li><a href="global.html#removeTag">removeTag</a></li><li><a href="global.html#removeTagFromModel">removeTagFromModel</a></li><li><a href="global.html#replaceMainFile">replaceMainFile</a></li><li><a href="global.html#reply">reply</a></li><li><a href="global.html#replyToComment">replyToComment</a></li><li><a href="global.html#sendError">sendError</a></li><li><a href="global.html#sendSuccess">sendSuccess</a></li><li><a href="global.html#unfavorite">unfavorite</a></li><li><a href="global.html#unfollow">unfollow</a></li><li><a href="global.html#unfollowUser">unfollowUser</a></li><li><a href="global.html#unlike">unlike</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateCategory">updateCategory</a></li><li><a href="global.html#updateComment">updateComment</a></li><li><a href="global.html#updateImageOrder">updateImageOrder</a></li><li><a href="global.html#updateMainImage">updateMainImage</a></li><li><a href="global.html#updateModel">updateModel</a></li><li><a href="global.html#updateOrder">updateOrder</a></li><li><a href="global.html#updateUser">updateUser</a></li><li><a href="global.html#uploadImage">uploadImage</a></li><li><a href="global.html#uploadImageFile">uploadImageFile</a></li><li><a href="global.html#uploadMainFileReplacement">uploadMainFileReplacement</a></li><li><a href="global.html#uploadMainImageFile">uploadMainImageFile</a></li><li><a href="global.html#uploadModel">uploadModel</a></li><li><a href="global.html#uploadModelFile">uploadModelFile</a></li><li><a href="global.html#uploadPartsFile">uploadPartsFile</a></li><li><a href="global.html#validateUserFields">validateUserFields</a></li><li><a href="global.html#verifyToken">verifyToken</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Mar 06 2026 14:29:09 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
