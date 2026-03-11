@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Visor3D from "../components/Visor3D";
-import SelectorColores from "../components/SelectorColores"; // Tu componente
+import SelectorColores from "../components/SelectorColores";
 import useModels from "../hooks/useModels";
 
 const ModelDetail = () => {
@@ -14,9 +14,6 @@ const ModelDetail = () => {
   const [mainImage, setMainImage] = useState(null);
   const [active3DUrl, setActive3DUrl] = useState(null);
   const [isInteractive, setIsInteractive] = useState(false);
-  
-  // Novedad: Modo Impresión 3D
-  const [printMode, setPrintMode] = useState(false); 
   
   const [parts, setParts] = useState([]);
   const [selectedPart, setSelectedPart] = useState(null);
@@ -60,17 +57,9 @@ const ModelDetail = () => {
             </div>
           </div>
 
-          {/* ==================================================== */}
-          {/* CONTENIDO PRINCIPAL                                   */}
-          {/* ==================================================== */}
           <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* COLUMNA IZQUIERDA (CONTENIDO PRINCIPAL) */}
             <div className="lg:col-span-2 space-y-8">
-              
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-                
-                {/* PESTAÑAS MULTIMEDIA */}
                 <div className="flex gap-8 border-b border-gray-100 mb-6">
                   <button
                     onClick={() => setActiveMediaTab("imagenes")}
@@ -94,10 +83,7 @@ const ModelDetail = () => {
                   </button>
                 </div>
 
-                {/* ZONA DE VISUALIZACIÓN */}
                 <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
-                  
-                  {/* Vista Imágenes */}
                   {activeMediaTab === "imagenes" && (
                     <img
                       src={mainImage || currentModel.imageUrl}
@@ -107,26 +93,22 @@ const ModelDetail = () => {
                     />
                   )}
 
-                  {/* Vista Modelos 3D */}
                   {activeMediaTab === "modelos" && active3DUrl && (
                     <div className="w-full h-full relative">
-                      {/* El modelo siempre carga y se renderiza */}
                       <Visor3D
                         currentModelUrl={active3DUrl}
                         color={currentColor}
                         selectedPart={selectedPart}
                         onPartsDetected={setParts}
-                        printMode={printMode}
                       />
                       
-                      {/* CAPA DE BLOQUEO: Finge que es estático hasta que se clica */}
                       {!isInteractive && (
                         <div 
                           className="absolute inset-0 z-10 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors cursor-pointer"
                           onClick={() => setIsInteractive(true)}
                         >
                           <div className="bg-white/90 backdrop-blur px-6 py-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 transform transition-transform hover:scale-105">
-                            <span className="text-3xl">👆</span>
+                            <span className="text-2xl">👆</span>
                             <span className="font-extrabold text-gray-800">Clica para interactuar</span>
                           </div>
                         </div>
@@ -135,11 +117,6 @@ const ModelDetail = () => {
                   )}
                 </div>
 
-                {/* ==================================================== */}
-                {/* CARRUSELES (Debajo del visor)                        */}
-                {/* ==================================================== */}
-                
-                {/* Carrusel de Imágenes */}
                 {activeMediaTab === "imagenes" && currentModel.gallery?.length > 0 && (
                   <div className="flex gap-3 mt-4 overflow-x-auto py-2 custom-scrollbar">
                     <img 
@@ -160,11 +137,8 @@ const ModelDetail = () => {
                   </div>
                 )}
 
-                {/* Carrusel de Modelos 3D (Modelo principal + Partes) */}
                 {activeMediaTab === "modelos" && (
                   <div className="flex gap-3 mt-4 overflow-x-auto py-2 custom-scrollbar">
-                    
-                    {/* Botón para el modelo principal */}
                     <button
                       onClick={() => setActive3DUrl(currentModel.fileUrl)}
                       className={`px-4 py-3 rounded-xl font-bold text-sm flex-shrink-0 flex items-center gap-2 border-2 transition-all ${
@@ -176,7 +150,6 @@ const ModelDetail = () => {
                       🧊 Modelo Principal
                     </button>
 
-                    {/* Botones para cada parte del modelo */}
                     {modelPartsList.map((part) => (
                       <button
                         key={part.id}
@@ -193,34 +166,15 @@ const ModelDetail = () => {
                   </div>
                 )}
 
-                {/* ==================================================== */}
-                {/* CONTROLES DE COLOR Y PIEZAS (Solo si el 3D interactúa) */}
-                {/* ==================================================== */}
                 {activeMediaTab === "modelos" && isInteractive && (
                   <div className="mt-6 flex flex-col gap-6 pt-6 border-t border-gray-100">
-                    
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="flex-1 w-full">
+                    <div className="flex flex-col gap-4">
+                      <div className="w-full">
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Color de la pieza</p>
                         <SelectorColores selectedColor={currentColor} onSelect={setCurrentColor} />
                       </div>
-
-                      {/* Botón para alternar el efecto de líneas de impresión */}
-                      <div className="shrink-0 pt-6 md:pt-0">
-                         <button
-                           onClick={() => setPrintMode(!printMode)}
-                           className={`px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-2 transition-all ${
-                             printMode 
-                              ? "border-primary-600 bg-primary-50 text-primary-700 shadow-inner" 
-                              : "border-gray-200 bg-white text-gray-600 hover:border-primary-300"
-                           }`}
-                         >
-                           {printMode ? '🔄 Desactivar Líneas' : '🖨️ Simular Impresión 3D'}
-                         </button>
-                      </div>
                     </div>
 
-                    {/* Solo mostramos selector interno si hay partes detectadas (ej: archivos GLTF) */}
                     {parts.length > 1 && (
                       <div className="w-full">
                         <div className="flex items-center justify-between mb-3">
@@ -249,7 +203,6 @@ const ModelDetail = () => {
                 )}
               </div>
 
-              {/* BLOQUE: Detalles y Comentarios */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                 <div className="flex gap-8 border-b border-gray-100 mb-6">
                   <button
@@ -284,7 +237,6 @@ const ModelDetail = () => {
                 )}
               </div>
 
-              {/* BLOQUE: Descarga individual de archivos */}
               {modelPartsList.length > 0 && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -313,12 +265,7 @@ const ModelDetail = () => {
               )}
             </div>
 
-            {/* ==================================================== */}
-            {/* COLUMNA DERECHA (ASIDE)                               */}
-            {/* ==================================================== */}
             <aside className="space-y-6">
-              
-              {/* 1. Estadísticas */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                 <h3 className="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Estadísticas</h3>
                 <div className="space-y-4 text-sm">
@@ -347,7 +294,6 @@ const ModelDetail = () => {
                 </div>
               </div>
 
-              {/* 2. Categorías y Tags */}
               {(currentModel.categories?.length > 0 || currentModel.tags?.length > 0) && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                   <h3 className="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Clasificación</h3>
