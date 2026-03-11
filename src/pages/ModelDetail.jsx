@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Visor3D from "../components/Visor3D";
-import SelectorColores from "../components/SelectorColores";
+import SelectorColores from "../components/SelectorColores"; // Tu componente
 import useModels from "../hooks/useModels";
 
 const ModelDetail = () => {
   const { id } = useParams();
   const { getModelById, isLoading, error, currentModel } = useModels();
 
-  // Pestañas
   const [activeMediaTab, setActiveMediaTab] = useState("imagenes");
   const [activeInfoTab, setActiveInfoTab] = useState("detalles");
   
-  // Estados para Multimedia y 3D
   const [mainImage, setMainImage] = useState(null);
-  const [active3DUrl, setActive3DUrl] = useState(null); // Qué archivo 3D estamos viendo ahora
-  const [isInteractive, setIsInteractive] = useState(false); // Controla si el 3D se puede girar
+  const [active3DUrl, setActive3DUrl] = useState(null);
+  const [isInteractive, setIsInteractive] = useState(false);
   
-  // Estados para el visor interno (colores y sub-piezas del gltf)
+  // Novedad: Modo Impresión 3D
+  const [printMode, setPrintMode] = useState(false); 
+  
   const [parts, setParts] = useState([]);
   const [selectedPart, setSelectedPart] = useState(null);
   const [currentColor, setCurrentColor] = useState("#ffffff");
 
-  // Cargar modelo al entrar
   useEffect(() => {
     if (id) getModelById(id);
   }, [id]);
 
-  // Sincronizar datos iniciales cuando currentModel carga
   useEffect(() => {
     if (currentModel) {
       if (currentModel.imageUrl) setMainImage(currentModel.imageUrl);
@@ -35,12 +33,10 @@ const ModelDetail = () => {
     }
   }, [currentModel]);
 
-  // Si cambiamos de modelo en el carrusel o cambiamos de pestaña, bloqueamos la interacción
   useEffect(() => {
     setIsInteractive(false);
   }, [activeMediaTab, active3DUrl]);
 
-  // Variable de seguridad por si usaste "parts" o "partsData" en el mapeo
   const modelPartsList = currentModel?.parts || currentModel?.partsData || [];
 
   return (
@@ -51,39 +47,25 @@ const ModelDetail = () => {
         <p className="text-center py-20 text-red-500 font-medium">Modelo no encontrado</p>
       ) : (
         <>
-          {/* ENCABEZADO */}
           <div className="max-w-7xl mx-auto px-6 py-10">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex flex-col gap-2">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
                   {currentModel.title}
                 </h1>
-                <div className="flex items-center gap-3 text-gray-500">
-                  <img
-                    src={currentModel.avatarUrl || "https://via.placeholder.com/40"}
-                    alt={currentModel.username}
-                    className="w-8 h-8 rounded-full bg-gray-100 border object-cover"
-                  />
-                  <span className="font-bold text-primary-600 hover:underline cursor-pointer">
-                    {currentModel.username}
-                  </span>
-                </div>
               </div>
-
-              <button
-                type="button"
-                className="bg-primary-600 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-primary-700 hover:-translate-y-0.5 transition-all flex items-center gap-3"
-              >
+              <button className="bg-primary-600 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-primary-700 transition-all flex items-center gap-3">
                 ⬇️ Descargar todo
               </button>
             </div>
           </div>
 
-          <main className="max-w-7xl mx-auto px-6 py-3 grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* ==================================================== */}
+          {/* CONTENIDO PRINCIPAL                                   */}
+          {/* ==================================================== */}
+          <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {/* ==================================================== */}
-            {/* COLUMNA IZQUIERDA (CONTENIDO PRINCIPAL)              */}
-            {/* ==================================================== */}
+            {/* COLUMNA IZQUIERDA (CONTENIDO PRINCIPAL) */}
             <div className="lg:col-span-2 space-y-8">
               
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
@@ -134,6 +116,7 @@ const ModelDetail = () => {
                         color={currentColor}
                         selectedPart={selectedPart}
                         onPartsDetected={setParts}
+                        printMode={printMode}
                       />
                       
                       {/* CAPA DE BLOQUEO: Finge que es estático hasta que se clica */}
@@ -214,14 +197,32 @@ const ModelDetail = () => {
                 {/* CONTROLES DE COLOR Y PIEZAS (Solo si el 3D interactúa) */}
                 {/* ==================================================== */}
                 {activeMediaTab === "modelos" && isInteractive && (
-                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-gray-100">
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Color de la pieza</p>
-                      <SelectorColores selectedColor={currentColor} onSelect={setCurrentColor} />
+                  <div className="mt-6 flex flex-col gap-6 pt-6 border-t border-gray-100">
+                    
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex-1 w-full">
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Color de la pieza</p>
+                        <SelectorColores selectedColor={currentColor} onSelect={setCurrentColor} />
+                      </div>
+
+                      {/* Botón para alternar el efecto de líneas de impresión */}
+                      <div className="shrink-0 pt-6 md:pt-0">
+                         <button
+                           onClick={() => setPrintMode(!printMode)}
+                           className={`px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-2 transition-all ${
+                             printMode 
+                              ? "border-primary-600 bg-primary-50 text-primary-700 shadow-inner" 
+                              : "border-gray-200 bg-white text-gray-600 hover:border-primary-300"
+                           }`}
+                         >
+                           {printMode ? '🔄 Desactivar Líneas' : '🖨️ Simular Impresión 3D'}
+                         </button>
+                      </div>
                     </div>
+
                     {/* Solo mostramos selector interno si hay partes detectadas (ej: archivos GLTF) */}
                     {parts.length > 1 && (
-                      <div>
+                      <div className="w-full">
                         <div className="flex items-center justify-between mb-3">
                           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Partes Internas</p>
                         </div>
@@ -313,7 +314,7 @@ const ModelDetail = () => {
             </div>
 
             {/* ==================================================== */}
-            {/* COLUMNA DERECHA (ASIDE Fijo, sin scroll sticky)      */}
+            {/* COLUMNA DERECHA (ASIDE)                               */}
             {/* ==================================================== */}
             <aside className="space-y-6">
               
@@ -378,9 +379,7 @@ const ModelDetail = () => {
                   )}
                 </div>
               )}
-
             </aside>
-            
           </main>
         </>
       )}
