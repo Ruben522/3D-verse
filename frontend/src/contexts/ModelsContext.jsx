@@ -14,7 +14,8 @@ const ModelsContext = ({ children }) => {
 
   //const backendUrl = "http://localhost:3000" 
   //const apiUrl = `${backendUrl}/models`;
-  const apiUrl = import.meta.env.VITE_API_URL + "/models";
+  const backendUrl = import.meta.env.VITE_API_URL; // Esto traerá "http://50.16.165.73:3000"
+  const apiUrl = `${backendUrl}/models`;
 
   const { isLoading,
     error,
