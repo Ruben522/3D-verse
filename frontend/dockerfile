@@ -1,0 +1,23 @@
+# ETAPA 1: Construcción (Build)
+FROM node:18-alpine as build
+WORKDIR /app
+
+# Copiamos los archivos de dependencias y las instalamos
+COPY package*.json ./
+RUN npm install
+
+# Copiamos el resto del código y construimos la versión de producción
+COPY . .
+RUN npm run build
+
+# ETAPA 2: Servidor Web (Nginx)
+FROM nginx:alpine
+
+# Copiamos el resultado de la etapa anterior (la carpeta dist de Vite) a la carpeta pública de Nginx
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Exponemos el puerto 80
+EXPOSE 80
+
+# Arrancamos Nginx
+CMD ["nginx", "-g", "daemon off;"]

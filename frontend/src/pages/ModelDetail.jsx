@@ -8,26 +8,21 @@ const ModelDetail = () => {
   const { id } = useParams();
   const { getModelById, isLoading, error, currentModel } = useModels();
 
-  // Pestañas
   const [activeMediaTab, setActiveMediaTab] = useState("imagenes");
   const [activeInfoTab, setActiveInfoTab] = useState("detalles");
   
-  // Estados para Multimedia y 3D
   const [mainImage, setMainImage] = useState(null);
-  const [active3DUrl, setActive3DUrl] = useState(null); // Qué archivo 3D estamos viendo ahora
-  const [isInteractive, setIsInteractive] = useState(false); // Controla si el 3D se puede girar
+  const [active3DUrl, setActive3DUrl] = useState(null);
+  const [isInteractive, setIsInteractive] = useState(false);
   
-  // Estados para el visor interno (colores y sub-piezas del gltf)
   const [parts, setParts] = useState([]);
   const [selectedPart, setSelectedPart] = useState(null);
   const [currentColor, setCurrentColor] = useState("#ffffff");
 
-  // Cargar modelo al entrar
   useEffect(() => {
     if (id) getModelById(id);
   }, [id]);
 
-  // Sincronizar datos iniciales cuando currentModel carga
   useEffect(() => {
     if (currentModel) {
       if (currentModel.imageUrl) setMainImage(currentModel.imageUrl);
@@ -35,12 +30,10 @@ const ModelDetail = () => {
     }
   }, [currentModel]);
 
-  // Si cambiamos de modelo en el carrusel o cambiamos de pestaña, bloqueamos la interacción
   useEffect(() => {
     setIsInteractive(false);
   }, [activeMediaTab, active3DUrl]);
 
-  // Variable de seguridad por si usaste "parts" o "partsData" en el mapeo
   const modelPartsList = currentModel?.parts || currentModel?.partsData || [];
 
   return (
@@ -51,44 +44,22 @@ const ModelDetail = () => {
         <p className="text-center py-20 text-red-500 font-medium">Modelo no encontrado</p>
       ) : (
         <>
-          {/* ENCABEZADO */}
           <div className="max-w-7xl mx-auto px-6 py-10">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex flex-col gap-2">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
                   {currentModel.title}
                 </h1>
-                <div className="flex items-center gap-3 text-gray-500">
-                  <img
-                    src={currentModel.avatarUrl || "https://via.placeholder.com/40"}
-                    alt={currentModel.username}
-                    className="w-8 h-8 rounded-full bg-gray-100 border object-cover"
-                  />
-                  <span className="font-bold text-primary-600 hover:underline cursor-pointer">
-                    {currentModel.username}
-                  </span>
-                </div>
               </div>
-
-              <button
-                type="button"
-                className="bg-primary-600 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-primary-700 hover:-translate-y-0.5 transition-all flex items-center gap-3"
-              >
+              <button className="bg-primary-600 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-primary-700 transition-all flex items-center gap-3">
                 ⬇️ Descargar todo
               </button>
             </div>
           </div>
 
-          <main className="max-w-7xl mx-auto px-6 py-3 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* ==================================================== */}
-            {/* COLUMNA IZQUIERDA (CONTENIDO PRINCIPAL)              */}
-            {/* ==================================================== */}
+          <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
-              
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-                
-                {/* PESTAÑAS MULTIMEDIA */}
                 <div className="flex gap-8 border-b border-gray-100 mb-6">
                   <button
                     onClick={() => setActiveMediaTab("imagenes")}
@@ -112,10 +83,7 @@ const ModelDetail = () => {
                   </button>
                 </div>
 
-                {/* ZONA DE VISUALIZACIÓN */}
                 <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
-                  
-                  {/* Vista Imágenes */}
                   {activeMediaTab === "imagenes" && (
                     <img
                       src={mainImage || currentModel.imageUrl}
@@ -125,10 +93,8 @@ const ModelDetail = () => {
                     />
                   )}
 
-                  {/* Vista Modelos 3D */}
                   {activeMediaTab === "modelos" && active3DUrl && (
                     <div className="w-full h-full relative">
-                      {/* El modelo siempre carga y se renderiza */}
                       <Visor3D
                         currentModelUrl={active3DUrl}
                         color={currentColor}
@@ -136,14 +102,13 @@ const ModelDetail = () => {
                         onPartsDetected={setParts}
                       />
                       
-                      {/* CAPA DE BLOQUEO: Finge que es estático hasta que se clica */}
                       {!isInteractive && (
                         <div 
                           className="absolute inset-0 z-10 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors cursor-pointer"
                           onClick={() => setIsInteractive(true)}
                         >
                           <div className="bg-white/90 backdrop-blur px-6 py-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 transform transition-transform hover:scale-105">
-                            <span className="text-3xl">👆</span>
+                            <span className="text-2xl">👆</span>
                             <span className="font-extrabold text-gray-800">Clica para interactuar</span>
                           </div>
                         </div>
@@ -152,11 +117,6 @@ const ModelDetail = () => {
                   )}
                 </div>
 
-                {/* ==================================================== */}
-                {/* CARRUSELES (Debajo del visor)                        */}
-                {/* ==================================================== */}
-                
-                {/* Carrusel de Imágenes */}
                 {activeMediaTab === "imagenes" && currentModel.gallery?.length > 0 && (
                   <div className="flex gap-3 mt-4 overflow-x-auto py-2 custom-scrollbar">
                     <img 
@@ -177,11 +137,8 @@ const ModelDetail = () => {
                   </div>
                 )}
 
-                {/* Carrusel de Modelos 3D (Modelo principal + Partes) */}
                 {activeMediaTab === "modelos" && (
                   <div className="flex gap-3 mt-4 overflow-x-auto py-2 custom-scrollbar">
-                    
-                    {/* Botón para el modelo principal */}
                     <button
                       onClick={() => setActive3DUrl(currentModel.fileUrl)}
                       className={`px-4 py-3 rounded-xl font-bold text-sm flex-shrink-0 flex items-center gap-2 border-2 transition-all ${
@@ -193,7 +150,6 @@ const ModelDetail = () => {
                       🧊 Modelo Principal
                     </button>
 
-                    {/* Botones para cada parte del modelo */}
                     {modelPartsList.map((part) => (
                       <button
                         key={part.id}
@@ -210,18 +166,17 @@ const ModelDetail = () => {
                   </div>
                 )}
 
-                {/* ==================================================== */}
-                {/* CONTROLES DE COLOR Y PIEZAS (Solo si el 3D interactúa) */}
-                {/* ==================================================== */}
                 {activeMediaTab === "modelos" && isInteractive && (
-                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-gray-100">
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Color de la pieza</p>
-                      <SelectorColores selectedColor={currentColor} onSelect={setCurrentColor} />
+                  <div className="mt-6 flex flex-col gap-6 pt-6 border-t border-gray-100">
+                    <div className="flex flex-col gap-4">
+                      <div className="w-full">
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Color de la pieza</p>
+                        <SelectorColores selectedColor={currentColor} onSelect={setCurrentColor} />
+                      </div>
                     </div>
-                    {/* Solo mostramos selector interno si hay partes detectadas (ej: archivos GLTF) */}
+
                     {parts.length > 1 && (
-                      <div>
+                      <div className="w-full">
                         <div className="flex items-center justify-between mb-3">
                           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Partes Internas</p>
                         </div>
@@ -248,7 +203,6 @@ const ModelDetail = () => {
                 )}
               </div>
 
-              {/* BLOQUE: Detalles y Comentarios */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                 <div className="flex gap-8 border-b border-gray-100 mb-6">
                   <button
@@ -283,7 +237,6 @@ const ModelDetail = () => {
                 )}
               </div>
 
-              {/* BLOQUE: Descarga individual de archivos */}
               {modelPartsList.length > 0 && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -312,12 +265,7 @@ const ModelDetail = () => {
               )}
             </div>
 
-            {/* ==================================================== */}
-            {/* COLUMNA DERECHA (ASIDE Fijo, sin scroll sticky)      */}
-            {/* ==================================================== */}
             <aside className="space-y-6">
-              
-              {/* 1. Estadísticas */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                 <h3 className="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Estadísticas</h3>
                 <div className="space-y-4 text-sm">
@@ -346,7 +294,6 @@ const ModelDetail = () => {
                 </div>
               </div>
 
-              {/* 2. Categorías y Tags */}
               {(currentModel.categories?.length > 0 || currentModel.tags?.length > 0) && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                   <h3 className="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Clasificación</h3>
@@ -378,9 +325,7 @@ const ModelDetail = () => {
                   )}
                 </div>
               )}
-
             </aside>
-            
           </main>
         </>
       )}
