@@ -4,26 +4,44 @@ import useAPI from "../hooks/useAPI.js";
 const model = createContext();
 
 const ModelsContext = ({ children }) => {
-  const [models, setModels] = useState([]);
-  const [currentModel, setCurrentModel] = useState(null);
-  const [pagination, setPagination] = useState({
+  const inicialModel = [];
+  const inicialCurrentModel = null;
+  const inicialPagination = {
     page: 1,
     total: 0,
     totalPages: 1,
-  });
+  };
+  const inicialDetailUI = {
+    activeMediaTab: "imagenes",
+    activeInfoTab: "detalles",
+    mainImage: null,
+    active3DUrl: null,
+    isInteractive: false,
+    detectedParts: [],
+    selectedPart: null,
+    currentColor: "#ffffff",
+  };
 
-  //const backendUrl = "http://localhost:3000" 
-  //const apiUrl = `${backendUrl}/models`;
-  const backendUrl = import.meta.env.VITE_API_URL; // Esto traerá "http://50.16.165.73:3000"
+  const [models, setModels] = useState(inicialModel);
+  const [currentModel, setCurrentModel] = useState(inicialCurrentModel);
+  const [pagination, setPagination] = useState({inicialPagination});
+  const [detailUI, setDetailUI] = useState(inicialDetailUI);
+
+  const updateDetailUI = (field, value) => {
+    setDetailUI((prev) => {
+      const newState = { ...prev, [field]: value };
+      if (field === "activeMediaTab" || field === "active3DUrl") {
+        newState.isInteractive = false;
+      }
+      return newState;
+    });
+  };
+
+  const backendUrl = "http://localhost:3000";
+  //const backendUrl = import.meta.env.VITE_API_URL;
   const apiUrl = `${backendUrl}/models`;
 
-  const { isLoading,
-    error,
-    get,
-    post,
-    put,
-    patch,
-    remove, } = useAPI();
+  const { isLoading, error, get, post, put, patch, remove } = useAPI();
 
   const normalizeModelData = (model) => {
     return {
@@ -34,7 +52,9 @@ const ModelsContext = ({ children }) => {
       description: model.description,
       downloads: model.downloads || 0,
       fileUrl: model.file_url ? `${backendUrl}${model.file_url}` : null,
-      imageUrl: model.main_image_url ? `${backendUrl}${model.main_image_url}` : null,
+      imageUrl: model.main_image_url
+        ? `${backendUrl}${model.main_image_url}`
+        : null,
       title: model.title,
       updated_at: model.updated_at,
       videoUrl: model.video_url,
@@ -44,15 +64,17 @@ const ModelsContext = ({ children }) => {
       likes: model._count?.model_likes || 0,
       categories: model.model_category?.map((c) => c.categories?.name) || [],
       tags: model.model_tag?.map((t) => t.tags?.name) || [],
-      gallery: model.model_images
-        ?.sort((a, b) => a.display_order - b.display_order)
-        .map((img) => `${backendUrl}${img.image_url}`) || [],
-      parts: model.model_parts?.map((p) => ({
-        id: p.id,
-        name: p.part_name,
-        fileUrl: p.file_url ? `${backendUrl}${p.file_url}` : null,
-        color: p.color,
-      })) || [],
+      gallery:
+        model.model_images
+          ?.sort((a, b) => a.display_order - b.display_order)
+          .map((img) => `${backendUrl}${img.image_url}`) || [],
+      parts:
+        model.model_parts?.map((p) => ({
+          id: p.id,
+          name: p.part_name,
+          fileUrl: p.file_url ? `${backendUrl}${p.file_url}` : null,
+          color: p.color,
+        })) || [],
     };
   };
 
@@ -75,15 +97,25 @@ const ModelsContext = ({ children }) => {
     try {
       setCurrentModel(null);
       const data = await get(`${apiUrl}/${id}`);
-      setCurrentModel(normalizeModelData(data.data));
+      const modelData = normalizeModelData(data.data);
+      setCurrentModel(modelData);
+      
+      const detailUIdata = {activeMediaTab: "imagenes",
+        activeInfoTab: "detalles",
+        mainImage: modelData.imageUrl,
+        active3DUrl: modelData.fileUrl,
+        isInteractive: false,
+        detectedParts: [],
+        selectedPart: null,
+        currentColor: modelData.mainColor || "#ffffff",}
+        
+      setDetailUI(detailUIdata);
     } catch (err) {
       console.error(err);
     }
   };
 
-  useEffect(() => {
-    getModels();
-  }, []);
+  useEffect(() => { getModels(); }, []);
 
   const exportData = {
     models,
@@ -93,13 +125,11 @@ const ModelsContext = ({ children }) => {
     getModelById,
     isLoading,
     error,
+    detailUI,
+    updateDetailUI 
   };
 
-  return (
-    <model.Provider value={exportData}>
-      {children}
-    </model.Provider>
-  );
+  return <model.Provider value={exportData}>{children}</model.Provider>;
 };
 
 export { model };

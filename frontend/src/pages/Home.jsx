@@ -1,5 +1,5 @@
 import React from "react";
-import ModelCard from "../components/ModelCard";
+import ModelCard from "../components/models/ModelCard";
 import useModels from "../hooks/useModels";
 
 const Home = () => {

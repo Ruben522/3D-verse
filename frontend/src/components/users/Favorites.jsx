@@ -1,10 +1,10 @@
 import React from 'react'
 
 // Componente que contiene los favoritos de un usuario
-const Favoritos = () => {
+const Favorites = () => {
   return (
-    <div></div>
+    <div>Favorites</div>
   )
 }
 
-export default Favoritos
+export default Favorites

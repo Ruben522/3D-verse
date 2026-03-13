@@ -65,7 +65,7 @@ const ModeloGLTF = ({ modelPath, currentColor, selectedPart, onPartsDetected }) 
 // ==========================================
 // 3. ENRUTADOR PRINCIPAL (El que exportamos)
 // ==========================================
-const Modelo3D = (props) => {
+const Model3D = (props) => {
   // Extraemos la extensión del archivo (ej: "stl", "gltf", "glb")
   const extension = props.modelPath.split('.').pop().toLowerCase();
 
@@ -86,4 +86,4 @@ const Modelo3D = (props) => {
   );
 };
 
-export default Modelo3D;
+export default Model3D;

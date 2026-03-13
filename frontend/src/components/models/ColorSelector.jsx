@@ -15,7 +15,7 @@ const colores = [
   { name: "Dorado", hex: "#d4af37" },
 ];
 
-const SelectorColores = ({ selectedColor, onSelect }) => {
+const ColorSelector = ({ selectedColor, onSelect }) => {
   return (
     // CAMBIO AQUÍ: justify-start en lugar de justify-center para que se alinee a la izquierda
     <div className="flex flex-wrap justify-start items-center gap-3">
@@ -51,4 +51,4 @@ const SelectorColores = ({ selectedColor, onSelect }) => {
   );
 };
 
-export default SelectorColores;
+export default ColorSelector;
