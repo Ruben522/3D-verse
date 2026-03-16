@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { user } from "../contexts/ModelsContext.jsx";
+import { user } from "../contexts/UserContext.jsx";
 
 const useUsers = () => {
     /**

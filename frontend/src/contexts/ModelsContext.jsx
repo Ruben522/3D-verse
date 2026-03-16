@@ -8,11 +8,9 @@ const ModelsContext = ({ children }) => {
   const [currentModel, setCurrentModel] = useState(null);
   const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
 
-  // 1. Doble instancia de nuestra API
-  const modelAPI = useAPI();   // Para cargas críticas (rompen la página si fallan)
-  const actionAPI = useAPI();  // Para acciones secundarias (descargas, likes...)
+  const modelAPI = useAPI();
+  const actionAPI = useAPI();
 
-  // 2. Estado visual de la UI (Sin isDownloading, porque nos lo da actionAPI)
   const [detailUI, setDetailUI] = useState({
     activeMediaTab: "imagenes",
     activeInfoTab: "detalles",
@@ -91,7 +89,6 @@ const ModelsContext = ({ children }) => {
   const getModelById = async (id) => {
     try {
       setCurrentModel(null);
-      // Usamos la instancia PRINCIPAL de la API
       const data = await modelAPI.get(`${apiUrl}/${id}`);
       const normalizedData = normalizeModelData(data.data);
       setCurrentModel(normalizedData);
@@ -114,13 +111,17 @@ const ModelsContext = ({ children }) => {
 const downloadPackage = async (modelId, packageType) => {
     try {
       const url = `${backendUrl}/downloads/${modelId}?type=${packageType}`;
-      await actionAPI.downloadPost(url, `modelo-${modelId}-${packageType}.zip`);
+      
+      const tituloOriginal = currentModel.title;
+
+      const fileName = `${tituloOriginal}.zip`;
+      
+      await actionAPI.downloadPost(url, fileName);
       
     } catch (err) {
       console.error("Fallo en la descarga:", err);
     }
   };
-
   useEffect(() => {
     getModels();
   }, []);
@@ -134,7 +135,6 @@ const downloadPackage = async (modelId, packageType) => {
     detailUI,
     updateDetailUI,
     downloadPackage,
-    // Exportamos los estados de red por separado
     isFetchingModel: modelAPI.isLoading,
     modelError: modelAPI.error,
     isDownloading: actionAPI.isLoading,

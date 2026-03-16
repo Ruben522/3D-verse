@@ -52,6 +52,12 @@ const Menu = () => {
             <div className="w-9 h-9 rounded-full bg-primary-700 border-2 border-primary-500 cursor-pointer overflow-hidden">
               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
             </div>
+            <NavLink to="/login" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+              Iniciar Sesión
+            </NavLink>
+            <NavLink to="/register" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+              Registrarse
+            </NavLink>
           </div>
 
         </div>
