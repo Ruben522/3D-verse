@@ -7,7 +7,6 @@ const Login = () => {
     datosSesion, 
     actualizarDato, 
     iniciarSesion, 
-    isAuthLoading, 
     errorAuth, 
     limpiarFormulario 
   } = useUsers();
@@ -43,7 +42,7 @@ const Login = () => {
 
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Correo Electrónico</label>
-              <input type="email" name="email" required value={datosSesion.email} onChange={actualizarDato} placeholder="tu@email.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none transition-all bg-gray-50 focus:bg-white" />
+              <input type="email" name="email" required value={datosSesion.email} onChange={(e) => actualizarDato(e)} placeholder="tu@email.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none transition-all bg-gray-50 focus:bg-white" />
             </div>
 
             <div>
@@ -51,12 +50,10 @@ const Login = () => {
                 <label className="block text-sm font-bold text-gray-700">Contraseña</label>
                 <a href="#" className="text-xs font-semibold text-gray-500 hover:text-gray-900">¿Olvidaste tu contraseña?</a>
               </div>
-              <input type="password" name="password" required value={datosSesion.password} onChange={actualizarDato} placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none transition-all bg-gray-50 focus:bg-white" />
+              <input type="password" name="password" required value={datosSesion.password} onChange={(e) => actualizarDato(e)} placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none transition-all bg-gray-50 focus:bg-white" />
             </div>
 
-            <button type="submit" disabled={isAuthLoading} className={`w-full py-4 rounded-xl font-bold text-white transition-all shadow-md mt-6 ${isAuthLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-900 hover:bg-black hover:shadow-lg'}`}>
-              {isAuthLoading ? "⏳ Accediendo..." : "Entrar a mi cuenta"}
-            </button>
+              <input type="button" value="Login" onClick={(e) => iniciarSesion(e)} className="w-full py-4 rounded-xl font-bold text-white transition-all shadow-md mt-6 bg-primary-600 hover:bg-primary-700 hover:shadow-lg" />
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-8">

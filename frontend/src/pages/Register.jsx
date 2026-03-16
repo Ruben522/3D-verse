@@ -42,27 +42,25 @@ const Register = () => {
 
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Nombre Completo</label>
-              <input type="text" name="name" required value={datosSesion.name} onChange={actualizarDato} placeholder="Ej: Rubén" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-gray-50 focus:bg-white" />
+              <input type="text" name="name" required value={datosSesion.name} onChange={(e) => actualizarDato(e)} placeholder="Ej: Rubén" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-gray-50 focus:bg-white" />
             </div>
 
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Nombre de Usuario</label>
-              <input type="text" name="username" required value={datosSesion.username} onChange={actualizarDato} placeholder="Ej: ruben3d" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-gray-50 focus:bg-white" />
+              <input type="text" name="username" required value={datosSesion.username} onChange={(e) => actualizarDato(e)} placeholder="Ej: ruben3d" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-gray-50 focus:bg-white" />
             </div>
 
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Correo Electrónico</label>
-              <input type="email" name="email" required value={datosSesion.email} onChange={actualizarDato} placeholder="tu@email.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-gray-50 focus:bg-white" />
+              <input type="email" name="email" required value={datosSesion.email} onChange={(e) => actualizarDato(e)} placeholder="tu@email.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-gray-50 focus:bg-white" />
             </div>
 
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Contraseña</label>
-              <input type="password" name="password" required value={datosSesion.password} onChange={actualizarDato} placeholder="••••••••" minLength="6" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-gray-50 focus:bg-white" />
+              <input type="password" name="password" required value={datosSesion.password} onChange={(e) => actualizarDato(e)} placeholder="••••••••" minLength="6" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-gray-50 focus:bg-white" />
             </div>
 
-            <button type="submit" disabled={isAuthLoading} className={`w-full py-4 rounded-xl font-bold text-white transition-all shadow-md mt-6 ${isAuthLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-600 hover:bg-primary-700 hover:shadow-lg'}`}>
-              {isAuthLoading ? "⏳ Creando cuenta..." : "Registrarse"}
-            </button>
+            <input type="button" value="Registrarse" onClick={(e) => registrarse(e)} className="w-full py-4 rounded-xl font-bold text-white transition-all shadow-md mt-6 bg-primary-600 hover:bg-primary-700 hover:shadow-lg" />
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-8">

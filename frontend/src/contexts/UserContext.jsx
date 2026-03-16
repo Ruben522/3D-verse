@@ -9,7 +9,6 @@ const UserContext = ({ children }) => {
   const authAPI = useAPI();
   const backendUrl = "http://localhost:3000" ;
 
-  // 1. Constantes iniciales (Cero callbacks en los useState)
   const userLocal = localStorage.getItem("user");
   const tokenLocal = localStorage.getItem("token");
 
@@ -18,13 +17,11 @@ const UserContext = ({ children }) => {
   const datosSesionInicial = { name: "", username: "", email: "", password: "" };
   const errorInicial = null;
 
-  // 2. Estados centralizados
   const [currentUser, setCurrentUser] = useState(usuarioInicial);
   const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
   const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
   const [errorAuth, setErrorAuth] = useState(errorInicial);
 
-  // 3. Manejadores de formulario
   const actualizarDato = (evento) => {
     const { name, value } = evento.target;
     setDatosSesion((user) => ({
@@ -38,11 +35,7 @@ const UserContext = ({ children }) => {
     setErrorAuth(errorInicial);
   };
 
-  // 4. Funciones de Base de Datos
-  const iniciarSesion = async (evento) => {
-    if (evento) evento.preventDefault();
-    setErrorAuth(errorInicial);
-
+  const iniciarSesion = async () => {
     try {
       const response = await authAPI.post(`${backendUrl}/auth/login`, { 
         email: datosSesion.email, 
@@ -57,17 +50,13 @@ const UserContext = ({ children }) => {
       setCurrentUser(user);
       setIsAuthenticated(true);
       limpiarFormulario();
-      navegar("/"); // Navegamos directamente desde el contexto
+      navegar("/");
     } catch (error) {
-      // Sin returns feos, solo seteamos el error
       setErrorAuth("Credenciales incorrectas o error de servidor.");
     }
   };
 
-  const registrarse = async (evento) => {
-    if (evento) evento.preventDefault();
-    setErrorAuth(errorInicial);
-
+  const registrarse = async () => {
     try {
       const response = await authAPI.post(`${backendUrl}/auth/register`, datosSesion);
       
