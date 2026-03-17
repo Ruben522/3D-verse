@@ -4,8 +4,6 @@ import Home from "../pages/Home";
 import Models from "../pages/Models";
 import ModelDetail from "../pages/ModelDetail";
 import Error from "../pages/Error";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
 import AuthPage from '../pages/AuthPage';
 
 // Componente de rutas de la aplicación.
