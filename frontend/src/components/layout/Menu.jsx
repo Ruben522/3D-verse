@@ -50,7 +50,7 @@ const Menu = () => {
             <div className="flex items-center gap-4">
               {isAuthenticated && currentUser ? (
                 <div className="flex items-center gap-3">
-                  <Link to="/perfil" className="flex items-center gap-3 hover:bg-primary-800 p-1.5 pr-3 rounded-full transition-colors cursor-pointer">
+                  <Link to="/profile" className="flex items-center gap-3 hover:bg-primary-800 p-1.5 pr-3 rounded-full transition-colors cursor-pointer">
                     <div className="w-9 h-9 rounded-full bg-primary-700 border-2 border-primary-500 overflow-hidden flex-shrink-0">
                       <img 
                         src={currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${currentUser.username}&background=0D8ABC&color=fff&bold=true`} 
@@ -85,7 +85,7 @@ const Menu = () => {
           {/* VERSIÓN MÓVIL: Controles */}
           <div className="md:hidden flex items-center gap-4">
             {isAuthenticated && currentUser ? (
-              <Link to="/perfil" onClick={closeMobileMenu} className="w-8 h-8 rounded-full bg-primary-700 border-2 border-primary-500 overflow-hidden flex-shrink-0">
+              <Link to="/profile" onClick={closeMobileMenu} className="w-8 h-8 rounded-full bg-primary-700 border-2 border-primary-500 overflow-hidden flex-shrink-0">
                 <img src={currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${currentUser.username}&background=0D8ABC&color=fff&bold=true`} alt="Avatar" className="w-full h-full object-cover" />
               </Link>
             ) : null}
@@ -140,7 +140,7 @@ const Menu = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-4 mt-2">
-              <Link to="/perfil" onClick={closeMobileMenu} className="bg-primary-700 text-white px-4 py-3 rounded-xl font-bold text-center shadow-sm w-full transition-colors hover:bg-primary-600">
+              <Link to="/profile" onClick={closeMobileMenu} className="bg-primary-700 text-white px-4 py-3 rounded-xl font-bold text-center shadow-sm w-full transition-colors hover:bg-primary-600">
                 👤 Mi Perfil
               </Link>
               

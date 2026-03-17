@@ -7,65 +7,89 @@ const user = createContext();
 const UserContext = ({ children }) => {
   const navegar = useNavigate();
   const authAPI = useAPI();
-  const backendUrl = "http://localhost:3000" ;
+  const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+  // 1. FUNCIÓN DE NORMALIZACIÓN (Una sola vez para toda la app)
+  const normalizeUser = (userObj) => {
+    if (!userObj) return null;
+    
+    let avatarUrl = null;
+    if (userObj.avatar) {
+      const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
+      const cleanPath = userObj.avatar.startsWith('/') ? userObj.avatar : `/${userObj.avatar}`;
+      avatarUrl = userObj.avatar.startsWith('http') ? userObj.avatar : `${cleanBase}${cleanPath}`;
+    }
+
+    return {
+      ...userObj,
+      avatarUrl,
+      // Si no hay avatar, calculamos la inicial aquí para usarla en cualquier componente
+      inicial: userObj.username ? userObj.username.charAt(0).toUpperCase() : "U",
+      // La fecha la convertimos a formato legible
+      fechaRegistro: userObj.created_at ? new Date(userObj.created_at).toLocaleDateString() : "Desconocida",
+    };
+  };
+
+  // 2. Constantes iniciales
   const userLocal = localStorage.getItem("user");
   const tokenLocal = localStorage.getItem("token");
 
-  const usuarioInicial = userLocal ? JSON.parse(userLocal) : null;
+  // Pasamos el usuario guardado por la normalización
+  const usuarioInicial = userLocal ? normalizeUser(JSON.parse(userLocal)) : null;
   const sesionIniciadaInicial = !!tokenLocal;
   const datosSesionInicial = { name: "", username: "", email: "", password: "" };
-  const errorInicial = null;
 
+  // 3. Estados
   const [currentUser, setCurrentUser] = useState(usuarioInicial);
   const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
   const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
-  const [errorAuth, setErrorAuth] = useState(errorInicial);
+  const [errorAuth, setErrorAuth] = useState(null);
 
+  const [publicProfile, setPublicProfile] = useState(null);
+  const [communityUsers, setCommunityUsers] = useState([]);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [isLoadingCommunity, setIsLoadingCommunity] = useState(false);
+
+  // 4. Funciones
   const actualizarDato = (evento) => {
     const { name, value } = evento.target;
-    setDatosSesion((user) => ({
-      ...user,
-      [name]: value,
-    }));
+    setDatosSesion((prev) => ({ ...prev, [name]: value }));
   };
 
   const limpiarFormulario = () => {
     setDatosSesion(datosSesionInicial);
-    setErrorAuth(errorInicial);
+    setErrorAuth(null);
   };
 
-  const iniciarSesion = async () => {
+  const iniciarSesion = async (evento) => {
+    if (evento) evento.preventDefault();
+    setErrorAuth(null);
     try {
       const response = await authAPI.post(`${backendUrl}/auth/login`, { 
         email: datosSesion.email, 
         password: datosSesion.password 
       });
-      
       const { token, user } = response.data || response; 
-
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      
-      setCurrentUser(user);
+      localStorage.setItem("user", JSON.stringify(user)); 
+      setCurrentUser(normalizeUser(user)); 
       setIsAuthenticated(true);
       limpiarFormulario();
-      navegar("/");
+      navegar("/"); 
     } catch (error) {
       setErrorAuth("Credenciales incorrectas o error de servidor.");
     }
   };
 
-  const registrarse = async () => {
+  const registrarse = async (evento) => {
+    if (evento) evento.preventDefault();
+    setErrorAuth(null);
     try {
       const response = await authAPI.post(`${backendUrl}/auth/register`, datosSesion);
-      
       const { token, user } = response.data || response;
-
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      
-      setCurrentUser(user);
+      setCurrentUser(normalizeUser(user));
       setIsAuthenticated(true);
       limpiarFormulario();
       navegar("/");
@@ -83,6 +107,40 @@ const UserContext = ({ children }) => {
     navegar("/");
   };
 
+  const getCommunityUsers = async () => {
+    setIsLoadingCommunity(true);
+    try {
+      const response = await authAPI.get(`${backendUrl}/users`);
+      const rawUsers = response.data?.data || response.data || response;
+      // Normalizamos la lista entera
+      setCommunityUsers(rawUsers.map(normalizeUser));
+    } catch (error) {
+      console.error("Error cargando la comunidad:", error);
+    } finally {
+      setIsLoadingCommunity(false);
+    }
+  };
+
+  const getPublicProfile = async (id) => {
+    setIsLoadingProfile(true);
+    setPublicProfile(null);
+    try {
+      const response = await authAPI.get(`${backendUrl}/users/${id}`);
+      const data = response.data?.data || response.data;
+      
+      // Adaptado EXACTAMENTE a la respuesta de tu backend
+      setPublicProfile({
+        profile: normalizeUser(data.profile),
+        stats: data.stats,
+        content: data.content
+      });
+    } catch (error) {
+      console.error("Error cargando el perfil:", error);
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
+
   const exportData = {
     currentUser,
     isAuthenticated,
@@ -94,13 +152,15 @@ const UserContext = ({ children }) => {
     iniciarSesion,
     registrarse,
     cerrarSesion,
+    publicProfile,
+    communityUsers,
+    isLoadingProfile,
+    isLoadingCommunity,
+    getCommunityUsers,
+    getPublicProfile
   };
 
-  return (
-    <user.Provider value={exportData}>
-      {children}
-    </user.Provider>
-  );
+  return <user.Provider value={exportData}>{children}</user.Provider>;
 };
 
 export { user };
