@@ -10,7 +10,7 @@ const useUsers = () => {
 
     if (!contexto) {
         throw new Error(
-            "El hook useUsers debe ser utilizado dentro de <ProveedorUsuarios.jsx>.",
+            "El hook useUsers debe ser utilizado dentro de <UserContext.jsx>.",
         );
     }
 

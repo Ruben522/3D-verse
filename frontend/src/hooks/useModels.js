@@ -10,7 +10,7 @@ const useModels = () => {
 
     if (!contexto) {
         throw new Error(
-            "El hook useModels debe ser utilizado dentro de <ProveedorListas.jsx>.",
+            "El hook useModels debe ser utilizado dentro de <ModelsContext.jsx>.",
         );
     }
 

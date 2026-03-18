@@ -18,7 +18,7 @@ const AllRoutes = () => {
 			<Route path="/register" element={<AuthPage />} />
 			<Route path="/profile" element={<Profile />} />
 			<Route path="/perfil/:id" element={<Profile />} />
-			
+
 			{/* Ruta para manejar errores en caso de que no se encuentre la página */}
 			<Route path="*" element={<Error />} />
 		</Routes>

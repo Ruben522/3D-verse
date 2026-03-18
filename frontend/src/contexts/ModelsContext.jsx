@@ -69,7 +69,7 @@ const ModelsContext = ({ children }) => {
       parts: modelData.model_parts?.map((p) => ({
         id: p.id,
         name: p.part_name,
-        fileUrl: formatUrl(p.file_url), 
+        fileUrl: formatUrl(p.file_url),
         color: p.color,
       })) || [],
     };
@@ -108,16 +108,16 @@ const ModelsContext = ({ children }) => {
     }
   };
 
-const downloadPackage = async (modelId, packageType) => {
+  const downloadPackage = async (modelId, packageType) => {
     try {
       const url = `${backendUrl}/downloads/${modelId}?type=${packageType}`;
-      
+
       const tituloOriginal = currentModel.title;
 
       const fileName = `${tituloOriginal}.zip`;
-      
+
       await actionAPI.downloadPost(url, fileName);
-      
+
     } catch (err) {
       console.error("Fallo en la descarga:", err);
     }
