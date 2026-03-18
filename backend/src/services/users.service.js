@@ -21,8 +21,10 @@ const getUserById = async (userId) => {
                 take: 6,
                 orderBy: { created_at: "desc" },
                 include: {
-                    _count: { select: { model_likes: true } }
-                }
+                    _count: {
+                        select: { model_likes: true },
+                    },
+                },
             },
             favorites: {
                 take: 6,
@@ -32,12 +34,17 @@ const getUserById = async (userId) => {
                         include: {
                             users: {
                                 select: {
-                                    profile: { select: { username: true, avatar: true } }
-                                }
-                            }
-                        }
-                    }
-                }
+                                    profile: {
+                                        select: {
+                                            username: true,
+                                            avatar: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
             _count: {
                 select: {
@@ -46,22 +53,23 @@ const getUserById = async (userId) => {
                     comments: true,
                     model_likes: true,
                     followers_followers_user_idTousers: true,
-                    followers_followers_follower_idTousers: true
-                }
-            }
-        }
+                    followers_followers_follower_idTousers: true,
+                },
+            },
+        },
     });
 
     if (!user) throw new Error("Usuario no encontrado.");
 
     const aggregateStats = await prisma.models.aggregate({
         where: { user_id: userId },
-        _sum: { downloads: true, views: true }
+        _sum: { downloads: true, views: true },
     });
 
-    const totalLikesReceived = await prisma.model_likes.count({
-        where: { models: { user_id: userId } }
-    });
+    const totalLikesReceived =
+        await prisma.model_likes.count({
+            where: { models: { user_id: userId } },
+        });
 
     const p = user.profile || {};
 
@@ -79,29 +87,32 @@ const getUserById = async (userId) => {
                 youtube: p.youtube,
                 twitter: p.twitter,
                 linkedin: p.linkedin,
-                github: p.github
+                github: p.github,
             },
             customization: {
                 banner_url: p.banner_url,
                 card_bg_color: p.card_bg_color,
                 page_bg_url: p.page_bg_url,
                 badge_url: p.badge_url,
-                primary_color: p.primary_color
-            }
+                primary_color: p.primary_color,
+            },
         },
         stats: {
             total_models: user._count.models,
             total_followers: p.followers_count || 0,
             total_following: p.following_count || 0,
-            total_downloads: aggregateStats._sum.downloads || 0,
+            total_downloads:
+                aggregateStats._sum.downloads || 0,
             total_views: aggregateStats._sum.views || 0,
             total_likes_received: totalLikesReceived,
-            total_favorites_given: user._count.favorites
+            total_favorites_given: user._count.favorites,
         },
         content: {
             recent_models: user.models,
-            recent_favorites: user.favorites.map(f => f.models)
-        }
+            recent_favorites: user.favorites.map(
+                (f) => f.models,
+            ),
+        },
     };
 };
 /**
@@ -138,24 +149,24 @@ const getUsers = async ({ page = 1, limit = 20 }) => {
                         avatar: true,
                         bio: true,
                         followers_count: true,
-                        following_count: true
-                    }
+                        following_count: true,
+                    },
                 },
-                _count: { select: { models: true } }
+                _count: { select: { models: true } },
             },
             orderBy: { created_at: "desc" },
             skip: offset,
-            take: safeLimit
-        })
+            take: safeLimit,
+        }),
     ]);
 
-    const flattened = users.map(u => ({
+    const flattened = users.map((u) => ({
         id: u.id,
         email: u.email,
         role: u.role,
         created_at: u.created_at,
         models_count: u._count.models,
-        ...u.profile
+        ...u.profile,
     }));
 
     return {
@@ -163,7 +174,7 @@ const getUsers = async ({ page = 1, limit = 20 }) => {
         limit: safeLimit,
         total,
         totalPages: Math.ceil(total / safeLimit),
-        data: flattened
+        data: flattened,
     };
 };
 
@@ -199,21 +210,21 @@ const getPublicUsers = async ({ page = 1, limit = 20 }) => {
                         banner_url: true,
                         card_bg_color: true,
                         badge_url: true,
-                        primary_color: true
-                    }
+                        primary_color: true,
+                    },
                 },
-                _count: { select: { models: true } }
+                _count: { select: { models: true } },
             },
             orderBy: { created_at: "desc" },
             skip: offset,
-            take: safeLimit
-        })
+            take: safeLimit,
+        }),
     ]);
 
-    const flattened = users.map(u => ({
+    const flattened = users.map((u) => ({
         id: u.id,
         models_count: u._count.models,
-        ...u.profile
+        ...u.profile,
     }));
 
     return {
@@ -221,7 +232,7 @@ const getPublicUsers = async ({ page = 1, limit = 20 }) => {
         limit: safeLimit,
         total,
         totalPages: Math.ceil(total / safeLimit),
-        data: flattened
+        data: flattened,
     };
 };
 
@@ -252,9 +263,20 @@ const updateUser = async (userId, currentUser, data) => {
 
     const userFields = ["username"]; // Solo username se puede cambiar en users si lo necesitas
     const profileFields = [
-        "name", "lastname", "avatar", "bio", "location",
-        "youtube", "twitter", "linkedin", "github",
-        "banner_url", "card_bg_color", "page_bg_url", "badge_url", "primary_color"
+        "name",
+        "lastname",
+        "avatar",
+        "bio",
+        "location",
+        "youtube",
+        "twitter",
+        "linkedin",
+        "github",
+        "banner_url",
+        "card_bg_color",
+        "page_bg_url",
+        "badge_url",
+        "primary_color",
     ];
 
     const userUpdate = {};
@@ -268,7 +290,10 @@ const updateUser = async (userId, currentUser, data) => {
         }
     }
 
-    if (Object.keys(userUpdate).length === 0 && Object.keys(profileUpdate).length === 0) {
+    if (
+        Object.keys(userUpdate).length === 0 &&
+        Object.keys(profileUpdate).length === 0
+    ) {
         throw new Error("No hay campos para actualizar.");
     }
 
@@ -280,22 +305,24 @@ const updateUser = async (userId, currentUser, data) => {
             where: { id: userId },
             data: {
                 ...userUpdate,
-                profile: {
-                    update: profileUpdate
-                }
+                profile: { update: profileUpdate },
             },
-            include: { profile: true }
+            include: { profile: true },
         });
 
         return {
             id: updated.id,
-            username: updated.username || updated.profile.username,
+            username:
+                updated.username ||
+                updated.profile.username,
             role: updated.role,
-            ...updated.profile
+            ...updated.profile,
         };
     } catch (error) {
         if (error.code === "P2002") {
-            throw new Error("Ese nombre de usuario ya está en uso.");
+            throw new Error(
+                "Ese nombre de usuario ya está en uso.",
+            );
         }
         if (error.code === "P2025") {
             throw new Error("Usuario no encontrado.");
@@ -316,24 +343,47 @@ const updateUser = async (userId, currentUser, data) => {
 const deleteUser = async (userId, currentUser) => {
     checkPermission(userId, currentUser);
 
-    const user = await prisma.users.findUnique({ where: { id: userId } });
+    const user = await prisma.users.findUnique({
+        where: { id: userId },
+    });
     if (!user) throw new Error("Usuario no encontrado.");
 
     await prisma.users.delete({ where: { id: userId } });
 
     const folders = [
-        path.join(process.cwd(), "uploads", "models", userId),
-        path.join(process.cwd(), "uploads", "images", userId),
-        path.join(process.cwd(), "uploads", "profiles", userId) // ← para banners, badges, etc.
+        path.join(
+            process.cwd(),
+            "uploads",
+            "models",
+            userId,
+        ),
+        path.join(
+            process.cwd(),
+            "uploads",
+            "images",
+            userId,
+        ),
+        path.join(
+            process.cwd(),
+            "uploads",
+            "profiles",
+            userId,
+        ), // ← para banners, badges, etc.
     ];
 
-    folders.forEach(folder => {
+    folders.forEach((folder) => {
         if (fs.existsSync(folder)) {
-            fs.rmSync(folder, { recursive: true, force: true });
+            fs.rmSync(folder, {
+                recursive: true,
+                force: true,
+            });
         }
     });
 
-    return { message: "Usuario, perfil y archivos eliminados correctamente." };
+    return {
+        message:
+            "Usuario, perfil y archivos eliminados correctamente.",
+    };
 };
 
 /**
@@ -354,14 +404,73 @@ const getUserFavorites = async (userId) => {
                     main_image_url: true,
                     downloads: true,
                     views: true,
-                    created_at: true
-                }
-            }
+                    created_at: true,
+                },
+            },
         },
-        orderBy: { created_at: "desc" }
+        orderBy: { created_at: "desc" },
     });
 
-    return favorites.map(fav => fav.models);
+    return favorites.map((fav) => fav.models);
+};
+
+/**
+ * Obtiene los modelos que un usuario ha marcado como "me gusta" (likes dados).
+ * Paginado y ordenado por fecha de like descendente.
+ *
+ * @param {string} userId - ID del usuario
+ * @param {Object} [options] - Opciones de paginación
+ * @param {number} [options.page=1]
+ * @param {number} [options.limit=20]
+ * @returns {Promise<Object>} Objeto paginado con modelos liked
+ */
+const getUserLikes = async (
+    userId,
+    { page = 1, limit = 20 } = {},
+) => {
+    const safeLimit = Math.min(limit, 50);
+    const offset = (page - 1) * safeLimit;
+
+    const [total, likes] = await prisma.$transaction([
+        prisma.model_likes.count({
+            where: { user_id: userId },
+        }),
+        prisma.model_likes.findMany({
+            where: { user_id: userId },
+            select: {
+                created_at: true,
+                models: {
+                    select: {
+                        id: true,
+                        title: true,
+                        main_image_url: true,
+                        downloads: true,
+                        views: true,
+                        created_at: true,
+                        _count: {
+                            select: { model_likes: true },
+                        },
+                    },
+                },
+            },
+            orderBy: { created_at: "desc" },
+            skip: offset,
+            take: safeLimit,
+        }),
+    ]);
+
+    const flattened = likes.map((like) => ({
+        liked_at: like.created_at,
+        ...like.models,
+    }));
+
+    return {
+        page,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+        data: flattened,
+    };
 };
 
 export {
@@ -371,4 +480,5 @@ export {
     deleteUser,
     getUserById,
     getPublicUsers,
+    getUserLikes,
 };

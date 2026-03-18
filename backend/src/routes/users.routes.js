@@ -6,6 +6,7 @@ import {
     getFavorites,
     update,
     remove,
+    getLikes,
 } from "../controllers/users.controller.js";
 import {
     verifyToken,
@@ -18,6 +19,7 @@ const router = express.Router();
 router.get("/public", getAllPublicUsers);
 router.get("/:id", getById);
 router.get("/:id/favorites", getFavorites);
+router.get("/:userId/likes", verifyToken, getLikes);
 
 router.get("/", verifyToken, isAdmin, getAll);
 router.put("/:id", verifyToken, isOwnerOrAdmin, update);

@@ -1,5 +1,6 @@
 import {
     getUserFavorites,
+    getUserLikes,
     getUsers,
     updateUser,
     deleteUser,
@@ -10,6 +11,46 @@ import {
     sendSuccess,
     sendError,
 } from "../utils/helper/response.helper.js";
+
+/**
+ * Obtiene los modelos que un usuario ha marcado como "me gusta" (likes dados).
+ * Requiere autenticación (solo el propio usuario o admin puede ver sus likes).
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getLikes = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Opcional: solo permitir ver likes propios o si es admin
+        if (
+            req.user.id !== userId &&
+            req.user.role !== "admin"
+        ) {
+            return sendError(
+                res,
+                "No tienes permiso para ver los likes de este usuario.",
+                403,
+            );
+        }
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+
+        const likes = await getUserLikes(userId, {
+            page,
+            limit,
+        });
+        sendSuccess(
+            res,
+            "Likes del usuario recuperados correctamente.",
+            likes,
+        );
+    } catch (error) {
+        sendError(res, error.message, 400);
+    }
+};
 
 /**
  * Obtiene la lista de modelos marcados como favoritos por un usuario.
@@ -157,4 +198,5 @@ export {
     remove,
     getById,
     getAllPublicUsers,
+    getLikes,
 };
