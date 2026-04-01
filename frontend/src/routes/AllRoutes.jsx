@@ -6,8 +6,8 @@ import ModelDetail from "../pages/ModelDetail";
 import Error from "../pages/Error";
 import AuthPage from '../pages/AuthPage';
 import Profile from "../pages/Profile";
+import UploadModel from '../pages/UploadModel';
 
-// Componente de rutas de la aplicación.
 const AllRoutes = () => {
 	return (
 		<Routes>
@@ -18,6 +18,7 @@ const AllRoutes = () => {
 			<Route path="/register" element={<AuthPage />} />
 			<Route path="/profile" element={<Profile />} />
 			<Route path="/perfil/:id" element={<Profile />} />
+			<Route path="/subir" element={<UploadModel />} />
 
 			{/* Ruta para manejar errores en caso de que no se encuentre la página */}
 			<Route path="*" element={<Error />} />

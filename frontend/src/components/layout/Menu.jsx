@@ -6,7 +6,7 @@ import Button from "../common/Button";
 
 const Menu = () => {
   const { isAuthenticated, currentUser, cerrarSesion } = useUsers();
-  
+
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const toggleMobileMenu = () => setIsMobileOpen(!isMobileOpen);
@@ -27,7 +27,7 @@ const Menu = () => {
 
           {/* VERSIÓN ESCRITORIO */}
           <div className="hidden md:flex items-center gap-4 w-full justify-end">
-            
+
             <div className="flex items-center gap-6 text-sm font-medium mr-2">
               <NavLink to="/models" className={({ isActive }) => isActive ? "text-white" : "text-primary-200 hover:text-white transition-colors"}>
                 Explorar
@@ -37,14 +37,6 @@ const Menu = () => {
               </NavLink>
             </div>
 
-            {/* USAMOS TU BUTTON (Sobrescribiendo tamaño y color para que encaje en el menú) */}
-            <Button 
-              variant="outline" 
-              className="!px-4 !py-2 !rounded-full !text-sm border-none bg-white text-primary-900 hover:bg-primary-50 whitespace-nowrap shadow-lg"
-            >
-              + Subir Diseño
-            </Button>
-
             <div className="h-8 w-px bg-primary-700 mx-2"></div>
 
             <div className="flex items-center gap-4">
@@ -52,15 +44,21 @@ const Menu = () => {
                 <div className="flex items-center gap-3">
                   <Link to="/profile" className="flex items-center gap-3 hover:bg-primary-800 p-1.5 pr-3 rounded-full transition-colors cursor-pointer">
                     <div className="w-9 h-9 rounded-full bg-primary-700 border-2 border-primary-500 overflow-hidden flex-shrink-0">
-                      <img 
-                        src={currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${currentUser.username}&background=0D8ABC&color=fff&bold=true`} 
-                        alt="Avatar" 
+                      <img
+                        src={currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${currentUser.username}&background=0D8ABC&color=fff&bold=true`}
+                        alt="Avatar"
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <span className="text-sm font-medium text-white">
                       {currentUser.username}
                     </span>
+                  </Link>
+                  <Link to="/subir"
+                    variant="outline"
+                    className="!px-4 !py-2 !rounded-full !text-sm border-none bg-white text-primary-900 hover:bg-primary-50 whitespace-nowrap shadow-lg"
+                  >
+                    Subir Diseño
                   </Link>
                   {/* Icono nativo para salir, para no romper el layout */}
                   <button onClick={cerrarSesion} title="Cerrar Sesión" className="text-primary-300 hover:text-red-400 p-2 transition-colors">
@@ -109,23 +107,23 @@ const Menu = () => {
       {/* --- DESPLEGABLE MÓVIL --- */}
       <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-primary-800 ${isMobileOpen ? 'max-h-96 border-t border-primary-700 opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="px-6 py-6 flex flex-col gap-5">
-          
+
           <NavLink to="/models" onClick={closeMobileMenu} className={({ isActive }) => isActive ? "text-white font-bold text-lg" : "text-primary-200 hover:text-white font-medium text-lg transition-colors"}>
             Explorar
           </NavLink>
-          
+
           <NavLink to="/comunidad" onClick={closeMobileMenu} className={({ isActive }) => isActive ? "text-white font-bold text-lg" : "text-primary-200 hover:text-white font-medium text-lg transition-colors"}>
             Comunidad
           </NavLink>
-          
+
           {/* USAMOS TU BUTTON PARA MÓVIL */}
-          <Button 
-            variant="outline" 
-            onClick={closeMobileMenu} 
-            className="!bg-white !text-primary-900 border-none shadow-sm w-full mt-2"
+          <Link to="/subir"
+            variant="outline"
+            onClick={closeMobileMenu}
+            className="!px-4 !py-3 !rounded-xl !text-sm border-none bg-white text-primary-900 hover:bg-primary-50 shadow-lg w-full text-center transition-colors font-bold"
           >
             + Subir Diseño
-          </Button>
+          </Link>
 
           <div className="h-px bg-primary-700 my-2"></div>
 
@@ -143,10 +141,10 @@ const Menu = () => {
               <Link to="/profile" onClick={closeMobileMenu} className="bg-primary-700 text-white px-4 py-3 rounded-xl font-bold text-center shadow-sm w-full transition-colors hover:bg-primary-600">
                 👤 Mi Perfil
               </Link>
-              
+
               {/* USAMOS TU BUTTON PARA CERRAR SESIÓN EN MÓVIL */}
-              <Button 
-                onClick={handleCerrarSesionMovil} 
+              <Button
+                onClick={handleCerrarSesionMovil}
                 className="!bg-red-500/10 !text-red-400 border border-red-500/20 hover:!bg-red-500/20 w-full"
               >
                 Cerrar Sesión

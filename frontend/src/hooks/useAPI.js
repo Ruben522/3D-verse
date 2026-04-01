@@ -9,38 +9,31 @@ const useAPI = () => {
         setError(null);
 
         try {
-            // 1. Buscamos el token
             const token = localStorage.getItem("token");
 
-            // 2. Preparamos las cabeceras
             const headers = {
                 "Content-Type": "application/json",
                 ...options.headers,
             };
 
-            // 3. ¡LA MAGIA! Si hay token, lo enviamos en formato Bearer
             if (token) {
-                headers["Authorization"] =
-                    `Bearer ${token}`;
+                headers["Authorization"] = `Bearer ${token}`;
             }
 
-            // 4. Hacemos la petición
             const response = await fetch(url, {
                 ...options,
                 headers,
             });
 
             if (response.status === 401) {
-                throw new Error(
-                    "No autorizado. Inicia sesión de nuevo.",
-                );
+                throw new Error("No autorizado. Inicia sesión de nuevo.");
             }
 
             const data = await response.json();
 
             if (!response.ok) {
                 throw new Error(
-                    data.message || "Error en la petición",
+                    data.error || data.message || "Error en la petición",
                 );
             }
 
@@ -69,9 +62,92 @@ const useAPI = () => {
             method: "PATCH",
             body: JSON.stringify(body),
         });
-    const remove = (url) =>
-        request(url, { method: "DELETE" });
+    const remove = (url) => request(url, { method: "DELETE" });
 
+    const postForm = async (url, formData) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {};
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: formData,
+            });
+            if (response.status === 401)
+                throw new Error("No autorizado. Inicia sesión.");
+
+            const data = await response.json();
+            if (!response.ok)
+                throw new Error(data.message || "Error al subir archivos");
+            return data;
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    const downloadFile = async (url, method, fileName, body = null) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {};
+
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+            if (body && method === "POST")
+                headers["Content-Type"] = "application/json";
+
+            const options = { method, headers };
+            if (body && method === "POST") options.body = JSON.stringify(body);
+
+            const response = await fetch(url, options);
+
+            if (response.status === 401) {
+                throw new Error("No autorizado. Inicia sesión.");
+            }
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(
+                    errorData.message || "Error al descargar el archivo",
+                );
+            }
+
+            // Convertimos la respuesta a un Blob (archivo binario)
+            const blob = await response.blob();
+
+            // Magia del navegador para forzar la descarga:
+            // Creamos una URL temporal para ese blob
+            const downloadUrl = window.URL.createObjectURL(blob);
+
+            // Creamos una etiqueta <a> invisible
+            const link = document.createElement("a");
+            link.href = downloadUrl;
+            link.setAttribute("download", fileName); // Le decimos al navegador el nombre del archivo
+
+            // La añadimos al DOM, hacemos clic en ella y la borramos
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+
+            // Limpiamos la URL temporal de la memoria
+            window.URL.revokeObjectURL(downloadUrl);
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    const downloadPost = (url, fileName, body = {}) =>
+        downloadFile(url, "POST", fileName, body);
+    const downloadGet = (url, fileName) => downloadFile(url, "GET", fileName);
     return {
         isLoading,
         error,
@@ -80,6 +156,9 @@ const useAPI = () => {
         put,
         patch,
         remove,
+        postForm,
+        downloadPost,
+        downloadGet,
     };
 };
 

@@ -12,7 +12,7 @@ const UserContext = ({ children }) => {
   // 1. FUNCIÓN DE NORMALIZACIÓN (Una sola vez para toda la app)
   const normalizeUser = (userObj) => {
     if (!userObj) return null;
-    
+
     let avatarUrl = null;
     if (userObj.avatar) {
       const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
@@ -65,17 +65,17 @@ const UserContext = ({ children }) => {
     if (evento) evento.preventDefault();
     setErrorAuth(null);
     try {
-      const response = await authAPI.post(`${backendUrl}/auth/login`, { 
-        email: datosSesion.email, 
-        password: datosSesion.password 
+      const response = await authAPI.post(`${backendUrl}/auth/login`, {
+        email: datosSesion.email,
+        password: datosSesion.password
       });
-      const { token, user } = response.data || response; 
+      const { token, user } = response.data || response;
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user)); 
-      setCurrentUser(normalizeUser(user)); 
+      localStorage.setItem("user", JSON.stringify(user));
+      setCurrentUser(normalizeUser(user));
       setIsAuthenticated(true);
       limpiarFormulario();
-      navegar("/"); 
+      navegar("/");
     } catch (error) {
       setErrorAuth("Credenciales incorrectas o error de servidor.");
     }
@@ -110,7 +110,7 @@ const UserContext = ({ children }) => {
   const getCommunityUsers = async () => {
     setIsLoadingCommunity(true);
     try {
-      const response = await authAPI.get(`${backendUrl}/users`);
+      const response = await authAPI.get(`${backendUrl}/users/public`);
       const rawUsers = response.data?.data || response.data || response;
       // Normalizamos la lista entera
       setCommunityUsers(rawUsers.map(normalizeUser));
@@ -127,7 +127,7 @@ const UserContext = ({ children }) => {
     try {
       const response = await authAPI.get(`${backendUrl}/users/${id}`);
       const data = response.data?.data || response.data;
-      
+
       // Adaptado EXACTAMENTE a la respuesta de tu backend
       setPublicProfile({
         profile: normalizeUser(data.profile),

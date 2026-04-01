@@ -1,38 +1,61 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import useModels from '../../hooks/useModels';
-import Button from "../common/Button";
 
 const ImagesFiles = () => {
-  const { currentModel, isDownloading, downloadPackage } = useModels();
-  const imageList = currentModel ? [currentModel.imageUrl, ...(currentModel.gallery || [])].filter(Boolean) : [];
+    const {
+        uploadFiles,
+        uploadErrors,
+        manejarSeleccionArchivo,
+        eliminarArchivoSeleccionado
+    } = useModels();
 
-  return (
-    <div className="space-y-6 py-4 animate-fade-in">
-      <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-        <p className="text-sm text-gray-500">Imágenes de referencia y renderizados ({imageList.length})</p>
-        <Button
-          onClick={() => downloadPackage(currentModel.id, 'gallery')}
-          disabled={isDownloading}
-          className="text-sm font-bold text-primary-600 hover:text-primary-800 bg-primary-50 hover:bg-primary-100 px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+    const fileRef = useRef(null);
+
+    // Generamos la URL de previsualización al vuelo si el archivo existe (cero lógica de estado)
+    const previewUrl = uploadFiles?.main_image ? URL.createObjectURL(uploadFiles.main_image) : null;
+
+    return (
+        <div
+            onClick={() => fileRef.current?.click()}
+            className={`relative border-2 border-dashed rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer transition-all overflow-hidden min-h-[250px] ${uploadErrors?.main_image ? 'border-red-400 bg-red-50' :
+                    previewUrl ? 'border-transparent shadow-sm' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
+                }`}
         >
-          {isDownloading ? "⏳ Comprimiendo..." : "🖼️ Bajar galería (.zip)"}
-        </Button>
-      </div>
-      
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {imageList.map((imgUrl, index) => {
-          return (
-            <div key={index} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-200 bg-gray-100 shadow-sm">
-              <img src={imgUrl} alt={`Galería ${index}`} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/60 opacity-0 flex items-center justify-center">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+            <input
+                type="file"
+                ref={fileRef}
+                className="hidden"
+                accept="image/jpeg, image/png, image/webp"
+                onChange={(e) => manejarSeleccionArchivo('main_image', e)}
+            />
+
+            {previewUrl ? (
+                <div className="absolute inset-0 w-full h-full group">
+                    <img src={previewUrl} alt="Portada" className="w-full h-full object-cover" />
+
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                eliminarArchivoSeleccionado('main_image', e);
+                                fileRef.current.value = "";
+                            }}
+                            className="bg-white text-red-600 px-4 py-2 rounded-xl font-bold shadow-lg hover:scale-105 transition-transform"
+                        >
+                            Cambiar Portada
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex flex-col items-center p-8">
+                    <span className="text-4xl mb-2">🖼️</span>
+                    <p className="font-bold text-gray-900">Imagen de Portada</p>
+                    <p className="text-sm text-gray-500">JPG, PNG, WEBP</p>
+                    {uploadErrors?.main_image && <p className="text-red-500 text-sm font-bold mt-2">{uploadErrors.main_image}</p>}
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default ImagesFiles;
