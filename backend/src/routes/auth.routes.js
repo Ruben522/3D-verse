@@ -1,10 +1,7 @@
 import express from "express";
-import {
-    register,
-    login,
-    me,
-} from "../controllers/auth.controller.js";
+import { register, login, me } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
+import { isOwnerOrAdmin } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 

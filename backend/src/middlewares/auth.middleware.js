@@ -13,26 +13,19 @@ const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res
-            .status(401)
-            .json({
-                error: "Token requerido o formato inválido",
-            });
+        return res.status(401).json({
+            error: "Token requerido o formato inválido",
+        });
     }
 
     const token = authHeader.split(" ")[1];
 
     try {
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET,
-        );
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
     } catch (error) {
-        return res
-            .status(403)
-            .json({ error: "Token inválido o expirado" });
+        return res.status(403).json({ error: "Token inválido o expirado" });
     }
 };
 
@@ -55,14 +48,10 @@ const optionalToken = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    jwt.verify(
-        token,
-        process.env.JWT_SECRET,
-        (err, decoded) => {
-            req.user = err ? null : decoded;
-            next();
-        },
-    );
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        req.user = err ? null : decoded;
+        next();
+    });
 };
 
 /**
@@ -76,11 +65,9 @@ const optionalToken = (req, res, next) => {
  */
 const isAdmin = (req, res, next) => {
     if (!req.user || req.user.role !== "admin") {
-        return res
-            .status(403)
-            .json({
-                error: "Acceso denegado: se requieren privilegios de administrador",
-            });
+        return res.status(403).json({
+            error: "Acceso denegado: se requieren privilegios de administrador",
+        });
     }
     next();
 };
@@ -96,33 +83,22 @@ const isAdmin = (req, res, next) => {
  */
 const isOwnerOrAdmin = (req, res, next) => {
     if (!req.user) {
-        return res
-            .status(401)
-            .json({ error: "No autenticado" });
+        return res.status(401).json({ error: "No autenticado" });
     }
 
-    const userIdFromToken = req.user.id;
-    const resourceIdFromParams =
-        req.params.id || req.params.userId; // más flexible
+    const userIdFromToken = String(req.user.id);
+    const resourceIdFromParams = String(
+        req.params.id || req.params.userId || "",
+    );
     const userRole = req.user.role;
 
-    if (
-        userIdFromToken === resourceIdFromParams ||
-        userRole === "admin"
-    ) {
+    if (userIdFromToken === resourceIdFromParams || userRole === "admin") {
         return next();
     }
 
-    return res
-        .status(403)
-        .json({
-            error: "No tienes permiso para gestionar este recurso",
-        });
+    return res.status(403).json({
+        error: "No tienes permiso para gestionar este recurso",
+    });
 };
 
-export {
-    verifyToken,
-    optionalToken,
-    isAdmin,
-    isOwnerOrAdmin,
-};
+export { verifyToken, optionalToken, isAdmin, isOwnerOrAdmin };

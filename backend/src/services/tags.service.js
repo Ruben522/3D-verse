@@ -74,8 +74,7 @@ const addTagToModel = async (modelId, user, tagName) => {
     } catch (error) {
         if (error.code === "P2002") {
             return {
-                message:
-                    "El modelo ya tenía este tag asignado",
+                message: "El modelo ya tenía este tag asignado",
             };
         }
         throw error;
@@ -136,9 +135,7 @@ const removeTagFromModel = async (modelId, tagId, user) => {
  */
 const removeTag = async (tagId, user) => {
     if (user.role !== "admin") {
-        throw new Error(
-            "Acción permitida solo para administradores",
-        );
+        throw new Error("Acción permitida solo para administradores");
     }
 
     try {

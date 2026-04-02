@@ -16,13 +16,11 @@ const checkPermission = (resourceOwnerId, currentUser) => {
         throw error;
     }
 
-    const isOwner = resourceOwnerId === currentUser.id;
+    const isOwner = String(resourceOwnerId) === String(currentUser.id);
     const isAdmin = currentUser.role === "admin";
 
     if (!isOwner && !isAdmin) {
-        const error = new Error(
-            "No tienes permiso para realizar esta acción.",
-        );
+        const error = new Error("No tienes permiso para realizar esta acción.");
         error.status = 403;
         throw error;
     }

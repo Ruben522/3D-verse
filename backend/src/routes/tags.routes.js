@@ -12,9 +12,14 @@ import { verifyToken, isOwnerOrAdmin } from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.get("/", getAll);
-router.post("/model/:modelId", verifyToken, isOwnerOrAdmin, addToModel);
-router.delete("/model/:modelId/:tagId", verifyToken, isOwnerOrAdmin, removeFromModel);
-router.delete("/:tagId", verifyToken, isOwnerOrAdmin, remove);
+router.post("/model/:modelId", verifyToken, addToModel);
+router.delete(
+    "/model/:modelId/:tagId",
+    verifyToken,
+    isOwnerOrAdmin,
+    removeFromModel,
+);
+router.delete("/:tagId", verifyToken, remove);
 router.get("/model/:modelId", verifyToken, getForModel);
 
 export default router;
