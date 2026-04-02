@@ -6,6 +6,9 @@ import Button from '../components/common/Button';
 import AccordionSection from '../components/common/AccordionSection';
 import MainFile from '../components/uploads/MainFile';
 import ImagesFiles from '../components/uploads/ImagesFiles';
+import GalleryFiles from '../components/uploads/GalleryFiles';
+import PartsFiles from '../components/uploads/PartsFiles';
+import TagsInput from '../components/uploads/TagsInput'; // <-- 1. Importamos el componente
 
 const UploadModel = () => {
     const { isAuthenticated } = useUsers();
@@ -44,7 +47,7 @@ const UploadModel = () => {
                         title="Detalles del Modelo"
                         subtitle="Título, descripción y categorización"
                         isOpen={expandedSections.includes('info')}
-                        hasError={!!uploadErrors?.title || !!uploadErrors?.description || !!uploadErrors?.category_id}
+                        hasError={!!uploadErrors?.title} // <-- 2. Ya solo da error si falla el título
                         onToggle={toggleSection}
                         icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>}
                     >
@@ -63,33 +66,37 @@ const UploadModel = () => {
                             </div>
 
                             <div>
-                                <label className="text-sm font-bold text-gray-700 block mb-2">Categoría *</label>
+                                {/* 3. Quitamos el asterisco de obligatorio */}
+                                <label className="text-sm font-bold text-gray-700 block mb-2">Categoría (Opcional)</label>
                                 <select
                                     name="category_id"
                                     value={uploadData.category_id}
                                     onChange={actualizarDatoSubida}
-                                    className={`w-full px-4 py-3 rounded-xl border ${uploadErrors?.category_id ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50'} focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none transition-all`}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none transition-all"
                                 >
-                                    <option value="">Selecciona una categoría</option>
+                                    <option value="">Sin categoría específica</option>
                                     {categoriasDisponibles.map(cat => (
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
                                 </select>
-                                {uploadErrors?.category_id && <p className="text-red-500 text-sm font-bold mt-1">{uploadErrors.category_id}</p>}
                             </div>
 
                             <div>
-                                <label className="text-sm font-bold text-gray-700 block mb-2">Descripción *</label>
+                                {/* Quitamos el asterisco de obligatorio */}
+                                <label className="text-sm font-bold text-gray-700 block mb-2">Descripción (Opcional)</label>
                                 <textarea
                                     name="description"
                                     value={uploadData.description}
                                     onChange={actualizarDatoSubida}
                                     rows="4"
-                                    className={`w-full px-4 py-3 rounded-xl border ${uploadErrors?.description ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50'} focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none transition-all resize-none`}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none transition-all resize-none"
                                     placeholder="Instrucciones de impresión, soportes recomendados..."
                                 />
-                                {uploadErrors?.description && <p className="text-red-500 text-sm font-bold mt-1">{uploadErrors.description}</p>}
                             </div>
+
+                            {/* 4. Inyectamos nuestro nuevo componente de Tags */}
+                            <TagsInput />
+
                         </div>
                     </AccordionSection>
 
@@ -99,7 +106,10 @@ const UploadModel = () => {
                         title="Archivos Requeridos"
                         subtitle="El archivo 3D principal (.stl, .obj) y la imagen de portada"
                         isOpen={expandedSections.includes('files')}
+
+                        // ¡CAMBIO AQUÍ! Comprueba ambos errores
                         hasError={!!uploadErrors?.main_file || !!uploadErrors?.main_image}
+
                         onToggle={toggleSection}
                         icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>}
                     >
@@ -119,8 +129,10 @@ const UploadModel = () => {
                         onToggle={toggleSection}
                         icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>}
                     >
-                        <div className="p-10 border-2 border-dashed border-gray-200 rounded-2xl text-center bg-gray-50 mt-4">
-                            <p className="text-gray-500 font-bold">Aquí irán los componentes de Galería y Partes Múltiples.</p>
+                        <div className="flex flex-col gap-8 mt-4">
+                            <GalleryFiles />
+                            <hr className="border-gray-100" />
+                            <PartsFiles />
                         </div>
                     </AccordionSection>
 

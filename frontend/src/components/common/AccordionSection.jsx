@@ -24,7 +24,6 @@ const AccordionSection = ({ id, title, subtitle, icon, isOpen, hasError, onToggl
                 </div>
             </button>
 
-            {/* Contenido Animado */}
             <div className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                 <div className="overflow-hidden">
                     <div className="p-6 pt-0 border-t border-gray-50">
