@@ -3,16 +3,13 @@ import useAPI from "../hooks/useAPI.js";
 import { useNavigate } from "react-router-dom";
 import { validateUploadData } from "../utils/uploadValidations";
 
-/* ==========================================================================
-   CONSTANTES GLOBALES Y FUNCIONES PURAS
-========================================================================== */
 const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const apiUrl = `${backendUrl}/models`;
 
 const initialUploadData = {
   title: "",
   description: "",
-  category_id: "",
+  categories: [],
   tags: []
 };
 
@@ -22,13 +19,6 @@ const initialUploadFiles = {
   gallery: [],
   parts: []
 };
-
-const categoriasDisponibles = [
-  { id: "1", name: "Personajes / Miniaturas" },
-  { id: "2", name: "Accesorios / Props" },
-  { id: "3", name: "Hogar / Decoración" },
-  { id: "4", name: "Herramientas" }
-];
 
 const formatUrl = (path) => {
   if (!path) return null;
@@ -71,9 +61,6 @@ const normalizeModelData = (modelData) => {
 
 const model = createContext();
 
-/* ==========================================================================
-   COMPONENTE PROVIDER PRINCIPAL
-========================================================================== */
 const ModelsContext = ({ children }) => {
   const navegar = useNavigate();
   const modelAPI = useAPI();
@@ -82,6 +69,8 @@ const ModelsContext = ({ children }) => {
   const [modelsData, setModelsData] = useState([]);
   const [currentModel, setCurrentModel] = useState(null);
   const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
+
+  const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
 
   const [detailUI, setDetailUI] = useState({
     activeMediaTab: "imagenes",
@@ -103,11 +92,19 @@ const ModelsContext = ({ children }) => {
 
   useEffect(() => {
     getModels();
+    getCategories();
   }, []);
 
-  /* ==========================================================================
-     MÉTODOS DE LECTURA Y VISTA (READ)
-  ========================================================================== */
+  const getCategories = async () => {
+    try {
+      const response = await modelAPI.get(`${backendUrl}/categories`);
+      setCategoriasDisponibles(response.data || []);
+    } catch (err) {
+      console.error("Error al obtener categorías:", err);
+      setCategoriasDisponibles([]);
+    }
+  };
+
   const getModels = async () => {
     try {
       const data = await modelAPI.get(apiUrl);
@@ -162,9 +159,6 @@ const ModelsContext = ({ children }) => {
     }
   };
 
-  /* ==========================================================================
-     MÉTODOS DE FORMULARIO (UI LOCAL)
-  ========================================================================== */
   const toggleSection = (sectionId) => {
     setExpandedSections(prev =>
       prev.includes(sectionId)
@@ -177,6 +171,17 @@ const ModelsContext = ({ children }) => {
     const { name, value } = evento.target;
     setUploadData((prev) => ({ ...prev, [name]: value }));
     if (uploadErrors[name]) setUploadErrors(prev => ({ ...prev, [name]: null }));
+  };
+
+  const toggleCategoria = (categoryId) => {
+    setUploadData(prev => {
+      const isSelected = prev.categories.includes(categoryId);
+      const newCategories = isSelected
+        ? prev.categories.filter(id => id !== categoryId)
+        : [...prev.categories, categoryId];
+
+      return { ...prev, categories: newCategories };
+    });
   };
 
   const agregarTag = (evento) => {
@@ -233,9 +238,6 @@ const ModelsContext = ({ children }) => {
     setExpandedSections(['info', 'files']);
   };
 
-  /* ==========================================================================
-     SUB-RUTINAS DE SUBIDA DE MODELO (SRP)
-  ========================================================================== */
   const buildUploadFormData = () => {
     const formData = new FormData();
     formData.append("main_file", uploadFiles.main_file);
@@ -263,7 +265,7 @@ const ModelsContext = ({ children }) => {
     return {
       title: uploadData.title,
       description: uploadData.description || "",
-      category_id: uploadData.category_id || null,
+      categories: uploadData.categories.length > 0 ? uploadData.categories : undefined,
       file_url: urlArchivoPrincipal,
       main_file_url: urlArchivoPrincipal,
       main_image_url: urlImagenPrincipal,
@@ -308,9 +310,6 @@ const ModelsContext = ({ children }) => {
     setUploadErrors({ global: mensajeError });
   };
 
-  /* ==========================================================================
-     FUNCIÓN MAESTRA DE SUBIDA (Orquestador)
-  ========================================================================== */
   const subirModelo = async () => {
     const validation = validateUploadData(uploadData, uploadFiles);
     if (!validation.isValid) {
@@ -340,9 +339,6 @@ const ModelsContext = ({ children }) => {
     }
   };
 
-  /* ==========================================================================
-     EXPORTACIÓN DEL CONTEXTO
-  ========================================================================== */
   const exportData = {
     models: modelsData,
     pagination,
@@ -364,6 +360,7 @@ const ModelsContext = ({ children }) => {
     categoriasDisponibles,
     toggleSection,
     actualizarDatoSubida,
+    toggleCategoria,
     agregarTag,
     eliminarTag,
     actualizarArchivos,
