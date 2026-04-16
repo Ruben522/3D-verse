@@ -15,11 +15,15 @@ const ModelFiles = () => {
   return (
     <>
       {currentModel ? (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8">
 
-          <h2 className="text-2xl font-extrabold text-gray-900 mb-6">📦 Archivos del Modelo</h2>
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 rounded-xl bg-gray-900 text-white flex items-center justify-center shadow-md">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+            </div>
+            <h2 className="text-2xl font-black text-gray-900">Archivos Disponibles</h2>
+          </div>
 
-          {/* Selector de Pestañas */}
           <div className="flex flex-wrap gap-6 sm:gap-8 border-b border-gray-100 mb-6">
             <button
               onClick={() => updateDetailUI("activeUploadTab", "todo")}

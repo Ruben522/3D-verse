@@ -9,7 +9,6 @@ const MainFile = () => {
       {currentModel?.fileUrl ? (
         <div className="flex flex-col sm:flex-row items-center justify-between p-6 bg-primary-50 rounded-xl border border-primary-100 gap-4">
           <div className="flex items-center gap-4">
-            <span className="text-4xl">🧊</span>
             <div>
               <h3 className="font-bold text-primary-900 text-xl">Modelo Original</h3>
               <p className="text-sm text-primary-600 mt-1">Archivo base para impresión o visualización</p>

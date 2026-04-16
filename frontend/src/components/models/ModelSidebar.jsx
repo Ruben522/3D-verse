@@ -1,32 +1,33 @@
 import React from "react";
 import useModels from "../../hooks/useModels";
+import useLikes from "../../hooks/useLike";
+import useFavorites from "../../hooks/useFavorite";
+import tagStyles from "../../utils/tagStyles";
 
 const ModelSidebar = () => {
   const { currentModel } = useModels();
 
-  // Paleta de colores suaves para los tags (Fondo + Texto + Borde)
-  const tagStyles = [
-    "bg-amber-50 text-amber-700 border-amber-100",
-    "bg-blue-50 text-blue-700 border-blue-100",
-    "bg-emerald-50 text-emerald-700 border-emerald-100",
-    "bg-rose-50 text-rose-700 border-rose-100",
-    "bg-indigo-50 text-indigo-700 border-indigo-100",
-    "bg-purple-50 text-purple-700 border-purple-100",
-    "bg-cyan-50 text-cyan-700 border-cyan-100",
-    "bg-orange-50 text-orange-700 border-orange-100"
-  ];
+  // Extraemos la lógica maravillosa que ya tienes en tus contextos
+  const { likedModels, toggleLike } = useLikes();
+  const { favoritedModels, toggleFavorite } = useFavorites();
+
+  if (!currentModel) return null;
+
+  // Verificamos si el modelo actual está en los Sets globales
+  const isLiked = likedModels.has(currentModel.id);
+  const isSaved = favoritedModels.has(currentModel.id);
 
   return (
     <aside className="w-full">
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 flex flex-col gap-8">
 
-        {/* SECCIÓN ESTADÍSTICAS */}
+        {/* SECCIÓN ESTADÍSTICAS E INTERACCIONES */}
         <div>
           <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-5">Estadísticas de Uso</h3>
           <div className="grid grid-cols-1 gap-4">
 
-            {/* Descargas */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 border border-gray-50 group hover:border-blue-100 hover:bg-blue-50/30 transition-all">
+            {/* Descargas (Informativo) */}
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 border border-gray-50 hover:border-blue-100 hover:bg-blue-50/30 transition-all cursor-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-200">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -36,19 +37,54 @@ const ModelSidebar = () => {
               <span className="text-lg font-black text-gray-900 pr-2">{currentModel.downloads}</span>
             </div>
 
-            {/* Likes */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 border border-gray-50 group hover:border-rose-100 hover:bg-rose-50/30 transition-all">
+            {/* Botón de Like interactivo (Conectado a tu contexto) */}
+            <button
+              onClick={(e) => toggleLike(e, currentModel.id)}
+              className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all border group ${isLiked
+                  ? "bg-rose-50 border-rose-200 hover:bg-rose-100"
+                  : "bg-gray-50/50 border-gray-50 hover:border-rose-100 hover:bg-rose-50/30"
+                }`}
+            >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-200">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg transition-all ${isLiked ? "bg-rose-600 shadow-rose-200 scale-105" : "bg-rose-500 shadow-rose-200 group-hover:scale-105"
+                  }`}>
+                  {isLiked ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path></svg>
+                  )}
                 </div>
-                <span className="text-sm font-bold text-gray-600">Favoritos</span>
+                <span className={`text-sm font-bold ${isLiked ? "text-rose-700" : "text-gray-600"}`}>Likes</span>
               </div>
-              <span className="text-lg font-black text-gray-900 pr-2">{currentModel.likes}</span>
-            </div>
+              <span className={`text-lg font-black pr-2 ${isLiked ? "text-rose-700" : "text-gray-900"}`}>{currentModel.likes}</span>
+            </button>
 
-            {/* Vistas */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 border border-gray-50 group hover:border-emerald-100 hover:bg-emerald-50/30 transition-all">
+            {/* Botón de Guardar interactivo (Conectado a tu contexto) */}
+            <button
+              onClick={(e) => toggleFavorite(e, currentModel.id)}
+              className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all border group ${isSaved
+                  ? "bg-amber-50 border-amber-200 hover:bg-amber-100"
+                  : "bg-gray-50/50 border-gray-50 hover:border-amber-100 hover:bg-amber-50/30"
+                }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg transition-all ${isSaved ? "bg-amber-600 shadow-amber-200 scale-105" : "bg-amber-500 shadow-amber-200 group-hover:scale-105"
+                  }`}>
+                  {isSaved ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" /></svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
+                  )}
+                </div>
+                <span className={`text-sm font-bold ${isSaved ? "text-amber-700" : "text-gray-600"}`}>Favorito</span>
+              </div>
+              <span className={`text-xs font-bold pr-2 ${isSaved ? "text-amber-600" : "text-gray-400"}`}>
+                {isSaved ? "Guardado" : "Guardar"}
+              </span>
+            </button>
+
+            {/* Visitas (Informativo) */}
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 border border-gray-50 hover:border-emerald-100 hover:bg-emerald-50/30 transition-all cursor-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>

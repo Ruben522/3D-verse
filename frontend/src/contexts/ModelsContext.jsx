@@ -367,7 +367,7 @@ const ModelsContext = ({ children }) => {
     manejarSeleccionArchivo,
     eliminarArchivoSeleccionado,
     limpiarFormularioSubida,
-    subirModelo
+    subirModelo,
   };
 
   return <model.Provider value={exportData}>{children}</model.Provider>;

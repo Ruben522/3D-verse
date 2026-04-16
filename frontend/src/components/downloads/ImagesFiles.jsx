@@ -8,26 +8,36 @@ const ImagesFiles = () => {
 
   return (
     <div className="space-y-6 py-4 animate-fade-in">
-      <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-        <p className="text-sm text-gray-500">Imágenes de referencia y renderizados ({imageList.length})</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
+        <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">Imágenes de referencia ({imageList.length})</p>
         <Button
           onClick={() => downloadPackage(currentModel.id, 'gallery')}
           disabled={isDownloading}
-          className="text-sm font-bold text-primary-600 hover:text-primary-800 bg-primary-50 hover:bg-primary-100 px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+          className="!px-5 !py-2.5 !text-sm !rounded-xl flex items-center gap-2 shadow-sm"
         >
-          {isDownloading ? "⏳ Comprimiendo..." : "🖼️ Bajar galería (.zip)"}
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          {isDownloading ? "Comprimiendo..." : "Bajar galería (.zip)"}
         </Button>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {imageList.map((imgUrl, index) => {
           return (
-            <div key={index} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-200 bg-gray-100 shadow-sm">
-              <img src={imgUrl} alt={`Galería ${index}`} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/60 opacity-0 flex items-center justify-center">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <a
+              key={index}
+              href={imgUrl}
+              download={`imagen_referencia_${index + 1}`}
+              className="relative group aspect-square rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm block"
+            >
+              <img src={imgUrl} alt={`Galería ${index}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+
+              {/* Overlay oscuro y botón central interactivo */}
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                <div className="bg-white/90 text-gray-900 p-3 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                </div>
               </div>
-            </div>
+            </a>
           );
         })}
       </div>
