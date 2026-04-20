@@ -6,6 +6,7 @@ import MediaViewer from "../components/models/MediaViewer";
 import ModelSidebar from "../components/models/ModelSidebar";
 import ModelInfo from "../components/models/ModelInfo";
 import ModelFiles from "../components/models/ModelFiles";
+import ModelAuthor from "../components/models/ModelAuthor";
 
 const ModelDetail = () => {
   const { id } = useParams();
@@ -33,6 +34,7 @@ const ModelDetail = () => {
               <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
                 {currentModel.title}
               </h1>
+              <ModelAuthor />
               <Button onClick={() => downloadPackage(currentModel.id, 'all')} className="text-sm px-6 py-3">
                 Descargar
               </Button>

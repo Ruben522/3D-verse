@@ -9,7 +9,6 @@ const UserContext = ({ children }) => {
   const authAPI = useAPI();
   const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-  // 1. FUNCIÓN DE NORMALIZACIÓN (Una sola vez para toda la app)
   const normalizeUser = (userObj) => {
     if (!userObj) return null;
 
@@ -23,34 +22,31 @@ const UserContext = ({ children }) => {
     return {
       ...userObj,
       avatarUrl,
-      // Si no hay avatar, calculamos la inicial aquí para usarla en cualquier componente
       inicial: userObj.username ? userObj.username.charAt(0).toUpperCase() : "U",
-      // La fecha la convertimos a formato legible
       fechaRegistro: userObj.created_at ? new Date(userObj.created_at).toLocaleDateString() : "Desconocida",
     };
   };
 
-  // 2. Constantes iniciales
   const userLocal = localStorage.getItem("user");
   const tokenLocal = localStorage.getItem("token");
 
-  // Pasamos el usuario guardado por la normalización
   const usuarioInicial = userLocal ? normalizeUser(JSON.parse(userLocal)) : null;
   const sesionIniciadaInicial = !!tokenLocal;
   const datosSesionInicial = { name: "", username: "", email: "", password: "" };
 
-  // 3. Estados
   const [currentUser, setCurrentUser] = useState(usuarioInicial);
   const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
   const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
   const [errorAuth, setErrorAuth] = useState(null);
 
+  const [publicMyProfile, setPublicMyProfile] = useState(null);
   const [publicProfile, setPublicProfile] = useState(null);
   const [communityUsers, setCommunityUsers] = useState([]);
+
+  const [isLoadingMyProfile, setIsLoadingMyProfile] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [isLoadingCommunity, setIsLoadingCommunity] = useState(false);
 
-  // 4. Funciones
   const actualizarDato = (evento) => {
     const { name, value } = evento.target;
     setDatosSesion((prev) => ({ ...prev, [name]: value }));
@@ -112,7 +108,6 @@ const UserContext = ({ children }) => {
     try {
       const response = await authAPI.get(`${backendUrl}/users/public`);
       const rawUsers = response.data?.data || response.data || response;
-      // Normalizamos la lista entera
       setCommunityUsers(rawUsers.map(normalizeUser));
     } catch (error) {
       console.error("Error cargando la comunidad:", error);
@@ -121,14 +116,13 @@ const UserContext = ({ children }) => {
     }
   };
 
-  const getPublicProfile = async (id) => {
+  const getPublicProfile = async (username) => {
     setIsLoadingProfile(true);
     setPublicProfile(null);
     try {
-      const response = await authAPI.get(`${backendUrl}/users/${id}`);
+      const response = await authAPI.get(`${backendUrl}/users/perfil/${username}`);
       const data = response.data?.data || response.data;
 
-      // Adaptado EXACTAMENTE a la respuesta de tu backend
       setPublicProfile({
         profile: normalizeUser(data.profile),
         stats: data.stats,
@@ -138,6 +132,25 @@ const UserContext = ({ children }) => {
       console.error("Error cargando el perfil:", error);
     } finally {
       setIsLoadingProfile(false);
+    }
+  };
+
+  const getMyPublicProfile = async (id) => {
+    setIsLoadingMyProfile(true);
+    setPublicMyProfile(null);
+    try {
+      const response = await authAPI.get(`${backendUrl}/users/${id}`);
+      const data = response.data?.data || response.data;
+
+      setPublicMyProfile({
+        profile: normalizeUser(data.profile),
+        stats: data.stats,
+        content: data.content
+      });
+    } catch (error) {
+      console.error("Error cargando tu perfil:", error);
+    } finally {
+      setIsLoadingMyProfile(false);
     }
   };
 
@@ -153,11 +166,14 @@ const UserContext = ({ children }) => {
     registrarse,
     cerrarSesion,
     publicProfile,
+    publicMyProfile,
     communityUsers,
     isLoadingProfile,
+    isLoadingMyProfile,
     isLoadingCommunity,
     getCommunityUsers,
-    getPublicProfile
+    getMyPublicProfile,
+    getPublicProfile,
   };
 
   return <user.Provider value={exportData}>{children}</user.Provider>;

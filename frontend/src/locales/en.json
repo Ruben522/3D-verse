@@ -1,0 +1,12 @@
+{
+    "sidebar": {
+        "stats_title": "Usage Statistics",
+        "downloads": "Downloads",
+        "likes": "Likes",
+        "views": "Views"
+    },
+    "buttons": {
+        "save": "Save",
+        "saved": "Saved"
+    }
+}

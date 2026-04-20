@@ -1,0 +1,12 @@
+{
+    "sidebar": {
+        "stats_title": "使用统计",
+        "downloads": "下载",
+        "likes": "喜欢",
+        "views": "浏览"
+    },
+    "buttons": {
+        "save": "保存",
+        "saved": "已保存"
+    }
+}

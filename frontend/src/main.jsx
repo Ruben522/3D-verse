@@ -3,22 +3,26 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
+import "./i18n.js";
 import ModelsContext from "./contexts/ModelsContext.jsx";
 import UserContext from "./contexts/UserContext.jsx";
 import LikeContext from "./contexts/LikeContext.jsx";
 import FavoriteContext from "./contexts/FavoriteContext.jsx";
+import LanguageContext from "./contexts/LanguageContext.jsx";
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<BrowserRouter>
 			<UserContext>
-				<ModelsContext>
-					<LikeContext>
-						<FavoriteContext>
-							<App />
-						</FavoriteContext>
-					</LikeContext>
-				</ModelsContext>
+				<LanguageContext>
+					<ModelsContext>
+						<LikeContext>
+							<FavoriteContext>
+								<App />
+							</FavoriteContext>
+						</LikeContext>
+					</ModelsContext>
+				</LanguageContext>
 			</UserContext>
 		</BrowserRouter>
 	</StrictMode>
