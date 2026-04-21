@@ -257,21 +257,32 @@ const ModelsContext = ({ children }) => {
   };
 
   const buildFinalModelData = (urlsDelServidor) => {
-    const urlArchivoPrincipal = urlsDelServidor.file_url || urlsDelServidor.main_file_url || urlsDelServidor.main_file;
-    const urlImagenPrincipal = urlsDelServidor.main_image_url || urlsDelServidor.cover_image_url || urlsDelServidor.cover_image || urlsDelServidor.main_image || null;
-    const urlsGaleria = urlsDelServidor.gallery_urls || urlsDelServidor.gallery || [];
-    const urlsPartes = urlsDelServidor.parts_urls || urlsDelServidor.parts || [];
+    const urlArchivoPrincipal = urlsDelServidor.file_url
+      || urlsDelServidor.main_file_url
+      || urlsDelServidor.main_file;
+
+    const urlImagenPrincipal = urlsDelServidor.main_image_url
+      || urlsDelServidor.cover_image_url
+      || urlsDelServidor.cover_image
+      || urlsDelServidor.main_image
+      || null;
+    const urlsGaleria = urlsDelServidor.gallery_urls
+      || urlsDelServidor.gallery
+      || [];
+
+    const urlsPartes = urlsDelServidor.parts_urls
+      || urlsDelServidor.parts
+      || [];
 
     return {
       title: uploadData.title,
       description: uploadData.description || "",
       categories: uploadData.categories.length > 0 ? uploadData.categories : undefined,
+
       file_url: urlArchivoPrincipal,
-      main_file_url: urlArchivoPrincipal,
       main_image_url: urlImagenPrincipal,
-      cover_image_url: urlImagenPrincipal,
-      gallery_urls: urlsGaleria,
-      parts_urls: urlsPartes
+      gallery: urlsGaleria,
+      parts: urlsPartes,
     };
   };
 
@@ -322,7 +333,6 @@ const ModelsContext = ({ children }) => {
     try {
       const formData = buildUploadFormData();
       const urlsDelServidor = await uploadFilesToServer(formData);
-
       const finalData = buildFinalModelData(urlsDelServidor);
       const newModelId = await saveModelToDB(finalData);
 
