@@ -6,7 +6,8 @@ const GalleryFiles = () => {
     const { uploadFiles, manejarSeleccionArchivo, eliminarArchivoSeleccionado } = useModels();
     const { t } = useTranslation();
     const fileRef = useRef(null);
-    const gallery = uploadFiles.gallery || [];
+
+    const gallery = uploadFiles?.gallery || [];
 
     return (
         <div className="flex flex-col gap-4">
@@ -32,7 +33,6 @@ const GalleryFiles = () => {
                 onChange={(e) => manejarSeleccionArchivo('gallery', e, true)}
             />
 
-            {/* Grid de previsualizaciones */}
             {gallery.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-2">
                     {gallery.map((file, index) => {
@@ -44,7 +44,10 @@ const GalleryFiles = () => {
                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <button
                                         type="button"
-                                        onClick={(e) => eliminarArchivoSeleccionado('gallery', e, index)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            eliminarArchivoSeleccionado('gallery', e, index);
+                                        }}
                                         className="p-2 bg-red-500 text-white rounded-full hover:scale-110 transition-transform shadow-sm"
                                         title="Eliminar foto"
                                     >
@@ -56,7 +59,10 @@ const GalleryFiles = () => {
                     })}
                 </div>
             ) : (
-                <div className="p-8 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center text-center bg-gray-50">
+                <div
+                    onClick={() => fileRef.current?.click()}
+                    className="p-8 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center text-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                >
                     <span className="text-3xl mb-2 grayscale opacity-50">📸</span>
                     <p className="text-sm font-medium text-gray-400">{t("gallery_files.no_images")}</p>
                 </div>

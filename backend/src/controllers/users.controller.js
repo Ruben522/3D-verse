@@ -6,11 +6,9 @@ import {
     deleteUser,
     getUserById,
     getPublicUsers,
+    getUserByUsername,
 } from "../services/users.service.js";
-import {
-    sendSuccess,
-    sendError,
-} from "../utils/helper/response.helper.js";
+import { sendSuccess, sendError } from "../utils/helper/response.helper.js";
 
 /**
  * Obtiene los modelos que un usuario ha marcado como "me gusta" (likes dados).
@@ -24,10 +22,7 @@ const getLikes = async (req, res) => {
         const { userId } = req.params;
 
         // Opcional: solo permitir ver likes propios o si es admin
-        if (
-            req.user.id !== userId &&
-            req.user.role !== "admin"
-        ) {
+        if (req.user.id !== userId && req.user.role !== "admin") {
             return sendError(
                 res,
                 "No tienes permiso para ver los likes de este usuario.",
@@ -42,11 +37,7 @@ const getLikes = async (req, res) => {
             page,
             limit,
         });
-        sendSuccess(
-            res,
-            "Likes del usuario recuperados correctamente.",
-            likes,
-        );
+        sendSuccess(res, "Likes del usuario recuperados correctamente.", likes);
     } catch (error) {
         sendError(res, error.message, 400);
     }
@@ -61,14 +52,8 @@ const getLikes = async (req, res) => {
  */
 const getFavorites = async (req, res) => {
     try {
-        const favorites = await getUserFavorites(
-            req.params.id,
-        );
-        sendSuccess(
-            res,
-            "Favoritos recuperados",
-            favorites,
-        );
+        const favorites = await getUserFavorites(req.params.id);
+        sendSuccess(res, "Favoritos recuperados", favorites);
     } catch (error) {
         sendError(res, error.message, 400);
     }
@@ -87,11 +72,7 @@ const getAll = async (req, res) => {
         const limit = parseInt(req.query.limit) || 20;
 
         const users = await getUsers({ page, limit });
-        sendSuccess(
-            res,
-            "Lista de usuarios recuperada",
-            users,
-        );
+        sendSuccess(res, "Lista de usuarios recuperada", users);
     } catch (error) {
         sendError(res, error.message, 500);
     }
@@ -110,16 +91,8 @@ const update = async (req, res) => {
             return sendError(res, "No autenticado", 401);
         }
 
-        const user = await updateUser(
-            req.params.id,
-            req.user,
-            req.body,
-        );
-        sendSuccess(
-            res,
-            "Perfil actualizado correctamente",
-            user,
-        );
+        const user = await updateUser(req.params.id, req.user, req.body);
+        sendSuccess(res, "Perfil actualizado correctamente", user);
     } catch (error) {
         sendError(res, error.message, 400);
     }
@@ -138,10 +111,7 @@ const remove = async (req, res) => {
             return sendError(res, "No autenticado", 401);
         }
 
-        const result = await deleteUser(
-            req.params.id,
-            req.user,
-        );
+        const result = await deleteUser(req.params.id, req.user);
         sendSuccess(res, result.message);
     } catch (error) {
         sendError(res, error.message, 403);
@@ -161,13 +131,25 @@ const getAllPublicUsers = async (req, res) => {
         const limit = parseInt(req.query.limit) || 20;
 
         const users = await getPublicUsers({ page, limit });
-        sendSuccess(
-            res,
-            "Lista de creadores recuperada.",
-            users,
-        );
+        sendSuccess(res, "Lista de creadores recuperada.", users);
     } catch (error) {
         sendError(res, error.message, 500);
+    }
+};
+
+/**
+ * Obtiene el perfil completo de un usuario por su username.
+ * Endpoint público.
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const getByUsername = async (req, res) => {
+    try {
+        const user = await getUserByUsername(req.params.username);
+        sendSuccess(res, "Perfil de usuario recuperado.", user);
+    } catch (error) {
+        sendError(res, error.message, 404);
     }
 };
 
@@ -181,11 +163,7 @@ const getAllPublicUsers = async (req, res) => {
 const getById = async (req, res) => {
     try {
         const user = await getUserById(req.params.id);
-        sendSuccess(
-            res,
-            "Perfil de usuario recuperado.",
-            user,
-        );
+        sendSuccess(res, "Perfil de usuario recuperado.", user);
     } catch (error) {
         sendError(res, error.message, 404);
     }
@@ -199,4 +177,5 @@ export {
     getById,
     getAllPublicUsers,
     getLikes,
+    getByUsername,
 };

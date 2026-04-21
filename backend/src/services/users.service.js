@@ -66,10 +66,9 @@ const getUserById = async (userId) => {
         _sum: { downloads: true, views: true },
     });
 
-    const totalLikesReceived =
-        await prisma.model_likes.count({
-            where: { models: { user_id: userId } },
-        });
+    const totalLikesReceived = await prisma.model_likes.count({
+        where: { models: { user_id: userId } },
+    });
 
     const p = user.profile || {};
 
@@ -101,20 +100,128 @@ const getUserById = async (userId) => {
             total_models: user._count.models,
             total_followers: p.followers_count || 0,
             total_following: p.following_count || 0,
-            total_downloads:
-                aggregateStats._sum.downloads || 0,
+            total_downloads: aggregateStats._sum.downloads || 0,
             total_views: aggregateStats._sum.views || 0,
             total_likes_received: totalLikesReceived,
             total_favorites_given: user._count.favorites,
         },
         content: {
             recent_models: user.models,
-            recent_favorites: user.favorites.map(
-                (f) => f.models,
-            ),
+            recent_favorites: user.favorites.map((f) => f.models),
         },
     };
 };
+
+/**
+ * Obtiene el perfil completo de un usuario por su username (público).
+ * Útil para URLs amigables como /u/ruben_dev
+ *
+ * @param {string} username - Nombre de usuario único
+ * @returns {Promise<Object>} Perfil completo (mismo formato que getUserById)
+ * @throws {Error} Si el usuario no existe
+ */
+const getUserByUsername = async (username) => {
+    const user = await prisma.users.findFirst({
+        where: {
+            profile: {
+                username: username.trim(),
+            },
+        },
+        include: {
+            profile: true,
+            models: {
+                take: 6,
+                orderBy: { created_at: "desc" },
+                include: {
+                    _count: { select: { model_likes: true } },
+                },
+            },
+            favorites: {
+                take: 6,
+                orderBy: { created_at: "desc" },
+                include: {
+                    models: {
+                        include: {
+                            users: {
+                                select: {
+                                    profile: {
+                                        select: {
+                                            username: true,
+                                            avatar: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            _count: {
+                select: {
+                    models: true,
+                    favorites: true,
+                    comments: true,
+                    model_likes: true,
+                    followers_followers_user_idTousers: true,
+                    followers_followers_follower_idTousers: true,
+                },
+            },
+        },
+    });
+
+    if (!user) throw new Error("Usuario no encontrado.");
+
+    const aggregateStats = await prisma.models.aggregate({
+        where: { user_id: user.id },
+        _sum: { downloads: true, views: true },
+    });
+
+    const totalLikesReceived = await prisma.model_likes.count({
+        where: { models: { user_id: user.id } },
+    });
+
+    const p = user.profile || {};
+
+    return {
+        profile: {
+            id: user.id,
+            username: p.username,
+            name: p.name,
+            lastname: p.lastname,
+            avatar: p.avatar,
+            bio: p.bio,
+            location: p.location,
+            created_at: user.created_at,
+            social: {
+                youtube: p.youtube,
+                twitter: p.twitter,
+                linkedin: p.linkedin,
+                github: p.github,
+            },
+            customization: {
+                banner_url: p.banner_url,
+                card_bg_color: p.card_bg_color,
+                page_bg_url: p.page_bg_url,
+                badge_url: p.badge_url,
+                primary_color: p.primary_color,
+            },
+        },
+        stats: {
+            total_models: user._count.models,
+            total_followers: p.followers_count || 0,
+            total_following: p.following_count || 0,
+            total_downloads: aggregateStats._sum.downloads || 0,
+            total_views: aggregateStats._sum.views || 0,
+            total_likes_received: totalLikesReceived,
+            total_favorites_given: user._count.favorites,
+        },
+        content: {
+            recent_models: user.models,
+            recent_favorites: user.favorites.map((f) => f.models),
+        },
+    };
+};
+
 /**
  * Obtiene una lista paginada de usuarios con información básica y conteo de modelos.
  * Ordenados por fecha de creación descendente (los más recientes primero).
@@ -312,17 +419,13 @@ const updateUser = async (userId, currentUser, data) => {
 
         return {
             id: updated.id,
-            username:
-                updated.username ||
-                updated.profile.username,
+            username: updated.username || updated.profile.username,
             role: updated.role,
             ...updated.profile,
         };
     } catch (error) {
         if (error.code === "P2002") {
-            throw new Error(
-                "Ese nombre de usuario ya está en uso.",
-            );
+            throw new Error("Ese nombre de usuario ya está en uso.");
         }
         if (error.code === "P2025") {
             throw new Error("Usuario no encontrado.");
@@ -351,24 +454,9 @@ const deleteUser = async (userId, currentUser) => {
     await prisma.users.delete({ where: { id: userId } });
 
     const folders = [
-        path.join(
-            process.cwd(),
-            "uploads",
-            "models",
-            userId,
-        ),
-        path.join(
-            process.cwd(),
-            "uploads",
-            "images",
-            userId,
-        ),
-        path.join(
-            process.cwd(),
-            "uploads",
-            "profiles",
-            userId,
-        ), // ← para banners, badges, etc.
+        path.join(process.cwd(), "uploads", "models", userId),
+        path.join(process.cwd(), "uploads", "images", userId),
+        path.join(process.cwd(), "uploads", "profiles", userId), // ← para banners, badges, etc.
     ];
 
     folders.forEach((folder) => {
@@ -381,8 +469,7 @@ const deleteUser = async (userId, currentUser) => {
     });
 
     return {
-        message:
-            "Usuario, perfil y archivos eliminados correctamente.",
+        message: "Usuario, perfil y archivos eliminados correctamente.",
     };
 };
 
@@ -424,10 +511,7 @@ const getUserFavorites = async (userId) => {
  * @param {number} [options.limit=20]
  * @returns {Promise<Object>} Objeto paginado con modelos liked
  */
-const getUserLikes = async (
-    userId,
-    { page = 1, limit = 20 } = {},
-) => {
+const getUserLikes = async (userId, { page = 1, limit = 20 } = {}) => {
     const safeLimit = Math.min(limit, 50);
     const offset = (page - 1) * safeLimit;
 
@@ -481,4 +565,5 @@ export {
     getUserById,
     getPublicUsers,
     getUserLikes,
+    getUserByUsername,
 };
