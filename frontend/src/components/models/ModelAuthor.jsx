@@ -1,10 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useModels from "../../hooks/useModels";
+import { useTranslation } from "react-i18next";
 
 const ModelAuthor = () => {
     const navigate = useNavigate();
     const { currentModel } = useModels();
+    const { t } = useTranslation();
+
 
     return (
         <div
@@ -32,7 +35,7 @@ const ModelAuthor = () => {
                 <span className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
                     {currentModel.username}
                 </span>
-                <span className="text-sm text-gray-500">Creador</span>
+                <span className="text-sm text-gray-500">{t("user.creator")}</span>
             </div>
         </div>
     );

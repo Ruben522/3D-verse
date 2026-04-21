@@ -4,11 +4,12 @@ import useUsers from "../../hooks/useUsers.js";
 import Logo from "../common/Logo";
 import Button from "../common/Button";
 import LanguageSelector from "../language/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 const Menu = () => {
   const { isAuthenticated, currentUser, cerrarSesion } = useUsers();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
+  const { t } = useTranslation();
   const toggleMobileMenu = () => setIsMobileOpen(!isMobileOpen);
   const closeMobileMenu = () => setIsMobileOpen(false);
 
@@ -28,10 +29,10 @@ const Menu = () => {
           <div className="hidden md:flex items-center gap-6 w-full justify-end">
             <div className="flex items-center gap-6 text-sm font-medium">
               <NavLink to="/models" className={({ isActive }) => isActive ? "text-white" : "text-primary-200 hover:text-white transition-colors"}>
-                Explorar
+                {t('links.explore')}
               </NavLink>
               <NavLink to="/comunidad" className={({ isActive }) => isActive ? "text-white" : "text-primary-200 hover:text-white transition-colors"}>
-                Comunidad
+                {t('links.comunity')}
               </NavLink>
             </div>
             <div className="flex items-center gap-4">
@@ -51,7 +52,7 @@ const Menu = () => {
                   </Link>
 
                   <Link to="/subir" className="px-5 py-2.5 rounded-2xl text-sm font-semibold bg-white text-primary-900 hover:bg-primary-50 transition-colors shadow-lg">
-                    Subir Diseño
+                    {t('links.upload')}
                   </Link>
 
                   <LanguageSelector />
@@ -65,8 +66,8 @@ const Menu = () => {
                 </div>
               ) : (
                 <>
-                  <NavLink to="/login" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">Iniciar Sesión</NavLink>
-                  <NavLink to="/register" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">Registrarse</NavLink>
+                  <NavLink to="/login" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">{t('links.login')}</NavLink>
+                  <NavLink to="/register" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">{t('links.register')}</NavLink>
                 </>
               )}
             </div>
@@ -106,8 +107,8 @@ const Menu = () => {
       <div className={`md:hidden bg-primary-800 border-t border-primary-700 transition-all duration-300 overflow-hidden ${isMobileOpen ? 'max-h-[520px] opacity-100' : 'max-h-0 opacity-0'}`}>
 
         <div className="px-6 py-6 flex flex-col gap-5 text-lg">
-          <NavLink to="/models" onClick={closeMobileMenu} className="text-white hover:text-primary-200">Explorar</NavLink>
-          <NavLink to="/comunidad" onClick={closeMobileMenu} className="text-white hover:text-primary-200">Comunidad</NavLink>
+          <NavLink to="/models" onClick={closeMobileMenu} className="text-white hover:text-primary-200">{t('links.explore')}</NavLink>
+          <NavLink to="/comunidad" onClick={closeMobileMenu} className="text-white hover:text-primary-200">{t('links.comunity')}</NavLink>
 
           <Link
             to="/subir"
@@ -121,13 +122,13 @@ const Menu = () => {
 
           {!isAuthenticated ? (
             <div className="flex flex-col gap-5">
-              <NavLink to="/login" onClick={closeMobileMenu} className="text-white hover:text-primary-200">Iniciar Sesión</NavLink>
-              <NavLink to="/register" onClick={closeMobileMenu} className="text-white hover:text-primary-200">Registrarse</NavLink>
+              <NavLink to="/login" onClick={closeMobileMenu} className="text-white hover:text-primary-200">{t('links.login')}</NavLink>
+              <NavLink to="/register" onClick={closeMobileMenu} className="text-white hover:text-primary-200">{t('links.register')}</NavLink>
             </div>
           ) : (
             <div className="flex flex-col gap-5">
               <Link to="/profile" onClick={closeMobileMenu} className="text-white hover:text-primary-200">👤 Mi Perfil</Link>
-              <button onClick={handleCerrarSesionMovil} className="text-red-400 hover:text-red-300 font-medium text-left">Cerrar Sesión</button>
+              <button onClick={handleCerrarSesionMovil} className="text-red-400 hover:text-red-300 font-medium text-left">{t('links.logout')}</button>
             </div>
           )}
         </div>

@@ -25,9 +25,6 @@ const PartsFiles = () => {
           <div key={part.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors group">
             <div className="flex flex-col truncate pr-4">
               <span className="font-bold text-gray-800 text-base truncate">{part.name}</span>
-              <span className="text-xs text-gray-500 mt-1 font-mono font-medium">
-                {part.size ? `${(part.size / 1024 / 1024).toFixed(2)} MB` : "Pieza STL/GLB"}
-              </span>
             </div>
             <a
               href={part.fileUrl}

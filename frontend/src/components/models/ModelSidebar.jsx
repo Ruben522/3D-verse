@@ -12,8 +12,6 @@ const ModelSidebar = () => {
   const { likedModels, toggleLike } = useLikes();
   const { favoritedModels, toggleFavorite } = useFavorites();
 
-  if (!currentModel) return null;
-
   const isLiked = likedModels.has(currentModel.id);
   const isSaved = favoritedModels.has(currentModel.id);
 
@@ -26,7 +24,6 @@ const ModelSidebar = () => {
           <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-5">{t("sidebar.stats_title")}</h3>
           <div className="grid grid-cols-1 gap-4">
 
-            {/* Descargas (Informativo) */}
             <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 border border-gray-50 hover:border-blue-100 hover:bg-blue-50/30 transition-all cursor-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-200">
@@ -37,7 +34,7 @@ const ModelSidebar = () => {
               <span className="text-lg font-black text-gray-900 pr-2">{currentModel.downloads}</span>
             </div>
 
-            {/* Botón de Like interactivo (Conectado a tu contexto) */}
+            {/* Botón de Like interactivo */}
             <button
               onClick={(e) => toggleLike(e, currentModel.id)}
               className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all border group ${isLiked
@@ -100,7 +97,7 @@ const ModelSidebar = () => {
         {/* SECCIÓN CATEGORÍAS */}
         {currentModel.categories?.length > 0 && (
           <div className="pt-2">
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Categorías</h3>
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">{t("sidebar.categorys")}</h3>
             <div className="flex flex-wrap gap-2">
               {currentModel.categories.map((category, i) => (
                 <span
@@ -117,7 +114,7 @@ const ModelSidebar = () => {
         {/* SECCIÓN TAGS ALEATORIOS */}
         {currentModel.tags?.length > 0 && (
           <div className="pt-2">
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Etiquetas Relacionadas</h3>
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">{t("sidebar.tags")}</h3>
             <div className="flex flex-wrap gap-2">
               {currentModel.tags.map((tag, i) => (
                 <span
@@ -134,7 +131,7 @@ const ModelSidebar = () => {
         {/* FECHA DE CREACIÓN */}
         {currentModel.createdDate && (
           <div className="pt-2">
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Fecha de Creación</h3>
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">{t("sidebar.publication_date")}</h3>
             <span className="text-sm text-gray-600">
               {new Date(currentModel.createdDate).toLocaleDateString()}
             </span>

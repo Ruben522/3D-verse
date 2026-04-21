@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import useModels from '../../hooks/useModels';
+import { useTranslation } from 'react-i18next';
 
 const ImagesFiles = () => {
     const {
@@ -8,17 +9,16 @@ const ImagesFiles = () => {
         manejarSeleccionArchivo,
         eliminarArchivoSeleccionado
     } = useModels();
+    const { t } = useTranslation();
 
     const fileRef = useRef(null);
-
-    // Generamos la URL de previsualización al vuelo si el archivo existe (cero lógica de estado)
     const previewUrl = uploadFiles?.main_image ? URL.createObjectURL(uploadFiles.main_image) : null;
 
     return (
         <div
             onClick={() => fileRef.current?.click()}
             className={`relative border-2 border-dashed rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer transition-all overflow-hidden min-h-[250px] ${uploadErrors?.main_image ? 'border-red-400 bg-red-50' :
-                    previewUrl ? 'border-transparent shadow-sm' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
+                previewUrl ? 'border-transparent shadow-sm' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
                 }`}
         >
             <input
@@ -50,7 +50,7 @@ const ImagesFiles = () => {
                 <div className="flex flex-col items-center p-8">
                     <span className="text-4xl mb-2">🖼️</span>
                     <p className="font-bold text-gray-900">Imagen de Portada</p>
-                    <p className="text-sm text-gray-500">JPG, PNG, WEBP</p>
+                    <p className="text-sm text-gray-500">{t('galley_files.images_type.jpg')} {t('words.or')} {t('galley_files.images_type.png')}</p>
                     {uploadErrors?.main_image && <p className="text-red-500 text-sm font-bold mt-2">{uploadErrors.main_image}</p>}
                 </div>
             )}

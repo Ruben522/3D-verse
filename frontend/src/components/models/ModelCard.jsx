@@ -36,7 +36,6 @@ const ModelCard = ({ model }) => {
 
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {/* Solo Vistas en la imagen para no saturar */}
         <div className="absolute bottom-3 left-3 z-10 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
           <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 text-white px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,14 +82,12 @@ const ModelCard = ({ model }) => {
           ))}
         </div>
 
-        {/* Footer equilibrado: Like a la izquierda y Descargas a la derecha */}
         <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100/50">
 
           <div className="transform transition-transform active:scale-95">
             <LikeButton modelId={model.id} initialLikesCount={model.likes} />
           </div>
 
-          {/* Contador de Descargas al lado opuesto */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 transition-all hover:bg-blue-100 shadow-sm shadow-blue-50/50">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
