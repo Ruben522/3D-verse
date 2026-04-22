@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAPI from "../hooks/useAPI.js";
 
@@ -9,32 +9,13 @@ const UserContext = ({ children }) => {
   const authAPI = useAPI();
   const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-  const normalizeUser = (userObj) => {
-    if (!userObj) return null;
-
-    let avatarUrl = null;
-    if (userObj.avatar) {
-      const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
-      const cleanPath = userObj.avatar.startsWith('/') ? userObj.avatar : `/${userObj.avatar}`;
-      avatarUrl = userObj.avatar.startsWith('http') ? userObj.avatar : `${cleanBase}${cleanPath}`;
-    }
-
-    return {
-      ...userObj,
-      avatarUrl,
-      inicial: userObj.username ? userObj.username.charAt(0).toUpperCase() : "U",
-      fechaRegistro: userObj.created_at ? new Date(userObj.created_at).toLocaleDateString() : "Desconocida",
-    };
-  };
-
   const userLocal = localStorage.getItem("user");
   const tokenLocal = localStorage.getItem("token");
 
-  const usuarioInicial = userLocal ? normalizeUser(JSON.parse(userLocal)) : null;
   const sesionIniciadaInicial = !!tokenLocal;
   const datosSesionInicial = { name: "", username: "", email: "", password: "" };
 
-  const [currentUser, setCurrentUser] = useState(usuarioInicial);
+  const [currentUser, setCurrentUser] = useState(null); // Lo seteamos después de declarar normalizeUser
   const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
   const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
   const [errorAuth, setErrorAuth] = useState(null);
@@ -46,6 +27,56 @@ const UserContext = ({ children }) => {
   const [isLoadingMyProfile, setIsLoadingMyProfile] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [isLoadingCommunity, setIsLoadingCommunity] = useState(false);
+
+  const normalizeUser = (userObj) => {
+    if (!userObj) return null;
+
+    let avatarUrl = null;
+    let bannerUrl = null;
+
+    if (userObj.avatar) {
+      const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
+      const cleanPath = userObj.avatar.startsWith('/') ? userObj.avatar : `/${userObj.avatar}`;
+      avatarUrl = userObj.avatar.startsWith('http') ? userObj.avatar : `${cleanBase}${cleanPath}`;
+    }
+
+    if (userObj.banner_url) {
+      const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
+      const cleanPath = userObj.banner_url.startsWith('/') ? userObj.banner_url : `/${userObj.banner_url}`;
+      bannerUrl = userObj.banner_url.startsWith('http') ? userObj.banner_url : `${cleanBase}${cleanPath}`;
+    }
+
+    const primaryColor = userObj.primary_color || '#3b82f6';
+    const bgColorHex = primaryColor.replace('#', '');
+    const safeUsername = userObj.username || 'User';
+
+    const computedAvatar = avatarUrl || `https://ui-avatars.com/api/?name=${safeUsername}&background=${bgColorHex}&color=fff&bold=true`;
+
+    const computedBannerStyle = bannerUrl
+      ? { backgroundImage: `url(${bannerUrl})` }
+      : { backgroundColor: primaryColor };
+
+    return {
+      ...userObj,
+      avatarUrl,
+      bannerUrl,
+      primaryColor,
+      computedAvatar,
+      computedBannerStyle,
+      inicial: safeUsername.charAt(0).toUpperCase(),
+      fechaRegistro: userObj.created_at ? new Date(userObj.created_at).toLocaleDateString() : "Desconocida",
+    };
+  };
+
+  useEffect(() => {
+    if (userLocal) {
+      setCurrentUser(normalizeUser(JSON.parse(userLocal)));
+    }
+  }, []);
+
+  useEffect(() => {
+    getCommunityUsers();
+  }, []);
 
   const actualizarDato = (evento) => {
     const { name, value } = evento.target;
@@ -107,8 +138,15 @@ const UserContext = ({ children }) => {
     setIsLoadingCommunity(true);
     try {
       const response = await authAPI.get(`${backendUrl}/users/public`);
-      const rawUsers = response.data?.data || response.data || response;
-      setCommunityUsers(rawUsers.map(normalizeUser));
+      const responseData = response.data?.data || response.data;
+      const usersArray = responseData?.data || responseData;
+
+      if (Array.isArray(usersArray)) {
+        setCommunityUsers(usersArray.map(normalizeUser));
+      } else {
+        setCommunityUsers([]);
+      }
+
     } catch (error) {
       console.error("Error cargando la comunidad:", error);
     } finally {
@@ -154,6 +192,14 @@ const UserContext = ({ children }) => {
     }
   };
 
+  const checkIsOwnProfile = (userId) => {
+    return currentUser?.id === userId;
+  };
+
+  const getProfileRoute = (userId, username) => {
+    return checkIsOwnProfile(userId) ? '/profile' : `/perfil/${username}`;
+  };
+
   const exportData = {
     currentUser,
     isAuthenticated,
@@ -174,6 +220,8 @@ const UserContext = ({ children }) => {
     getCommunityUsers,
     getMyPublicProfile,
     getPublicProfile,
+    checkIsOwnProfile,
+    getProfileRoute
   };
 
   return <user.Provider value={exportData}>{children}</user.Provider>;

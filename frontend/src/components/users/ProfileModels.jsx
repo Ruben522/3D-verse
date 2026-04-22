@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const ProfileModels = ({ models }) => {
+  const { t } = useTranslation();
 
   return (
     <div className="py-6 animate-fade-in">

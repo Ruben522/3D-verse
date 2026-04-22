@@ -9,6 +9,7 @@ import UserContext from "./contexts/UserContext.jsx";
 import LikeContext from "./contexts/LikeContext.jsx";
 import FavoriteContext from "./contexts/FavoriteContext.jsx";
 import LanguageContext from "./contexts/LanguageContext.jsx";
+import FollowContext from "./contexts/FollowContext.jsx";
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
@@ -18,7 +19,9 @@ createRoot(document.getElementById("root")).render(
 					<ModelsContext>
 						<LikeContext>
 							<FavoriteContext>
-								<App />
+								<FollowContext>
+									<App />
+								</FollowContext>
 							</FavoriteContext>
 						</LikeContext>
 					</ModelsContext>

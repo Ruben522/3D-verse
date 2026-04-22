@@ -8,6 +8,7 @@ import AuthPage from '../pages/AuthPage';
 import Profile from "../pages/Profile";
 import MyProfile from "../pages/MyProfile";
 import UploadModel from '../pages/UploadModel';
+import Community from '../pages/Community';
 
 const AllRoutes = () => {
 	return (
@@ -20,6 +21,8 @@ const AllRoutes = () => {
 			<Route path="/profile" element={<MyProfile />} />
 			<Route path="/perfil/:username" element={<Profile />} />
 			<Route path="/subir" element={<UploadModel />} />
+			<Route path="/comunidad" element={<Community />} />
+
 
 			{/* Ruta para manejar errores en caso de que no se encuentre la página */}
 			<Route path="*" element={<Error />} />
