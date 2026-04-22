@@ -5,8 +5,7 @@ import HeroCarousel from '../components/home/HeroCarousel';
 import PopularModels from '../components/home/PopularModels';
 
 const Home = () => {
-    // Usamos tus datos reales del contexto
-    const { modelsData, isFetchingModel } = useModels();
+    const { isFetchingModel } = useModels();
 
     return (
         <div className="min-h-screen bg-surface">
@@ -28,7 +27,7 @@ const Home = () => {
                         </p>
 
                         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                            <Link to="/explorar" className="w-full sm:w-auto px-8 py-4 bg-primary-600 text-white font-bold rounded-2xl hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/30 transition-all text-center text-lg">
+                            <Link to="/models" className="w-full sm:w-auto px-8 py-4 bg-primary-600 text-white font-bold rounded-2xl hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/30 transition-all text-center text-lg">
                                 Explorar Modelos
                             </Link>
                             <Link to="/comunidad" className="w-full sm:w-auto px-8 py-4 bg-white text-gray-900 font-bold rounded-2xl hover:bg-gray-50 border border-gray-200 transition-all text-center text-lg shadow-sm hover:shadow">
@@ -42,7 +41,7 @@ const Home = () => {
                         {isFetchingModel ? (
                             <div className="w-full h-[400px] md:h-[500px] bg-gray-100 animate-pulse rounded-3xl"></div>
                         ) : (
-                            <HeroCarousel models={modelsData} />
+                            <HeroCarousel />
                         )}
                     </div>
 
@@ -52,11 +51,11 @@ const Home = () => {
             {/* 2. SECCIÓN DE POPULARES */}
             <div className="bg-white border-t border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                    <PopularModels models={modelsData} />
+                    <PopularModels />
                 </div>
             </div>
 
-            {/* 3. SECCIÓN FINAL CTA (Call to Action) */}
+            {/* 3. SECCIÓN FINAL CTA */}
             <section className="py-24 bg-gradient-to-b from-surface to-primary-50/30">
                 <div className="max-w-4xl mx-auto px-4 text-center">
                     <span className="text-6xl mb-6 block">🚀</span>

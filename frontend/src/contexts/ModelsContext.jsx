@@ -338,6 +338,24 @@ const ModelsContext = ({ children }) => {
     }
   };
 
+  const getTopPopularModels = () => {
+    if (!modelsData || modelsData.length === 0) return [];
+
+    return [...modelsData]
+      .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+      .slice(0, 5);
+  };
+
+  const getRandomModels = () => {
+    if (!modelsData || modelsData.length === 0) return [];
+
+    const modelsWithImages = modelsData.filter(m => m.imageUrl);
+
+    const shuffled = [...modelsWithImages].sort(() => 0.5 - Math.random());
+
+    return shuffled.slice(0, 10);
+  };
+
   const exportData = {
     models: modelsData,
     pagination,
@@ -367,6 +385,8 @@ const ModelsContext = ({ children }) => {
     eliminarArchivoSeleccionado,
     limpiarFormularioSubida,
     subirModelo,
+    getTopPopularModels,
+    getRandomModels
   };
 
   return <model.Provider value={exportData}>{children}</model.Provider>;
