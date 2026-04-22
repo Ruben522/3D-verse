@@ -21,9 +21,9 @@ const Footer = () => {
 
         {/* 2. Enlaces Legales y Contacto */}
         <div className="flex flex-wrap items-center justify-center gap-8 text-sm font-medium text-slate-400">
-          <a href="mailto:hola@3dverse.com" className="hover:text-white transition-colors">
+          <Link to="/contacto" className="hover:text-white transition-colors">
             Contacto
-          </a>
+          </Link>
           <Link to="/terminos" className="hover:text-white transition-colors">
             Términos
           </Link>

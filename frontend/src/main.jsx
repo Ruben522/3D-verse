@@ -10,6 +10,7 @@ import LikeContext from "./contexts/LikeContext.jsx";
 import FavoriteContext from "./contexts/FavoriteContext.jsx";
 import LanguageContext from "./contexts/LanguageContext.jsx";
 import FollowContext from "./contexts/FollowContext.jsx";
+import ContactContext from "./contexts/ContactContext.jsx";
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
@@ -20,7 +21,9 @@ createRoot(document.getElementById("root")).render(
 						<LikeContext>
 							<FavoriteContext>
 								<FollowContext>
-									<App />
+									<ContactContext>
+										<App />
+									</ContactContext>
 								</FollowContext>
 							</FavoriteContext>
 						</LikeContext>
