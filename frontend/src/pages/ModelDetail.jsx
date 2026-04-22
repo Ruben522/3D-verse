@@ -7,10 +7,12 @@ import ModelSidebar from "../components/models/ModelSidebar";
 import ModelInfo from "../components/models/ModelInfo";
 import ModelFiles from "../components/models/ModelFiles";
 import ModelAuthor from "../components/models/ModelAuthor";
+import { useTranslation } from "react-i18next";
 
 const ModelDetail = () => {
   const { id } = useParams();
   const { getModelById, isFetchingModel, modelError, currentModel, downloadPackage } = useModels();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (id) getModelById(id);
@@ -20,11 +22,11 @@ const ModelDetail = () => {
     <div className="min-h-screen bg-surface pb-20">
       {isFetchingModel ? (
         <div className="flex items-center justify-center min-h-[60vh]">
-          <p className="text-gray-500 font-medium text-lg">Cargando modelo...</p>
+          <p className="text-gray-500 font-medium text-lg">{t('messages.loading')}</p>
         </div>
       ) : modelError ? (
         <div className="flex items-center justify-center min-h-[60vh]">
-          <p className="text-red-500 font-medium text-lg">⚠️ Modelo no encontrado en la base de datos.</p>
+          <p className="text-red-500 font-medium text-lg">{t('messages.no_model')}</p>
         </div>
       ) : currentModel ? (
         <>
@@ -36,7 +38,7 @@ const ModelDetail = () => {
               </h1>
               <ModelAuthor />
               <Button onClick={() => downloadPackage(currentModel.id, 'all')} className="text-sm px-6 py-3">
-                Descargar
+                {t('buttons.download')}
               </Button>
             </div>
           </div>

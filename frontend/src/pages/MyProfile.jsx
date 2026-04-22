@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import useUsers from "../hooks/useUsers.js";
 import ProfileHeader from "../components/users/ProfileHeader";
 import ProfileModels from "../components/users/ProfileModels";
+import { useTranslation } from "react-i18next";
 
 const MyProfile = () => {
     const {
@@ -13,7 +14,7 @@ const MyProfile = () => {
         getMyPublicProfile,
         isLoadingMyProfile
     } = useUsers();
-
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("modelos");
 
     useEffect(() => {
@@ -31,7 +32,7 @@ const MyProfile = () => {
             {isLoadingMyProfile || !publicMyProfile ? (
                 <div className="flex flex-col justify-center items-center min-h-[60vh]">
                     <span className="text-5xl animate-bounce mb-6">🧊</span>
-                    <p className="text-gray-500 font-bold text-xl">Cargando tu perfil...</p>
+                    <p className="text-gray-500 font-bold text-xl">{t('messages.loading')}</p>
                 </div>
             ) : (
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
@@ -48,19 +49,19 @@ const MyProfile = () => {
                             onClick={() => setActiveTab("modelos")}
                             className={`pb-4 font-bold text-lg whitespace-nowrap transition-all ${activeTab === "modelos" ? "text-primary-600 border-b-4 border-primary-600" : "text-gray-500 hover:text-gray-800"}`}
                         >
-                            🧊 Mis Diseños
+                            {t('user.my_models')}
                         </button>
                         <button
                             onClick={() => setActiveTab("seguidores")}
                             className={`pb-4 font-bold text-lg whitespace-nowrap transition-all ${activeTab === "seguidores" ? "text-primary-600 border-b-4 border-primary-600" : "text-gray-500 hover:text-gray-800"}`}
                         >
-                            👥 Seguidores
+                            {t('user.followers')}
                         </button>
                         <button
                             onClick={() => setActiveTab("favoritos")}
                             className={`pb-4 font-bold text-lg whitespace-nowrap transition-all ${activeTab === "favoritos" ? "text-primary-600 border-b-4 border-primary-600" : "text-gray-500 hover:text-gray-800"}`}
                         >
-                            ❤️ Guardados
+                            {t('user.favorites')}
                         </button>
                     </div>
 
@@ -69,11 +70,10 @@ const MyProfile = () => {
                             <ProfileModels models={publicMyProfile.content?.recent_models} />
                         ) : null}
 
-                        {/* Resto de pestañas... */}
                         {activeTab === "seguidores" ? (
                             <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-200 border-dashed">
                                 <span className="text-5xl mb-4">🚧</span>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">Sección en construcción</h3>
+                                <h3 className="text-xl font-bold text-yellow-900 mb-2">Sección en construcción</h3>
                                 <p className="text-gray-500 text-center">Aquí pondremos un Grid con UserCards llamando a los seguidores del usuario.</p>
                             </div>
                         ) : null}
@@ -81,7 +81,7 @@ const MyProfile = () => {
                         {activeTab === "favoritos" ? (
                             <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-200 border-dashed">
                                 <span className="text-5xl mb-4">🚧</span>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">Sección en construcción</h3>
+                                <h3 className="text-xl font-bold text-yellow-900 mb-2">Sección en construcción</h3>
                                 <p className="text-gray-500 text-center">Aquí pintaremos ProfileModels pero pasándole los favoritos.</p>
                             </div>
                         ) : null}

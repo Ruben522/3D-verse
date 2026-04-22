@@ -4,9 +4,8 @@ const AccordionSection = ({ id, title, subtitle, icon, isOpen, hasError, onToggl
     return (
         <div className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md ${hasError ? 'border-red-300' : isOpen ? 'border-primary-300 ring-4 ring-primary-50' : 'border-gray-200'}`}>
 
-            {/* Cabecera del Desplegable */}
             <button
-                type="button" // Importante para que no envíe formularios accidentalmente
+                type="button"
                 onClick={() => onToggle(id)}
                 className="w-full flex items-center justify-between p-6 bg-white outline-none group text-left"
             >

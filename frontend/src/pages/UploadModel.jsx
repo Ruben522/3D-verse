@@ -10,6 +10,7 @@ import GalleryFiles from '../components/uploads/GalleryFiles';
 import PartsFiles from '../components/uploads/PartsFiles';
 import TagsInput from '../components/uploads/TagsInput';
 import CategoryInput from '../components/uploads/CategoryInput';
+import { useTranslation } from 'react-i18next';
 
 const UploadModel = () => {
     const { isAuthenticated } = useUsers();
@@ -22,14 +23,15 @@ const UploadModel = () => {
         actualizarDatoSubida,
         subirModelo
     } = useModels();
+    const { t } = useTranslation();
 
     return isAuthenticated ? (
         <div className="min-h-screen bg-surface py-12 px-4 sm:px-6 pb-40">
             <div className="max-w-4xl mx-auto flex flex-col gap-8">
 
                 <div>
-                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">Publicar Diseño</h1>
-                    <p className="text-gray-500 font-medium mt-2 text-lg">Comparte tu creación 3D con la comunidad.</p>
+                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">{t('messages.post_model')}</h1>
+                    <p className="text-gray-500 font-medium mt-2 text-lg">{t('messages.post_model_desc')}</p>
                 </div>
 
                 {uploadErrors?.global && (
@@ -42,8 +44,8 @@ const UploadModel = () => {
 
                     <AccordionSection
                         id="info"
-                        title="Detalles del Modelo"
-                        subtitle="Título, descripción y categorización"
+                        title={t('messages.model_details')}
+                        subtitle={t('messages.model_details_desc')}
                         isOpen={expandedSections.includes('info')}
                         hasError={!!uploadErrors?.title}
                         onToggle={toggleSection}
@@ -51,7 +53,7 @@ const UploadModel = () => {
                     >
                         <div className="flex flex-col gap-5 mt-4">
                             <div>
-                                <label className="text-sm font-bold text-gray-700 block mb-2">Título *</label>
+                                <label className="text-sm font-bold text-gray-700 block mb-2">{t('model_files.title')}</label>
                                 <input
                                     type="text"
                                     name="title"
@@ -66,14 +68,14 @@ const UploadModel = () => {
                             <CategoryInput />
 
                             <div>
-                                <label className="text-sm font-bold text-gray-700 block mb-2">Descripción (Opcional)</label>
+                                <label className="text-sm font-bold text-gray-700 block mb-2">{t('model_files.description')}</label>
                                 <textarea
                                     name="description"
                                     value={uploadData.description}
                                     onChange={actualizarDatoSubida}
                                     rows="4"
                                     className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none transition-all resize-none"
-                                    placeholder="Instrucciones de impresión, soportes recomendados..."
+                                    placeholder={t('model_files.description_placeholder')}
                                 />
                             </div>
 
@@ -83,8 +85,8 @@ const UploadModel = () => {
 
                     <AccordionSection
                         id="files"
-                        title="Archivos Requeridos"
-                        subtitle="El archivo 3D principal (.stl, .obj) y la imagen de portada"
+                        title={t('messages.required_files')}
+                        subtitle={t('messages.files_required_desc')}
                         isOpen={expandedSections.includes('files')}
                         hasError={!!uploadErrors?.main_file || !!uploadErrors?.main_image}
                         onToggle={toggleSection}
@@ -98,8 +100,8 @@ const UploadModel = () => {
 
                     <AccordionSection
                         id="extras"
-                        title="Archivos Extra (Opcional)"
-                        subtitle="Piezas sueltas y fotos para la galería"
+                        title={t('messages.optionals_files')}
+                        subtitle={t('messages.optionals_files_desc')}
                         isOpen={expandedSections.includes('extras')}
                         hasError={false}
                         onToggle={toggleSection}
@@ -118,15 +120,15 @@ const UploadModel = () => {
             <div className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl border-t border-gray-200 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-50">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
                     <div className="hidden sm:block">
-                        <p className="font-bold text-gray-900">¿Todo listo?</p>
-                        <p className="text-sm text-gray-500">Asegúrate de haber completado los campos requeridos.</p>
+                        <p className="font-bold text-gray-900">{t('messages.confirmation_upload')}</p>
+                        <p className="text-sm text-gray-500">{t('messages.confirmation_upload_desc')}</p>
                     </div>
                     <Button
                         onClick={subirModelo}
                         disabled={isUploading}
                         className="w-full sm:w-auto !px-12 py-4 !text-lg !bg-primary-600 hover:!bg-primary-700 shadow-primary-500/30"
                     >
-                        {isUploading ? "⏳ Procesando..." : "🚀 Publicar Modelo"}
+                        {isUploading ? t('messages.loading') : t('messages.post_model')}
                     </Button>
                 </div>
             </div>

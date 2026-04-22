@@ -257,22 +257,11 @@ const ModelsContext = ({ children }) => {
   };
 
   const buildFinalModelData = (urlsDelServidor) => {
-    const urlArchivoPrincipal = urlsDelServidor.file_url
-      || urlsDelServidor.main_file_url
-      || urlsDelServidor.main_file;
+    const urlArchivoPrincipal = urlsDelServidor.main_file;
+    const urlImagenPrincipal = urlsDelServidor.cover_image || null;
 
-    const urlImagenPrincipal = urlsDelServidor.main_image_url
-      || urlsDelServidor.cover_image_url
-      || urlsDelServidor.cover_image
-      || urlsDelServidor.main_image
-      || null;
-    const urlsGaleria = urlsDelServidor.gallery_urls
-      || urlsDelServidor.gallery
-      || [];
-
-    const urlsPartes = urlsDelServidor.parts_urls
-      || urlsDelServidor.parts
-      || [];
+    const urlsGaleria = urlsDelServidor.gallery || [];
+    const urlsPartes = urlsDelServidor.parts || [];
 
     return {
       title: uploadData.title,
@@ -335,7 +324,7 @@ const ModelsContext = ({ children }) => {
       const urlsDelServidor = await uploadFilesToServer(formData);
       const finalData = buildFinalModelData(urlsDelServidor);
       const newModelId = await saveModelToDB(finalData);
-
+      console.log("✅ Respuesta del upload:", urlsDelServidor);
       await saveModelTags(newModelId);
 
       handleUploadSuccess(newModelId);

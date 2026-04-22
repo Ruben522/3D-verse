@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import useLikes from '../../hooks/useLike';
 
-// Cambiamos el nombre de la prop a initialLikesCount para ser más precisos
 const LikeButton = ({ modelId, initialLikesCount }) => {
     const { likedModels, toggleLike } = useLikes();
     const isLiked = likedModels.has(modelId);

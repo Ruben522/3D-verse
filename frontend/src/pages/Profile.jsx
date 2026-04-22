@@ -3,11 +3,13 @@ import { useParams } from "react-router-dom";
 import useUsers from "../hooks/useUsers.js";
 import ProfileHeader from "../components/users/ProfileHeader";
 import ProfileModels from "../components/users/ProfileModels";
+import { useTranslation } from "react-i18next";
 
 const Profile = () => {
   const { username } = useParams();
   const { publicProfile, getPublicProfile, isLoadingProfile } = useUsers();
   const [activeTab, setActiveTab] = useState("modelos");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (username) {
@@ -19,8 +21,7 @@ const Profile = () => {
     <div className="min-h-screen bg-surface pb-20">
       {isLoadingProfile || !publicProfile ? (
         <div className="flex flex-col justify-center items-center min-h-[60vh]">
-          <span className="text-5xl animate-bounce mb-6">🧊</span>
-          <p className="text-gray-500 font-bold text-xl">Cargando creador...</p>
+          <p className="text-gray-500 font-bold text-xl">{t('messages.loading_creator')}</p>
         </div>
       ) : (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
@@ -36,19 +37,19 @@ const Profile = () => {
               onClick={() => setActiveTab("modelos")}
               className={`pb-4 font-bold text-lg whitespace-nowrap transition-all ${activeTab === "modelos" ? "text-primary-600 border-b-4 border-primary-600" : "text-gray-500 hover:text-gray-800"}`}
             >
-              🧊 Diseños
+              {t('user.models')}
             </button>
             <button
               onClick={() => setActiveTab("seguidores")}
               className={`pb-4 font-bold text-lg whitespace-nowrap transition-all ${activeTab === "seguidores" ? "text-primary-600 border-b-4 border-primary-600" : "text-gray-500 hover:text-gray-800"}`}
             >
-              👥 Seguidores
+              {t('user.followers')}
             </button>
             <button
               onClick={() => setActiveTab("favoritos")}
               className={`pb-4 font-bold text-lg whitespace-nowrap transition-all ${activeTab === "favoritos" ? "text-primary-600 border-b-4 border-primary-600" : "text-gray-500 hover:text-gray-800"}`}
             >
-              ❤️ Favoritos
+              {t('user.favorites')}
             </button>
           </div>
 
@@ -60,7 +61,7 @@ const Profile = () => {
             {activeTab === "seguidores" ? (
               <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-200 border-dashed">
                 <span className="text-5xl mb-4">🚧</span>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Sección en construcción</h3>
+                <h3 className="text-xl font-bold text-yellow-900 mb-2">Sección en construcción</h3>
                 <p className="text-gray-500 text-center">Aquí pondremos un Grid con UserCards llamando a los seguidores del usuario.</p>
               </div>
             ) : null}
@@ -68,7 +69,7 @@ const Profile = () => {
             {activeTab === "favoritos" ? (
               <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-200 border-dashed">
                 <span className="text-5xl mb-4">🚧</span>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Sección en construcción</h3>
+                <h3 className="text-xl font-bold text-yellow-900 mb-2">Sección en construcción</h3>
                 <p className="text-gray-500 text-center">Aquí pintaremos ProfileModels pero pasándole los favoritos.</p>
               </div>
             ) : null}

@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import useUsers from "../hooks/useUsers.js";
 import InnputForm from "../components/common/InnputForm.jsx";
+import { useTranslation } from "react-i18next";
 
 const Login = ({ onToggleView }) => {
+
   const {
     datosSesion,
     actualizarDato,
@@ -11,6 +13,8 @@ const Login = ({ onToggleView }) => {
     isAuthLoading,
     limpiarFormulario,
   } = useUsers();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     limpiarFormulario();
@@ -21,9 +25,11 @@ const Login = ({ onToggleView }) => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h2 className="text-4xl font-extrabold text-gray-900">
-            Iniciar Sesión
+            {t('messages.login_here')}
           </h2>
-          <p className="text-gray-500 mt-2">Accede a tu cuenta de 3D-Verse</p>
+          <p className="text-gray-500 mt-2">
+            {t('messages.login_desc')}
+          </p>
         </div>
 
         <form onSubmit={(e) => iniciarSesion(e)} className="space-y-5">
@@ -35,7 +41,7 @@ const Login = ({ onToggleView }) => {
 
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1">
-              Correo Electrónico
+              {t('messages.email')}
             </label>
             <input
               type="email"
@@ -51,13 +57,13 @@ const Login = ({ onToggleView }) => {
           <div>
             <div className="flex justify-between items-center mb-1">
               <label className="block text-sm font-bold text-gray-700">
-                Contraseña
+                {t('messages.password')}
               </label>
               <a
                 href="#"
                 className="text-xs font-semibold text-gray-500 hover:text-gray-900"
               >
-                ¿Olvidaste tu contraseña?
+                {t('messages.forgot_password')}
               </a>
             </div>
             <input
@@ -71,10 +77,9 @@ const Login = ({ onToggleView }) => {
             />
           </div>
 
-          {/* AQUÍ USAMOS TU COMPONENTE BUTTON */}
           <InnputForm
             isInput={true}
-            value={isAuthLoading ? "⏳ Cargando..." : "Iniciar Sesión"}
+            value={isAuthLoading ? t('messages.loading') : t('messages.login_here')}
             onClick={(e) => iniciarSesion(e)}
             disabled={isAuthLoading}
             className="w-full mt-6"
@@ -82,13 +87,13 @@ const Login = ({ onToggleView }) => {
         </form>
 
         <p className="md:hidden text-center text-sm text-gray-500 mt-8">
-          ¿No tienes cuenta aún?{" "}
+          {t('messages.no_account')}
           <button
             type="button"
             onClick={onToggleView}
             className="font-bold text-gray-900 hover:underline"
           >
-            Regístrate gratis
+            {t('messages.register_here')}
           </button>
         </p>
       </div>

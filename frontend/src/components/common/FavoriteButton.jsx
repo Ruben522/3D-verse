@@ -1,8 +1,10 @@
 import React from 'react';
 import useFavorites from '../../hooks/useFavorite';
+import { useTranslation } from 'react-i18next';
 
 const FavoriteButton = ({ modelId }) => {
     const { favoritedModels, toggleFavorite } = useFavorites();
+    const { t } = useTranslation();
     const isFaved = favoritedModels.has(modelId);
 
     return (
@@ -11,8 +13,7 @@ const FavoriteButton = ({ modelId }) => {
                 e.stopPropagation();
                 toggleFavorite(e, modelId);
             }}
-            title={isFaved ? "Quitar de favoritos" : "Guardar en favoritos"}
-            // CLASES ACTUALIZADAS PARA GLASSMORPHISM Y POSICIÓN
+            title={isFaved ? t('messages.remove_from_favorites') : t('messages.save_in_favorites')}
             className="absolute top-3 right-3 z-20 p-2.5 rounded-full bg-white/20 hover:bg-white/90 backdrop-blur-md border border-white/30 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-110 group/btn"
         >
             {isFaved ? (

@@ -1,22 +1,24 @@
 import React from 'react';
 import useModels from '../../hooks/useModels';
 import Button from "../common/Button";
+import { useTranslation } from 'react-i18next';
 
 const PartsFiles = () => {
   const { currentModel, isDownloading, downloadPackage } = useModels();
+  const { t } = useTranslation();
   const modelPartsList = currentModel?.parts || [];
 
   return (
     <div className="space-y-6 py-4 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
-        <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">Listado de piezas individuales ({modelPartsList.length})</p>
+        <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">{t('downloads.parts_list')} ({modelPartsList.length})</p>
         <Button
           onClick={() => downloadPackage(currentModel.id, 'parts')}
           disabled={isDownloading}
           className="!px-5 !py-2.5 !text-sm !rounded-xl flex items-center gap-2 shadow-sm"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-          {isDownloading ? "Comprimiendo..." : "Bajar todo (.zip)"}
+          {isDownloading ? t('downloads.compressing') : t('downloads.donwload_parts')}
         </Button>
       </div>
 
@@ -32,7 +34,7 @@ const PartsFiles = () => {
               className="flex items-center gap-2 text-gray-500 hover:text-primary-600 bg-white border border-gray-200 hover:border-primary-200 hover:bg-primary-50 text-sm font-bold px-4 py-2.5 rounded-xl transition-all shadow-sm flex-shrink-0"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-              Bajar
+              {t('downloads.download')}
             </a>
           </div>
         ))}

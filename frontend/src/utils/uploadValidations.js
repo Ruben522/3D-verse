@@ -1,20 +1,18 @@
+import i18n from "../i18n";
+
 export const validateUploadData = (formData, files) => {
     const errors = {};
 
     if (!formData.title || formData.title.trim() === "") {
-        errors.title = "El título es obligatorio.";
-    } else if (formData.title.length < 3) {
-        errors.title = "El título debe tener al menos 3 caracteres.";
+        errors.title = i18n.t("uploadValidations.title_required");
     }
 
     if (!files.main_file) {
-        errors.main_file =
-            "Debes subir un archivo 3D principal (.stl, .obj, etc).";
+        errors.main_file = i18n.t("uploadValidations.main_file_required");
     }
 
-    // Volvemos a hacer obligatoria la imagen
     if (!files.main_image) {
-        errors.main_image = "La imagen de portada es obligatoria.";
+        errors.main_image = i18n.t("uploadValidations.main_image_required");
     }
 
     return {
