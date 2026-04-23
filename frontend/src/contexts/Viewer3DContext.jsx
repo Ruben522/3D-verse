@@ -47,5 +47,5 @@ const Viewer3DContext = ({ children }) => {
     return <viewer3d.Provider value={exportData}>{children}</viewer3d.Provider>;
 };
 
-export default viewer3d;
-export { Viewer3DContext };
+export { viewer3d };
+export default Viewer3DContext;
