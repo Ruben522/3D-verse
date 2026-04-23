@@ -10,7 +10,7 @@ const ModelsContext = ({ children }) => {
   const navegar = useNavigate();
   const modelAPI = useAPI();
   const actionAPI = useAPI();
-  const { showMessage } = useMessage();
+  const { showMessage, showConfirm } = useMessage();
 
   const initialUploadData = {
     title: "",
@@ -103,19 +103,19 @@ const ModelsContext = ({ children }) => {
       const response = await modelAPI.get(`${backendUrl}/categories`);
       setCategoriasDisponibles(response.data || []);
     } catch (err) {
-      console.error("Error al obtener categorías:", err);
+      showMessage("Error al obtener categorías. Inténtalo de nuevo.", "error");
       setCategoriasDisponibles([]);
     }
   };
 
-  const getModels = async () => {
+  const getModels = async (page = 1, limit = 20) => {
     try {
-      const data = await modelAPI.get(apiUrl);
+      const data = await modelAPI.get(`${apiUrl}?page=${page}&limit=${limit}`);
       const normalizedData = data.data.data.map(normalizeModelData);
       setModelsData(normalizedData);
       setPagination({ page: data.data.page, total: data.data.total, totalPages: data.data.totalPages });
     } catch (err) {
-      console.error(err);
+      showMessage("Error al obtener los modelos. Inténtalo de nuevo.", "error");
     }
   };
 
@@ -138,7 +138,6 @@ const ModelsContext = ({ children }) => {
       });
     } catch (err) {
       showMessage("Error al cargar el modelo. Inténtalo de nuevo.", "error");
-      console.error(err);
     }
   };
 
@@ -159,7 +158,7 @@ const ModelsContext = ({ children }) => {
       const fileName = `${tituloOriginal}.zip`;
       await actionAPI.downloadPost(url, fileName);
     } catch (err) {
-      console.error("Fallo en la descarga:", err);
+      showMessage("Error al descargar el paquete. Inténtalo de nuevo.", "error");
     }
   };
 
@@ -292,7 +291,7 @@ const ModelsContext = ({ children }) => {
         try {
           await actionAPI.post(`${backendUrl}/tags/model/${modelId}`, { name: tagStr });
         } catch (errTag) {
-          console.error(`Error al guardar el tag ${tagStr}:`, errTag);
+          showMessage(`Error al guardar el tag ${tagStr}.`, "error");
         }
       })
     );
@@ -309,7 +308,7 @@ const ModelsContext = ({ children }) => {
   };
 
   const handleUploadError = (error) => {
-    console.error("Error en el proceso de subida:", error);
+    showMessage("Error al procesar tu diseño. Inténtalo de nuevo.", "error");
     const mensajeError = error.message || "Hubo un error al procesar tu diseño. Inténtalo de nuevo.";
     setUploadErrors({ global: mensajeError });
   };
@@ -328,9 +327,7 @@ const ModelsContext = ({ children }) => {
       const urlsDelServidor = await uploadFilesToServer(formData);
       const finalData = buildFinalModelData(urlsDelServidor);
       const newModelId = await saveModelToDB(finalData);
-      console.log("✅ Respuesta del upload:", urlsDelServidor);
       await saveModelTags(newModelId);
-
       handleUploadSuccess(newModelId);
       return true;
 

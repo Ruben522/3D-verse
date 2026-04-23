@@ -1,12 +1,14 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAPI from "../hooks/useAPI.js";
+import useMessage from "../hooks/useMessage.js";
 
 const user = createContext();
 
 const UserContext = ({ children }) => {
   const navegar = useNavigate();
   const authAPI = useAPI();
+  const { showMessage, showConfirm } = useMessage();
   const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   const userLocal = localStorage.getItem("user");
@@ -15,7 +17,7 @@ const UserContext = ({ children }) => {
   const sesionIniciadaInicial = !!tokenLocal;
   const datosSesionInicial = { name: "", username: "", email: "", password: "" };
 
-  const [currentUser, setCurrentUser] = useState(null); // Lo seteamos después de declarar normalizeUser
+  const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
   const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
   const [errorAuth, setErrorAuth] = useState(null);
@@ -27,6 +29,7 @@ const UserContext = ({ children }) => {
   const [isLoadingMyProfile, setIsLoadingMyProfile] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [isLoadingCommunity, setIsLoadingCommunity] = useState(false);
+  const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
 
   const normalizeUser = (userObj) => {
     if (!userObj) return null;
@@ -126,23 +129,26 @@ const UserContext = ({ children }) => {
   };
 
   const cerrarSesion = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setCurrentUser(null);
-    setIsAuthenticated(false);
-    limpiarFormulario();
-    navegar("/");
+    showConfirm("¿Estás seguro que quieres cerrar sesión?", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setCurrentUser(null);
+      setIsAuthenticated(false);
+      limpiarFormulario();
+      navegar("/login");
+    });
   };
 
-  const getCommunityUsers = async () => {
+  const getCommunityUsers = async (page = 1, limit = 20) => {
     setIsLoadingCommunity(true);
     try {
-      const response = await authAPI.get(`${backendUrl}/users/public`);
+      const response = await authAPI.get(`${backendUrl}/users/public?page=${page}&limit=${limit}`);
       const responseData = response.data?.data || response.data;
       const usersArray = responseData?.data || responseData;
 
       if (Array.isArray(usersArray)) {
         setCommunityUsers(usersArray.map(normalizeUser));
+        setPagination({ page: response.data.page, total: response.data.total, totalPages: response.data.totalPages });
       } else {
         setCommunityUsers([]);
       }
@@ -221,7 +227,8 @@ const UserContext = ({ children }) => {
     getMyPublicProfile,
     getPublicProfile,
     checkIsOwnProfile,
-    getProfileRoute
+    getProfileRoute,
+    pagination,
   };
 
   return <user.Provider value={exportData}>{children}</user.Provider>;

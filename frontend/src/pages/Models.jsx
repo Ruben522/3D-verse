@@ -1,9 +1,10 @@
 import React from 'react';
 import ModelCard from '../components/models/ModelCard';
 import useModels from '../hooks/useModels';
+import Pagination from '../components/common/Pagination';
 
 const Models = () => {
-  const { models, isLoading, error } = useModels();
+  const { models, isLoading, error, getModels, isFetchingModel, pagination } = useModels();
 
   return (
     <div className="min-h-screen bg-surface py-12 px-4 sm:px-6">
@@ -22,6 +23,13 @@ const Models = () => {
                 <ModelCard key={model.id} model={model} />
               ))}
             </div>
+          )}
+          {!isFetchingModel && (
+            <Pagination
+              totalPages={pagination.totalPages}
+              currentPage={pagination.page}
+              onPageChange={getModels}
+            />
           )}
         </div>
       </main>

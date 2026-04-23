@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import useUsers from '../hooks/useUsers';
 import ProfileCard from '../components/users/ProfileCard';
 import { useTranslation } from 'react-i18next';
+import Pagination from '../components/common/Pagination';
 
 const Community = () => {
-    const { communityUsers, getCommunityUsers, isLoadingCommunity } = useUsers();
+    const { communityUsers, getCommunityUsers, isLoadingCommunity, pagination } = useUsers();
     const { t } = useTranslation();
 
     return (
@@ -21,7 +22,6 @@ const Community = () => {
                     </p>
                 </div>
 
-                {/* Contenido (Cargando o Grid de Usuarios) */}
                 {isLoadingCommunity ? (
                     <div className="flex flex-col justify-center items-center min-h-[40vh]">
                         <span className="text-5xl animate-bounce mb-6">👥</span>
@@ -39,6 +39,13 @@ const Community = () => {
                         <h3 className="text-xl font-bold text-gray-900">Aún no hay creadores</h3>
                         <p className="text-gray-500 mt-2">Parece que la comunidad está empezando a formarse.</p>
                     </div>
+                )}
+                {!isLoadingCommunity && (
+                    <Pagination
+                        totalPages={pagination.totalPages}
+                        currentPage={pagination.page}
+                        onPageChange={getCommunityUsers}
+                    />
                 )}
 
             </div>
