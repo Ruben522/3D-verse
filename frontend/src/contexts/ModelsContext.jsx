@@ -2,62 +2,7 @@ import React, { useState, useEffect, createContext } from "react";
 import useAPI from "../hooks/useAPI.js";
 import { useNavigate } from "react-router-dom";
 import { validateUploadData } from "../utils/uploadValidations";
-
-const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const apiUrl = `${backendUrl}/models`;
-
-const initialUploadData = {
-  title: "",
-  description: "",
-  categories: [],
-  tags: []
-};
-
-const initialUploadFiles = {
-  main_file: null,
-  main_image: null,
-  gallery: [],
-  parts: []
-};
-
-const formatUrl = (path) => {
-  if (!path) return null;
-  if (path.startsWith('http')) return path;
-  const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  return `${cleanBase}${cleanPath}`;
-};
-
-const normalizeModelData = (modelData) => {
-  return {
-    id: modelData.id,
-    username: modelData.author?.username || "Desconocido",
-    avatarUrl: formatUrl(modelData.author?.avatar),
-    createdDate: new Date(modelData.created_at).toLocaleDateString(),
-    description: modelData.description,
-    downloads: modelData.downloads || 0,
-    fileUrl: formatUrl(modelData.file_url),
-    imageUrl: formatUrl(modelData.main_image_url),
-    title: modelData.title,
-    updated_at: modelData.updated_at,
-    videoUrl: modelData.video_url,
-    views: modelData.views,
-    license: modelData.license,
-    mainColor: modelData.main_color,
-    likes: modelData._count?.model_likes || 0,
-    categories: modelData.model_category?.map((c) => c.categories?.name) || [],
-    tags: modelData.model_tag?.map((t) => t.tags?.name) || [],
-    gallery: modelData.model_images
-      ?.sort((a, b) => a.display_order - b.display_order)
-      .map((img) => formatUrl(img.image_url)) || [],
-    parts: modelData.model_parts?.map((p) => ({
-      id: p.id,
-      name: p.part_name,
-      fileUrl: formatUrl(p.file_url),
-      color: p.color,
-    })) || [],
-  };
-};
+import useMessage from "../hooks/useMessage.js";
 
 const model = createContext();
 
@@ -65,6 +10,21 @@ const ModelsContext = ({ children }) => {
   const navegar = useNavigate();
   const modelAPI = useAPI();
   const actionAPI = useAPI();
+  const { showMessage } = useMessage();
+
+  const initialUploadData = {
+    title: "",
+    description: "",
+    categories: [],
+    tags: []
+  };
+
+  const initialUploadFiles = {
+    main_file: null,
+    main_image: null,
+    gallery: [],
+    parts: []
+  };
 
   const [modelsData, setModelsData] = useState([]);
   const [currentModel, setCurrentModel] = useState(null);
@@ -94,6 +54,49 @@ const ModelsContext = ({ children }) => {
     getModels();
     getCategories();
   }, []);
+
+
+  const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const apiUrl = `${backendUrl}/models`;
+
+  const formatUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${cleanBase}${cleanPath}`;
+  };
+
+  const normalizeModelData = (modelData) => {
+    return {
+      id: modelData.id,
+      username: modelData.author?.username || "Desconocido",
+      avatarUrl: formatUrl(modelData.author?.avatar),
+      createdDate: new Date(modelData.created_at).toLocaleDateString(),
+      description: modelData.description,
+      downloads: modelData.downloads || 0,
+      fileUrl: formatUrl(modelData.file_url),
+      imageUrl: formatUrl(modelData.main_image_url),
+      title: modelData.title,
+      updated_at: modelData.updated_at,
+      videoUrl: modelData.video_url,
+      views: modelData.views,
+      license: modelData.license,
+      mainColor: modelData.main_color,
+      likes: modelData._count?.model_likes || 0,
+      categories: modelData.model_category?.map((c) => c.categories?.name) || [],
+      tags: modelData.model_tag?.map((t) => t.tags?.name) || [],
+      gallery: modelData.model_images
+        ?.sort((a, b) => a.display_order - b.display_order)
+        .map((img) => formatUrl(img.image_url)) || [],
+      parts: modelData.model_parts?.map((p) => ({
+        id: p.id,
+        name: p.part_name,
+        fileUrl: formatUrl(p.file_url),
+        color: p.color,
+      })) || [],
+    };
+  };
 
   const getCategories = async () => {
     try {
@@ -134,7 +137,8 @@ const ModelsContext = ({ children }) => {
         currentColor: normalizedData.mainColor || "#ffffff",
       });
     } catch (err) {
-      console.error("Error crítico de carga:", err);
+      showMessage("Error al cargar el modelo. Inténtalo de nuevo.", "error");
+      console.error(err);
     }
   };
 

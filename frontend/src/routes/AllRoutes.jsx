@@ -26,7 +26,7 @@ const AllRoutes = () => {
 			<Route path="/contacto" element={<Contact />} />
 
 			{/* Ruta para manejar errores en caso de que no se encuentre la página */}
-			<Route path="*" element={<Error />} />
+			<Route path="*" element={<Home />} />
 		</Routes>
 	);
 };
