@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "meilisearch": "^0.57.0",
     "react-paginate": "^8.3.0"
   }
 }

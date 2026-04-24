@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@meilisearch/instant-meilisearch": "^0.31.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
     "@tailwindcss/vite": "^4.1.18",
@@ -19,6 +20,7 @@
     "react-country-flag": "^3.1.0",
     "react-dom": "^19.2.0",
     "react-i18next": "^17.0.4",
+    "react-instantsearch": "^7.30.0",
     "react-router-dom": "^7.10.1",
     "three": "^0.181.2"
   },

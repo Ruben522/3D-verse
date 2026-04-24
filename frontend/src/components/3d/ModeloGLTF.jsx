@@ -15,7 +15,7 @@ const ModeloGLTF = ({ modelPath, currentColor, selectedPart, onPartsDetected }) 
 
     useEffect(() => {
         if (onPartsDetected) {
-            const parts = [];
+            let parts = [];
             scene.traverse((child) => {
                 if (child.isMesh) {
                     parts = [...parts, { name: child.name || `Pieza ${child.uuid.substring(0, 5)}`, uuid: child.uuid }];
