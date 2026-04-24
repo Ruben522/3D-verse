@@ -1,4 +1,5 @@
 import prisma from "../config/prisma.js";
+import { deleteModelFromMeili, syncModelToMeili } from "../server/meilisearchSync.js";
 import { checkPermission } from "../utils/checkPermission.js";
 import {
   deletePhysicalFile,
@@ -117,7 +118,7 @@ const createModel = async (userId, data) => {
         : undefined,
     },
   });
-
+  await syncModelToMeili(model);
   return model;
 };
 
@@ -285,7 +286,7 @@ const deleteModel = async (modelId, user) => {
   checkPermission(model.user_id, user);
 
   await prisma.models.delete({ where: { id: modelId } });
-
+  await deleteModelFromMeili(modelId);
   deletePhysicalFolder(model.file_url);
 
   return {
