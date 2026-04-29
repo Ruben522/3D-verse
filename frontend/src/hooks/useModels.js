@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-import { model } from "../contexts/ModelsContext.jsx";
+//import { model } from "../contexts/ModelsContext.jsx";
+import { model } from "../contexts/ModelsMeiliContext.jsx";
 
 const useModels = () => {
     /**

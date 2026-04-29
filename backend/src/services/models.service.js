@@ -117,7 +117,9 @@ const createModel = async (userId, data) => {
           }
         : undefined,
     },
+    include: getModelIncludes(),
   });
+  
   await syncModelToMeili(model);
   return model;
 };

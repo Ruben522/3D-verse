@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { messagesStyles } from '../../utils/messagesStyle.jsx';
+import { messagesStyles } from '../../utils/MessagesStyle.jsx';
 
 const Messages = ({ message, isConfirm, config, onClose, onConfirm }) => {
     return isConfirm ? (

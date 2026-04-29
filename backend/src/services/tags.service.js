@@ -1,5 +1,7 @@
 import prisma from "../config/prisma.js";
 import { checkPermission } from "../utils/checkPermission.js";
+import { syncModelToMeili } from "../server/meilisearchSync.js";
+import { getModelById } from "./models.service.js";
 
 /**
  * Normaliza el nombre de un tag: elimina espacios al inicio y final y convierte todo a minúsculas.
@@ -67,6 +69,8 @@ const addTagToModel = async (modelId, user, tagName) => {
             data: { model_id: modelId, tag_id: tag.id },
         });
 
+        const modeloActualizado = await getModelById(modelId);
+        await syncModelToMeili(modeloActualizado);
         return {
             message: "Tag añadido correctamente",
             tag,

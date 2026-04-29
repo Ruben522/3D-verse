@@ -1,6 +1,6 @@
 import React, { createContext, useState, useCallback, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { messagesStyles } from '../utils/messagesStyle.jsx';
+import { messagesStyles } from '../utils/MessagesStyle.jsx';
 import Message from '../components/messages/Messages.jsx';
 
 const message = createContext();

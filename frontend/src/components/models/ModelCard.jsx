@@ -18,7 +18,6 @@ const ModelCard = ({ model }) => {
       <div className="absolute top-3 right-3 z-20">
         <FavoriteButton modelId={model.id} />
       </div>
-
       <div className="relative w-full aspect-[4/3] bg-gray-50 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100" />
 

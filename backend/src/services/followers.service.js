@@ -1,5 +1,6 @@
 import prisma from "../config/prisma.js";
-
+import { getUserById } from "./users.service.js";
+import { syncUserToMeili } from "../server/meilisearchSync.js";
 /**
  * Permite que un usuario siga a otro usuario.
  * Actualiza los contadores de seguidores y seguidos en una transacción.
@@ -34,6 +35,9 @@ const followUser = async (userIdToFollow, followerId) => {
         data: { following_count: { increment: 1 } },
       }),
     ]);
+
+    const completeUpdated = await getUserById(userIdToFollow);
+    await syncUserToMeili(completeUpdated);
 
     return { message: "Ahora sigues a este usuario" };
   } catch (error) {
@@ -75,6 +79,9 @@ const unfollowUser = async (userIdToUnfollow, followerId) => {
         data: { following_count: { decrement: 1 } },
       }),
     ]);
+
+    const completeUpdated = await getUserById(userIdToUnfollow);
+    await syncUserToMeili(completeUpdated);
 
     return {
       message: "Has dejado de seguir al usuario",

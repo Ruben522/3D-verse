@@ -1,64 +1,78 @@
-import React from 'react';
-import { InstantSearch, useHits, usePagination } from 'react-instantsearch';
-import { searchClient } from '../services/meiliClient'; // Ajusta la ruta a donde creaste el cliente
+import React, { useContext } from 'react';
 import ModelCard from '../components/models/ModelCard';
 import Pagination from '../components/common/Pagination';
-import SearchBar from '../components/common/SearchBar'; // El componente que hicimos antes
+import SearchBar from '../components/common/SearchBar';
+import { model } from '../contexts/ModelsMeiliContext';
+import { useTranslation } from "react-i18next";
 
-// 1. COMPONENTE PARA LA CUADRÍCULA (Sustituye al map tradicional)
-const CustomHits = () => {
-  const { hits } = useHits(); // hits = los modelos que devuelve Meilisearch
-
-  if (hits.length === 0) {
-    return <p className="text-gray-500 font-medium">No se encontraron modelos.</p>;
-  }
-
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {hits.map((hit) => (
-        <ModelCard key={hit.id} model={hit} />
-      ))}
-    </div>
-  );
-};
-
-// 2. COMPONENTE ADAPTADOR PARA TU PAGINACIÓN
-const CustomPagination = () => {
-  // Extraemos la lógica de paginación de Meilisearch
-  const { nbPages, currentRefinement, refine } = usePagination();
-
-  if (nbPages <= 1) return null;
-
-  return (
-    <Pagination
-      totalPages={nbPages}
-      currentPage={currentRefinement + 1} // Meilisearch empieza a contar páginas en 0
-      onPageChange={(page) => refine(page - 1)} // Le restamos 1 para Meilisearch
-    />
-  );
-};
-
-// 3. TU PÁGINA PRINCIPAL
 const Models = () => {
+  const { t } = useTranslation();
+  const {
+    models, isFetchingModel, pagination, searchModels,
+    searchTerm, setSearchTerm,
+    activeCategory, setActiveCategory,
+    sortBy, setSortBy,
+    categoriasDisponibles
+  } = useContext(model);
+
+  // Opciones de ordenación que le pasamos a la barra
+  const sortOptions = [
+    { value: "created_at:desc", label: "✨ Recientes" },
+    { value: "likes_count:desc", label: "❤️ Populares" },
+    { value: "downloads:desc", label: "📥 Descargas" },
+  ];
 
   return (
-    <div className="min-h-screen bg-surface py-12 px-4 sm:px-6">
-      <InstantSearch indexName="models" searchClient={searchClient}>
+    <div className="min-h-screen bg-surface py-12 px-4">
+      <main className="max-w-7xl mx-auto pb-12">
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+            {t('explore.title')}
+          </h1>
+          <p className="text-gray-500 font-bold mb-10 text-lg">
+            {t('explore.subtitle')}
+          </p>
 
-        <main className="max-w-7xl mx-auto px-6 pb-12 flex flex-col md:flex-row gap-8">
-          <div className="flex-1">
-            <div className="mb-8">
-              <SearchBar />
-            </div>
-            <CustomHits />
-            <div className="mt-8">
-              <CustomPagination />
-            </div>
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            onClear={() => setSearchTerm('')}
+            placeholder="Buscar personajes, vehículos..."
+            categories={categoriasDisponibles}
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+            sortOptions={sortOptions}
+            activeSort={sortBy}
+            onSortChange={setSortBy}
+          />
+        </div>
 
+        {/* GRID DE MODELOS */}
+        <div className={`transition-all duration-500 ${isFetchingModel ? 'opacity-40 blur-[2px] pointer-events-none scale-[0.99]' : 'opacity-100 scale-100'}`}>
+          {models.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {models.map(m => <ModelCard key={m.id} model={m} />)}
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-100 max-w-3xl mx-auto shadow-sm">
+              <span className="text-7xl mb-6 block drop-shadow-sm">🔎</span>
+              <h3 className="text-2xl font-black text-gray-900 mb-2">No se encontraron modelos</h3>
+              <p className="text-gray-500 font-bold">Intenta usar otros términos o elimina los filtros de categoría.</p>
+            </div>
+          )}
+        </div>
+
+        {/* PAGINACIÓN */}
+        {pagination.totalPages > 1 && (
+          <div className="mt-16 flex justify-center">
+            <Pagination
+              totalPages={pagination.totalPages}
+              currentPage={pagination.page}
+              onPageChange={(p) => searchModels(searchTerm, p)}
+            />
           </div>
-        </main>
-
-      </InstantSearch>
+        )}
+      </main>
     </div>
   );
 };

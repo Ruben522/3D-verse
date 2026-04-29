@@ -4,7 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 import "./i18n.js";
-import ModelsContext from "./contexts/ModelsContext.jsx";
+//import ModelsContext from "./contexts/ModelsContext.jsx";
+import ModelsMeiliContext from "./contexts/ModelsMeiliContext.jsx";
 import UserContext from "./contexts/UserContext.jsx";
 import LikeContext from "./contexts/LikeContext.jsx";
 import FavoriteContext from "./contexts/FavoriteContext.jsx";
@@ -19,7 +20,7 @@ createRoot(document.getElementById("root")).render(
 			<MessageContext>
 				<UserContext>
 					<LanguageContext>
-						<ModelsContext>
+						<ModelsMeiliContext>
 							<LikeContext>
 								<FavoriteContext>
 									<FollowContext>
@@ -29,7 +30,7 @@ createRoot(document.getElementById("root")).render(
 									</FollowContext>
 								</FavoriteContext>
 							</LikeContext>
-						</ModelsContext>
+						</ModelsMeiliContext>
 					</LanguageContext>
 				</UserContext>
 			</MessageContext>

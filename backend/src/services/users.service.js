@@ -416,6 +416,9 @@ const updateUser = async (userId, currentUser, data) => {
             },
             include: { profile: true },
         });
+        
+        const completeUpdated = await getUserById(userId);
+        await syncUserToMeili(completeUpdated);
 
         return {
             id: updated.id,

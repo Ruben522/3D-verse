@@ -2,6 +2,7 @@ import prisma from "../config/prisma.js";
 import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import { generateToken } from "../utils/generateToken.js";
 import { validateUserFields } from "../utils/validateUserFields.js";
+import { syncUserToMeili } from "../server/meilisearchSync.js";
 
 /**
  * Registra un nuevo usuario y crea su perfil asociado con username.
@@ -43,8 +44,10 @@ const registerUser = async ({
                         primary_color: "#3b82f6",
                         followers_count: 0,
                         following_count: 0
-                    }
-                }
+                    },
+                    include: {
+                        profile: true
+                },
             },
             select: {
                 id: true,
@@ -64,14 +67,16 @@ const registerUser = async ({
                     }
                 }
             }
+        }
         });
 
         const token = generateToken({
             id: user.id,
             role: user.role
         });
+        
+        await syncUserToMeili(user);
 
-        // Aplanamos para mantener compatibilidad con frontend
         return {
             user: {
                 id: user.id,
@@ -81,6 +86,7 @@ const registerUser = async ({
             },
             token
         };
+        
     } catch (error) {
         if (error.code === "P2002") {
             throw new Error("El nombre de usuario o el email ya están en uso.");

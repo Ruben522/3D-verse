@@ -2,6 +2,8 @@ import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAPI from "../hooks/useAPI.js";
 import useMessage from "../hooks/useMessage.js";
+import { normalizeUser, normalizeModelForCard } from "../utils/normalizers";
+import { usersIndex } from "../services/meiliClient";
 
 const user = createContext();
 
@@ -16,12 +18,17 @@ const UserContext = ({ children }) => {
 
   const sesionIniciadaInicial = !!tokenLocal;
   const datosSesionInicial = { name: "", username: "", email: "", password: "" };
-
+  const datosPerfilInicial = {
+    username: "", name: "", lastname: "", bio: "", location: "",
+    youtube: "", twitter: "", linkedin: "", github: "",
+    card_bg_color: "#ffffff", primary_color: "#3b82f6"
+  };
   const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
   const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
+  const [datosPerfil, setDatosPerfil] = useState(datosPerfilInicial); // 🔥 NUEVO
   const [errorAuth, setErrorAuth] = useState(null);
-
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [publicMyProfile, setPublicMyProfile] = useState(null);
   const [publicProfile, setPublicProfile] = useState(null);
   const [communityUsers, setCommunityUsers] = useState([]);
@@ -30,55 +37,20 @@ const UserContext = ({ children }) => {
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [isLoadingCommunity, setIsLoadingCommunity] = useState(false);
   const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
+  const [activeProfileTab, setActiveProfileTab] = useState("modelos");
 
-  const normalizeUser = (userObj) => {
-    if (!userObj) return null;
+  const [activeProfileData, setActiveProfileData] = useState(null);
+  const [isLoadingActiveProfile, setIsLoadingActiveProfile] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
-    let avatarUrl = null;
-    let bannerUrl = null;
-
-    if (userObj.avatar) {
-      const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
-      const cleanPath = userObj.avatar.startsWith('/') ? userObj.avatar : `/${userObj.avatar}`;
-      avatarUrl = userObj.avatar.startsWith('http') ? userObj.avatar : `${cleanBase}${cleanPath}`;
-    }
-
-    if (userObj.banner_url) {
-      const cleanBase = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
-      const cleanPath = userObj.banner_url.startsWith('/') ? userObj.banner_url : `/${userObj.banner_url}`;
-      bannerUrl = userObj.banner_url.startsWith('http') ? userObj.banner_url : `${cleanBase}${cleanPath}`;
-    }
-
-    const primaryColor = userObj.primary_color || '#3b82f6';
-    const bgColorHex = primaryColor.replace('#', '');
-    const safeUsername = userObj.username || 'User';
-
-    const computedAvatar = avatarUrl || `https://ui-avatars.com/api/?name=${safeUsername}&background=${bgColorHex}&color=fff&bold=true`;
-
-    const computedBannerStyle = bannerUrl
-      ? { backgroundImage: `url(${bannerUrl})` }
-      : { backgroundColor: primaryColor };
-
-    return {
-      ...userObj,
-      avatarUrl,
-      bannerUrl,
-      primaryColor,
-      computedAvatar,
-      computedBannerStyle,
-      inicial: safeUsername.charAt(0).toUpperCase(),
-      fechaRegistro: userObj.created_at ? new Date(userObj.created_at).toLocaleDateString() : "Desconocida",
-    };
-  };
+  const [searchUserTerm, setSearchUserTerm] = useState("");
+  const [userSortBy, setUserSortBy] = useState("followers_count:desc");
+  const [isSearchingUsers, setIsSearchingUsers] = useState(false);
 
   useEffect(() => {
     if (userLocal) {
       setCurrentUser(normalizeUser(JSON.parse(userLocal)));
     }
-  }, []);
-
-  useEffect(() => {
-    getCommunityUsers();
   }, []);
 
   const actualizarDato = (evento) => {
@@ -139,26 +111,38 @@ const UserContext = ({ children }) => {
     });
   };
 
-  const getCommunityUsers = async (page = 1, limit = 20) => {
+  const searchCommunityUsers = async (query = "", page = 1) => {
     setIsLoadingCommunity(true);
+    setIsSearchingUsers(true);
     try {
-      const response = await authAPI.get(`${backendUrl}/users/public?page=${page}&limit=${limit}`);
-      const responseData = response.data?.data || response.data;
-      const usersArray = responseData?.data || responseData;
+      const searchParams = {
+        hitsPerPage: 20,
+        page: page,
+        sort: [userSortBy]
+      };
 
-      if (Array.isArray(usersArray)) {
-        setCommunityUsers(usersArray.map(normalizeUser));
-        setPagination({ page: response.data.page, total: response.data.total, totalPages: response.data.totalPages });
-      } else {
-        setCommunityUsers([]);
-      }
-
+      const results = await usersIndex.search(query, searchParams);
+      console.log("Hits de Meili:", results.hits);
+      setCommunityUsers(results.hits.map(normalizeUser));
+      setPagination({
+        page: results.page,
+        total: results.totalHits,
+        totalPages: results.totalPages
+      });
     } catch (error) {
-      console.error("Error cargando la comunidad:", error);
+      console.error("Error buscando en la comunidad:", error);
     } finally {
       setIsLoadingCommunity(false);
+      setIsSearchingUsers(false);
     }
   };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      searchCommunityUsers(searchUserTerm, 1);
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [searchUserTerm, userSortBy]);
 
   const getPublicProfile = async (username) => {
     setIsLoadingProfile(true);
@@ -206,6 +190,97 @@ const UserContext = ({ children }) => {
     return checkIsOwnProfile(userId) ? '/profile' : `/perfil/${username}`;
   };
 
+  const loadProfile = async (usernameParam) => {
+    const own = !usernameParam;
+
+    setIsOwnProfile(own);
+    setIsLoadingActiveProfile(true);
+    setActiveProfileData(null);
+
+    try {
+      let data;
+      if (own) {
+        if (!currentUser?.id) return;
+        const response = await authAPI.get(`${backendUrl}/users/${currentUser.id}`);
+        data = response.data?.data || response.data;
+      } else {
+        const response = await authAPI.get(`${backendUrl}/users/perfil/${usernameParam}`);
+        data = response.data?.data || response.data;
+      }
+
+      const normalizedUserProfile = normalizeUser(data.profile);
+      const normalizedModels = (data.content?.recent_models || []).map(rawModel =>
+        normalizeModelForCard(rawModel, normalizedUserProfile)
+      );
+
+      setActiveProfileData({
+        profile: normalizedUserProfile,
+        stats: data.stats,
+        content: {
+          ...data.content,
+          recent_models: normalizedModels
+        },
+      });
+
+    } catch (error) {
+      console.error("Error cargando perfil:", error);
+    } finally {
+      setIsLoadingActiveProfile(false);
+    }
+  };
+
+  const changeProfileTab = (tab) => {
+    setActiveProfileTab(tab);
+  };
+
+  const getProfileModels = () => {
+    return activeProfileData?.content?.recent_models || [];
+  };
+
+
+  const actualizarDatoPerfil = (evento) => {
+    const { name, value } = evento.target;
+    setDatosPerfil((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const cargarDatosConfiguracion = () => {
+    if (currentUser) {
+      setDatosPerfil({
+        username: currentUser.username || "",
+        name: currentUser.name || "",
+        lastname: currentUser.lastname || "",
+        bio: currentUser.bio || "",
+        location: currentUser.location || "",
+        youtube: currentUser.youtube || "",
+        twitter: currentUser.twitter || "",
+        linkedin: currentUser.linkedin || "",
+        github: currentUser.github || "",
+        card_bg_color: currentUser.card_bg_color || "#ffffff",
+        primary_color: currentUser.primary_color || "#3b82f6"
+      });
+    }
+  };
+
+  const guardarCambiosPerfil = async (evento) => {
+    if (evento) evento.preventDefault();
+    setIsUpdatingProfile(true);
+    try {
+      const response = await authAPI.put(`${backendUrl}/users/${currentUser.id}`, datosPerfil);
+      const updatedUser = response.data?.data || response.data;
+
+      const normalUser = normalizeUser(updatedUser);
+      setCurrentUser(normalUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      showMessage("Perfil actualizado correctamente", "success");
+    } catch (error) {
+      showMessage(error.response?.data?.message || "Error al actualizar el perfil", "error");
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
+
   const exportData = {
     currentUser,
     isAuthenticated,
@@ -223,12 +298,30 @@ const UserContext = ({ children }) => {
     isLoadingProfile,
     isLoadingMyProfile,
     isLoadingCommunity,
-    getCommunityUsers,
     getMyPublicProfile,
     getPublicProfile,
     checkIsOwnProfile,
     getProfileRoute,
     pagination,
+    changeProfileTab,
+    getProfileModels,
+    activeProfileTab,
+    activeProfileData,
+    isLoadingActiveProfile,
+    loadProfile,
+    isOwnProfile,
+    searchUserTerm,
+    setSearchUserTerm,
+    userSortBy,
+    setUserSortBy,
+    isSearchingUsers,
+    datosPerfil,
+    actualizarDatoPerfil,
+    cargarDatosConfiguracion,
+    guardarCambiosPerfil,
+    isUpdatingProfile,
+    setSearchUserTerm,
+    setUserSortBy
   };
 
   return <user.Provider value={exportData}>{children}</user.Provider>;

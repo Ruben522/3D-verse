@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../common/Button';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
@@ -25,7 +26,9 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
             {isOwnProfile ? (
               <>
                 <Button variant="outline" className="flex-1 md:flex-none !px-6 !py-2.5 !text-sm whitespace-nowrap">
-                  ⚙️ {t("user.settings")}
+                  <Link to="/settings" className="w-full h-full flex items-center justify-center">
+                    ⚙️ {t("user.settings")}
+                  </Link>
                 </Button>
                 <Button onClick={cerrarSesion} className="flex-1 md:flex-none !px-6 !py-2.5 !text-sm !bg-red-50 !text-red-600 border border-red-200 hover:!bg-red-100 shadow-none whitespace-nowrap">
                   🚪 {t("user.logout")}

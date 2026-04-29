@@ -91,62 +91,78 @@ const useAPI = () => {
             setIsLoading(false);
         }
     };
-    const downloadFile = async (url, method, fileName, body = null) => {
-        setIsLoading(true);
-        setError(null);
 
-        try {
-            const token = localStorage.getItem("token");
-            const headers = {};
+    const downloadFile = async (
+    url,
+    method,
+    fileName,
+    body = null,
+) => {
+    setIsLoading(true);
+    setError(null);
 
-            if (token) headers["Authorization"] = `Bearer ${token}`;
-            if (body && method === "POST")
-                headers["Content-Type"] = "application/json";
+    try {
+        const token = localStorage.getItem("token");
 
-            const options = { method, headers };
-            if (body && method === "POST") options.body = JSON.stringify(body);
+        const headers = {
+            ...(token && {
+                Authorization: `Bearer ${token}`,
+            }),
+            ...(body &&
+                method === "POST" && {
+                    "Content-Type": "application/json",
+                }),
+        };
 
-            const response = await fetch(url, options);
+        const response = await fetch(url, {
+            method,
+            headers,
+            ...(body &&
+                method === "POST" && {
+                    body: JSON.stringify(body),
+                }),
+        });
 
-            if (response.status === 401) {
-                throw new Error("No autorizado. Inicia sesión.");
-            }
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(
-                    errorData.message || "Error al descargar el archivo",
-                );
-            }
-
-            // Convertimos la respuesta a un Blob (archivo binario)
-            const blob = await response.blob();
-
-            // Magia del navegador para forzar la descarga:
-            // Creamos una URL temporal para ese blob
-            const downloadUrl = window.URL.createObjectURL(blob);
-
-            // Creamos una etiqueta <a> invisible
-            const link = document.createElement("a");
-            link.href = downloadUrl;
-            link.setAttribute("download", fileName); // Le decimos al navegador el nombre del archivo
-
-            // La añadimos al DOM, hacemos clic en ella y la borramos
-            document.body.appendChild(link);
-            link.click();
-            link.parentNode.removeChild(link);
-
-            // Limpiamos la URL temporal de la memoria
-            window.URL.revokeObjectURL(downloadUrl);
-        } catch (err) {
-            setError(err.message);
-            throw err;
-        } finally {
-            setIsLoading(false);
+        if (response.status === 401) {
+            throw new Error(
+                "No autorizado. Inicia sesión.",
+            );
         }
-    };
+
+        if (!response.ok) {
+            const errorData = await response
+                .json()
+                .catch(() => ({}));
+
+            throw new Error(
+                errorData.message ||
+                    "Error al descargar el archivo",
+            );
+        }
+
+        const blob = await response.blob();
+
+        const objectUrl = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+
+        link.href = objectUrl;
+        link.download = fileName;
+
+        link.click();
+
+        URL.revokeObjectURL(objectUrl);
+    } catch (err) {
+        setError(err.message);
+        throw err;
+    } finally {
+        setIsLoading(false);
+    }
+};
+
     const downloadPost = (url, fileName, body = {}) =>
         downloadFile(url, "POST", fileName, body);
+
     const downloadGet = (url, fileName) => downloadFile(url, "GET", fileName);
     return {
         isLoading,
