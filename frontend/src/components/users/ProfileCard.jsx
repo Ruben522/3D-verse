@@ -6,10 +6,16 @@ import FollowButton from '../common/FollowButton';
 const ProfileCard = ({ user }) => {
     const { checkIsOwnProfile, getProfileRoute } = useUsers();
 
+    // 🎨 Estilo dinámico para el fondo de la tarjeta
+    const dynamicCardStyle = {
+        backgroundColor: user.card_bg_color || '#ffffff',
+    };
+
     return (
         <Link
             to={getProfileRoute(user.id, user.username)}
-            className="block group bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:border-primary-200 hover:-translate-y-1 transition-all duration-300 relative"
+            style={dynamicCardStyle}
+            className="block group rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:border-primary-200 hover:-translate-y-1 transition-all duration-300 relative"
         >
             {/* Banner */}
             <div
@@ -17,7 +23,7 @@ const ProfileCard = ({ user }) => {
                 style={user.computedBannerStyle}
             />
 
-            {/* BOTÓN DE SEGUIR (La lógica ya está en el Contexto y en el propio botón) */}
+            {/* BOTÓN DE SEGUIR */}
             {!checkIsOwnProfile(user.id) && (
                 <FollowButton targetUserId={user.id} />
             )}
@@ -42,7 +48,7 @@ const ProfileCard = ({ user }) => {
                 </p>
 
                 {/* Estadísticas */}
-                <div className="flex items-center justify-center gap-8 w-full mt-5 pt-4 border-t border-gray-50">
+                <div className="flex items-center justify-center gap-8 w-full mt-5 pt-4 border-t border-gray-100">
                     <div className="flex flex-col items-center">
                         <span className="font-black text-gray-900 text-lg">{user.models_count || 0}</span>
                         <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Modelos</span>

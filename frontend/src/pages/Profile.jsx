@@ -27,7 +27,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-surface pb-20">
-
+      {console.log(currentUser)}
       {/* LOADING */}
       {(isLoadingActiveProfile || !activeProfileData) ? (
         <div className="flex flex-col justify-center items-center min-h-[60vh]">

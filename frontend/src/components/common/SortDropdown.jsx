@@ -36,8 +36,8 @@ const SortDropdown = ({ options, activeSort, onSortChange, isOpen, onToggle, isA
                             key={opt.value}
                             onClick={() => handleSelect(opt.value)}
                             className={`flex items-center w-full px-3 py-2.5 rounded-md text-sm font-medium transition-colors text-left ${activeSort === opt.value
-                                    ? 'bg-primary-50 text-primary-700'
-                                    : 'hover:bg-gray-50 text-gray-700'
+                                ? 'bg-primary-50 text-primary-700 dark:bg-primary-800'
+                                : 'hover:bg-gray-50 text-gray-800'
                                 }`}
                         >
                             {opt.label}

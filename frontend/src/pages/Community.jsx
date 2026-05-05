@@ -3,7 +3,7 @@ import useUsers from '../hooks/useUsers';
 import ProfileCard from '../components/users/ProfileCard';
 import { useTranslation } from 'react-i18next';
 import Pagination from '../components/common/Pagination';
-import SearchBar from '../components/common/SearchBar'; // 🔥 Importamos la Omnibar
+import SearchBar from '../components/common/SearchBar';
 
 const Community = () => {
     const {
@@ -19,7 +19,6 @@ const Community = () => {
     } = useUsers();
     const { t } = useTranslation();
 
-    // 🔥 Opciones de ordenación exclusivas para Creadores
     const sortOptions = [
         { value: "followers_count:desc", label: "🌟 Más Seguidores" },
         { value: "models_count:desc", label: "📦 Más Modelos" }
@@ -47,7 +46,6 @@ const Community = () => {
                     />
                 </div>
 
-                {/* Grid con desenfoque al buscar */}
                 <div className={`transition-all duration-300 ${isSearchingUsers ? 'opacity-50 blur-sm scale-[0.98] pointer-events-none' : 'opacity-100'}`}>
                     {communityUsers?.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

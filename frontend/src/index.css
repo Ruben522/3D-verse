@@ -7,3 +7,40 @@ body {
   margin: 0;
   font-family: system-ui, sans-serif;
 }
+@layer base {
+  html {
+    @apply bg-gray-50 dark:bg-gray-900;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300;
+  }
+
+  #root {
+    @apply min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300;
+  }
+}
+
+@layer components {
+
+  .bg-app {
+    @apply bg-gray-50 dark:bg-zinc-950;
+  }
+
+  .bg-card {
+    @apply bg-white dark:bg-zinc-900;
+  }
+
+  .border-app {
+    @apply border-gray-100 dark:border-zinc-800;
+  }
+
+  .text-main {
+    @apply text-gray-900 dark:text-zinc-100;
+  }
+
+  .text-muted {
+    @apply text-gray-500 dark:text-zinc-400;
+  }
+
+}

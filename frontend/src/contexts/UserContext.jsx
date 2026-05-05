@@ -26,7 +26,7 @@ const UserContext = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
   const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
-  const [datosPerfil, setDatosPerfil] = useState(datosPerfilInicial); // 🔥 NUEVO
+  const [datosPerfil, setDatosPerfil] = useState(datosPerfilInicial);
   const [errorAuth, setErrorAuth] = useState(null);
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [publicMyProfile, setPublicMyProfile] = useState(null);
@@ -255,8 +255,9 @@ const UserContext = ({ children }) => {
         twitter: currentUser.twitter || "",
         linkedin: currentUser.linkedin || "",
         github: currentUser.github || "",
-        card_bg_color: currentUser.card_bg_color || "#ffffff",
-        primary_color: currentUser.primary_color || "#3b82f6"
+        primary_color: currentUser.primary_color || "#3b82f6",
+        banner_url: currentUser.banner_url || "",
+        avatar: currentUser.avatar || ""
       });
     }
   };
@@ -272,6 +273,7 @@ const UserContext = ({ children }) => {
       setCurrentUser(normalUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
+      navegar('/profile');
       showMessage("Perfil actualizado correctamente", "success");
     } catch (error) {
       showMessage(error.response?.data?.message || "Error al actualizar el perfil", "error");
@@ -280,6 +282,20 @@ const UserContext = ({ children }) => {
     }
   };
 
+  const getProfileStyles = (userObj) => {
+    if (!userObj) return {};
+
+    const custom = userObj.customization || userObj.profile || userObj;
+
+    return {
+      bannerBg: {
+        backgroundImage: custom.banner_url ? `url(${custom.banner_url})` : 'none',
+        backgroundColor: custom.primary_color || '#3b82f6',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }
+    };
+  };
 
   const exportData = {
     currentUser,
@@ -312,6 +328,7 @@ const UserContext = ({ children }) => {
     isOwnProfile,
     searchUserTerm,
     setSearchUserTerm,
+    searchCommunityUsers,
     userSortBy,
     setUserSortBy,
     isSearchingUsers,
@@ -320,8 +337,7 @@ const UserContext = ({ children }) => {
     cargarDatosConfiguracion,
     guardarCambiosPerfil,
     isUpdatingProfile,
-    setSearchUserTerm,
-    setUserSortBy
+    getProfileStyles
   };
 
   return <user.Provider value={exportData}>{children}</user.Provider>;

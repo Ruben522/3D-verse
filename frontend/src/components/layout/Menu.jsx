@@ -4,6 +4,7 @@ import useUsers from "../../hooks/useUsers.js";
 import Logo from "../common/Logo";
 import Button from "../common/Button";
 import LanguageSelector from "../language/LanguageSelector";
+import ThemeToggle from "../common/ThemeToggle";
 import { useTranslation } from "react-i18next";
 
 const Menu = () => {
@@ -19,7 +20,8 @@ const Menu = () => {
   };
 
   return (
-    <nav className="bg-primary-900 text-white sticky top-0 z-50 shadow-md">
+    // En tu Menu.jsx
+    <nav className="bg-primary-800 text-white dark:bg-primary-900 dark:border-b dark:border-primary-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16 gap-4">
 
@@ -35,10 +37,14 @@ const Menu = () => {
                 {t('links.comunity')}
               </NavLink>
             </div>
+
             <div className="flex items-center gap-4">
+
+              <ThemeToggle />
+
               {isAuthenticated && currentUser ? (
                 <div className="flex items-center gap-3">
-                  <Link to="/profile" className="flex items-center gap-3 hover:bg-primary-800 p-1.5 pr-4 rounded-full transition-colors cursor-pointer">
+                  <Link to="/profile" className="flex items-center gap-3 hover:bg-primary-800 p-1.5 pr-4 rounded-full transition-colors cursor-pointer dark:hover:bg-gray-800">
                     <div className="w-9 h-9 rounded-full bg-primary-700 border-2 border-primary-500 overflow-hidden">
                       <img
                         src={currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${currentUser.username}&background=0D8ABC&color=fff&bold=true`}
@@ -73,10 +79,8 @@ const Menu = () => {
             </div>
           </div>
 
-          {/* Mobile Controls */}
           <div className="md:hidden flex items-center gap-2">
 
-            {/* Avatar */}
             {isAuthenticated && currentUser && (
               <Link to="/profile" className="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-400">
                 <img
@@ -92,10 +96,15 @@ const Menu = () => {
               <LanguageSelector />
             </div>
 
+            {/* NUEVO: Botón de tema en la barra superior móvil */}
+            <div className="scale-90 origin-center">
+              <ThemeToggle />
+            </div>
+
             {/* Botón menú */}
             <button
               onClick={toggleMobileMenu}
-              className="text-white p-2 hover:bg-white/10 rounded-xl transition-colors text-2xl"
+              className="text-white p-2 hover:bg-white/10 rounded-xl transition-colors text-2xl dark:hover:bg-gray-800"
             >
               {isMobileOpen ? '✕' : '☰'}
             </button>
@@ -104,7 +113,7 @@ const Menu = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`md:hidden bg-primary-800 border-t border-primary-700 transition-all duration-300 overflow-hidden ${isMobileOpen ? 'max-h-[520px] opacity-100' : 'max-h-0 opacity-0'}`}>
+      <div className={`md:hidden bg-primary-800 border-t border-primary-700 transition-all duration-300 overflow-hidden dark:bg-gray-900 dark:border-gray-800 ${isMobileOpen ? 'max-h-[520px] opacity-100' : 'max-h-0 opacity-0'}`}>
 
         <div className="px-6 py-6 flex flex-col gap-5 text-lg">
           <NavLink to="/models" onClick={closeMobileMenu} className="text-white hover:text-primary-200">{t('links.explore')}</NavLink>
@@ -118,7 +127,7 @@ const Menu = () => {
             + Subir Diseño
           </Link>
 
-          <div className="h-px bg-primary-700 my-4"></div>
+          <div className="h-px bg-primary-700 my-4 dark:bg-gray-700"></div>
 
           {!isAuthenticated ? (
             <div className="flex flex-col gap-5">

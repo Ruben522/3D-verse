@@ -13,27 +13,30 @@ import LanguageContext from "./contexts/LanguageContext.jsx";
 import FollowContext from "./contexts/FollowContext.jsx";
 import ContactContext from "./contexts/ContactContext.jsx";
 import MessageContext from "./contexts/MessageContext.jsx";
+import ThemeContext from "./contexts/ThemeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<BrowserRouter>
-			<MessageContext>
-				<UserContext>
-					<LanguageContext>
-						<ModelsMeiliContext>
-							<LikeContext>
-								<FavoriteContext>
-									<FollowContext>
-										<ContactContext>
-											<App />
-										</ContactContext>
-									</FollowContext>
-								</FavoriteContext>
-							</LikeContext>
-						</ModelsMeiliContext>
-					</LanguageContext>
-				</UserContext>
-			</MessageContext>
+			<ThemeContext>
+				<MessageContext>
+					<UserContext>
+						<LanguageContext>
+							<ModelsMeiliContext>
+								<LikeContext>
+									<FavoriteContext>
+										<FollowContext>
+											<ContactContext>
+												<App />
+											</ContactContext>
+										</FollowContext>
+									</FavoriteContext>
+								</LikeContext>
+							</ModelsMeiliContext>
+						</LanguageContext>
+					</UserContext>
+				</MessageContext>
+			</ThemeContext>
 		</BrowserRouter>
 	</StrictMode>
 );

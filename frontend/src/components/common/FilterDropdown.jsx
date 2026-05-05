@@ -40,8 +40,8 @@ const FilterDropdown = ({ options, activeFilter, onFilterChange, isOpen, onToggl
                                 key={opt.id || opt.name}
                                 onClick={() => handleSelect(opt.name)}
                                 className={`px-3 py-2.5 rounded-md text-sm font-medium transition-colors text-left ${activeFilter === opt.name
-                                        ? 'bg-gray-100 text-gray-900'
-                                        : 'hover:bg-gray-50 text-gray-600'
+                                    ? 'bg-gray-100 text-gray-900'
+                                    : 'hover:bg-gray-50 text-gray-600'
                                     }`}
                             >
                                 {opt.name}

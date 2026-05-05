@@ -7,18 +7,16 @@ const HeroCarousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [carouselItems, setCarouselItems] = useState([]);
 
-    // Cargamos los modelos aleatorios una sola vez al montar el componente
-    // para evitar que cambien cada vez que el componente se re-renderiza
     useEffect(() => {
         setCarouselItems(getRandomModels());
-    }, []); // Dependencias vacías para que solo se ejecute al montar
+    }, []);
 
     // Autoplay
     useEffect(() => {
         if (carouselItems.length <= 1) return;
         const interval = setInterval(() => {
             setCurrentIndex((prev) => (prev === carouselItems.length - 1 ? 0 : prev + 1));
-        }, 5000); // Cambia cada 5 segundos
+        }, 5000);
         return () => clearInterval(interval);
     }, [carouselItems.length]);
 
@@ -30,17 +28,18 @@ const HeroCarousel = () => {
         setCurrentIndex(curr => curr === carouselItems.length - 1 ? 0 : curr + 1);
     };
 
+    // ESTADO DE CARGA: Aquí aplicamos el modo oscuro (dark:bg-gray-800 y dark:border-gray-700)
     if (carouselItems.length === 0) {
         return (
-            <div className="w-full h-[400px] bg-gray-100 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200">
-                <p className="text-gray-400 font-bold">Subiendo proyectos...</p>
+            <div className="w-full h-[400px] bg-gray-100 dark:bg-gray-800 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <p className="text-gray-400 dark:text-gray-500 font-bold">Subiendo proyectos...</p>
             </div>
         );
     }
 
     return (
-        <div className="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden group shadow-2xl">
-            {/* Contenedor de las imágenes */}
+        // Contenedor principal: Ajustamos la sombra en modo oscuro para que sea más natural (dark:shadow-black/50)
+        <div className="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden group shadow-2xl dark:shadow-black/50 transition-all duration-300">
             <div
                 className="flex w-full h-full transition-transform duration-700 ease-out"
                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -49,9 +48,11 @@ const HeroCarousel = () => {
                     <div key={item.id} className="w-full h-full flex-shrink-0 relative">
                         <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
 
-                        {/* Gradiente oscuro */}
+                        {/* El degradado oscuro hace que no necesitemos clases dark: aquí dentro, los textos blancos se leen perfecto siempre */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
-                            <span className="bg-primary-500 text-white text-xs font-black uppercase tracking-wider py-1 px-3 rounded-lg w-max mb-3">Destacado</span>
+                            <span className="bg-primary-500 text-white text-xs font-black uppercase tracking-wider py-1 px-3 rounded-lg w-max mb-3">
+                                Destacado
+                            </span>
                             <h3 className="text-white text-2xl font-black drop-shadow-lg truncate">{item.title}</h3>
                             <p className="text-gray-300 text-sm mt-2 line-clamp-2 max-w-md">{item.description}</p>
                             <Link to={`/models/${item.id}`} className="mt-4 text-white font-bold text-sm hover:text-primary-400 transition-colors w-max">
@@ -62,7 +63,7 @@ const HeroCarousel = () => {
                 ))}
             </div>
 
-            {/* Flechas de navegación */}
+            {/* Controles de navegación: Al estar sobre la imagen, el estilo de cristal (bg-black/30 con texto blanco) funciona genial en ambos modos */}
             <button onClick={prevSlide} className="absolute top-1/2 -translate-y-1/2 left-4 p-2 rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 z-10">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"></path></svg>
             </button>
@@ -70,7 +71,7 @@ const HeroCarousel = () => {
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path></svg>
             </button>
 
-            {/* Puntos (Dots) */}
+            {/* Puntos de paginación */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                 {carouselItems.map((_, idx) => (
                     <button

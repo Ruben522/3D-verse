@@ -1,57 +1,84 @@
-import React, { useState } from 'react';
-import UserSettings from '../components/settings/UserSettings/UserSettings';
-// import PrivateUserSettings from '../components/settings/PrivateUserSettings/PrivateUserSettings';
+import React, { useEffect, useState } from 'react';
+import UserSettings from '../components/settings/UserSettings/UserSettings.jsx';
+import CustomizationSection from '../components/settings/UserSettings/CustomizationSection';
+import useUsers from '../hooks/useUsers';
 
 const Settings = () => {
-    // Estado para controlar qué pestaña de configuración estamos viendo
-    const [activeTab, setActiveTab] = useState('public');
+    const [activeTab, setActiveTab] = useState('profile');
+
+    const {
+        cargarDatosConfiguracion,
+        guardarCambiosPerfil,
+        isUpdatingProfile,
+        currentUser,
+    } = useUsers();
+
+    useEffect(() => {
+        if (currentUser) {
+            cargarDatosConfiguracion();
+        }
+    }, [currentUser]);
 
     return (
-        <div className="min-h-screen bg-surface py-12 px-4 sm:px-6 pb-32">
-            <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto p-4 md:p-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">
+                Configuración
+            </h1>
 
-                {/* Cabecera */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-black text-gray-900">Configuración</h1>
-                    <p className="text-gray-500 mt-2">Gestiona tu perfil público y las preferencias de tu cuenta.</p>
+            <form
+                onSubmit={guardarCambiosPerfil}
+                className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
+            >
+                {/* Tabs */}
+                <div className="flex overflow-x-auto border-b border-gray-200">
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab('profile')}
+                        className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors outline-none ${activeTab === 'profile'
+                                ? 'border-b-2 border-primary-500 text-primary-600'
+                                : 'text-gray-500 hover:bg-gray-50'
+                            }`}
+                    >
+                        Perfil Público
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab('customization')}
+                        className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors outline-none ${activeTab === 'customization'
+                                ? 'border-b-2 border-primary-500 text-primary-600'
+                                : 'text-gray-500 hover:bg-gray-50'
+                            }`}
+                    >
+                        Personalización y Diseño
+                    </button>
                 </div>
 
-                {/* Sistema de Pestañas (Preparado para escalar) */}
-                <div className="border-b border-gray-200 mb-8">
-                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-                        <button
-                            onClick={() => setActiveTab('public')}
-                            className={`whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm transition-colors ${activeTab === 'public'
-                                    ? 'border-primary-500 text-primary-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                }`}
-                        >
-                            Perfil Público
-                        </button>
+                {/* Content */}
+                <div className="p-6 md:p-8">
+                    {activeTab === 'profile' && <UserSettings />}
 
-                        <button
-                            onClick={() => setActiveTab('private')}
-                            className={`whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm transition-colors ${activeTab === 'private'
-                                    ? 'border-primary-500 text-primary-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                }`}
-                        >
-                            Cuenta y Seguridad
-                        </button>
-                    </nav>
+                    {activeTab === 'customization' && (
+                        <CustomizationSection />
+                    )}
                 </div>
 
-                {/* Renderizado dinámico según la pestaña */}
-                {activeTab === 'public' && <UserSettings />}
-
-                {activeTab === 'private' && (
-                    <div className="p-8 text-center text-gray-500 bg-white rounded-2xl shadow-sm border border-gray-100">
-                        {/* <PrivateUserSettings /> */}
-                        🔒 Configuración de correo y contraseña próximamente...
-                    </div>
-                )}
-
-            </div>
+                {/* Footer */}
+                <div className="px-6 md:px-8 py-5 border-t border-gray-100 flex justify-end bg-gray-50/80">
+                    <button
+                        type="submit"
+                        disabled={isUpdatingProfile}
+                        className={`inline-flex justify-center rounded-xl px-8 py-3 text-sm font-bold text-white shadow-sm transition-all ${isUpdatingProfile
+                                ? 'bg-primary-400 cursor-wait'
+                                : 'bg-primary-600 hover:bg-primary-700 hover:shadow-md active:scale-95'
+                            }`}
+                    >
+                        {isUpdatingProfile
+                            ? 'Guardando cambios...'
+                            : 'Guardar cambios'}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 };

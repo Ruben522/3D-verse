@@ -2,23 +2,32 @@ import React from 'react';
 import Button from '../common/Button';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import useUsers from '../../hooks/useUsers';
 
 const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
   const { t } = useTranslation();
 
+  const { getProfileStyles } = useUsers();
+
+  const styles = getProfileStyles(profile);
+
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden mb-8">
-      <div className="h-48 md:h-64 w-full bg-gradient-to-r from-primary-800 via-primary-600 to-primary-900 relative">
+    <div style={styles.cardBg} className="rounded-3xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+
+      {/* 🎨 Imagen del Banner */}
+      <div style={styles.bannerBg} className="h-48 md:h-64 w-full relative">
       </div>
 
       <div className="px-6 sm:px-10 pb-8 relative">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-16 md:-mt-20 mb-6 relative z-10">
 
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg overflow-hidden flex items-center justify-center bg-primary-100 text-primary-700 text-6xl font-black flex-shrink-0">
+          <div
+            className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 shadow-lg overflow-hidden flex items-center justify-center bg-primary-100 text-primary-700 text-6xl font-black flex-shrink-0"
+          >
             {profile?.avatarUrl ? (
               <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
-              profile?.inicial
+              profile?.inicial || profile?.username?.charAt(0).toUpperCase()
             )}
           </div>
 
@@ -35,7 +44,8 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
                 </Button>
               </>
             ) : (
-              <Button className="flex-1 md:flex-none !px-10 !py-2.5 !text-sm shadow-md hover:shadow-lg">
+              // 🎨 Botón de Seguir con el color principal del creador
+              <Button style={styles.primaryBg} className="flex-1 md:flex-none !px-10 !py-2.5 !text-sm text-white shadow-md hover:shadow-lg border-none">
                 + {t("user.follow")}
               </Button>
             )}
@@ -46,7 +56,10 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
             {profile?.name} {profile?.lastname}
           </h1>
-          <p className="text-lg font-bold text-primary-600 mt-1">@{profile?.username}</p>
+          {/* 🎨 Nombre de usuario con el color principal */}
+          <p className="text-lg font-bold mt-1">
+            @{profile?.username}
+          </p>
           <p className="text-gray-500 mt-2 text-sm font-medium">{t("user.member_since")} {profile?.fechaRegistro}</p>
         </div>
 
