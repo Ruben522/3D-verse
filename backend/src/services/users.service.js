@@ -2,6 +2,7 @@ import prisma from "../config/prisma.js";
 import path from "path";
 import fs from "fs";
 import { checkPermission } from "../utils/checkPermission.js";
+import { syncUserToMeili, syncModelToMeili } from "../server/meilisearchSync.js";
 
 /**
  * Obtiene el perfil completo de un usuario, incluyendo estadísticas globales de su impacto.
@@ -365,25 +366,21 @@ const getPublicUsers = async ({ page = 1, limit = 20 }) => {
  * @throws {Error} Si el nombre de usuario ya está en uso (código P2002)
  * @throws {Error} Si el usuario no existe (código P2025)
  */
+/**
+ * Actualiza los datos de un usuario.
+ */
+/**
+ * Actualiza los datos de un usuario. Solo permite modificar campos permitidos.
+ */
 const updateUser = async (userId, currentUser, data) => {
     checkPermission(userId, currentUser);
 
-    const userFields = ["username"]; // Solo username se puede cambiar en users si lo necesitas
+    const userFields = []; 
+    
     const profileFields = [
-        "name",
-        "lastname",
-        "avatar",
-        "bio",
-        "location",
-        "youtube",
-        "twitter",
-        "linkedin",
-        "github",
-        "banner_url",
-        "card_bg_color",
-        "page_bg_url",
-        "badge_url",
-        "primary_color",
+        "username", "name", "lastname", "avatar", "bio",
+        "location", "youtube", "twitter", "linkedin", "github",
+        "banner_url", "card_bg_color", "page_bg_url", "badge_url", "primary_color",
     ];
 
     const userUpdate = {};
@@ -397,15 +394,21 @@ const updateUser = async (userId, currentUser, data) => {
         }
     }
 
-    if (
-        Object.keys(userUpdate).length === 0 &&
-        Object.keys(profileUpdate).length === 0
-    ) {
+    if (Object.keys(profileUpdate).length === 0) {
         throw new Error("No hay campos para actualizar.");
     }
 
-    userUpdate.updated_at = new Date();
-    profileUpdate.updated_at = new Date();
+    if (profileUpdate.username) {
+        const existingProfile = await prisma.profiles.findFirst({
+            where: { username: profileUpdate.username }
+        });
+
+        if (existingProfile && existingProfile.user_id !== userId) {
+            const error = new Error("Ese nombre de usuario ya está en uso. Por favor, elige otro.");
+            error.statusCode = 400;
+            throw error;
+        }
+    }
 
     try {
         const updated = await prisma.users.update({
@@ -416,22 +419,56 @@ const updateUser = async (userId, currentUser, data) => {
             },
             include: { profile: true },
         });
-        
-        const completeUpdated = await getUserById(userId);
-        await syncUserToMeili(completeUpdated);
+
+        try {
+            const userForMeili = await prisma.users.findUnique({
+                where: { id: userId },
+                include: {
+                    profile: true,
+                    _count: { select: { models: true } }
+                }
+            });
+            
+            if (userForMeili) {
+                await syncUserToMeili(userForMeili);
+            }
+
+            if (profileUpdate.username || profileUpdate.avatar) {
+                const userModels = await prisma.models.findMany({
+                    where: { user_id: userId },
+                    include: {
+                        users: { include: { profile: true } },
+                        model_category: { include: { categories: true } },
+                        model_tag: { include: { tags: true } },
+                        _count: { select: { model_likes: true } }
+                    }
+                });
+                
+                for (const model of userModels) {
+                    await syncModelToMeili(model);
+                }
+            }
+        } catch (meiliError) {
+            console.error("⚠️ El perfil se guardó en DB, pero Meilisearch falló:", meiliError);
+        }
+
+        const { id: profileId, user_id, ...profileData } = updated.profile;
 
         return {
             id: updated.id,
-            username: updated.username || updated.profile.username,
+            email: updated.email,
             role: updated.role,
-            ...updated.profile,
+            ...profileData
         };
+        
     } catch (error) {
-        if (error.code === "P2002") {
-            throw new Error("Ese nombre de usuario ya está en uso.");
-        }
         if (error.code === "P2025") {
             throw new Error("Usuario no encontrado.");
+        }
+        if (error.code === "P2002") {
+            const customError = new Error("Ese nombre de usuario ya está en uso. Por favor, elige otro.");
+            customError.statusCode = 400;
+            throw customError;
         }
         throw error;
     }

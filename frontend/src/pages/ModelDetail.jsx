@@ -9,6 +9,7 @@ import ModelFiles from "../components/models/ModelFiles";
 import ModelAuthor from "../components/models/ModelAuthor";
 import { useTranslation } from "react-i18next";
 import Viewer3DContext from "../contexts/Viewer3DContext";
+
 const ModelDetail = () => {
   const { id } = useParams();
   const { getModelById, isFetchingModel, modelError, currentModel, downloadPackage } = useModels();
@@ -20,21 +21,22 @@ const ModelDetail = () => {
 
   return (
     <Viewer3DContext>
-      <div className="min-h-screen bg-surface pb-20">
+      {/* Eliminamos bg-surface para heredar el fondo oscuro global */}
+      <div className="min-h-screen pb-20 transition-colors duration-300">
         {isFetchingModel ? (
           <div className="flex items-center justify-center min-h-[60vh]">
-            <p className="text-gray-500 font-medium text-lg">{t('messages.loading')}</p>
+            <p className="text-gray-500 dark:text-gray-400 font-medium text-lg transition-colors">{t('messages.loading')}</p>
           </div>
         ) : modelError ? (
           <div className="flex items-center justify-center min-h-[60vh]">
-            <p className="text-red-500 font-medium text-lg">{t('messages.no_model')}</p>
+            <p className="text-red-500 dark:text-red-400 font-medium text-lg transition-colors">{t('messages.no_model')}</p>
           </div>
         ) : currentModel ? (
           <>
             {/* Cabecera */}
             <div className="max-w-7xl mx-auto px-6 py-10">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight transition-colors">
                   {currentModel.title}
                 </h1>
                 <ModelAuthor />

@@ -2,7 +2,6 @@ import React from 'react';
 import useTheme from '../../hooks/useTheme';
 
 const ThemeToggle = () => {
-    // Ahora leemos el estado del cerebro central
     const { theme, toggleTheme } = useTheme();
 
     return (

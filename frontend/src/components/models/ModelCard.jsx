@@ -15,9 +15,9 @@ const ModelCard = ({ model }) => {
       onClick={() => navigate(`/models/${model.id}`)}
       className="
         group relative flex flex-col
-        bg-white dark:bg-zinc-900
+        bg-white dark:bg-gray-800
         rounded-2xl
-        border border-gray-100 dark:border-zinc-800
+        border border-gray-100 dark:border-gray-700
         shadow-sm dark:shadow-black/20
         hover:shadow-xl dark:hover:shadow-black/40
         hover:-translate-y-1.5
@@ -31,8 +31,8 @@ const ModelCard = ({ model }) => {
       </div>
 
       {/* IMAGEN */}
-      <div className="relative w-full aspect-[4/3] bg-gray-50 dark:bg-zinc-800 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-zinc-800 dark:to-zinc-900" />
+      <div className="relative w-full aspect-[4/3] bg-gray-50 dark:bg-gray-800 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900" />
 
         {model.imageUrl ? (
           <img
@@ -124,7 +124,7 @@ const ModelCard = ({ model }) => {
         <h3
           className="
             text-lg font-black
-            text-gray-900 dark:text-zinc-100
+            text-gray-900 dark:text-gray-100
             line-clamp-2
             group-hover:text-primary-600
             dark:group-hover:text-primary-400
@@ -140,7 +140,7 @@ const ModelCard = ({ model }) => {
           <div
             className="
               w-6 h-6 rounded-full overflow-hidden
-              border border-gray-200 dark:border-zinc-700
+              border border-gray-200 dark:border-gray-700
               shadow-sm flex-shrink-0
             "
           >
@@ -154,9 +154,9 @@ const ModelCard = ({ model }) => {
           <span
             className="
               text-xs font-bold truncate
-              text-gray-500 dark:text-zinc-400
+              text-gray-500 dark:text-gray-400
               group-hover:text-gray-900
-              dark:group-hover:text-zinc-200
+              dark:group-hover:text-gray-200
               transition-colors
             "
           >
@@ -173,9 +173,9 @@ const ModelCard = ({ model }) => {
                 inline-flex items-center
                 px-2.5 py-1 rounded-full
                 text-[10px] font-black uppercase tracking-wide
-                bg-gray-900 dark:bg-zinc-800
+                bg-gray-900 dark:bg-gray-700
                 text-white
-                shadow-sm
+                shadow-sm transition-colors
               "
             >
               {visibleCategory}
@@ -204,7 +204,8 @@ const ModelCard = ({ model }) => {
           className="
             flex justify-between items-center
             mt-auto pt-4
-            border-t border-gray-100/50 dark:border-zinc-800
+            border-t border-gray-100 dark:border-gray-700
+            transition-colors
           "
         >
 

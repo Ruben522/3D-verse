@@ -26,12 +26,13 @@ const Profile = () => {
   }, [username, currentUser]);
 
   return (
-    <div className="min-h-screen bg-surface pb-20">
+    <div className="min-h-screen pb-20 transition-colors duration-300">
       {console.log(currentUser)}
+
       {/* LOADING */}
       {(isLoadingActiveProfile || !activeProfileData) ? (
         <div className="flex flex-col justify-center items-center min-h-[60vh]">
-          <p className="text-gray-500 font-bold text-xl">
+          <p className="text-gray-500 dark:text-gray-400 font-bold text-xl transition-colors">
             {t("messages.loading")}
           </p>
         </div>

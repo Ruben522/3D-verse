@@ -13,12 +13,12 @@ const GalleryFiles = () => {
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h4 className="font-bold text-gray-900">{t("gallery_files.gallery_files")}</h4>
+                    <h4 className="font-bold text-gray-900 dark:text-white transition-colors">{t("gallery_files.gallery_files")}</h4>
                 </div>
                 <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
-                    className="px-4 py-2 bg-primary-50 text-primary-600 font-bold rounded-xl hover:bg-primary-100 transition-colors text-sm"
+                    className="px-4 py-2 bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 font-bold rounded-xl hover:bg-primary-100 dark:hover:bg-primary-500/30 transition-colors text-sm"
                 >
                     {t("buttons.put_images")}
                 </button>
@@ -38,7 +38,7 @@ const GalleryFiles = () => {
                     {gallery.map((file, index) => {
                         const previewUrl = URL.createObjectURL(file);
                         return (
-                            <div key={`${file.name}-${index}`} className="relative aspect-square rounded-xl overflow-hidden group border border-gray-200">
+                            <div key={`${file.name}-${index}`} className="relative aspect-square rounded-xl overflow-hidden group border border-gray-200 dark:border-gray-700 transition-colors">
                                 <img src={previewUrl} alt={`Preview ${index}`} className="w-full h-full object-cover" />
 
                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -61,10 +61,10 @@ const GalleryFiles = () => {
             ) : (
                 <div
                     onClick={() => fileRef.current?.click()}
-                    className="p-8 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center text-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl flex flex-col items-center justify-center text-center bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                     <span className="text-3xl mb-2 grayscale opacity-50">📸</span>
-                    <p className="text-sm font-medium text-gray-400">{t("gallery_files.no_images")}</p>
+                    <p className="text-sm font-medium text-gray-400 dark:text-gray-500 transition-colors">{t("gallery_files.no_images")}</p>
                 </div>
             )}
         </div>

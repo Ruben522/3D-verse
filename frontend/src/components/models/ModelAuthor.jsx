@@ -8,15 +8,13 @@ const ModelAuthor = () => {
     const { currentModel } = useModels();
     const { t } = useTranslation();
 
-
     return (
         <div
             onClick={() => navigate(`/perfil/${currentModel.username}`)}
-
             className="flex items-center gap-3 cursor-pointer group hover:opacity-90 transition-opacity"
         >
             {/* Avatar */}
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md flex-shrink-0">
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-800 shadow-md flex-shrink-0 transition-colors duration-300">
                 {currentModel.avatarUrl ? (
                     <img
                         src={currentModel.avatarUrl}
@@ -24,7 +22,7 @@ const ModelAuthor = () => {
                         className="w-full h-full object-cover"
                     />
                 ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white font-bold text-xl">
+                    <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center text-white font-bold text-xl transition-colors duration-300">
                         {currentModel.username.charAt(0).toUpperCase()}
                     </div>
                 )}
@@ -32,10 +30,12 @@ const ModelAuthor = () => {
 
             {/* Información del autor */}
             <div className="flex flex-col">
-                <span className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
+                <span className="font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
                     {currentModel.username}
                 </span>
-                <span className="text-sm text-gray-500">{t("user.creator")}</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                    {t("user.creator")}
+                </span>
             </div>
         </div>
     );

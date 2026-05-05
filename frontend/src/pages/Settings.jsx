@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import UserSettings from '../components/settings/UserSettings/UserSettings.jsx';
 import CustomizationSection from '../components/settings/UserSettings/CustomizationSection';
 import useUsers from '../hooks/useUsers';
+import BotBar from '../components/common/BotBar.jsx';
+import { useTranslation } from 'react-i18next';
+import InicialTittle from '../components/common/InicialTittle.jsx';
 
 const Settings = () => {
     const [activeTab, setActiveTab] = useState('profile');
+    const { t } = useTranslation();
+    const navigate = useNavigate();
 
     const {
         cargarDatosConfiguracion,
@@ -20,23 +26,24 @@ const Settings = () => {
     }, [currentUser]);
 
     return (
-        <div className="max-w-4xl mx-auto p-4 md:p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">
-                Configuración
-            </h1>
+        <div className="min-h-screen py-12 px-4 sm:px-6 pb-40 transition-colors duration-300">
+            <div className="max-w-4xl mx-auto flex flex-col gap-8">
 
-            <form
-                onSubmit={guardarCambiosPerfil}
-                className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
-            >
-                {/* Tabs */}
-                <div className="flex overflow-x-auto border-b border-gray-200">
+                <div className="-mb-4 md:-mb-8">
+                    <InicialTittle
+                        tittle={t('configuracion.tittle')}
+                        subtittle={t('configuracion.desc')}
+                    />
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex transition-colors">
                     <button
                         type="button"
                         onClick={() => setActiveTab('profile')}
-                        className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors outline-none ${activeTab === 'profile'
-                                ? 'border-b-2 border-primary-500 text-primary-600'
-                                : 'text-gray-500 hover:bg-gray-50'
+                        className={`flex-1 px-6 py-4 text-sm font-bold whitespace-nowrap transition-colors outline-none 
+                            ${activeTab === 'profile'
+                                ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
+                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                             }`}
                     >
                         Perfil Público
@@ -45,40 +52,31 @@ const Settings = () => {
                     <button
                         type="button"
                         onClick={() => setActiveTab('customization')}
-                        className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors outline-none ${activeTab === 'customization'
-                                ? 'border-b-2 border-primary-500 text-primary-600'
-                                : 'text-gray-500 hover:bg-gray-50'
+                        className={`flex-1 px-6 py-4 text-sm font-bold whitespace-nowrap transition-colors outline-none 
+                            ${activeTab === 'customization'
+                                ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
+                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                             }`}
                     >
                         Personalización y Diseño
                     </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 md:p-8">
+                <form id="settings-form" onSubmit={guardarCambiosPerfil} className="flex flex-col gap-6">
                     {activeTab === 'profile' && <UserSettings />}
+                    {activeTab === 'customization' && <CustomizationSection />}
+                </form>
 
-                    {activeTab === 'customization' && (
-                        <CustomizationSection />
-                    )}
-                </div>
+            </div>
 
-                {/* Footer */}
-                <div className="px-6 md:px-8 py-5 border-t border-gray-100 flex justify-end bg-gray-50/80">
-                    <button
-                        type="submit"
-                        disabled={isUpdatingProfile}
-                        className={`inline-flex justify-center rounded-xl px-8 py-3 text-sm font-bold text-white shadow-sm transition-all ${isUpdatingProfile
-                                ? 'bg-primary-400 cursor-wait'
-                                : 'bg-primary-600 hover:bg-primary-700 hover:shadow-md active:scale-95'
-                            }`}
-                    >
-                        {isUpdatingProfile
-                            ? 'Guardando cambios...'
-                            : 'Guardar cambios'}
-                    </button>
-                </div>
-            </form>
+            <BotBar
+                title="Guardar Configuración"
+                description="Asegúrate de guardar los cambios antes de salir."
+                onCancel={() => navigate('/profile')}
+                formId="settings-form"
+                isLoading={isUpdatingProfile}
+                submitText="Guardar cambios"
+            />
         </div>
     );
 };

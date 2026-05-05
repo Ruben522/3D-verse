@@ -94,7 +94,7 @@ const update = async (req, res) => {
         const user = await updateUser(req.params.id, req.user, req.body);
         sendSuccess(res, "Perfil actualizado correctamente", user);
     } catch (error) {
-        sendError(res, error.message, 400);
+        sendError(res, "El nombre de usuario ya está en uso", 400);
     }
 };
 

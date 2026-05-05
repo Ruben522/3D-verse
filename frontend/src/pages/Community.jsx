@@ -4,6 +4,7 @@ import ProfileCard from '../components/users/ProfileCard';
 import { useTranslation } from 'react-i18next';
 import Pagination from '../components/common/Pagination';
 import SearchBar from '../components/common/SearchBar';
+import InicialTittle from '../components/common/InicialTittle';
 
 const Community = () => {
     const {
@@ -28,12 +29,10 @@ const Community = () => {
         <div className="min-h-screen bg-surface py-12 px-4 sm:px-6 pb-32">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-12 animate-fade-in">
-                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-4">
-                        Comunidad de Creadores
-                    </h1>
-                    <p className="text-lg text-gray-500 font-medium mb-10 max-w-2xl mx-auto">
-                        Descubre a los talentosos diseñadores 3D que forman parte de nuestra plataforma.
-                    </p>
+                    <InicialTittle
+                        tittle={t('Comunidad de Creadores')}
+                        subtittle={t('Descubre a los talentosos diseñadores 3D que forman parte de nuestra plataforma.')}
+                    />
 
                     <SearchBar
                         value={searchUserTerm}

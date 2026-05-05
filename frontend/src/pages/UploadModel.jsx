@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import useUsers from '../hooks/useUsers';
 import useModels from '../hooks/useModels';
 import Button from '../components/common/Button';
@@ -10,9 +10,12 @@ import GalleryFiles from '../components/uploads/GalleryFiles';
 import PartsFiles from '../components/uploads/PartsFiles';
 import TagsInput from '../components/uploads/TagsInput';
 import CategoryInput from '../components/uploads/CategoryInput';
+import BotBar from '../components/common/BotBar';
+import InicialTittle from '../components/common/InicialTittle';
 import { useTranslation } from 'react-i18next';
 
 const UploadModel = () => {
+    const navigate = useNavigate();
     const { isAuthenticated } = useUsers();
     const {
         uploadData,
@@ -26,21 +29,15 @@ const UploadModel = () => {
     const { t } = useTranslation();
 
     return isAuthenticated ? (
-        // Quitamos bg-surface y añadimos transiciones
-        <div className="min-h-screen py-12 px-4 sm:px-6 pb-40 transition-colors duration-300">
+        <div className="min-h-screen py-12 px-4 sm:px-6 pb-48 md:pb-56 transition-colors duration-300">
             <div className="max-w-4xl mx-auto flex flex-col gap-8">
-
-                {/* CABECERA */}
-                <div>
-                    <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight transition-colors">
-                        {t('messages.post_model')}
-                    </h1>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium mt-2 text-lg transition-colors">
-                        {t('messages.post_model_desc')}
-                    </p>
+                <div className="-mb-4 md:-mb-8">
+                    <InicialTittle
+                        tittle={t('messages.post_model')}
+                        subtittle={t('messages.post_model_desc')}
+                    />
                 </div>
 
-                {/* MENSAJE DE ERROR GLOBAL */}
                 {uploadErrors?.global && (
                     <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-4 rounded-xl font-bold flex items-center gap-3 transition-colors">
                         <span>⚠️</span> {uploadErrors.global}
@@ -49,7 +46,6 @@ const UploadModel = () => {
 
                 <div className="flex flex-col gap-6">
 
-                    {/* SECCIÓN 1: DETALLES DEL MODELO */}
                     <AccordionSection
                         id="info"
                         title={t('messages.model_details')}
@@ -61,7 +57,6 @@ const UploadModel = () => {
                     >
                         <div className="flex flex-col gap-5 mt-4">
 
-                            {/* CAMPO: TÍTULO */}
                             <div>
                                 <label className="text-sm font-bold text-gray-700 dark:text-gray-300 block mb-2 transition-colors">
                                     {t('model_files.title')}
@@ -71,21 +66,18 @@ const UploadModel = () => {
                                     name="title"
                                     value={uploadData.title}
                                     onChange={actualizarDatoSubida}
-                                    className={`w-full px-4 py-3 rounded-xl border outline-none transition-all dark:text-white dark:placeholder-gray-500 
+                                    className={`w-full px-4 py-3 rounded-xl border outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 
                                         ${uploadErrors?.title
-                                            ? 'border-red-400 bg-red-50 dark:border-red-500/50 dark:bg-red-900/30'
-                                            : 'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800'
-                                        } 
-                                        focus:bg-white dark:focus:bg-gray-900 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500`}
+                                            ? 'border-red-400 bg-red-50 focus:bg-white dark:border-red-500/50 dark:bg-red-900/30 dark:focus:bg-gray-800'
+                                            : 'border-gray-200 bg-gray-50 focus:bg-white dark:border-gray-700 dark:bg-gray-900 dark:focus:bg-gray-800'
+                                        }`}
                                     placeholder="Ej: Figura de Dragón Articulado"
                                 />
                                 {uploadErrors?.title && <p className="text-red-500 dark:text-red-400 text-sm font-bold mt-1">{uploadErrors.title}</p>}
                             </div>
 
-                            {/* COMPONENTES ANIDADOS (Categoría) */}
                             <CategoryInput />
 
-                            {/* CAMPO: DESCRIPCIÓN */}
                             <div>
                                 <label className="text-sm font-bold text-gray-700 dark:text-gray-300 block mb-2 transition-colors">
                                     {t('model_files.description')}
@@ -95,17 +87,15 @@ const UploadModel = () => {
                                     value={uploadData.description}
                                     onChange={actualizarDatoSubida}
                                     rows="4"
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 outline-none transition-all resize-none dark:text-white dark:placeholder-gray-500"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 outline-none transition-all resize-none text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                                     placeholder={t('model_files.description_placeholder')}
                                 />
                             </div>
 
-                            {/* COMPONENTES ANIDADOS (Etiquetas) */}
                             <TagsInput />
                         </div>
                     </AccordionSection>
 
-                    {/* SECCIÓN 2: ARCHIVOS REQUERIDOS */}
                     <AccordionSection
                         id="files"
                         title={t('messages.required_files')}
@@ -121,7 +111,6 @@ const UploadModel = () => {
                         </div>
                     </AccordionSection>
 
-                    {/* SECCIÓN 3: ARCHIVOS OPCIONALES */}
                     <AccordionSection
                         id="extras"
                         title={t('messages.optionals_files')}
@@ -140,22 +129,15 @@ const UploadModel = () => {
                 </div>
             </div>
 
-            {/* BARRA INFERIOR DE PUBLICACIÓN */}
-            <div className="fixed bottom-0 left-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-50 transition-colors duration-300">
-                <div className="max-w-4xl mx-auto flex items-center justify-between">
-                    <div className="hidden sm:block">
-                        <p className="font-bold text-gray-900 dark:text-white transition-colors">{t('messages.confirmation_upload')}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors">{t('messages.confirmation_upload_desc')}</p>
-                    </div>
-                    <Button
-                        onClick={subirModelo}
-                        disabled={isUploading}
-                        className="w-full sm:w-auto !px-12 py-4 !text-lg !bg-primary-600 hover:!bg-primary-700 dark:!bg-primary-500 dark:hover:!bg-primary-400 shadow-primary-500/30"
-                    >
-                        {isUploading ? t('messages.loading') : t('messages.post_model')}
-                    </Button>
-                </div>
-            </div>
+            <BotBar
+                title={t('messages.confirmation_upload')}
+                description={t('messages.confirmation_upload_desc')}
+                onCancel={() => navigate("/")}
+                onSubmit={subirModelo}
+                isLoading={isUploading}
+                submitText={t('messages.post_model')}
+                loadingText={t('messages.loading')}
+            />
         </div>
     ) : (
         <Navigate to="/login" replace />

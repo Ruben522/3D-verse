@@ -4,6 +4,7 @@ import Pagination from '../components/common/Pagination';
 import SearchBar from '../components/common/SearchBar';
 import { model } from '../contexts/ModelsMeiliContext';
 import { useTranslation } from "react-i18next";
+import InicialTittle from '../components/common/InicialTittle';
 
 const Models = () => {
   const { t } = useTranslation();
@@ -39,32 +40,11 @@ const Models = () => {
       "
     >
       <main className="max-w-7xl mx-auto pb-12">
-
-        {/* HEADER */}
         <div className="mb-12 text-center">
-
-          <h1
-            className="
-              text-4xl md:text-5xl
-              font-black tracking-tight
-              text-gray-900 dark:text-zinc-100
-              mb-4
-              transition-colors
-            "
-          >
-            {t('explore.title')}
-          </h1>
-
-          <p
-            className="
-              text-lg font-bold
-              text-gray-500 dark:text-zinc-400
-              mb-10
-              transition-colors
-            "
-          >
-            {t('explore.subtitle')}
-          </p>
+          <InicialTittle
+            tittle={t('explore.title')}
+            subtittle={t('explore.subtitle')}
+          />
 
           {/* SEARCH */}
           <SearchBar
