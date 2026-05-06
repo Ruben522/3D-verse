@@ -1,51 +1,108 @@
 import React, { createContext, useState, useEffect } from "react";
 import useAPI from "../hooks/useAPI.js";
 import useUsers from "../hooks/useUsers.js";
+import { normalizeUser } from "../utils/normalizers";
 
 const follow = createContext();
 
 const FollowContext = ({ children }) => {
     const { isAuthenticated, currentUser } = useUsers();
+
     const api = useAPI();
-    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+    const backendUrl =
+        import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     const [followedUsers, setFollowedUsers] = useState(new Set());
 
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
+
+    const [followersPagination, setFollowersPagination] = useState(null);
+    const [followingPagination, setFollowingPagination] = useState(null);
+
+    const [isLoadingFollowers, setIsLoadingFollowers] = useState(false);
+    const [isLoadingFollowing, setIsLoadingFollowing] = useState(false);
+
     useEffect(() => {
         if (isAuthenticated && currentUser?.id) {
-            cargarSeguidos();
+            loadFollowings();
         } else {
             setFollowedUsers(new Set());
         }
     }, [isAuthenticated, currentUser]);
 
-    const cargarSeguidos = async () => {
+    const loadFollowings = async () => {
         try {
-            // Ajusta esta URL a tu endpoint que devuelve los usuarios que sigues
-            const res = await api.get(`${backendUrl}/followers/${currentUser.id}/following`);
-            const data = res.data?.data || res.data || res || [];
+            const response = await api.get(
+                `${backendUrl}/followers/${currentUser.id}/following`
+            );
+            console.log("FOLLOWING RESPONSE:", response.data);
+            const users = response.data?.data || [];
 
-            const followIds = new Set();
-            data.forEach(item => {
-                // Dependiendo de tu backend, el ID podría venir como following_id, user_id, o id
-                if (item.following_id) followIds.add(item.following_id);
-                else if (item.id) followIds.add(item.id);
+            const ids = users.map(user => user.id);
+
+            setFollowedUsers(new Set(ids));
+        } catch (error) {
+            console.error("Error cargando followings:", error);
+        }
+    };
+
+    const getFollowers = async (userId, page = 1) => {
+        setIsLoadingFollowers(true);
+        try {
+            const response = await api.get(
+                `${backendUrl}/followers/${userId}/followers?page=${page}`
+            );
+            const users = response.data?.data || [];
+            setFollowers(users.map(normalizeUser));
+
+            setFollowersPagination({
+                page: response.data?.page,
+                total: response.data?.total,
+                totalPages: response.data?.totalPages,
             });
 
-            setFollowedUsers(followIds);
         } catch (error) {
-            console.error("Error al cargar los usuarios seguidos:", error);
+            console.error("Error cargando followers:", error);
+        } finally {
+            setIsLoadingFollowers(false);
+        }
+    };
+
+    const getFollowing = async (userId, page = 1) => {
+        setIsLoadingFollowing(true);
+        try {
+            const response = await api.get(
+                `${backendUrl}/followers/${userId}/following?page=${page}`
+            );
+            const users = response.data?.data || [];
+
+            setFollowing(users.map(normalizeUser));
+
+            setFollowingPagination({
+                page: response.data?.page,
+                total: response.data?.total,
+                totalPages: response.data?.totalPages,
+            });
+
+        } catch (error) {
+            console.error("Error cargando following:", error);
+        } finally {
+            setIsLoadingFollowing(false);
         }
     };
 
     const toggleFollow = async (e, targetUserId) => {
         if (e) e.preventDefault();
-
         const isFollowed = followedUsers.has(targetUserId);
-
-        setFollowedUsers(prev => {
+        setFollowedUsers((prev) => {
             const next = new Set(prev);
-            isFollowed ? next.delete(targetUserId) : next.add(targetUserId);
+            if (isFollowed) {
+                next.delete(targetUserId);
+            } else {
+                next.add(targetUserId);
+            }
             return next;
         });
 
@@ -56,16 +113,31 @@ const FollowContext = ({ children }) => {
                 await api.post(`${backendUrl}/followers/${targetUserId}`);
             }
         } catch (error) {
-            setFollowedUsers(prev => {
+            setFollowedUsers((prev) => {
                 const next = new Set(prev);
-                isFollowed ? next.add(targetUserId) : next.delete(targetUserId);
+                if (isFollowed) {
+                    next.add(targetUserId);
+                } else {
+                    next.delete(targetUserId);
+                }
                 return next;
             });
-            console.error("Error al procesar el Follow:", error);
+            console.error("Error al procesar follow:", error);
         }
     };
 
-    const exportData = { followedUsers, toggleFollow };
+    const exportData = {
+        followedUsers,
+        followers,
+        following,
+        followersPagination,
+        followingPagination,
+        isLoadingFollowers,
+        isLoadingFollowing,
+        getFollowers,
+        getFollowing,
+        toggleFollow,
+    };
 
     return (
         <follow.Provider value={exportData}>
@@ -75,4 +147,5 @@ const FollowContext = ({ children }) => {
 };
 
 export { follow };
+
 export default FollowContext;

@@ -122,7 +122,6 @@ const UserContext = ({ children }) => {
       };
 
       const results = await usersIndex.search(query, searchParams);
-      console.log("Hits de Meili:", results.hits);
       setCommunityUsers(results.hits.map(normalizeUser));
       setPagination({
         page: results.page,

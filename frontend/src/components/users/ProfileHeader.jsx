@@ -55,7 +55,6 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
             )}
           </div>
         </div>
-
         <div className="mb-8 text-center md:text-left">
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight transition-colors">
             {profile?.name} {profile?.lastname}
@@ -78,12 +77,12 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
             <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.followers")}</span>
           </div>
           <div className="flex flex-col items-center md:items-start">
-            <span className="text-3xl font-black text-gray-900 dark:text-white transition-colors">{stats?.total_downloads || 0}</span>
-            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.total_downloads")}</span>
+            <span className="text-3xl font-black text-gray-900 dark:text-white transition-colors">{stats?.total_following || 0}</span>
+            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.total_following")}</span>
           </div>
           <div className="flex flex-col items-center md:items-start">
-            <span className="text-3xl font-black text-gray-900 dark:text-white transition-colors">{stats?.total_likes_received || 0}</span>
-            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.total_likes")}</span>
+            <span className="text-3xl font-black text-gray-900 dark:text-white transition-colors">{stats?.total_favorites_given || 0}</span>
+            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.total_favorites_given")}</span>
           </div>
         </div>
 

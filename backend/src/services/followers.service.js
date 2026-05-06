@@ -109,6 +109,9 @@ const unfollowUser = async (userIdToUnfollow, followerId) => {
  * @property {number} totalPages - Total de páginas
  * @property {Array<{ id: string, username: string, avatar: string|null, bio: string|null, followed_at: Date }>} data - Lista de seguidores
  */
+/**
+ * Obtiene la lista paginada de seguidores de un usuario.
+ */
 const getFollowers = async (userId, { page = 1, limit = 20 } = {}) => {
   const safeLimit = Math.min(limit, 50);
   const offset = (page - 1) * safeLimit;
@@ -117,36 +120,76 @@ const getFollowers = async (userId, { page = 1, limit = 20 } = {}) => {
     prisma.followers.count({
       where: { user_id: userId },
     }),
+
     prisma.followers.findMany({
       where: { user_id: userId },
+
       select: {
         followed_at: true,
+
         users_followers_follower_idTousers: {
           select: {
             id: true,
+            created_at: true,
+
             profile: {
               select: {
                 username: true,
+                name: true,
+                lastname: true,
                 avatar: true,
                 bio: true,
+                banner_url: true,
+                primary_color: true,
+                card_bg_color: true,
+                followers_count: true,
+                following_count: true,
+              },
+            },
+
+            _count: {
+              select: {
+                models: true,
               },
             },
           },
         },
       },
-      orderBy: { followed_at: "desc" },
+
+      orderBy: {
+        followed_at: "desc",
+      },
+
       skip: offset,
       take: safeLimit,
     }),
   ]);
 
-  const formattedData = followersList.map((f) => ({
-    id: f.users_followers_follower_idTousers.id,
-    username: f.users_followers_follower_idTousers.profile?.username,
-    avatar: f.users_followers_follower_idTousers.profile?.avatar,
-    bio: f.users_followers_follower_idTousers.profile?.bio,
-    followed_at: f.followed_at,
-  }));
+  const formattedData = followersList.map((f) => {
+    const user = f.users_followers_follower_idTousers;
+    const p = user.profile || {};
+
+    return {
+      id: user.id,
+      username: p.username,
+      name: p.name,
+      lastname: p.lastname,
+      avatar: p.avatar,
+      bio: p.bio,
+
+      banner_url: p.banner_url,
+      primary_color: p.primary_color,
+      card_bg_color: p.card_bg_color,
+
+      followers_count: p.followers_count || 0,
+      following_count: p.following_count || 0,
+
+      models_count: user._count.models || 0,
+
+      created_at: user.created_at,
+      followed_at: f.followed_at,
+    };
+  });
 
   return {
     page,
@@ -158,19 +201,7 @@ const getFollowers = async (userId, { page = 1, limit = 20 } = {}) => {
 };
 
 /**
- * Obtiene la lista paginada de usuarios que un usuario específico está siguiendo.
- * Devuelve información básica del usuario seguido + fecha en que se comenzó a seguir.
- *
- * @param {string} userId - ID del usuario cuyos seguidos se quieren obtener
- * @param {Object} [options] - Opciones de paginación
- * @param {number} [options.page=1] - Página solicitada
- * @param {number} [options.limit=20] - Cantidad de registros por página (máx 50)
- * @returns {Promise<Object>} Resultado paginado
- * @property {number} page - Página actual
- * @property {number} limit - Registros por página
- * @property {number} total - Total de usuarios seguidos
- * @property {number} totalPages - Total de páginas
- * @property {Array<{ id: string, username: string, avatar: string|null, bio: string|null, followed_at: Date }>} data - Lista de seguidos
+ * Obtiene la lista paginada de usuarios seguidos.
  */
 const getFollowing = async (userId, { page = 1, limit = 20 } = {}) => {
   const safeLimit = Math.min(limit, 50);
@@ -180,36 +211,76 @@ const getFollowing = async (userId, { page = 1, limit = 20 } = {}) => {
     prisma.followers.count({
       where: { follower_id: userId },
     }),
+
     prisma.followers.findMany({
       where: { follower_id: userId },
+
       select: {
         followed_at: true,
+
         users_followers_user_idTousers: {
           select: {
             id: true,
+            created_at: true,
+
             profile: {
               select: {
                 username: true,
+                name: true,
+                lastname: true,
                 avatar: true,
                 bio: true,
+                banner_url: true,
+                primary_color: true,
+                card_bg_color: true,
+                followers_count: true,
+                following_count: true,
+              },
+            },
+
+            _count: {
+              select: {
+                models: true,
               },
             },
           },
         },
       },
-      orderBy: { followed_at: "desc" },
+
+      orderBy: {
+        followed_at: "desc",
+      },
+
       skip: offset,
       take: safeLimit,
     }),
   ]);
 
-        const formattedData = followingList.map((f) => ({
-        id: f.users_followers_user_idTousers.id,
-        username: f.users_followers_user_idTousers.profile?.username,
-        avatar: f.users_followers_user_idTousers.profile?.avatar,
-        bio: f.users_followers_user_idTousers.profile?.bio,
-        followed_at: f.followed_at,
-    }));
+  const formattedData = followingList.map((f) => {
+    const user = f.users_followers_user_idTousers;
+    const p = user.profile || {};
+
+    return {
+      id: user.id,
+      username: p.username,
+      name: p.name,
+      lastname: p.lastname,
+      avatar: p.avatar,
+      bio: p.bio,
+
+      banner_url: p.banner_url,
+      primary_color: p.primary_color,
+      card_bg_color: p.card_bg_color,
+
+      followers_count: p.followers_count || 0,
+      following_count: p.following_count || 0,
+
+      models_count: user._count.models || 0,
+
+      created_at: user.created_at,
+      followed_at: f.followed_at,
+    };
+  });
 
   return {
     page,

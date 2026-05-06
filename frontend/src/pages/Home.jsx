@@ -10,35 +10,23 @@ const Home = () => {
     return (
         <div className="min-h-screen transition-colors duration-300">
 
-            {/* 1. SECCIÓN HERO (Mitad Texto / Mitad Carrusel) */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-8 md:pt-20 md:pb-16">
                 <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-
-                    {/* Texto Izquierda */}
                     <div className="animate-fade-in pr-0 lg:pr-8 text-center lg:text-left">
-
-                        {/* Etiqueta (Badge): Usamos un morado semitransparente y texto claro en modo oscuro */}
                         <span className="inline-block py-1.5 px-4 rounded-full bg-primary-50 text-primary-700 border border-primary-100 dark:bg-primary-900/30 dark:text-primary-300 dark:border-primary-800 font-black text-sm tracking-widest uppercase mb-6 transition-colors">
                             Impresión 3D Sin Límites
                         </span>
-
-                        {/* Título Principal: Pasa a blanco en oscuro. El gradiente usa tonos más claros (400 a 300) para destacar mejor */}
                         <h1 className="text-5xl lg:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-[1.1] transition-colors">
                             Encuentra, comparte e imprime <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-400 dark:to-primary-300">diseños increíbles</span>
                         </h1>
-
-                        {/* Párrafo: Un gris más claro para que sea cómodo de leer */}
                         <p className="mt-6 text-lg text-gray-500 dark:text-gray-300 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0 transition-colors">
                             Únete a la comunidad de creadores 3D más activa. Explora miles de modelos listos para imprimir, sube tus propias creaciones y conecta con diseñadores de todo el mundo.
                         </p>
 
                         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                            {/* Botón Primario: Mantenemos tu morado, oscureciéndolo un poco al hacer hover en modo oscuro */}
                             <Link to="/models" className="w-full sm:w-auto px-8 py-4 bg-primary-600 text-white font-bold rounded-2xl hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/30 transition-all text-center text-lg">
                                 Explorar Modelos
                             </Link>
-
-                            {/* Botón Secundario: Se vuelve oscuro con bordes sutiles en modo oscuro */}
                             <Link to="/comunidad" className="w-full sm:w-auto px-8 py-4 bg-white text-gray-900 border border-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 font-bold rounded-2xl hover:bg-gray-50 transition-all text-center text-lg shadow-sm hover:shadow">
                                 Ver Comunidad
                             </Link>

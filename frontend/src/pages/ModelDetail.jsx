@@ -21,7 +21,6 @@ const ModelDetail = () => {
 
   return (
     <Viewer3DContext>
-      {/* Eliminamos bg-surface para heredar el fondo oscuro global */}
       <div className="min-h-screen pb-20 transition-colors duration-300">
         {isFetchingModel ? (
           <div className="flex items-center justify-center min-h-[60vh]">
@@ -33,13 +32,14 @@ const ModelDetail = () => {
           </div>
         ) : currentModel ? (
           <>
-            {/* Cabecera */}
             <div className="max-w-7xl mx-auto px-6 py-10">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight transition-colors">
-                  {currentModel.title}
-                </h1>
-                <ModelAuthor />
+                <div className="flex flex-col md:flex-row md:items-center gap-6">
+                  <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight transition-colors">
+                    {currentModel.title}
+                  </h1>
+                  <ModelAuthor />
+                </div>
                 <Button onClick={() => downloadPackage(currentModel.id, 'all')} className="text-sm px-6 py-3">
                   {t('buttons.download')}
                 </Button>
@@ -47,14 +47,11 @@ const ModelDetail = () => {
             </div>
 
             <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Columna Izquierda */}
               <div className="lg:col-span-2 space-y-8">
                 <MediaViewer />
                 <ModelFiles />
                 <ModelInfo />
               </div>
-
-              {/* Columna Derecha */}
               <ModelSidebar />
             </main>
           </>
