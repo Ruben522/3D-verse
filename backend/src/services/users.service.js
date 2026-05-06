@@ -375,8 +375,8 @@ const getPublicUsers = async ({ page = 1, limit = 20 }) => {
 const updateUser = async (userId, currentUser, data) => {
     checkPermission(userId, currentUser);
 
-    const userFields = []; 
-    
+    const userFields = [];
+
     const profileFields = [
         "username", "name", "lastname", "avatar", "bio",
         "location", "youtube", "twitter", "linkedin", "github",
@@ -428,7 +428,7 @@ const updateUser = async (userId, currentUser, data) => {
                     _count: { select: { models: true } }
                 }
             });
-            
+
             if (userForMeili) {
                 await syncUserToMeili(userForMeili);
             }
@@ -443,7 +443,7 @@ const updateUser = async (userId, currentUser, data) => {
                         _count: { select: { model_likes: true } }
                     }
                 });
-                
+
                 for (const model of userModels) {
                     await syncModelToMeili(model);
                 }
@@ -460,7 +460,7 @@ const updateUser = async (userId, currentUser, data) => {
             role: updated.role,
             ...profileData
         };
-        
+
     } catch (error) {
         if (error.code === "P2025") {
             throw new Error("Usuario no encontrado.");
@@ -515,7 +515,7 @@ const deleteUser = async (userId, currentUser) => {
 
 /**
  * Obtiene la lista completa de modelos que el usuario ha marcado como favoritos.
- * Devuelve solo la información relevante de cada modelo.
+ * Devuelve solo la información relevante de cada modelo, adaptada para el frontend.
  *
  * @param {string} userId - ID del usuario cuyos favoritos se desean obtener
  * @returns {Promise<Array<Object>>} Array de modelos favoritos
@@ -532,13 +532,41 @@ const getUserFavorites = async (userId) => {
                     downloads: true,
                     views: true,
                     created_at: true,
+                    // Añadimos lo que necesita normalizeModelForCard
+                    _count: {
+                        select: { model_likes: true },
+                    },
+                    model_category: {
+                        include: { categories: true },
+                    },
+                    model_tag: {
+                        include: { tags: true },
+                    },
+                    users: {
+                        select: {
+                            id: true,
+                            profile: {
+                                select: {
+                                    username: true,
+                                    avatar: true,
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
         orderBy: { created_at: "desc" },
     });
 
-    return favorites.map((fav) => fav.models);
+    return favorites
+        .filter((fav) => fav.models != null) // Filtro de seguridad por si el modelo fue borrado
+        .map((fav) => {
+            const rawModel = fav.models;
+            // Tu normalizador busca rawModel.author?.username, así que se lo preparamos:
+            rawModel.author = rawModel.users?.profile || rawModel.users;
+            return rawModel;
+        });
 };
 
 /**

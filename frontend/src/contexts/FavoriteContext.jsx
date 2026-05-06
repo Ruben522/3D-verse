@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import useAPI from "../hooks/useAPI.js";
 import useUsers from "../hooks/useUsers.js";
+import { normalizeModelForCard } from "../utils/normalizers";
 
 const favorite = createContext();
 
@@ -10,31 +11,45 @@ const FavoriteContext = ({ children }) => {
     const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     const [favoritedModels, setFavoritedModels] = useState(new Set());
+    const [favorites, setFavorites] = useState([]);
+    const [isLoadingFavorites, setIsLoadingFavorites] = useState(false);
 
     useEffect(() => {
         if (isAuthenticated && currentUser?.id) {
             cargarFavoritos();
         } else {
             setFavoritedModels(new Set());
+            setFavorites([]);
         }
     }, [isAuthenticated, currentUser]);
 
     const cargarFavoritos = async () => {
         try {
             const favRes = await api.get(`${backendUrl}/users/${currentUser.id}/favorites`);
-
             const data = favRes.data?.data || favRes.data || favRes || [];
 
             const favIds = new Set();
             data.forEach(item => {
-                if (item.model_id) favIds.add(item.model_id);
-                else if (item.model?.id) favIds.add(item.model.id);
-                else if (item.id) favIds.add(item.id);
+                if (item.id) favIds.add(item.id);
             });
 
             setFavoritedModels(favIds);
         } catch (error) {
             console.error("Error al cargar los favoritos del usuario:", error);
+        }
+    };
+
+    const getFavorites = async (userId) => {
+        setIsLoadingFavorites(true);
+        try {
+            const response = await api.get(`${backendUrl}/users/${userId}/favorites`);
+            const data = response.data?.data || response.data || response || [];
+
+            setFavorites(data.map(model => normalizeModelForCard(model)));
+        } catch (error) {
+            console.error("Error cargando la lista de favoritos:", error);
+        } finally {
+            setIsLoadingFavorites(false);
         }
     };
 
@@ -66,7 +81,13 @@ const FavoriteContext = ({ children }) => {
         }
     };
 
-    const exportData = { favoritedModels, toggleFavorite };
+    const exportData = {
+        favoritedModels,
+        favorites,
+        isLoadingFavorites,
+        getFavorites,
+        toggleFavorite
+    };
 
     return (
         <favorite.Provider value={exportData}>
