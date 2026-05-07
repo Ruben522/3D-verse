@@ -90,6 +90,13 @@ const normalizeMeiliHit = (hit) => {
         likes: hit.likes_count || 0,
         categories: hit.category_names || [],
         tags: hit.tag_names || [],
+        bio: hit.bio,
+        banner_url: hit.banner_url,
+        card_bg_color: hit.card_bg_color,
+        primary_color: hit.primary_color,
+        badge_url: hit.badge_url,
+        followers_count: hit.followers_count || 0,
+        models_count: hit.models_count || 0,
     };
 };
 

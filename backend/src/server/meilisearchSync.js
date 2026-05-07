@@ -2,8 +2,8 @@ import { modelsIndex, usersIndex } from './meilisearch.js';
 
 // meilisearchSync.js corregido y robusto
 const transformModelForMeili = (model) => {
-    const tagNames = model.model_tag?.map(mt => {
-    return mt.tags?.name || mt.tag?.name; 
+  const tagNames = model.model_tag?.map(mt => {
+    return mt.tags?.name || mt.tag?.name;
   }).filter(Boolean) || [];
   return {
     id: model.id,
@@ -11,10 +11,10 @@ const transformModelForMeili = (model) => {
     description: model.description,
     author_username: model.author?.username || model.users?.profile?.username || 'Anónimo',
     author_avatar: model.author?.avatar || model.users?.profile?.avatar || null,
-        category_names: model.model_category?.map(mc => 
+    category_names: model.model_category?.map(mc =>
       mc.categories?.name || mc.category?.name
     ).filter(Boolean) || [],
-        tag_names: model.model_tag?.map(mt => 
+    tag_names: model.model_tag?.map(mt =>
       mt.tags?.name || mt.tag?.name
     ).filter(Boolean) || [],
 
@@ -47,7 +47,7 @@ export const deleteModelFromMeili = async (modelId) => {
 };
 
 const transformUserForMeili = (user) => {
-  const p = user.profile || user; 
+  const p = user.profile || user;
 
   return {
     id: user.id,
@@ -56,6 +56,8 @@ const transformUserForMeili = (user) => {
     bio: p.bio || "",
     models_count: user._count?.models || user.models_count || 0,
     followers_count: p.followers_count || 0,
+    banner_url: p.banner_url || "",
+    badge_url: p.badge_url,
     primary_color: p.primary_color || "#3b82f6",
     card_bg_color: p.card_bg_color || "#ffffff"
   };

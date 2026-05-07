@@ -22,6 +22,7 @@ const registerUser = async ({
 
     try {
         const user = await prisma.users.create({
+            // 1. DATA: Información a insertar
             data: {
                 email: email.trim(),
                 password_hash: hashed,
@@ -44,11 +45,10 @@ const registerUser = async ({
                         primary_color: "#3b82f6",
                         followers_count: 0,
                         following_count: 0
-                    },
-                    include: {
-                        profile: true
-                },
+                    }
+                }
             },
+            // 2. SELECT: Información a devolver
             select: {
                 id: true,
                 email: true,
@@ -67,14 +67,13 @@ const registerUser = async ({
                     }
                 }
             }
-        }
         });
 
         const token = generateToken({
             id: user.id,
             role: user.role
         });
-        
+
         await syncUserToMeili(user);
 
         return {
@@ -86,7 +85,7 @@ const registerUser = async ({
             },
             token
         };
-        
+
     } catch (error) {
         if (error.code === "P2002") {
             throw new Error("El nombre de usuario o el email ya están en uso.");

@@ -11,6 +11,7 @@ SELECT * FROM downloads;
 SELECT * FROM models;
 
 DELETE FROM models;
+DELETE FROM users;
 
 SELECT * FROM categories;
 
