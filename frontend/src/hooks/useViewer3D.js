@@ -2,19 +2,13 @@ import React, { useContext } from "react";
 import { viewer3d } from "../contexts/Viewer3DContext.jsx";
 
 const useViewer3D = () => {
-    /**
-     * Hook personalizado para consumir el contexto de la sesión de forma segura.
-     * Lanza un error si se intenta usar fuera de su proveedor.
-     */
-    const contexto = useContext(viewer3d);
+    const context = useContext(viewer3d);
 
-    if (!contexto) {
-        throw new Error(
-            "El hook useViewer3D debe ser utilizado dentro de <Viewer3DContext.jsx>.",
-        );
+    if (context === undefined) {
+        return { activeMediaTab: null, isInteractive: false };
     }
 
-    return contexto;
+    return context;
 };
 
 export default useViewer3D;
