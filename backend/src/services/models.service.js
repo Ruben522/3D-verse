@@ -9,7 +9,7 @@ import {
 const formatModelAuthor = (model) => {
   if (!model) return model;
   const { users, ...restOfModel } = model;
-  
+
   return {
     ...restOfModel,
     author: {
@@ -83,43 +83,43 @@ const createModel = async (userId, data) => {
 
       model_parts: parts?.length
         ? {
-            create: parts.map((p) => ({
-              color: p.color || null,
-              part_name: p.part_name,
-              file_url: p.file_url,
-              file_size: p.file_size,
-            })),
-          }
+          create: parts.map((p) => ({
+            color: p.color || null,
+            part_name: p.part_name,
+            file_url: p.file_url,
+            file_size: p.file_size,
+          })),
+        }
         : undefined,
 
       model_images: galleryImages?.length
         ? {
-            create: galleryImages.map((img, index) => ({
-              image_url: img,
-              display_order: index,
-            })),
-          }
+          create: galleryImages.map((img, index) => ({
+            image_url: img,
+            display_order: index,
+          })),
+        }
         : undefined,
 
       model_tag: tags?.length
         ? {
-            create: tags.map((tagId) => ({
-              tag_id: tagId,
-            })),
-          }
+          create: tags.map((tagId) => ({
+            tag_id: tagId,
+          })),
+        }
         : undefined,
 
       model_category: categories?.length
         ? {
-            create: categories.map((catId) => ({
-              category_id: catId,
-            })),
-          }
+          create: categories.map((catId) => ({
+            category_id: catId,
+          })),
+        }
         : undefined,
     },
     include: getModelIncludes(),
   });
-  
+
   await syncModelToMeili(model);
   return model;
 };
@@ -355,6 +355,7 @@ const addLike = async (modelId, userId) => {
   const likesCount = await prisma.model_likes.count({
     where: { model_id: modelId },
   });
+  await syncModelToMeili(modelId);
   return { likes: likesCount };
 };
 

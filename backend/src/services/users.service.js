@@ -369,9 +369,6 @@ const getPublicUsers = async ({ page = 1, limit = 20 }) => {
 /**
  * Actualiza los datos de un usuario.
  */
-/**
- * Actualiza los datos de un usuario. Solo permite modificar campos permitidos.
- */
 const updateUser = async (userId, currentUser, data) => {
     checkPermission(userId, currentUser);
 
@@ -496,7 +493,7 @@ const deleteUser = async (userId, currentUser) => {
     const folders = [
         path.join(process.cwd(), "uploads", "models", userId),
         path.join(process.cwd(), "uploads", "images", userId),
-        path.join(process.cwd(), "uploads", "profiles", userId), // ← para banners, badges, etc.
+        path.join(process.cwd(), "uploads", "profiles", userId),
     ];
 
     folders.forEach((folder) => {
@@ -532,7 +529,6 @@ const getUserFavorites = async (userId) => {
                     downloads: true,
                     views: true,
                     created_at: true,
-                    // Añadimos lo que necesita normalizeModelForCard
                     _count: {
                         select: { model_likes: true },
                     },
@@ -560,10 +556,9 @@ const getUserFavorites = async (userId) => {
     });
 
     return favorites
-        .filter((fav) => fav.models != null) // Filtro de seguridad por si el modelo fue borrado
+        .filter((fav) => fav.models != null)
         .map((fav) => {
             const rawModel = fav.models;
-            // Tu normalizador busca rawModel.author?.username, así que se lo preparamos:
             rawModel.author = rawModel.users?.profile || rawModel.users;
             return rawModel;
         });

@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { checkPermission } from "../utils/checkPermission.js";
 import { getAbsolutePath } from "../utils/helper/file.helper.js";
-
+import { syncModelToMeili } from "../server/meilisearchSync.js"
 /**
  * Registra una descarga del modelo en la base de datos y actualiza el contador
  * de descargas totales del modelo de forma atómica (transacción).
@@ -47,7 +47,14 @@ const recordDownload = async (
                     },
                 }),
             ]);
+        const incrementDownloadCount = async (modelId) => {
+            await prisma.models.update({
+                where: { id: modelId },
+                data: { downloads: { increment: 1 } }
+            });
 
+            await syncModelToMeili(modelId);
+        };
         return {
             message: "Descarga registrada correctamente",
             downloads_count: updatedModel.downloads,
