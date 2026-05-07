@@ -14,6 +14,7 @@ import FollowContext from "./contexts/FollowContext.jsx";
 import ContactContext from "./contexts/ContactContext.jsx";
 import MessageContext from "./contexts/MessageContext.jsx";
 import ThemeContext from "./contexts/ThemeContext.jsx";
+import CommentsContext from "./contexts/CommentsContext.jsx"
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
@@ -27,7 +28,9 @@ createRoot(document.getElementById("root")).render(
 									<FavoriteContext>
 										<FollowContext>
 											<ContactContext>
-												<App />
+												<CommentsContext>
+													<App />
+												</CommentsContext>
 											</ContactContext>
 										</FollowContext>
 									</FavoriteContext>

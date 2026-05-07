@@ -1,5 +1,6 @@
 import React from "react";
 import useModels from "../../hooks/useModels";
+import CommentsSection from "../comments/CommentsSection";
 import { useTranslation } from "react-i18next";
 
 const ModelInfo = () => {
@@ -30,7 +31,7 @@ const ModelInfo = () => {
             }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-          {t("comments.comments")}
+          {t(`comments.comments`)}
         </button>
       </div>
 
@@ -43,8 +44,8 @@ const ModelInfo = () => {
       )}
 
       {activeInfoTab === "comentarios" && (
-        <div className="text-center py-12 text-yellow-500 dark:text-yellow-600 font-medium bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 transition-colors duration-300">
-          Los comentarios estarán disponibles próximamente.
+        <div className="mt-4 animate-fade-in">
+          <CommentsSection modelId={currentModel.id} />
         </div>
       )}
     </div>

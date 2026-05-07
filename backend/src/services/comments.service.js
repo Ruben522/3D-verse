@@ -55,6 +55,7 @@ const getModelComments = async (
             where: { model_id: modelId },
             select: {
                 id: true,
+                parent_comment_id: true,
                 content: true,
                 created_at: true,
                 updated_at: true,
@@ -78,6 +79,7 @@ const getModelComments = async (
 
     const formattedData = comments.map((c) => ({
         id: c.id,
+        parent_comment_id: c.parent_comment_id,
         content: c.content,
         created_at: c.created_at,
         updated_at: c.updated_at,

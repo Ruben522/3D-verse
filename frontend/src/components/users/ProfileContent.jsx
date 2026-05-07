@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import ModelCard from "../models/ModelCard";
+import UserModels from "../users/UserModels";
 import UserFollowers from "../users/UserFollowers";
 import UserFollowings from "../users/UserFollowings";
 import UserFavorites from "../users/UserFavorites";
@@ -27,43 +27,25 @@ const ProfileContent = ({ activeTab, onTabChange, models, isOwnProfile }) => {
                 ))}
             </div>
 
-            {/* VISTAS */}
             <div className="min-h-[400px]">
-
                 {/* MODELOS */}
                 {activeTab === "modelos" && (
                     <div className="py-6 animate-fade-in">
-                        {models.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                {models.map((model) => (
-                                    <ModelCard key={model.id} model={model} />
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed transition-colors duration-300">
-                                <span className="text-6xl mb-4">🏜️</span>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
-                                    {t("no_designs")}
-                                </h3>
-                            </div>
-                        )}
+                        <UserModels models={models} />
                     </div>
                 )}
-
                 {/* SEGUIDORES */}
                 {activeTab === "seguidores" && (
                     <div className="py-6 animate-fade-in">
                         <UserFollowers />
                     </div>
                 )}
-
                 {/* SEGUIDOS */}
                 {activeTab === "seguidos" && (
                     <div className="py-6 animate-fade-in">
                         <UserFollowings />
                     </div>
                 )}
-
                 {/* FAVORITOS */}
                 {activeTab === "favoritos" && (
                     <div className="py-6 animate-fade-in">
