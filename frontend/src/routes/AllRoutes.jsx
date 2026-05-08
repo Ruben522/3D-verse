@@ -22,6 +22,7 @@ const AllRoutes = () => {
 			<Route path="/profile" element={<Profile />} />
 			<Route path="/perfil/:username" element={<Profile />} />
 			<Route path="/subir" element={<UploadModel />} />
+			<Route path="/edit/:id" element={<UploadModel />} />
 			<Route path="/comunidad" element={<Community />} />
 			<Route path="/contacto" element={<Contact />} />
 			<Route path="/settings" element={<Settings />} />

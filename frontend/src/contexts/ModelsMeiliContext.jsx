@@ -3,9 +3,8 @@ import useAPI from "../hooks/useAPI.js";
 import { useNavigate } from "react-router-dom";
 import { validateUploadData } from "../utils/uploadValidations";
 import useMessage from "../hooks/useMessage.js";
-import { Meilisearch } from 'meilisearch';
 import { normalizeMeiliHit, normalizeModelData } from "../utils/normalizers";
-import { meiliClient, modelsIndex } from "../services/meiliClient.js";
+import { modelsIndex } from "../services/meiliClient.js";
 
 const model = createContext();
 
@@ -14,18 +13,16 @@ const ModelsMeiliContext = ({ children }) => {
     const modelAPI = useAPI();
     const actionAPI = useAPI();
     const { showMessage } = useMessage();
-
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [modelsData, setModelsData] = useState([]);
     const [currentModel, setCurrentModel] = useState(null);
     const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
     const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
-
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState("");
     const [activeTag, setActiveTag] = useState("");
     const [sortBy, setSortBy] = useState("created_at:desc");
     const [isSearching, setIsSearching] = useState(false);
-
     const [detailUI, setDetailUI] = useState({
         activeMediaTab: "imagenes",
         activeInfoTab: "detalles",
@@ -37,18 +34,23 @@ const ModelsMeiliContext = ({ children }) => {
         selectedPart: null,
         currentColor: "#ffffff",
     });
-
     const initialUploadData = { title: "", description: "", categories: [], tags: [] };
     const initialUploadFiles = { main_file: null, main_image: null, gallery: [], parts: [] };
-
     const [uploadData, setUploadData] = useState(initialUploadData);
     const [uploadFiles, setUploadFiles] = useState(initialUploadFiles);
     const [uploadErrors, setUploadErrors] = useState({});
     const [isUploading, setIsUploading] = useState(false);
     const [expandedSections, setExpandedSections] = useState(['info', 'files']);
+    const [archivosExistentes, setArchivosExistentes] = useState(null);
 
     const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
     const apiUrl = `${backendUrl}/models`;
+
+    const sortOptions = [
+        { value: "created_at:desc", label: "Recientes" },
+        { value: "likes_count:desc", label: "Populares" },
+        { value: "downloads:desc", label: "Descargas" },
+    ];
 
     useEffect(() => {
         getCategories();
@@ -99,6 +101,7 @@ const ModelsMeiliContext = ({ children }) => {
             console.error("Error en Meilisearch:", err);
         } finally {
             setIsSearching(false);
+            setIsInitialLoad(false);
         }
     };
 
@@ -123,6 +126,7 @@ const ModelsMeiliContext = ({ children }) => {
             showMessage("Error al cargar el modelo. Inténtalo de nuevo.", "error");
         }
     };
+
     const updateDetailUI = (field, value) => {
         setDetailUI((prev) => {
             const newState = { ...prev, [field]: value };
@@ -144,12 +148,15 @@ const ModelsMeiliContext = ({ children }) => {
     };
 
     const toggleSection = (sectionId) => setExpandedSections(prev => prev.includes(sectionId) ? prev.filter(id => id !== sectionId) : [...prev, sectionId]);
+
     const actualizarDatoSubida = (evento) => {
         const { name, value } = evento.target;
         setUploadData((prev) => ({ ...prev, [name]: value }));
         if (uploadErrors[name]) setUploadErrors(prev => ({ ...prev, [name]: null }));
     };
+
     const toggleCategoria = (categoryId) => setUploadData(prev => ({ ...prev, categories: prev.categories.includes(categoryId) ? prev.categories.filter(id => id !== categoryId) : [...prev.categories, categoryId] }));
+
     const agregarTag = (evento) => {
         if (evento.key === 'Enter' || evento.key === ',') {
             evento.preventDefault();
@@ -158,16 +165,20 @@ const ModelsMeiliContext = ({ children }) => {
             evento.target.value = '';
         }
     };
+
     const eliminarTag = (tagAEliminar) => setUploadData(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tagAEliminar) }));
+
     const actualizarArchivos = (name, fileOrFiles) => {
         setUploadFiles((prev) => ({ ...prev, [name]: fileOrFiles }));
         if (uploadErrors[name]) setUploadErrors(prev => ({ ...prev, [name]: null }));
     };
+
     const manejarSeleccionArchivo = (nombreCampo, evento, isMultiple = false) => {
         const files = Array.from(evento.target.files);
         if (files.length === 0) return;
         isMultiple ? setUploadFiles(prev => ({ ...prev, [nombreCampo]: [...prev[nombreCampo], ...files] })) : actualizarArchivos(nombreCampo, files[0]);
     };
+
     const eliminarArchivoSeleccionado = (nombreCampo, evento, index = null) => {
         evento.stopPropagation();
         if (index !== null) {
@@ -186,6 +197,83 @@ const ModelsMeiliContext = ({ children }) => {
         setUploadFiles(initialUploadFiles);
         setUploadErrors({});
         setExpandedSections(['info', 'files']);
+    };
+
+    const prepararEdicion = async (id) => {
+        try {
+            const response = await modelAPI.get(`${apiUrl}/${id}`);
+            const modelToEdit = normalizeModelData(response.data);
+            const categoryIds = modelToEdit.categories
+                .map(nombreCategoria => {
+                    const categoriaEncontrada = categoriasDisponibles.find(c => c.name === nombreCategoria);
+                    return categoriaEncontrada ? categoriaEncontrada.id : null;
+                })
+                .filter(Boolean);
+
+            setUploadData({
+                title: modelToEdit.title,
+                description: modelToEdit.description || "",
+                categories: categoryIds,
+                tags: modelToEdit.tags || []
+            });
+
+            setUploadFiles({
+                main_file: null,
+                main_image: null,
+                gallery: [],
+                parts: []
+            });
+
+            setArchivosExistentes({
+                main_image: modelToEdit.imageUrl,
+                main_file: modelToEdit.fileUrl,
+                gallery: modelToEdit.gallery || [],
+                parts: modelToEdit.parts || []
+            });
+
+            setExpandedSections(['info', 'files', 'extras']);
+
+        } catch (error) {
+            showMessage("No se pudieron cargar los datos del modelo para editar.", "error");
+            navegar("/");
+        }
+    };
+
+    const editarModelo = async (id) => {
+        setIsUploading(true);
+        try {
+            if (uploadFiles.main_image) {
+                const formDataImg = new FormData();
+                formDataImg.append("image", uploadFiles.main_image);
+                await actionAPI.patchForm(`${apiUrl}/${id}/main-image`, formDataImg);
+            }
+
+            if (uploadFiles.main_file) {
+                const formDataFile = new FormData();
+                formDataFile.append("main_file", uploadFiles.main_file);
+                await actionAPI.patchForm(`${apiUrl}/${id}/main-file`, formDataFile);
+            }
+
+            const finalData = {
+                title: uploadData.title,
+                description: uploadData.description,
+                categories: uploadData.categories,
+                tags: uploadData.tags,
+                main_color: uploadData.main_color,
+                license: uploadData.license
+            };
+
+            await actionAPI.put(`${apiUrl}/${id}`, finalData);
+
+            showMessage("¡Cambios guardados correctamente!", "success");
+            limpiarFormularioSubida();
+            navegar(`/models/${id}`);
+        } catch (error) {
+            console.error("Error editando:", error);
+            showMessage("No se pudieron guardar los cambios.", "error");
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     const buildUploadFormData = () => {
@@ -208,18 +296,19 @@ const ModelsMeiliContext = ({ children }) => {
         setIsUploading(true);
         try {
             const urlsDelServidor = await actionAPI.postForm(`${backendUrl}/models/upload`, buildUploadFormData());
+
             const finalData = {
                 title: uploadData.title,
                 description: uploadData.description || "",
                 categories: uploadData.categories.length > 0 ? uploadData.categories : undefined,
-                file_url: urlsDelServidor.data?.main_file || urlsDelServidor.main_file,
-                main_image_url: urlsDelServidor.data?.cover_image || urlsDelServidor.cover_image || null,
-                gallery: urlsDelServidor.data?.gallery || urlsDelServidor.gallery || [],
-                parts: urlsDelServidor.data?.parts || urlsDelServidor.parts || [],
+                file_url: urlsDelServidor.data?.main_file ?? urlsDelServidor.main_file,
+                main_image_url: urlsDelServidor.data?.cover_image ?? urlsDelServidor.cover_image ?? null,
+                gallery: urlsDelServidor.data?.gallery ?? urlsDelServidor.gallery ?? [],
+                parts: urlsDelServidor.data?.parts ?? urlsDelServidor.parts ?? [],
             };
 
             const responseDB = await actionAPI.post(`${backendUrl}/models`, finalData);
-            const newModelId = responseDB.data?.id || responseDB.id;
+            const newModelId = responseDB.data?.id ?? responseDB.id;
 
             if (uploadData.tags && uploadData.tags.length > 0) {
                 await Promise.all(uploadData.tags.map(tagStr => actionAPI.post(`${backendUrl}/tags/model/${newModelId}`, { name: tagStr }).catch(() => null)));
@@ -262,8 +351,9 @@ const ModelsMeiliContext = ({ children }) => {
         activeCategory, setActiveCategory,
         activeTag, setActiveTag,
         sortBy, setSortBy,
+        sortOptions,
         isSearching,
-        isFetchingModel: modelAPI.isLoading || isSearching,
+        isFetchingModel: isInitialLoad || isSearching || modelAPI.isLoading,
         modelError: modelAPI.error,
         isDownloading: actionAPI.isLoading,
         downloadError: actionAPI.error,
@@ -285,6 +375,9 @@ const ModelsMeiliContext = ({ children }) => {
         subirModelo,
         getTopPopularModels,
         getRandomModels,
+        prepararEdicion,
+        editarModelo,
+        archivosExistentes
     };
 
     return <model.Provider value={exportData}>{children}</model.Provider>;

@@ -312,6 +312,25 @@ const deleteModel = async (modelId, user) => {
  * @throws {Error} "Modelo no encontrado"
  * @throws {Error} Si no tiene permisos
  */
+/**
+ * Actualiza los campos textuales, metadatos y relaciones (tags/categorías) del modelo.
+ *
+ * @param {string} modelId - ID del modelo a actualizar
+ * @param {Object} user - Usuario autenticado (debe ser propietario)
+ * @param {Object} data - Campos a actualizar
+ * @returns {Promise<Object>} Modelo actualizado
+ */
+// services/models.service.js
+
+/**
+ * Actualiza los campos textuales y de metadatos básicos del modelo.
+ * Procesa categorías y crea nuevos tags si es necesario.
+ *
+ * @param {string} modelId - ID del modelo a actualizar
+ * @param {Object} user - Usuario autenticado (debe ser propietario)
+ * @param {Object} data - Campos a actualizar
+ * @returns {Promise<Object>} Modelo actualizado
+ */
 const updateModel = async (modelId, user, data) => {
   const model = await prisma.models.findUnique({
     where: { id: modelId },
@@ -320,21 +339,58 @@ const updateModel = async (modelId, user, data) => {
 
   checkPermission(model.user_id, user);
 
+  // 1. Preparamos los datos básicos y las categorías
+  const updateData = {
+    title: data.title,
+    description: data.description,
+    main_color: data.main_color,
+    license: data.license,
+    video_url: data.video_url,
+    updated_at: new Date(),
+    model_category: data.categories ? {
+      deleteMany: {},
+      create: data.categories.map((catId) => ({ category_id: catId }))
+    } : undefined,
+  };
+
+  // 2. Sincronización inteligente de Tags
+  if (data.tags && Array.isArray(data.tags)) {
+    const tagIds = [];
+
+    // Iteramos sobre las palabras que llegan del frontend
+    for (const tagName of data.tags) {
+      const nameLower = tagName.toLowerCase().trim();
+      if (!nameLower) continue;
+
+      // Buscamos si el tag ya existe en la BD
+      let tagRecord = await prisma.tags.findFirst({ where: { name: nameLower } });
+
+      // Si no existe, lo creamos al vuelo
+      if (!tagRecord) {
+        tagRecord = await prisma.tags.create({ data: { name: nameLower } });
+      }
+      // Guardamos el UUID real
+      tagIds.push(tagRecord.id);
+    }
+
+    // Añadimos las relaciones al objeto de actualización
+    updateData.model_tag = {
+      deleteMany: {},
+      create: tagIds.map((id) => ({ tag_id: id })),
+    };
+  }
+
+  // 3. Ejecutamos la actualización completa en Prisma
   const updatedModel = await prisma.models.update({
     where: { id: modelId },
-    data: {
-      title: data.title,
-      description: data.description,
-      main_color: data.main_color,
-      license: data.license,
-      video_url: data.video_url,
-      updated_at: new Date(),
-    },
+    data: updateData,
   });
+
+  // 4. Sincronizamos con Meilisearch para que el buscador refleje los cambios
+  await syncModelToMeili(modelId);
 
   return updatedModel;
 };
-
 /**
  * Registra un like del usuario al modelo (si no existe ya).
  * Idempotente: si ya existe el like, no hace nada.
@@ -384,6 +440,7 @@ const removeLike = async (modelId, userId) => {
   const likesCount = await prisma.model_likes.count({
     where: { model_id: modelId },
   });
+
   return { likes: likesCount };
 };
 

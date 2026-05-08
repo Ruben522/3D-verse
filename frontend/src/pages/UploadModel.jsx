@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import useUsers from '../hooks/useUsers';
 import useModels from '../hooks/useModels';
 import Button from '../components/common/Button';
@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 const UploadModel = () => {
     const navigate = useNavigate();
+    const { id: editModelId } = useParams();
     const { isAuthenticated } = useUsers();
     const {
         uploadData,
@@ -24,9 +25,32 @@ const UploadModel = () => {
         expandedSections,
         toggleSection,
         actualizarDatoSubida,
-        subirModelo
+        subirModelo,
+        editarModelo,
+        prepararEdicion,
+        limpiarFormularioSubida
     } = useModels();
     const { t } = useTranslation();
+
+    const isEditMode = !!editModelId;
+
+    useEffect(() => {
+        if (isEditMode) {
+            prepararEdicion(editModelId);
+        } else {
+            limpiarFormularioSubida();
+        }
+
+        return () => limpiarFormularioSubida();
+    }, [editModelId]);
+
+    const handleSave = () => {
+        if (isEditMode) {
+            editarModelo(editModelId);
+        } else {
+            subirModelo();
+        }
+    }
 
     return isAuthenticated ? (
         <div className="min-h-screen py-12 px-4 sm:px-6 pb-48 md:pb-56 transition-colors duration-300">
@@ -130,13 +154,13 @@ const UploadModel = () => {
             </div>
 
             <BotBar
-                title={t('messages.confirmation_upload')}
-                description={t('messages.confirmation_upload_desc')}
-                onCancel={() => navigate("/")}
-                onSubmit={subirModelo}
+                title={isEditMode ? "Guardar Cambios" : t('messages.confirmation_upload')}
+                description={isEditMode ? "Tus cambios se aplicarán inmediatamente." : t('messages.confirmation_upload_desc')}
+                onCancel={() => navigate(isEditMode ? `/models/${editModelId}` : "/")}
+                onSubmit={handleSave}
                 isLoading={isUploading}
-                submitText={t('messages.post_model')}
-                loadingText={t('messages.loading')}
+                submitText={isEditMode ? "Actualizar Modelo" : t('messages.post_model')}
+                loadingText={isEditMode ? "Actualizando..." : t('messages.loading')}
             />
         </div>
     ) : (

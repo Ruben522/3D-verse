@@ -16,6 +16,7 @@ import {
     sendError,
 } from "../utils/helper/response.helper.js";
 import { deletePhysicalFolder } from "../utils/helper/file.helper.js";
+import { syncModelToMeili } from '../server/meilisearchSync.js';
 
 /**
  * Formatea las rutas de los archivos subidos por Multer para que coincidan con la estructura esperada por la base de datos.
@@ -210,6 +211,7 @@ const update = async (req, res) => {
             req.user,
             req.body,
         );
+        await syncModelToMeili(req.params.id);
         sendSuccess(
             res,
             "Modelo actualizado correctamente.",
@@ -315,6 +317,7 @@ const patchMainFile = async (req, res) => {
             req.user,
             newFileUrl,
         );
+        await syncModelToMeili(req.params.id);
         sendSuccess(
             res,
             "Archivo principal actualizado correctamente.",
@@ -353,6 +356,7 @@ const patchMainImage = async (req, res) => {
             req.user,
             imageUrl,
         );
+        await syncModelToMeili(req.params.id);
         sendSuccess(
             res,
             "Imagen principal actualizada correctamente.",
@@ -376,6 +380,7 @@ const removeMainImage = async (req, res) => {
             req.params.id,
             req.user,
         );
+        await syncModelToMeili(req.params.id);
         sendSuccess(res, response.message);
     } catch (error) {
         sendError(res, error.message, 400);

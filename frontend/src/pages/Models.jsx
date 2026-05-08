@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import ModelCard from '../components/models/ModelCard';
 import Pagination from '../components/common/Pagination';
 import SearchBar from '../components/common/SearchBar';
-import { model } from '../contexts/ModelsMeiliContext';
+import useModels from '../hooks/useModels';
 import { useTranslation } from "react-i18next";
 import InicialTittle from '../components/common/InicialTittle';
+import Loading from '../components/common/Loading';
 
 const Models = () => {
   const { t } = useTranslation();
@@ -20,38 +21,24 @@ const Models = () => {
     setActiveCategory,
     sortBy,
     setSortBy,
-    categoriasDisponibles
-  } = useContext(model);
-
-  // Opciones de ordenación
-  const sortOptions = [
-    { value: "created_at:desc", label: "✨ Recientes" },
-    { value: "likes_count:desc", label: "❤️ Populares" },
-    { value: "downloads:desc", label: "📥 Descargas" },
-  ];
+    categoriasDisponibles,
+    sortOptions
+  } = useModels();
 
   return (
-    <div
-      className="
-        min-h-screen
-        bg-gray-50 dark:bg-gray-900
-        transition-colors duration-300
-        py-12 px-4
-      "
-    >
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 py-12 px-4">
       <main className="max-w-7xl mx-auto pb-12">
         <div className="mb-12 text-center">
           <InicialTittle
             tittle={t('explore.title')}
             subtittle={t('explore.subtitle')}
           />
-
-          {/* SEARCH */}
+          {console.log(models)}
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             onClear={() => setSearchTerm('')}
-            placeholder="Buscar personajes, vehículos..."
+            placeholder={t('explore.search_placeholder', 'Buscar personajes, vehículos...')}
             categories={categoriasDisponibles}
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
@@ -60,71 +47,47 @@ const Models = () => {
             onSortChange={setSortBy}
           />
         </div>
+        {isFetchingModel && models.length === 0 ? (
+          <Loading message={t('messages.loading_models', 'Cargando modelos...')} />
+        ) : (
+          <div
+            className={`transition-all duration-500
+              ${isFetchingModel
+                ? 'opacity-40 blur-[2px] pointer-events-none scale-[0.99]'
+                : 'opacity-100 scale-100'
+              }
+            `}
+          >
+            {models.length > 0 ? (
 
-        {/* GRID */}
-        <div
-          className={`
-            transition-all duration-500
-            ${isFetchingModel
-              ? 'opacity-40 blur-[2px] pointer-events-none scale-[0.99]'
-              : 'opacity-100 scale-100'
-            }
-          `}
-        >
-          {models.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {models.map((m) => (
+                  <ModelCard key={m.id} model={m} />
+                ))}
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {models.map((m) => (
-                <ModelCard key={m.id} model={m} />
-              ))}
-            </div>
+            ) : (
 
-          ) : (
-
-            <div
-              className="
-                text-center py-20
-                bg-white dark:bg-zinc-900
-                rounded-3xl
-                border-2 border-dashed
-                border-gray-100 dark:border-zinc-800
-                max-w-3xl mx-auto
-                shadow-sm dark:shadow-black/20
-                transition-colors duration-300
-              "
-            >
-              <span className="text-7xl mb-6 block drop-shadow-sm">
-                🔎
-              </span>
-
-              <h3
-                className="
-                  text-2xl font-black
-                  text-gray-900 dark:text-zinc-100
-                  mb-2
-                  transition-colors
-                "
+              <div className="
+                  text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border-2 border-dashed
+                  border-gray-100 dark:border-zinc-800 max-w-3xl mx-auto
+                  shadow-sm dark:shadow-black/20 transition-colors duration-300"
               >
-                No se encontraron modelos
-              </h3>
+                <h3 className="text-2xl font-black text-gray-900 dark:text-zinc-100 mb-2 transition-colors">
+                  {t('messages.no_models_found', 'No se encontraron modelos')}
+                </h3>
 
-              <p
-                className="
-                  text-gray-500 dark:text-zinc-400
-                  font-bold
-                  transition-colors
-                "
-              >
-                Intenta usar otros términos o elimina los filtros de categoría.
-              </p>
-            </div>
+                <p className="text-gray-500 dark:text-zinc-400 font-bold transition-colors">
+                  {t('messages.try_other_terms', 'Intenta usar otros términos o elimina los filtros de categoría.')}
+                </p>
+              </div>
 
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
-        {/* PAGINACIÓN */}
-        {pagination.totalPages > 1 && (
-          <div className="mt-16 flex justify-center">
+        {pagination.totalPages > 1 && !isFetchingModel && models.length > 0 && (
+          <div className="mt-16 flex justify-center animate-fade-in">
             <Pagination
               totalPages={pagination.totalPages}
               currentPage={pagination.page}

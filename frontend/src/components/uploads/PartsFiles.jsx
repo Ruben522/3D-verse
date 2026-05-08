@@ -32,13 +32,14 @@ const PartsFiles = () => {
                 onChange={(e) => manejarSeleccionArchivo('parts', e, true)}
             />
 
-            {/* Lista de archivos */}
             {parts.length > 0 ? (
                 <div className="flex flex-col gap-2 mt-2">
                     {parts.map((file, index) => (
                         <div key={`${file.name}-${index}`} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-gray-300 dark:hover:border-gray-600 transition-colors group">
                             <div className="flex items-center gap-3 overflow-hidden">
-                                <span className="text-2xl opacity-70">🧩</span>
+                                <svg className="w-6 h-6 text-primary-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                </svg>
                                 <div className="truncate">
                                     <p className="font-bold text-sm text-gray-900 dark:text-white truncate transition-colors">{file.name}</p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 transition-colors">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
@@ -56,8 +57,13 @@ const PartsFiles = () => {
                     ))}
                 </div>
             ) : (
-                <div className="p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl flex flex-col items-center justify-center text-center bg-gray-50 dark:bg-gray-800 transition-colors">
-                    <span className="text-3xl mb-2 grayscale opacity-50">⚙️</span>
+                <div
+                    onClick={() => fileRef.current?.click()}
+                    className="p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl flex flex-col items-center justify-center text-center bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                    <svg className="w-8 h-8 mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
                     <p className="text-sm font-medium text-gray-400 dark:text-gray-500 transition-colors">No se han añadido piezas adicionales.</p>
                 </div>
             )}

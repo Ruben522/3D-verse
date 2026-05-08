@@ -37,7 +37,6 @@ const FollowContext = ({ children }) => {
             const response = await api.get(
                 `${backendUrl}/followers/${currentUser.id}/following`
             );
-            console.log("FOLLOWING RESPONSE:", response.data);
             const users = response.data?.data || [];
 
             const ids = users.map(user => user.id);

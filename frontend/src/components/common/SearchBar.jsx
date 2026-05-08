@@ -45,7 +45,6 @@ const SearchBar = ({
                     shadow-sm dark:shadow-black/20
                     dark:hover:shadow-black/30
                     backdrop-blur-xl
-                    overflow-hidden
                     transition-all duration-300
                 "
             >

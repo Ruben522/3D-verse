@@ -92,78 +92,96 @@ const useAPI = () => {
         }
     };
 
+    const patchForm = async (url, formData) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {};
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers,
+                body: formData,
+            });
+            if (response.status === 401)
+                throw new Error("No autorizado. Inicia sesión.");
+
+            const data = await response.json();
+            if (!response.ok)
+                throw new Error(data.message || "Error al actualizar archivos");
+            return data;
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const downloadFile = async (
-    url,
-    method,
-    fileName,
-    body = null,
-) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-        const token = localStorage.getItem("token");
-
-        const headers = {
-            ...(token && {
-                Authorization: `Bearer ${token}`,
-            }),
-            ...(body &&
-                method === "POST" && {
+        url,
+        method,
+        fileName,
+        body = null,
+    ) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                ...(token && {
+                    Authorization: `Bearer ${token}`,
+                }),
+                ...(body &&
+                    method === "POST" && {
                     "Content-Type": "application/json",
                 }),
-        };
-
-        const response = await fetch(url, {
-            method,
-            headers,
-            ...(body &&
-                method === "POST" && {
+            };
+            const response = await fetch(url, {
+                method,
+                headers,
+                ...(body &&
+                    method === "POST" && {
                     body: JSON.stringify(body),
                 }),
-        });
+            });
+            if (response.status === 401) {
+                throw new Error(
+                    "No autorizado. Inicia sesión.",
+                );
+            }
+            if (!response.ok) {
+                const errorData = await response
+                    .json()
+                    .catch(() => ({}));
 
-        if (response.status === 401) {
-            throw new Error(
-                "No autorizado. Inicia sesión.",
-            );
-        }
-
-        if (!response.ok) {
-            const errorData = await response
-                .json()
-                .catch(() => ({}));
-
-            throw new Error(
-                errorData.message ||
+                throw new Error(
+                    errorData.message ||
                     "Error al descargar el archivo",
-            );
+                );
+            }
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = objectUrl;
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(objectUrl);
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setIsLoading(false);
         }
-
-        const blob = await response.blob();
-
-        const objectUrl = URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-
-        link.href = objectUrl;
-        link.download = fileName;
-
-        link.click();
-
-        URL.revokeObjectURL(objectUrl);
-    } catch (err) {
-        setError(err.message);
-        throw err;
-    } finally {
-        setIsLoading(false);
-    }
-};
+    };
 
     const downloadPost = (url, fileName, body = {}) =>
         downloadFile(url, "POST", fileName, body);
 
     const downloadGet = (url, fileName) => downloadFile(url, "GET", fileName);
+
     return {
         isLoading,
         error,
@@ -173,6 +191,7 @@ const useAPI = () => {
         patch,
         remove,
         postForm,
+        patchForm,
         downloadPost,
         downloadGet,
     };

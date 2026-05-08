@@ -2,7 +2,7 @@ import { client } from './src/server/meilisearch.js';
 
 async function updateMeiliSettings() {
   console.log('⏳ Enviando nuevas reglas a Meilisearch...');
-  
+
   try {
     const modelsIndex = client.index('models');
 

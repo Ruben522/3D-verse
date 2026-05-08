@@ -7,12 +7,17 @@ const ImagesFiles = () => {
         uploadFiles,
         uploadErrors,
         manejarSeleccionArchivo,
-        eliminarArchivoSeleccionado
+        eliminarArchivoSeleccionado,
+        archivosExistentes
     } = useModels();
     const { t } = useTranslation();
 
     const fileRef = useRef(null);
-    const previewUrl = uploadFiles?.main_image ? URL.createObjectURL(uploadFiles.main_image) : null;
+
+    const isNewImage = !!uploadFiles?.main_image;
+    const previewUrl = isNewImage
+        ? URL.createObjectURL(uploadFiles.main_image)
+        : archivosExistentes?.main_image || null;
 
     return (
         <div
@@ -41,12 +46,20 @@ const ImagesFiles = () => {
                         <button
                             type="button"
                             onClick={(e) => {
-                                eliminarArchivoSeleccionado('main_image', e);
-                                fileRef.current.value = "";
+                                if (isNewImage) {
+                                    eliminarArchivoSeleccionado('main_image', e);
+                                    fileRef.current.value = "";
+                                } else {
+                                    e.stopPropagation();
+                                    fileRef.current?.click();
+                                }
                             }}
-                            className="bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 border border-transparent dark:border-gray-700 px-4 py-2 rounded-xl font-bold shadow-lg hover:scale-105 transition-transform"
+                            className={`px-4 py-2 rounded-xl font-bold shadow-lg hover:scale-105 transition-transform border border-transparent dark:border-gray-700
+                                ${isNewImage
+                                    ? 'bg-white dark:bg-gray-800 text-red-600 dark:text-red-400'
+                                    : 'bg-primary-500 text-white'}`}
                         >
-                            Cambiar Portada
+                            {isNewImage ? 'Quitar Nueva Portada' : 'Reemplazar Portada'}
                         </button>
                     </div>
                 </div>

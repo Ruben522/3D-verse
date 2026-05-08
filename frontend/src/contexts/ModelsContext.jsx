@@ -278,6 +278,12 @@ const ModelsContext = ({ children }) => {
     };
   };
 
+  const sortOptions = [
+    { value: "created_at:desc", label: "Recientes", icon: "✨" },
+    { value: "likes_count:desc", label: "Populares", icon: "❤️" },
+    { value: "downloads:desc", label: "Descargas", icon: "📥" },
+  ];
+
   const saveModelToDB = async (finalData) => {
     const response = await actionAPI.post(`${backendUrl}/models`, finalData);
     return response.data?.id || response.id;
@@ -387,7 +393,8 @@ const ModelsContext = ({ children }) => {
     limpiarFormularioSubida,
     subirModelo,
     getTopPopularModels,
-    getRandomModels
+    getRandomModels,
+    sortOptions,
   };
 
   return <model.Provider value={exportData}>{children}</model.Provider>;
