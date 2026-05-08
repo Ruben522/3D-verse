@@ -1,4 +1,5 @@
 import React, { useState, useEffect, createContext } from "react";
+import useUsers from "../hooks/useUsers.js";
 import useAPI from "../hooks/useAPI.js";
 import { useNavigate } from "react-router-dom";
 import { validateUploadData } from "../utils/uploadValidations";
@@ -12,7 +13,8 @@ const ModelsMeiliContext = ({ children }) => {
     const navegar = useNavigate();
     const modelAPI = useAPI();
     const actionAPI = useAPI();
-    const { showMessage } = useMessage();
+    const { currentUser } = useUsers();
+    const { showMessage, showConfirm } = useMessage();
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [modelsData, setModelsData] = useState([]);
     const [currentModel, setCurrentModel] = useState(null);
@@ -199,10 +201,38 @@ const ModelsMeiliContext = ({ children }) => {
         setExpandedSections(['info', 'files']);
     };
 
+    const borrarModelo = async (id) => {
+        showConfirm(
+            "¿Estás seguro de que quieres eliminar este modelo? Esta acción es irreversible y borrará todos los archivos asociados.",
+            async () => {
+                setIsUploading(true);
+                try {
+                    await actionAPI.remove(`${apiUrl}/${id}`);
+
+                    showMessage("Modelo eliminado correctamente", "success");
+                    limpiarFormularioSubida();
+                    navegar("/profile");
+                } catch (error) {
+                    console.error("Error al eliminar:", error);
+                    showMessage("No se pudo eliminar el modelo.", "error");
+                } finally {
+                    setIsUploading(false);
+                }
+            }
+        );
+    };
+
     const prepararEdicion = async (id) => {
         try {
             const response = await modelAPI.get(`${apiUrl}/${id}`);
             const modelToEdit = normalizeModelData(response.data);
+
+            if (modelToEdit.username !== currentUser?.username && modelToEdit.user_id !== currentUser?.id) {
+                showMessage("No tienes permiso para editar este modelo.", "error");
+                navegar("/");
+                return;
+            }
+
             const categoryIds = modelToEdit.categories
                 .map(nombreCategoria => {
                     const categoriaEncontrada = categoriasDisponibles.find(c => c.name === nombreCategoria);
@@ -234,6 +264,7 @@ const ModelsMeiliContext = ({ children }) => {
             setExpandedSections(['info', 'files', 'extras']);
 
         } catch (error) {
+            console.error("Error en prepararEdicion:", error);
             showMessage("No se pudieron cargar los datos del modelo para editar.", "error");
             navegar("/");
         }
@@ -375,9 +406,10 @@ const ModelsMeiliContext = ({ children }) => {
         subirModelo,
         getTopPopularModels,
         getRandomModels,
+        borrarModelo,
         prepararEdicion,
         editarModelo,
-        archivosExistentes
+        archivosExistentes,
     };
 
     return <model.Provider value={exportData}>{children}</model.Provider>;

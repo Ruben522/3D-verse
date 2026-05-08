@@ -26,6 +26,7 @@ const UploadModel = () => {
         toggleSection,
         actualizarDatoSubida,
         subirModelo,
+        borrarModelo,
         editarModelo,
         prepararEdicion,
         limpiarFormularioSubida
@@ -158,6 +159,9 @@ const UploadModel = () => {
                 description={isEditMode ? "Tus cambios se aplicarán inmediatamente." : t('messages.confirmation_upload_desc')}
                 onCancel={() => navigate(isEditMode ? `/models/${editModelId}` : "/")}
                 onSubmit={handleSave}
+                isEditMode={isEditMode}
+                onDelete={() => borrarModelo(editModelId)}
+                deleteText="Eliminar Diseño"
                 isLoading={isUploading}
                 submitText={isEditMode ? "Actualizar Modelo" : t('messages.post_model')}
                 loadingText={isEditMode ? "Actualizando..." : t('messages.loading')}

@@ -42,6 +42,7 @@ const UserContext = ({ children }) => {
   const [activeProfileData, setActiveProfileData] = useState(null);
   const [isLoadingActiveProfile, setIsLoadingActiveProfile] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [isOwnModel, setIsOwnModel] = useState(false);
 
   const [searchUserTerm, setSearchUserTerm] = useState("");
   const [userSortBy, setUserSortBy] = useState("followers_count:desc");
@@ -185,6 +186,12 @@ const UserContext = ({ children }) => {
     return currentUser?.id === userId;
   };
 
+  const checkIsOwnModel = (model) => {
+    if (!currentUser || !model) return false;
+    return currentUser.id === (model.user_id || model.userId) ||
+      currentUser.username === model.username;
+  };
+
   const getProfileRoute = (userId, username) => {
     return checkIsOwnProfile(userId) ? '/profile' : `/perfil/${username}`;
   };
@@ -316,6 +323,7 @@ const UserContext = ({ children }) => {
     getMyPublicProfile,
     getPublicProfile,
     checkIsOwnProfile,
+    checkIsOwnModel,
     getProfileRoute,
     pagination,
     changeProfileTab,

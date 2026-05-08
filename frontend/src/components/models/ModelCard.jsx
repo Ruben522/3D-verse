@@ -3,10 +3,14 @@ import { useNavigate } from "react-router-dom";
 import FavoriteButton from "../common/FavoriteButton";
 import LikeButton from "../common/LikeButton";
 import tagStyles from "../../utils/tagStyles";
+import useUsers from "../../hooks/useUsers";
 
 const ModelCard = ({ model }) => {
   const navigate = useNavigate();
 
+  const { currentUser, checkIsOwnModel } = useUsers();
+
+  const isOwner = checkIsOwnModel(model);
   const visibleTags = model.tags?.slice(0, 3) || [];
   const visibleCategory = model.categories?.[0] || null;
 
@@ -25,12 +29,34 @@ const ModelCard = ({ model }) => {
         cursor-pointer overflow-hidden
       "
     >
-      {/* FAVORITO */}
+      {isOwner && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/edit/${model.id}`);
+          }}
+          className="
+            absolute top-3 left-3 z-20
+            p-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md
+            text-gray-700 dark:text-gray-300
+            border border-gray-200 dark:border-gray-700
+            hover:text-primary-600 dark:hover:text-primary-400
+            hover:border-primary-500 dark:hover:border-primary-500
+            rounded-full shadow-sm hover:shadow-md hover:scale-105
+            transition-all duration-300
+          "
+          title="Editar modelo"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+        </button>
+      )}
+
       <div className="absolute top-3 right-3 z-20">
         <FavoriteButton modelId={model.id} />
       </div>
 
-      {/* IMAGEN */}
       <div className="relative w-full aspect-[4/3] bg-gray-50 dark:bg-gray-800 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900" />
 
@@ -48,18 +74,17 @@ const ModelCard = ({ model }) => {
           <div
             className="
               absolute inset-0 flex items-center justify-center
-              text-6xl opacity-30 grayscale
               transition-transform duration-500
               group-hover:scale-110
-              group-hover:grayscale-0
-              group-hover:opacity-100
             "
           >
-            🧊
+            <svg className="w-16 h-16 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"></path>
+            </svg>
           </div>
         )}
 
-        {/* OVERLAY */}
         <div
           className="
             absolute inset-x-0 bottom-0 h-1/2
@@ -70,7 +95,6 @@ const ModelCard = ({ model }) => {
           "
         />
 
-        {/* VISTAS */}
         <div
           className="
             absolute bottom-3 left-3 z-10
@@ -117,10 +141,8 @@ const ModelCard = ({ model }) => {
         </div>
       </div>
 
-      {/* CONTENIDO */}
       <div className="p-5 flex flex-col flex-1">
 
-        {/* TÍTULO */}
         <h3
           className="
             text-lg font-black
@@ -135,7 +157,6 @@ const ModelCard = ({ model }) => {
           {model.title}
         </h3>
 
-        {/* USER */}
         <div className="flex items-center gap-2.5 mb-4">
           <div
             className="
@@ -164,7 +185,6 @@ const ModelCard = ({ model }) => {
           </span>
         </div>
 
-        {/* TAGS */}
         <div className="flex flex-wrap items-center gap-1.5 mb-4">
 
           {visibleCategory && (
@@ -199,7 +219,6 @@ const ModelCard = ({ model }) => {
             ))}
         </div>
 
-        {/* FOOTER */}
         <div
           className="
             flex justify-between items-center
@@ -209,7 +228,6 @@ const ModelCard = ({ model }) => {
           "
         >
 
-          {/* LIKES */}
           <div className="transform transition-transform active:scale-95">
             <LikeButton
               modelId={model.id}
@@ -217,7 +235,6 @@ const ModelCard = ({ model }) => {
             />
           </div>
 
-          {/* DESCARGAS */}
           <div
             className="
               flex items-center gap-1.5
