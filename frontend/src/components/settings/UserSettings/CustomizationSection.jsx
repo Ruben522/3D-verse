@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import useUsers from '../../../hooks/useUsers';
-import AccordionSection from '../../common/AccordionSection'; // Importamos tu cajita mágica
+import AccordionSection from '../../common/AccordionSection';
 
 const CustomizationSection = () => {
     const { datosPerfil, actualizarDatoPerfil } = useUsers();
 
-    // Estado para controlar qué acordeones están abiertos
     const [expandedSections, setExpandedSections] = useState(['avatar', 'banner']);
 
     const toggleSection = (id) => {
@@ -32,7 +31,6 @@ const CustomizationSection = () => {
     return (
         <div className="flex flex-col gap-6 animate-fadeIn">
 
-            {/* CAJITA 1: AVATAR */}
             <AccordionSection
                 id="avatar"
                 title="Foto de Perfil"
@@ -86,7 +84,6 @@ const CustomizationSection = () => {
                 </div>
             </AccordionSection>
 
-            {/* CAJITA 2: BANNER Y COLOR */}
             <AccordionSection
                 id="banner"
                 title="Banner y Color"

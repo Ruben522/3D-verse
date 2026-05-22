@@ -1,5 +1,4 @@
-import React, { createContext, useState, useCallback, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { createContext, useState, useCallback, useRef } from 'react';
 import { messagesStyles } from '../utils/MessagesStyle.jsx';
 import Message from '../components/messages/Messages.jsx';
 
@@ -7,7 +6,6 @@ const message = createContext();
 
 export const MessageContext = ({ children }) => {
     const [toast, setToast] = useState(null);
-    const location = useLocation();
     const timerRef = useRef(null);
 
     const hideMessage = useCallback(() => {
@@ -15,23 +13,19 @@ export const MessageContext = ({ children }) => {
         if (timerRef.current) clearTimeout(timerRef.current);
     }, []);
 
-    useEffect(() => {
+    const showMessage = useCallback((textoMensaje, type = 'info') => {
         hideMessage();
-    }, [location.pathname, hideMessage]);
-
-    const showMessage = useCallback((message, type = 'info') => {
-        hideMessage();
-        setToast({ message, type });
+        setToast({ message: textoMensaje, type });
 
         timerRef.current = setTimeout(() => {
             hideMessage();
         }, 5000);
     }, [hideMessage]);
 
-    const showConfirm = useCallback((message, onConfirmCallback) => {
+    const showConfirm = useCallback((textoMensaje, onConfirmCallback) => {
         hideMessage();
         setToast({
-            message,
+            message: textoMensaje,
             type: 'confirm',
             onConfirm: onConfirmCallback
         });

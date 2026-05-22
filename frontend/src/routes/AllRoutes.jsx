@@ -10,6 +10,8 @@ import UploadModel from '../pages/UploadModel';
 import Community from '../pages/Community';
 import Contact from "../pages/Contact";
 import Settings from "../pages/Settings";
+import Administration from "../pages/Administration";
+import AdminRoute from "./AdminRoutes";
 
 const AllRoutes = () => {
 	return (
@@ -26,8 +28,9 @@ const AllRoutes = () => {
 			<Route path="/comunidad" element={<Community />} />
 			<Route path="/contacto" element={<Contact />} />
 			<Route path="/settings" element={<Settings />} />
-
-			{/* Ruta para manejar errores en caso de que no se encuentre la página */}
+			<Route element={<AdminRoute />}>
+				<Route path="/admin" element={<Administration />} />
+			</Route>
 			<Route path="*" element={<Home />} />
 		</Routes>
 	);

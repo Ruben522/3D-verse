@@ -2,31 +2,42 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import useUsers from '../../hooks/useUsers';
 import FollowButton from '../common/FollowButton';
+import TrashIcon from '../../assets/icons/TrashIcon';
 
 const ProfileCard = ({ user }) => {
-    const { checkIsOwnProfile, getProfileRoute } = useUsers();
+    const { checkIsOwnProfile, getProfileRoute, isAdmin, eliminarUsuario } = useUsers();
 
-    const hasCustomBg = user.card_bg_color && user.card_bg_color.toLowerCase() !== '#ffffff' && user.card_bg_color.toLowerCase() !== '#fff';
+    const isOwn = checkIsOwnProfile(user.id);
 
-    const dynamicCardStyle = hasCustomBg ? { backgroundColor: user.card_bg_color } : {};
+    const handleDeleteClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        eliminarUsuario(user.id);
+    };
 
     return (
         <Link
             to={getProfileRoute(user.id, user.username)}
-            style={dynamicCardStyle}
-            className={`block group rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative ${!hasCustomBg ? 'bg-white dark:bg-gray-800' : ''}`}
+            className="block group rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative bg-white dark:bg-gray-800"
         >
+            {isAdmin && !isOwn && (
+                <button
+                    onClick={handleDeleteClick}
+                    title="Eliminar usuario (Admin)"
+                    className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center bg-white/90 dark:bg-gray-900/90 backdrop-blur-md text-red-500 hover:text-red-700 border border-red-100 dark:border-red-900/30 hover:border-red-500 dark:hover:border-red-500 rounded-full shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                    <TrashIcon className="w-5 h-5 shrink-0" />
+                </button>
+            )}
+
             <div
                 className="h-24 w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={user.computedBannerStyle}
             />
 
-            {!checkIsOwnProfile(user.id) && (
-                <FollowButton targetUserId={user.id} />
-            )}
+
 
             <div className="p-5 pt-0 flex flex-col items-center text-center relative z-10">
-
                 <div className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 shadow-md -mt-10 overflow-hidden bg-white dark:bg-gray-800 relative transition-colors duration-300">
                     <img src={user.computedAvatar} alt={user.username} className="w-full h-full object-cover" />
                     {user.badge_url && (

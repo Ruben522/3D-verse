@@ -48,6 +48,8 @@ const UserContext = ({ children }) => {
   const [userSortBy, setUserSortBy] = useState("followers_count:desc");
   const [isSearchingUsers, setIsSearchingUsers] = useState(false);
 
+  const isAdmin = currentUser?.role === 'admin';
+
   useEffect(() => {
     if (userLocal) {
       setCurrentUser(normalizeUser(JSON.parse(userLocal)));
@@ -110,6 +112,38 @@ const UserContext = ({ children }) => {
       limpiarFormulario();
       navegar("/login");
     });
+  };
+
+  const eliminarUsuario = async (idUsuario) => {
+    showConfirm(
+      "¿Estás seguro de que quieres eliminar esta cuenta? Esta acción es irreversible.",
+      async () => {
+        setIsUpdatingProfile(true);
+        try {
+          await authAPI.remove(`${backendUrl}/users/${idUsuario}`);
+
+          const esMiCuenta = String(currentUser?.id) === String(idUsuario);
+
+          if (esMiCuenta) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setCurrentUser(null);
+            setIsAuthenticated(false);
+            limpiarFormulario();
+            navegar("/");
+            showMessage("Tu cuenta ha sido eliminada correctamente.", "success");
+          } else {
+            setCommunityUsers(prev => prev.filter(u => u.id !== idUsuario));
+            showMessage("Usuario eliminado correctamente.", "success");
+          }
+        } catch (error) {
+          console.error("Error al eliminar usuario:", error);
+          showMessage("No se pudo eliminar la cuenta.", "error");
+        } finally {
+          setIsUpdatingProfile(false);
+        }
+      }
+    );
   };
 
   const searchCommunityUsers = async (query = "", page = 1) => {
@@ -243,7 +277,6 @@ const UserContext = ({ children }) => {
     return activeProfileData?.content?.recent_models || [];
   };
 
-
   const actualizarDatoPerfil = (evento) => {
     const { name, value } = evento.target;
     setDatosPerfil((prev) => ({ ...prev, [name]: value }));
@@ -314,6 +347,7 @@ const UserContext = ({ children }) => {
     iniciarSesion,
     registrarse,
     cerrarSesion,
+    eliminarUsuario,
     publicProfile,
     publicMyProfile,
     communityUsers,
@@ -344,7 +378,8 @@ const UserContext = ({ children }) => {
     cargarDatosConfiguracion,
     guardarCambiosPerfil,
     isUpdatingProfile,
-    getProfileStyles
+    getProfileStyles,
+    isAdmin
   };
 
   return <user.Provider value={exportData}>{children}</user.Provider>;

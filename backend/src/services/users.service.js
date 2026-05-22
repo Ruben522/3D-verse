@@ -505,6 +505,12 @@ const deleteUser = async (userId, currentUser) => {
         }
     });
 
+    try {
+        await usersIndex.deleteDocument(userId);
+    } catch (error) {
+        console.error("Error borrando usuario de Meilisearch:", error);
+    }
+
     return {
         message: "Usuario, perfil y archivos eliminados correctamente.",
     };

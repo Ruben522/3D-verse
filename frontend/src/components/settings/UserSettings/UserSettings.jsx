@@ -1,8 +1,8 @@
-// components/settings/UserSettings/UserSettings.jsx
 import React, { useState } from 'react';
 import AccordionSection from '../../common/AccordionSection';
 import BasicInfoSection from './BasicInfoSection';
 import SocialMediaSection from './SocialMediaSection';
+import AccountSection from './AccountSection';
 
 const UserSettings = () => {
     // Controlamos qué acordeones están abiertos por defecto
@@ -36,6 +36,18 @@ const UserSettings = () => {
                 icon={<span className="text-xl">🔗</span>}
             >
                 <SocialMediaSection />
+            </AccordionSection>
+
+            {/* 👇 NUEVA SECCIÓN DE CUENTA 👇 */}
+            <AccordionSection
+                id="account"
+                title="Cuenta"
+                subtitle="Gestión de seguridad y eliminación"
+                isOpen={expandedSections.includes('account')}
+                onToggle={toggleSection}
+                icon={<span className="text-xl">⚙️</span>}
+            >
+                <AccountSection />
             </AccordionSection>
         </div>
     );

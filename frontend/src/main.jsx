@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 import "./i18n.js";
-//import ModelsContext from "./contexts/ModelsContext.jsx";
 import ModelsMeiliContext from "./contexts/ModelsMeiliContext.jsx";
 import UserContext from "./contexts/UserContext.jsx";
 import LikeContext from "./contexts/LikeContext.jsx";
@@ -15,6 +14,7 @@ import ContactContext from "./contexts/ContactContext.jsx";
 import MessageContext from "./contexts/MessageContext.jsx";
 import ThemeContext from "./contexts/ThemeContext.jsx";
 import CommentsContext from "./contexts/CommentsContext.jsx"
+import CategoryContext from "./contexts/CategoryContext.jsx";
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
@@ -29,7 +29,9 @@ createRoot(document.getElementById("root")).render(
 										<FollowContext>
 											<ContactContext>
 												<CommentsContext>
-													<App />
+													<CategoryContext>
+														<App />
+													</CategoryContext>
 												</CommentsContext>
 											</ContactContext>
 										</FollowContext>

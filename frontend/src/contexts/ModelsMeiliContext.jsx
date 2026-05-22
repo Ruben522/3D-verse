@@ -13,7 +13,7 @@ const ModelsMeiliContext = ({ children }) => {
     const navegar = useNavigate();
     const modelAPI = useAPI();
     const actionAPI = useAPI();
-    const { currentUser } = useUsers();
+    const { currentUser, isAdmin } = useUsers();
     const { showMessage, showConfirm } = useMessage();
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [modelsData, setModelsData] = useState([]);
@@ -227,7 +227,7 @@ const ModelsMeiliContext = ({ children }) => {
             const response = await modelAPI.get(`${apiUrl}/${id}`);
             const modelToEdit = normalizeModelData(response.data);
 
-            if (modelToEdit.username !== currentUser?.username && modelToEdit.user_id !== currentUser?.id) {
+            if (modelToEdit.username !== currentUser?.username && !isAdmin) {
                 showMessage("No tienes permiso para editar este modelo.", "error");
                 navegar("/");
                 return;

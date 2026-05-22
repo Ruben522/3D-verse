@@ -16,7 +16,6 @@ import {
 
 const router = Router();
 
-// Rutas GET (Públicas)
 router.get("/", getAll);
 router.get("/model/:modelId", getByModel);
 router.get("/:id", getOne);
