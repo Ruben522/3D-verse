@@ -1,70 +1,57 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Environment, Edges, Sparkles } from '@react-three/drei';
+import { Float, Environment, Edges } from '@react-three/drei';
 import * as THREE from 'three';
 
-const NestedLogoCubes = () => {
+// SUELO ANIMADO
+const MovingGrid = () => {
+    const gridRef = useRef();
+
+    useFrame((state, delta) => {
+        if (gridRef.current) {
+            gridRef.current.position.z =
+                (gridRef.current.position.z + delta * 1.5) % 1;
+        }
+    });
+
+    return (
+        <group>
+            <mesh
+                ref={gridRef}
+                rotation={[-Math.PI / 2, 0, 0]}
+                position={[0, -2.5, -5]}
+            >
+                <planeGeometry args={[30, 30, 30, 30]} />
+
+                <meshStandardMaterial
+                    color="#4c1d95"
+                    wireframe
+                    transparent
+                    opacity={0.15}
+                />
+            </mesh>
+        </group>
+    );
+};
+
+// LOGO 3D
+const LogoCube = () => {
     const groupRef = useRef();
-    const outerCubeRef = useRef();
-    const innerCubeRef = useRef();
+    const cubeRef = useRef();
 
     useFrame((state, delta) => {
 
         // Rotación automática
-        if (outerCubeRef.current && innerCubeRef.current) {
-
-            outerCubeRef.current.rotation.y += delta * 0.2;
-            outerCubeRef.current.rotation.x += delta * 0.1;
-
-            innerCubeRef.current.rotation.y -= delta * 0.3;
-            innerCubeRef.current.rotation.z -= delta * 0.2;
-
-            // Escala fija e idéntica
-            const outerScale = 2.1;
-            const innerScale = 1.4;
-
-            outerCubeRef.current.scale.x = THREE.MathUtils.lerp(
-                outerCubeRef.current.scale.x,
-                outerScale,
-                0.08
-            );
-
-            outerCubeRef.current.scale.y = THREE.MathUtils.lerp(
-                outerCubeRef.current.scale.y,
-                outerScale,
-                0.08
-            );
-
-            outerCubeRef.current.scale.z = THREE.MathUtils.lerp(
-                outerCubeRef.current.scale.z,
-                outerScale,
-                0.08
-            );
-
-            innerCubeRef.current.scale.x = THREE.MathUtils.lerp(
-                innerCubeRef.current.scale.x,
-                innerScale,
-                0.08
-            );
-
-            innerCubeRef.current.scale.y = THREE.MathUtils.lerp(
-                innerCubeRef.current.scale.y,
-                innerScale,
-                0.08
-            );
-
-            innerCubeRef.current.scale.z = THREE.MathUtils.lerp(
-                innerCubeRef.current.scale.z,
-                innerScale,
-                0.08
-            );
+        if (cubeRef.current) {
+            cubeRef.current.rotation.y += delta * 0.4;
+            cubeRef.current.rotation.x += delta * 0.2;
         }
 
-        // Interacción con ratón
+        // Movimiento con ratón
         if (groupRef.current) {
 
-            const targetX = (state.pointer.x * Math.PI) / 8;
-            const targetY = (state.pointer.y * Math.PI) / 8;
+            const targetX = (state.pointer.x * Math.PI) / 6;
+            const targetY = (state.pointer.y * Math.PI) / 6;
 
             groupRef.current.rotation.x = THREE.MathUtils.lerp(
                 groupRef.current.rotation.x,
@@ -83,35 +70,32 @@ const NestedLogoCubes = () => {
     return (
         <group ref={groupRef}>
             <Float
-                speed={2.5}
-                rotationIntensity={0.2}
-                floatIntensity={1}
+                speed={2}
+                rotationIntensity={0.5}
+                floatIntensity={1.5}
             >
 
-                {/* Cubo interior */}
-                <mesh ref={innerCubeRef} scale={1.4}>
-                    <boxGeometry args={[1, 1, 1]} />
-
-                    <meshStandardMaterial
-                        color="#9ca3af"
-                        roughness={0.3}
-                        metalness={0.7}
-                    />
-                </mesh>
-
-                {/* Cubo exterior */}
-                <mesh ref={outerCubeRef} scale={2.1}>
+                <mesh
+                    ref={cubeRef}
+                    scale={1.9}
+                    position={[0, 0.5, 0]}
+                >
 
                     <boxGeometry args={[1.5, 1.5, 1.5]} />
 
-                    <meshBasicMaterial
+                    {/* Núcleo interior */}
+                    <meshPhysicalMaterial
+                        color="#374151"
+                        metalness={0.8}
+                        roughness={0.2}
                         transparent
-                        opacity={0}
-                        colorWrite={false}
+                        opacity={0.4}
+                        transmission={0.5}
                     />
 
+                    {/* Bordes */}
                     <Edges
-                        linewidth={4.5}
+                        linewidth={2}
                         scale={1.01}
                         threshold={15}
                         color="#ffffff"
@@ -129,48 +113,38 @@ const AuthBackground3D = () => {
         <div className="absolute inset-0 z-0 pointer-events-none">
 
             <Canvas
-                camera={{ position: [0, 0, 8], fov: 40 }}
+                camera={{ position: [0, 0, 8], fov: 45 }}
                 eventSource={document.body}
                 dpr={[1, 2]}
             >
 
                 {/* Luces */}
-                <ambientLight intensity={0.5} />
+                <ambientLight intensity={0.2} />
 
                 <directionalLight
-                    position={[5, 10, 5]}
-                    intensity={1.5}
+                    position={[0, 5, 5]}
+                    intensity={1}
                     color="#ffffff"
                 />
 
                 <pointLight
-                    position={[-5, -5, 5]}
+                    position={[0, -2, 2]}
                     intensity={2}
                     color="#8b5cf6"
                 />
 
-                {/* Partículas */}
-                <Sparkles
-                    count={80}
-                    scale={10}
-                    size={1.5}
-                    speed={0.3}
-                    opacity={0.4}
-                    color="#d1d5db"
+                {/* Elementos */}
+                <MovingGrid />
+
+                <LogoCube />
+
+                <Environment preset="city" />
+
+                {/* Niebla */}
+                <fog
+                    attach="fog"
+                    args={['#2e1065', 5, 15]}
                 />
-
-                <Sparkles
-                    count={40}
-                    scale={8}
-                    size={2.5}
-                    speed={0.5}
-                    opacity={0.6}
-                    color="#8b5cf6"
-                />
-
-                <NestedLogoCubes />
-
-                <Environment preset="studio" />
 
             </Canvas>
         </div>
