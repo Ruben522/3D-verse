@@ -5,6 +5,8 @@ import Register from "./Register";
 import Button from "../components/common/Button.jsx";
 import { useTranslation } from "react-i18next";
 
+import AuthBackground3D from "../components/3d/AuthBackground3D";
+
 const AuthPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 transition-colors duration-300">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 transition-colors duration-300 relative">
 
       <div className="relative w-full max-w-5xl h-[750px] md:h-[650px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl dark:shadow-black/50 overflow-hidden flex flex-col md:flex-row transition-colors duration-300">
 
@@ -39,27 +41,36 @@ const AuthPage = () => {
 
           <div className="absolute inset-0 bg-gradient-to-br from-primary-800 to-primary-500 dark:from-primary-900 dark:to-primary-600 opacity-90 transition-colors duration-300"></div>
 
-          <span className="absolute top-10 right-10 text-7xl opacity-10 transform rotate-12">🧊</span>
-          <span className="absolute bottom-10 left-10 text-7xl opacity-10 transform -rotate-12">🚀</span>
+          <AuthBackground3D isLoginView={isLoginView} />
 
-          <div className="relative z-30 text-white px-12">
+          <div className="relative z-30 text-white px-12 pointer-events-auto">
             {isLoginView ? (
               <div className="animate-fade-in flex flex-col items-center">
-                <h2 className="text-4xl font-extrabold mb-4">{t('messages.new_user')}</h2>
-                <p className="text-lg text-primary-100 dark:text-primary-200 mb-8 leading-relaxed transition-colors">
+                <h2 className="text-4xl font-extrabold mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
+                  {t('messages.new_user')}
+                </h2>
+                <p className="text-lg text-primary-50 mb-8 leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] max-w-sm">
                   {t('messages.create_account')}
                 </p>
-                <Button onClick={toggleView} variant="ghost" className="px-10 dark:hover:bg-white/10">
+                <Button
+                  onClick={toggleView}
+                  className="px-10 py-3 mt-4 text-white font-bold rounded-xl bg-white/10 hover:bg-white/25 backdrop-blur-md border border-white/30 hover:border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300"
+                >
                   {t('messages.create_account_tittle')}
                 </Button>
               </div>
             ) : (
               <div className="animate-fade-in flex flex-col items-center">
-                <h2 className="text-4xl font-extrabold mb-4">{t('messages.welcome_back')}</h2>
-                <p className="text-lg text-primary-100 dark:text-primary-200 mb-8 leading-relaxed transition-colors">
+                <h2 className="text-4xl font-extrabold mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
+                  {t('messages.welcome_back')}
+                </h2>
+                <p className="text-lg text-primary-50 mb-8 leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] max-w-sm">
                   {t('messages.enter_to_account')}
                 </p>
-                <Button onClick={toggleView} variant="ghost" className="px-10 dark:hover:bg-white/10">
+                <Button
+                  onClick={toggleView}
+                  className="px-10 py-3 mt-4 text-white font-bold rounded-xl bg-white/10 hover:bg-white/25 backdrop-blur-md border border-white/30 hover:border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300"
+                >
                   {t('messages.login_here')}
                 </Button>
               </div>

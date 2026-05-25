@@ -1,10 +1,12 @@
 import React, { createContext, useState, useCallback } from "react";
 import useAPI from "../hooks/useAPI";
+import useMessage from "../hooks/useMessage";
 
 const commentsContext = createContext();
 
 const CommentsContext = ({ children }) => {
     const api = useAPI();
+    const { showConfirm, showMessage } = useMessage();
     const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || "http://localhost:3000";
 
     const [comments, setComments] = useState([]);
@@ -51,8 +53,16 @@ const CommentsContext = ({ children }) => {
     };
 
     const deleteComment = async (commentId) => {
-        await api.remove(`${backendUrl}/comments/${commentId}`);
-        await loadComments(currentModelId, 1);
+        showConfirm("¿Estás seguro de que quieres eliminar este comentario?", async () => {
+            try {
+                await api.remove(`${backendUrl}/comments/${commentId}`);
+                await loadComments(currentModelId, 1);
+                showMessage("Comentario eliminado", "success");
+            } catch (error) {
+                console.error("Error al eliminar comentario:", error);
+                showMessage("No se pudo eliminar el comentario", "error");
+            }
+        });
     };
 
     const exportData = {

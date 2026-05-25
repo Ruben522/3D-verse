@@ -31,7 +31,7 @@ const AllRoutes = () => {
 			<Route element={<AdminRoute />}>
 				<Route path="/admin" element={<Administration />} />
 			</Route>
-			<Route path="*" element={<Home />} />
+			<Route path="*" element={<Error />} />
 		</Routes>
 	);
 };

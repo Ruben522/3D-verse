@@ -4,7 +4,7 @@ import useUsers from '../../hooks/useUsers';
 import useComments from '../../hooks/useComments';
 
 const CommentItem = ({ comment }) => {
-    const { currentUser, isAuthenticated } = useUsers();
+    const { currentUser, isAuthenticated, isAdmin } = useUsers();
     const { getReplies, deleteComment, editComment, addReply } = useComments();
 
     const [isEditing, setIsEditing] = useState(false);
@@ -13,8 +13,9 @@ const CommentItem = ({ comment }) => {
     const [replyContent, setReplyContent] = useState("");
 
     const isAuthor = currentUser?.id === comment.author?.id;
-    const authorAvatar = comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.username}&background=random&color=fff`;
+    const hasPermissions = isAuthor || isAdmin;
 
+    const authorAvatar = comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.username}&background=random&color=fff`;
     const replies = getReplies(comment.id);
 
     return (
@@ -33,7 +34,6 @@ const CommentItem = ({ comment }) => {
                             {new Date(comment.created_at).toLocaleDateString()}
                         </span>
                     </div>
-
                     {isEditing ? (
                         <div className="mt-2 animate-fade-in">
                             <textarea
@@ -60,10 +60,15 @@ const CommentItem = ({ comment }) => {
                             </button>
                         )}
 
-                        {isAuthor && !isEditing && (
+                        {hasPermissions && !isEditing && (
                             <>
                                 <button onClick={() => setIsEditing(true)} className="text-xs font-bold text-gray-500 hover:text-blue-500 transition-colors">Editar</button>
-                                <button onClick={() => deleteComment(comment.id)} className="text-xs font-bold text-gray-500 hover:text-red-500 transition-colors">Eliminar</button>
+                                <button
+                                    onClick={() => deleteComment(comment.id)}
+                                    className={`text-xs font-bold transition-colors ${!isAuthor && isAdmin ? 'text-red-400 hover:text-red-600' : 'text-gray-500 hover:text-red-500'}`}
+                                >
+                                    Eliminar {!isAuthor && isAdmin && "(Admin)"}
+                                </button>
                             </>
                         )}
                     </div>

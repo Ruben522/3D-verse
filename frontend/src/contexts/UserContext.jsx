@@ -4,6 +4,8 @@ import useAPI from "../hooks/useAPI.js";
 import useMessage from "../hooks/useMessage.js";
 import { normalizeUser, normalizeModelForCard } from "../utils/normalizers";
 import { usersIndex } from "../services/meiliClient";
+// 👇 Importamos nuestras nuevas validaciones (ajusta la ruta si es necesario)
+import { validateLogin, validateRegister } from "../utils/userValidations";
 
 const user = createContext();
 
@@ -23,6 +25,7 @@ const UserContext = ({ children }) => {
     youtube: "", twitter: "", linkedin: "", github: "",
     card_bg_color: "#ffffff", primary_color: "#3b82f6"
   };
+
   const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
   const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
@@ -59,6 +62,8 @@ const UserContext = ({ children }) => {
   const actualizarDato = (evento) => {
     const { name, value } = evento.target;
     setDatosSesion((prev) => ({ ...prev, [name]: value }));
+    // Limpiamos el error visual si el usuario vuelve a escribir
+    if (errorAuth) setErrorAuth(null);
   };
 
   const limpiarFormulario = () => {
@@ -69,9 +74,16 @@ const UserContext = ({ children }) => {
   const iniciarSesion = async (evento) => {
     if (evento) evento.preventDefault();
     setErrorAuth(null);
+
+    // 🛡️ Usamos la validación separada
+    const validationError = validateLogin(datosSesion);
+    if (validationError) {
+      return setErrorAuth(validationError);
+    }
+
     try {
       const response = await authAPI.post(`${backendUrl}/auth/login`, {
-        email: datosSesion.email,
+        email: datosSesion.email.trim(),
         password: datosSesion.password
       });
       const { token, user } = response.data || response;
@@ -82,15 +94,27 @@ const UserContext = ({ children }) => {
       limpiarFormulario();
       navegar("/");
     } catch (error) {
-      setErrorAuth("Credenciales incorrectas o error de servidor.");
+      setErrorAuth("Correo electrónico o contraseña incorrectos.");
     }
   };
 
   const registrarse = async (evento) => {
     if (evento) evento.preventDefault();
     setErrorAuth(null);
+
+    // 🛡️ Usamos la validación separada
+    const validationError = validateRegister(datosSesion);
+    if (validationError) {
+      return setErrorAuth(validationError);
+    }
+
     try {
-      const response = await authAPI.post(`${backendUrl}/auth/register`, datosSesion);
+      const response = await authAPI.post(`${backendUrl}/auth/register`, {
+        name: datosSesion.name.trim(),
+        username: datosSesion.username.trim(),
+        email: datosSesion.email.trim(),
+        password: datosSesion.password
+      });
       const { token, user } = response.data || response;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -99,7 +123,8 @@ const UserContext = ({ children }) => {
       limpiarFormulario();
       navegar("/");
     } catch (error) {
-      setErrorAuth("El usuario o correo ya están registrados.");
+      const serverMsg = error.response?.data?.message || error.message;
+      setErrorAuth(serverMsg || "El usuario o el correo ya están registrados.");
     }
   };
 
@@ -130,7 +155,7 @@ const UserContext = ({ children }) => {
             setCurrentUser(null);
             setIsAuthenticated(false);
             limpiarFormulario();
-            navegar("/");
+            navegar("/", { replace: true });
             showMessage("Tu cuenta ha sido eliminada correctamente.", "success");
           } else {
             setCommunityUsers(prev => prev.filter(u => u.id !== idUsuario));
