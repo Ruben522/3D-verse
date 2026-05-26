@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
-import Button from "../components/common/Button.jsx";
 import { useTranslation } from "react-i18next";
 
 import AuthBackground3D from "../components/3d/AuthBackground3D";
@@ -52,12 +51,12 @@ const AuthPage = () => {
                 <p className="text-lg text-primary-50 mb-8 leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] max-w-sm">
                   {t('messages.create_account')}
                 </p>
-                <Button
+                <button
                   onClick={toggleView}
                   className="px-10 py-3 mt-4 text-white font-bold rounded-xl bg-white/10 hover:bg-white/25 backdrop-blur-md border border-white/30 hover:border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300"
                 >
                   {t('messages.create_account_tittle')}
-                </Button>
+                </button>
               </div>
             ) : (
               <div className="animate-fade-in flex flex-col items-center">
@@ -67,12 +66,12 @@ const AuthPage = () => {
                 <p className="text-lg text-primary-50 mb-8 leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] max-w-sm">
                   {t('messages.enter_to_account')}
                 </p>
-                <Button
+                <button
                   onClick={toggleView}
                   className="px-10 py-3 mt-4 text-white font-bold rounded-xl bg-white/10 hover:bg-white/25 backdrop-blur-md border border-white/30 hover:border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300"
                 >
                   {t('messages.login_here')}
-                </Button>
+                </button>
               </div>
             )}
           </div>

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import useUsers from '../hooks/useUsers';
 import useModels from '../hooks/useModels';
-import Button from '../components/common/Button';
 import AccordionSection from '../components/common/AccordionSection';
 import MainFile from '../components/uploads/MainFile';
 import ImagesFiles from '../components/uploads/ImagesFiles';
@@ -63,14 +62,7 @@ const UploadModel = () => {
                     />
                 </div>
 
-                {uploadErrors?.global && (
-                    <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-4 rounded-xl font-bold flex items-center gap-3 transition-colors">
-                        <span>⚠️</span> {uploadErrors.global}
-                    </div>
-                )}
-
                 <div className="flex flex-col gap-6">
-
                     <AccordionSection
                         id="info"
                         title={t('messages.model_details')}

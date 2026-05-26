@@ -28,7 +28,7 @@ async function runSeed() {
               username: faker.internet.username().toLowerCase() + faker.number.int({ max: 99 }),
               name: faker.person.firstName(),
               lastname: faker.person.lastName(),
-              avatar: faker.image.avatar(), 
+              avatar: faker.image.avatar(),
               bio: faker.person.bio(),
               primary_color: faker.color.rgb(),
               card_bg_color: '#ffffff',
@@ -41,7 +41,7 @@ async function runSeed() {
           profile: true
         }
       });
-      
+
       createdUsers.push(fakeUser); // Guardamos el usuario en la lista
     }
 
@@ -62,8 +62,8 @@ async function runSeed() {
           title: `${faker.commerce.productAdjective()} ${randomCategory} 3D`,
           description: faker.lorem.paragraphs(2),
           // Usamos la nueva función recomendada por Faker
-          main_image_url: faker.image.url(), 
-          file_url: 'dummy-file.glb',
+          main_image_url: faker.image.url(),
+          file_url: '',
           license: 'Standard',
           views: faker.number.int({ min: 10, max: 5000 }),
           downloads: faker.number.int({ min: 0, max: 1000 }),
@@ -79,7 +79,7 @@ async function runSeed() {
     // 3. REPARTO DE LIKES (Interacciones)
     // ==========================================
     console.log(`❤️ Simulando que los usuarios le dan Like a los modelos...`);
-    
+
     for (const model of createdModels) {
       const shuffledUsers = [...createdUsers].sort(() => 0.5 - Math.random());
       const numLikes = faker.number.int({ min: 0, max: NUM_USERS });

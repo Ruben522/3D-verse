@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import useModels from '../hooks/useModels';
 import HeroCarousel from '../components/home/HeroCarousel';
 import PopularModels from '../components/home/PopularModels';
+import ThreeDHomeIcon from '../assets/icons/ThreeDHomeIcon';
 
 const Home = () => {
     const { isFetchingModel } = useModels();
@@ -40,7 +41,6 @@ const Home = () => {
                             <HeroCarousel />
                         )}
                     </div>
-
                 </div>
             </section>
 
@@ -52,7 +52,10 @@ const Home = () => {
 
             <section className="py-24 bg-gradient-to-b from-white to-primary-50/30 dark:from-transparent dark:to-primary-900/10 transition-colors duration-300">
                 <div className="max-w-4xl mx-auto px-4 text-center">
-                    <span className="text-6xl mb-6 block">🚀</span>
+                    <div className="w-40 h-40 mx-auto mb-2 relative">
+                        <ThreeDHomeIcon />
+                    </div>
+
                     <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight transition-colors">¿Tienes tu propio diseño?</h2>
                     <p className="text-xl text-gray-500 dark:text-gray-400 font-medium mt-4 mb-10 transition-colors">
                         Sube tus archivos STL, crea un portafolio espectacular y empieza a ganar seguidores hoy mismo.

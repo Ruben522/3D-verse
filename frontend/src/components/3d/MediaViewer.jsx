@@ -5,6 +5,9 @@ import View3D from "./View3D";
 import ColorSelector from "../../utils/ColorSelector";
 import { useTranslation } from "react-i18next";
 
+// 👇 Importamos nuestro nuevo componente de respaldo
+import ErrorModel3D from "./ErrorModel3D";
+
 const MediaViewer = () => {
   const { currentModel } = useModels();
   const {
@@ -24,6 +27,8 @@ const MediaViewer = () => {
   }, [currentModel, resetViewer]);
 
   const modelPartsList = currentModel?.parts || [];
+
+  const hasValid3DModel = active3DUrl && active3DUrl !== null;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
@@ -56,20 +61,26 @@ const MediaViewer = () => {
           <img src={mainImage} alt={currentModel?.title} className="w-full h-full object-cover block" />
         )}
 
-        {activeMediaTab === "modelos" && active3DUrl && (
+        {activeMediaTab === "modelos" && (
           <div className="w-full h-full relative">
-            <View3D
-              currentModelUrl={active3DUrl}
-              color={currentColor}
-              selectedPart={selectedPart}
-              onPartsDetected={handlePartsDetected}
-            />
-            {!isInteractive && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/5 dark:bg-black/20 cursor-pointer transition-colors duration-300" onClick={() => setIsInteractive(true)}>
-                <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur px-6 py-4 rounded-2xl shadow-xl flex items-center gap-2 text-gray-900 dark:text-white transition-colors duration-300">
-                  <span className="font-extrabold">{t("media_viwer.clic_interact")}</span>
-                </div>
-              </div>
+            {hasValid3DModel ? (
+              <>
+                <View3D
+                  currentModelUrl={active3DUrl}
+                  color={currentColor}
+                  selectedPart={selectedPart}
+                  onPartsDetected={handlePartsDetected}
+                />
+                {!isInteractive && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/5 dark:bg-black/20 cursor-pointer transition-colors duration-300" onClick={() => setIsInteractive(true)}>
+                    <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur px-6 py-4 rounded-2xl shadow-xl flex items-center gap-2 text-gray-900 dark:text-white transition-colors duration-300">
+                      <span className="font-extrabold">{t("media_viwer.clic_interact")}</span>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <ErrorModel3D />
             )}
           </div>
         )}
@@ -78,9 +89,9 @@ const MediaViewer = () => {
       {activeMediaTab === "modelos" && (
         <div className="flex gap-3 mt-4 overflow-x-auto py-2">
           <button
-            onClick={() => setActive3DUrl(currentModel.fileUrl)}
+            onClick={() => setActive3DUrl(currentModel?.fileUrl || null)}
             className={`px-4 py-3 rounded-xl font-bold text-sm border-2 transition-colors duration-300 whitespace-nowrap
-              ${active3DUrl === currentModel.fileUrl
+              ${active3DUrl === currentModel?.fileUrl
                 ? "border-primary-600 dark:border-primary-500/50 bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-400"
                 : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
               }`}
@@ -104,7 +115,7 @@ const MediaViewer = () => {
         </div>
       )}
 
-      {activeMediaTab === "modelos" && isInteractive && (
+      {activeMediaTab === "modelos" && isInteractive && hasValid3DModel && (
         <div className="mt-6 flex flex-col gap-6 pt-6 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <ColorSelector selectedColor={currentColor} onSelect={setCurrentColor} />
 

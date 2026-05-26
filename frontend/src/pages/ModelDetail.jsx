@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useModels from "../hooks/useModels";
-import Button from "../components/common/Button";
 import MediaViewer from "../components/3d/MediaViewer";
 import ModelSidebar from "../components/models/ModelSidebar";
 import ModelInfo from "../components/models/ModelInfo";
@@ -9,6 +8,7 @@ import ModelFiles from "../components/models/ModelFiles";
 import ModelAuthor from "../components/models/ModelAuthor";
 import { useTranslation } from "react-i18next";
 import Viewer3DContext from "../contexts/Viewer3DContext";
+import DownloadAllButton from "../components/common/DownloadAllButton";
 
 const ModelDetail = () => {
   const { id } = useParams();
@@ -40,9 +40,7 @@ const ModelDetail = () => {
                   </h1>
                   <ModelAuthor />
                 </div>
-                <Button onClick={() => downloadPackage(currentModel.id, 'all')} className="text-sm px-6 py-3">
-                  {t('buttons.download')}
-                </Button>
+                <DownloadAllButton />
               </div>
             </div>
 

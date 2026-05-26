@@ -16,6 +16,8 @@ const colores = [
 ];
 
 const ColorSelector = ({ selectedColor, onSelect }) => {
+  const isCustomSelected = !colores.find((c) => c.hex === selectedColor);
+
   return (
     <div className="flex flex-wrap justify-start items-center gap-3">
       {colores.map((c) => (
@@ -23,23 +25,38 @@ const ColorSelector = ({ selectedColor, onSelect }) => {
           key={c.name}
           title={c.name}
           onClick={() => onSelect(c.hex)}
-          className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${selectedColor === c.hex ? 'scale-125 border-primary-600 shadow-md' : 'border-gray-200'
+          className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${selectedColor === c.hex
+            ? 'scale-125 border-primary-600 dark:border-primary-400 shadow-md'
+            : 'border-gray-200 dark:border-gray-700'
             }`}
           style={{ backgroundColor: c.hex }}
         />
       ))}
 
-      <div className="w-px h-8 bg-gray-200 mx-1" />
+      <div className="w-px h-8 bg-gray-200 dark:bg-gray-700 mx-1 transition-colors" />
 
-      <div className="relative group flex items-center">
+      <label
+        title="Color personalizado"
+        className={`w-8 h-8 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all hover:scale-110
+          ${isCustomSelected
+            ? 'scale-125 border-primary-600 dark:border-primary-400 shadow-md'
+            : 'border-dashed border-gray-400 dark:border-gray-500 hover:border-primary-500 bg-gray-50 dark:bg-gray-800'
+          }`}
+        style={isCustomSelected ? { backgroundColor: selectedColor } : {}}
+      >
         <input
           type="color"
           value={selectedColor}
           onChange={(e) => onSelect(e.target.value)}
-          className="w-10 h-8 rounded-lg cursor-pointer border-2 border-gray-200 p-0 overflow-hidden"
-          title="Color personalizado"
+          className="sr-only"
         />
-      </div>
+
+        {!isCustomSelected && (
+          <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+        )}
+      </label>
     </div>
   );
 };

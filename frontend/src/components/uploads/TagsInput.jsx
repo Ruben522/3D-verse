@@ -11,7 +11,6 @@ const TagsInput = () => {
             <label className="text-sm font-bold text-gray-700 dark:text-gray-300 block mb-2 transition-colors">
                 {t("model_files.tags")}
             </label>
-            {/* Contenedor principal que simula ser un input */}
             <div className="w-full p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus-within:bg-white dark:focus-within:bg-gray-800 focus-within:ring-2 focus-within:ring-primary-500 dark:focus-within:ring-primary-500 transition-all flex flex-wrap gap-2 min-h-[52px]">
 
                 {uploadData.tags.map(tag => (
@@ -30,7 +29,6 @@ const TagsInput = () => {
                     </span>
                 ))}
 
-                {/* Input real donde el usuario escribe */}
                 <input
                     type="text"
                     onKeyDown={agregarTag}

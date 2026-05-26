@@ -1,8 +1,9 @@
 import React from 'react';
-import Button from '../common/Button';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useUsers from '../../hooks/useUsers';
+import SettingIcon from '../../assets/icons/SettingIcon';
+import ExitAccountIcon from '../../assets/icons/ExitAccountIcon';
 
 const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
   const { t } = useTranslation();
@@ -39,19 +40,29 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
           <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
             {isOwnProfile ? (
               <>
-                <Button variant="outline" className="flex-1 md:flex-none !px-6 !py-2.5 !text-sm whitespace-nowrap">
-                  <Link to="/settings" className="w-full h-full flex items-center justify-center">
-                    ⚙️ {t("user.settings")}
-                  </Link>
-                </Button>
-                <Button onClick={cerrarSesion} className="flex-1 md:flex-none !px-6 !py-2.5 !text-sm !bg-red-50 dark:!bg-red-900/20 !text-red-600 dark:!text-red-400 border border-red-200 dark:border-red-800 hover:!bg-red-100 dark:hover:!bg-red-900/40 shadow-none whitespace-nowrap transition-colors">
-                  🚪 {t("user.logout")}
-                </Button>
+                <Link
+                  to="/settings"
+                  className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                >
+                  <SettingIcon />
+                  {t("user.settings")}
+                </Link>
+
+                <button
+                  onClick={cerrarSesion}
+                  className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors whitespace-nowrap"
+                >
+                  <ExitAccountIcon />
+                  {t("user.logout")}
+                </button>
               </>
             ) : (
-              <Button style={styles.primaryBg} className="flex-1 md:flex-none !px-10 !py-2.5 !text-sm text-white shadow-md hover:shadow-lg border-none">
+              <button
+                style={styles.primaryBg}
+                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-10 py-2.5 text-sm font-bold text-white rounded-xl shadow-md hover:shadow-lg transition-all"
+              >
                 + {t("user.follow")}
-              </Button>
+              </button>
             )}
           </div>
         </div>

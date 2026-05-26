@@ -12,12 +12,13 @@ const ImagesFiles = () => {
     } = useModels();
 
     const { t } = useTranslation();
-
     const fileRef = useRef(null);
 
-    const isNewImage = uploadFiles?.main_image;
+    const isNewImage = !!uploadFiles?.main_image;
 
-    const previewUrl = archivosExistentes?.main_image || null;
+    const previewUrl = isNewImage
+        ? URL.createObjectURL(uploadFiles.main_image)
+        : archivosExistentes?.main_image || null;
 
     return (
         <div
@@ -72,40 +73,16 @@ const ImagesFiles = () => {
                 </div>
             ) : (
                 <div className="flex flex-col items-center p-8">
-
                     <svg
                         className="w-14 h-14 mb-4 text-gray-400 dark:text-gray-500 opacity-70"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.5"
-                            d="M3 16.5V6.75A2.25 2.25 0 015.25 4.5h13.5A2.25 2.25 0 0121 6.75v10.5A2.25 2.25 0 0118.75 19.5H5.25A2.25 2.25 0 013 17.25v-.75z"
-                        />
-
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.5"
-                            d="M3 15l4.5-4.5a1.5 1.5 0 012.12 0L14 15"
-                        />
-
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.5"
-                            d="M13 14l1.5-1.5a1.5 1.5 0 012.12 0L21 17"
-                        />
-
-                        <circle
-                            cx="8.5"
-                            cy="8.5"
-                            r="1.25"
-                            strokeWidth="1.5"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 16.5V6.75A2.25 2.25 0 015.25 4.5h13.5A2.25 2.25 0 0121 6.75v10.5A2.25 2.25 0 0118.75 19.5H5.25A2.25 2.25 0 013 17.25v-.75z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 15l4.5-4.5a1.5 1.5 0 012.12 0L14 15" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 14l1.5-1.5a1.5 1.5 0 012.12 0L21 17" />
+                        <circle cx="8.5" cy="8.5" r="1.25" strokeWidth="1.5" />
                     </svg>
 
                     <p className="font-bold text-gray-900 dark:text-white transition-colors">

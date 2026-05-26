@@ -3,7 +3,6 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Environment, Edges } from '@react-three/drei';
 import * as THREE from 'three';
 
-// SUELO ANIMADO
 const MovingGrid = () => {
     const gridRef = useRef();
 
@@ -34,25 +33,20 @@ const MovingGrid = () => {
     );
 };
 
-// LOGO 3D
 const LogoCube = () => {
     const groupRef = useRef();
     const cubeRef = useRef();
 
     useFrame((state, delta) => {
 
-        // Rotación automática
         if (cubeRef.current) {
             cubeRef.current.rotation.y += delta * 0.4;
             cubeRef.current.rotation.x += delta * 0.2;
         }
 
-        // Movimiento con ratón
         if (groupRef.current) {
-
             const targetX = (state.pointer.x * Math.PI) / 6;
             const targetY = (state.pointer.y * Math.PI) / 6;
-
             groupRef.current.rotation.x = THREE.MathUtils.lerp(
                 groupRef.current.rotation.x,
                 -targetY,
@@ -75,15 +69,10 @@ const LogoCube = () => {
                 floatIntensity={1.5}
             >
 
-                <mesh
-                    ref={cubeRef}
-                    scale={1.9}
-                    position={[0, 0.5, 0]}
-                >
+                <mesh ref={cubeRef} scale={1.9} position={[0, 0.5, 0]}>
 
                     <boxGeometry args={[1.5, 1.5, 1.5]} />
 
-                    {/* Núcleo interior */}
                     <meshPhysicalMaterial
                         color="#374151"
                         metalness={0.8}
@@ -93,7 +82,6 @@ const LogoCube = () => {
                         transmission={0.5}
                     />
 
-                    {/* Bordes */}
                     <Edges
                         linewidth={2}
                         scale={1.01}
@@ -118,7 +106,6 @@ const AuthBackground3D = () => {
                 dpr={[1, 2]}
             >
 
-                {/* Luces */}
                 <ambientLight intensity={0.2} />
 
                 <directionalLight
@@ -133,14 +120,12 @@ const AuthBackground3D = () => {
                     color="#8b5cf6"
                 />
 
-                {/* Elementos */}
                 <MovingGrid />
 
                 <LogoCube />
 
                 <Environment preset="city" />
 
-                {/* Niebla */}
                 <fog
                     attach="fog"
                     args={['#2e1065', 5, 15]}
