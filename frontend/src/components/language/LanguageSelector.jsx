@@ -27,7 +27,11 @@ const LanguageSelector = () => {
                 {languages.map((lang) => (
                     <button
                         key={lang.code}
-                        onClick={() => changeLanguage(lang.code)}
+                        onClick={(e) => {
+                            changeLanguage(lang.code),
+                                e.preventDefault()
+                        }
+                        }
                         className={`w-full px-3 py-2 flex items-center gap-3 transition-all text-left text-sm
                         ${currentLang === lang.code
                                 ? 'bg-primary-50 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 font-semibold'
@@ -51,7 +55,7 @@ const LanguageSelector = () => {
                     </button>
                 ))}
             </div>
-        </div>
+        </div >
     );
 };
 

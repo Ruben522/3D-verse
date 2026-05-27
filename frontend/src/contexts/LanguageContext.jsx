@@ -28,8 +28,14 @@ const LanguageContext = ({ children }) => {
 
     const currentLanguage = languages.find(l => l.code === currentLang);
 
+    const exportar = {
+        currentLang,
+        changeLanguage,
+        languages,
+        currentLanguage
+    }
     return (
-        <language.Provider value={{ currentLang, changeLanguage, languages, currentLanguage }}>
+        <language.Provider value={exportar}>
             {children}
         </language.Provider>
     );

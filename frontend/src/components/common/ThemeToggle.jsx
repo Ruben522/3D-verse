@@ -9,7 +9,10 @@ const ThemeToggle = () => {
 
     return (
         <button
-            onClick={toggleTheme}
+            onClick={(e) => {
+                toggleTheme(),
+                    e.preventDefault()
+            }}
             className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500/50 group"
             aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
         >

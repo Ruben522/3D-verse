@@ -143,7 +143,7 @@ const Menu = () => {
               <div className="flex flex-col gap-2">
                 <Link to="/profile" onClick={closeMobileMenu} className="flex items-center gap-3 text-lg font-bold text-white hover:text-primary-100 dark:hover:text-primary-200 p-3 rounded-xl hover:bg-white/5 transition-colors">
                   <ProfileIcon />
-                  Mi Perfil
+                  {t('links.myProfile')}
                 </Link>
                 <button onClick={handleCerrarSesionMovil} className="flex items-center gap-3 text-lg font-bold text-red-400 hover:text-red-300 p-3 rounded-xl hover:bg-red-500/10 text-left transition-colors">
                   <ExitAccountIcon />

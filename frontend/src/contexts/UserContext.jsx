@@ -4,7 +4,6 @@ import useAPI from "../hooks/useAPI.js";
 import useMessage from "../hooks/useMessage.js";
 import { normalizeUser, normalizeModelForCard } from "../utils/normalizers";
 import { usersIndex } from "../services/meiliClient";
-// 👇 Importamos nuestras nuevas validaciones (ajusta la ruta si es necesario)
 import { validateLogin, validateRegister } from "../utils/userValidations";
 
 const user = createContext();
@@ -361,6 +360,14 @@ const UserContext = ({ children }) => {
     };
   };
 
+  const handleClearAvatar = () => {
+    setDatosPerfil((prev) => ({ ...prev, avatar: "" }));
+  };
+
+  const handleClearBanner = () => {
+    setDatosPerfil((prev) => ({ ...prev, banner_url: "" }));
+  };
+
   const exportData = {
     currentUser,
     isAuthenticated,
@@ -404,7 +411,9 @@ const UserContext = ({ children }) => {
     guardarCambiosPerfil,
     isUpdatingProfile,
     getProfileStyles,
-    isAdmin
+    isAdmin,
+    handleClearAvatar,
+    handleClearBanner
   };
 
   return <user.Provider value={exportData}>{children}</user.Provider>;

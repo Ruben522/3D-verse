@@ -3,9 +3,11 @@ import AccordionSection from '../../common/AccordionSection';
 import BasicInfoSection from './BasicInfoSection';
 import SocialMediaSection from './SocialMediaSection';
 import AccountSection from './AccountSection';
+import UserIcon from '../../../assets/icons/UserIcon';
+import LinkIcon from '../../../assets/icons/LinkIcon';
+import SettingIcon from '../../../assets/icons/SettingIcon';
 
 const UserSettings = () => {
-    // Controlamos qué acordeones están abiertos por defecto
     const [expandedSections, setExpandedSections] = useState(['basic', 'social']);
 
     const toggleSection = (id) => {
@@ -22,7 +24,7 @@ const UserSettings = () => {
                 subtitle="Nombre, ubicación y biografía"
                 isOpen={expandedSections.includes('basic')}
                 onToggle={toggleSection}
-                icon={<span className="text-xl">👤</span>}
+                icon={<UserIcon className="w-6 h-6 text-white" />}
             >
                 <BasicInfoSection />
             </AccordionSection>
@@ -33,19 +35,18 @@ const UserSettings = () => {
                 subtitle="Conecta tus cuentas externas"
                 isOpen={expandedSections.includes('social')}
                 onToggle={toggleSection}
-                icon={<span className="text-xl">🔗</span>}
+                icon={<LinkIcon className="w-6 h-6 text-white" />}
             >
                 <SocialMediaSection />
             </AccordionSection>
 
-            {/* 👇 NUEVA SECCIÓN DE CUENTA 👇 */}
             <AccordionSection
                 id="account"
                 title="Cuenta"
                 subtitle="Gestión de seguridad y eliminación"
                 isOpen={expandedSections.includes('account')}
                 onToggle={toggleSection}
-                icon={<span className="text-xl">⚙️</span>}
+                icon={<SettingIcon className="w-6 h-6 text-white" />}
             >
                 <AccountSection />
             </AccordionSection>
