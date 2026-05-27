@@ -22,7 +22,7 @@ const UserContext = ({ children }) => {
   const datosPerfilInicial = {
     username: "", name: "", lastname: "", bio: "", location: "",
     youtube: "", twitter: "", linkedin: "", github: "",
-    card_bg_color: "#ffffff", primary_color: "#3b82f6"
+    card_bg_color: "#eaeaea", primary_color: "#851bd1"
   };
 
   const [currentUser, setCurrentUser] = useState(null);
@@ -61,7 +61,6 @@ const UserContext = ({ children }) => {
   const actualizarDato = (evento) => {
     const { name, value } = evento.target;
     setDatosSesion((prev) => ({ ...prev, [name]: value }));
-    // Limpiamos el error visual si el usuario vuelve a escribir
     if (errorAuth) setErrorAuth(null);
   };
 
@@ -74,7 +73,6 @@ const UserContext = ({ children }) => {
     if (evento) evento.preventDefault();
     setErrorAuth(null);
 
-    // 🛡️ Usamos la validación separada
     const validationError = validateLogin(datosSesion);
     if (validationError) {
       return setErrorAuth(validationError);
@@ -101,7 +99,6 @@ const UserContext = ({ children }) => {
     if (evento) evento.preventDefault();
     setErrorAuth(null);
 
-    // 🛡️ Usamos la validación separada
     const validationError = validateRegister(datosSesion);
     if (validationError) {
       return setErrorAuth(validationError);
@@ -122,8 +119,7 @@ const UserContext = ({ children }) => {
       limpiarFormulario();
       navegar("/");
     } catch (error) {
-      const serverMsg = error.response?.data?.message || error.message;
-      setErrorAuth(serverMsg || "El usuario o el correo ya están registrados.");
+      setErrorAuth("El usuario o el correo ya están registrados.");
     }
   };
 
@@ -161,7 +157,6 @@ const UserContext = ({ children }) => {
             showMessage("Usuario eliminado correctamente.", "success");
           }
         } catch (error) {
-          console.error("Error al eliminar usuario:", error);
           showMessage("No se pudo eliminar la cuenta.", "error");
         } finally {
           setIsUpdatingProfile(false);
@@ -360,6 +355,11 @@ const UserContext = ({ children }) => {
     };
   };
 
+  const sortOptions = [
+    { value: "followers_count:desc", label: "Más Seguidores" },
+    { value: "models_count:desc", label: "Más Modelos" }
+  ];
+
   const handleClearAvatar = () => {
     setDatosPerfil((prev) => ({ ...prev, avatar: "" }));
   };
@@ -412,6 +412,7 @@ const UserContext = ({ children }) => {
     isUpdatingProfile,
     getProfileStyles,
     isAdmin,
+    sortOptions,
     handleClearAvatar,
     handleClearBanner
   };

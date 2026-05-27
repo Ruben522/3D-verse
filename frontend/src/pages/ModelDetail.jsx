@@ -9,6 +9,7 @@ import ModelAuthor from "../components/models/ModelAuthor";
 import { useTranslation } from "react-i18next";
 import Viewer3DContext from "../contexts/Viewer3DContext";
 import DownloadAllButton from "../components/common/DownloadAllButton";
+import Loading from "../components/common/Loading";
 
 const ModelDetail = () => {
   const { id } = useParams();
@@ -24,11 +25,11 @@ const ModelDetail = () => {
       <div className="min-h-screen pb-20 transition-colors duration-300">
         {isFetchingModel ? (
           <div className="flex items-center justify-center min-h-[60vh]">
-            <p className="text-gray-500 dark:text-gray-400 font-medium text-lg transition-colors">{t('messages.loading')}</p>
+            <Loading message={t('messages.loading')} />
           </div>
         ) : modelError ? (
           <div className="flex items-center justify-center min-h-[60vh]">
-            <p className="text-red-500 dark:text-red-400 font-medium text-lg transition-colors">{t('messages.no_model')}</p>
+            <p className="text-red-500 dark:text-red-400 font-medium text-lg transition-colors">{t('messages.no_models')}</p>
           </div>
         ) : currentModel ? (
           <>

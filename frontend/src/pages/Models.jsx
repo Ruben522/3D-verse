@@ -6,6 +6,7 @@ import useModels from '../hooks/useModels';
 import { useTranslation } from "react-i18next";
 import InicialTittle from '../components/common/InicialTittle';
 import Loading from '../components/common/Loading';
+import EmptyModelsIcon from '../assets/icons/EmptyModelsIcon';
 
 const Models = () => {
   const { t } = useTranslation();
@@ -33,12 +34,11 @@ const Models = () => {
             tittle={t('explore.title')}
             subtittle={t('explore.subtitle')}
           />
-          {console.log(models)}
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             onClear={() => setSearchTerm('')}
-            placeholder={t('explore.search_placeholder', 'Buscar personajes, vehículos...')}
+            placeholder={t('messages.search_placeholder')}
             categories={categoriasDisponibles}
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
@@ -47,8 +47,9 @@ const Models = () => {
             onSortChange={setSortBy}
           />
         </div>
+
         {isFetchingModel && models.length === 0 ? (
-          <Loading message={t('messages.loading_models', 'Cargando modelos...')} />
+          <Loading message={t('messages.loading_models', t('messages.loading'))} />
         ) : (
           <div
             className={`transition-all duration-500
@@ -73,12 +74,16 @@ const Models = () => {
                   border-gray-100 dark:border-zinc-800 max-w-3xl mx-auto
                   shadow-sm dark:shadow-black/20 transition-colors duration-300"
               >
+                <div className="flex justify-center mb-6">
+                  <EmptyModelsIcon className="w-20 h-20 text-gray-300 dark:text-zinc-600 transition-colors" />
+                </div>
+
                 <h3 className="text-2xl font-black text-gray-900 dark:text-zinc-100 mb-2 transition-colors">
-                  {t('messages.no_models_found', 'No se encontraron modelos')}
+                  {t('messages.no_models_found')}
                 </h3>
 
                 <p className="text-gray-500 dark:text-zinc-400 font-bold transition-colors">
-                  {t('messages.try_other_terms', 'Intenta usar otros términos o elimina los filtros de categoría.')}
+                  {t('messages.try_other_search')}
                 </p>
               </div>
 

@@ -28,7 +28,7 @@ const AllRoutes = () => {
 			<Route path="/comunidad" element={<Community />} />
 			<Route path="/contacto" element={<Contact />} />
 			<Route path="/settings" element={<Settings />} />
-			<Route element={<AdminRoute />}>
+			<Route path="/admin" element={<AdminRoute />}>
 				<Route path="/admin" element={<Administration />} />
 			</Route>
 			<Route path="*" element={<Error />} />

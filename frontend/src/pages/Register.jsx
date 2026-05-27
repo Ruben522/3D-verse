@@ -23,7 +23,6 @@ const Register = ({ onToggleView }) => {
     <div className="w-full h-full flex items-center justify-center p-8 sm:p-14 transition-colors duration-300">
       <div className="w-full max-w-md">
 
-        {/* CABECERA */}
         <div className="text-center mb-8">
           <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white transition-colors">
             {t('messages.create_account_tittle')}
@@ -35,14 +34,12 @@ const Register = ({ onToggleView }) => {
 
         <form onSubmit={(e) => registrarse(e)} className="space-y-4">
 
-          {/* MENSAJE DE ERROR */}
           {errorAuth ? (
             <div className="p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium text-center border border-red-200 dark:border-red-800 animate-fade-in transition-colors">
               {errorAuth}
             </div>
           ) : null}
 
-          {/* CAMPO: NOMBRE */}
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 transition-colors">
               {t('messages.name')}
@@ -53,12 +50,11 @@ const Register = ({ onToggleView }) => {
               required
               value={datosSesion.name}
               onChange={(e) => actualizarDato(e)}
-              placeholder="Ej: Rubén"
+              placeholder={t('messages.name_placeholder')}
               className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 focus:border-primary-500 dark:focus:border-primary-500 outline-none transition-all bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
-          {/* CAMPO: NOMBRE DE USUARIO */}
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 transition-colors">
               {t('messages.username')}
@@ -69,12 +65,11 @@ const Register = ({ onToggleView }) => {
               required
               value={datosSesion.username}
               onChange={(e) => actualizarDato(e)}
-              placeholder="Ej: ruben3d"
+              placeholder={t('messages.username_placeholder')}
               className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 focus:border-primary-500 dark:focus:border-primary-500 outline-none transition-all bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
-          {/* CAMPO: EMAIL */}
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 transition-colors">
               {t('messages.email')}
@@ -85,12 +80,11 @@ const Register = ({ onToggleView }) => {
               required
               value={datosSesion.email}
               onChange={(e) => actualizarDato(e)}
-              placeholder="tu@email.com"
+              placeholder={t('messages.email_placeholder')}
               className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 focus:border-primary-500 dark:focus:border-primary-500 outline-none transition-all bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
-          {/* CAMPO: CONTRASEÑA */}
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 transition-colors">
               {t('messages.password')}
@@ -101,13 +95,12 @@ const Register = ({ onToggleView }) => {
               required
               value={datosSesion.password}
               onChange={(e) => actualizarDato(e)}
-              placeholder="••••••••"
+              placeholder={t('messages.password_placeholder')}
               minLength="6"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 focus:border-primary-500 dark:focus:border-primary-500 outline-none transition-all bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
-          {/* BOTÓN DE REGISTRO */}
           <InnputForm
             isInput={true}
             value={isAuthLoading ? {} : t('messages.register_here')}
@@ -117,7 +110,6 @@ const Register = ({ onToggleView }) => {
           />
         </form>
 
-        {/* ENLACE PARA INICIAR SESIÓN (MÓVIL) */}
         <p className="md:hidden text-center text-sm text-gray-500 dark:text-gray-400 mt-8 transition-colors">
           {t('messages.account_already')}
           <button

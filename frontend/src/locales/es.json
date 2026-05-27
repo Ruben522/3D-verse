@@ -66,6 +66,8 @@
         "like": "Me gusta",
         "update_profile": "Actualizar Perfil",
         "save_changes": "Guardar Cambios",
+        "save_settings": "Guardar Configuración",
+        "save_settings_desc": "Asegúrate de guardar los cambios antes de salir.",
         "cancel": "Cancelar",
         "delete": "Eliminar",
         "edit": "Editar",
@@ -88,7 +90,8 @@
         "change_main_image": "Cambiar portada",
         "delete_account": "Eliminar cuenta",
         "explore": "Explorar",
-        "my_profile": "Mi Perfil"
+        "my_profile": "Mi Perfil",
+        "upload_my_design": "Publicar mi diseño"
     },
     "user": {
         "profile": "Perfil",
@@ -117,13 +120,16 @@
     },
     "links": {
         "explore": "Explorar",
+        "admin": "Administración",
         "comunity": "Comunidad",
         "upload": "Subir Diseño",
         "my_profile": "Mi Perfil",
         "settings": "Configuración",
         "logout": "Cerrar sesión",
         "login": "Iniciar sesión",
-        "register": "Registrarse"
+        "register": "Registrarse",
+        "see_models": "Explorar Modelos",
+        "see_community": "Ver Comunidad"
     },
     "downloads": {
         "download": "Descargar",
@@ -147,6 +153,10 @@
         "login_desc": "Accede a tu cuenta de 3D-Verse",
         "loading_creator": "Cargando creador...",
         "create_account_tittle": "Crear Cuenta",
+        "email_placeholder": "tu@email.com",
+        "password_placeholder": "••••••••",
+        "name_placeholder": "Ej: Rubén",
+        "username_placeholder": "Ej: rubio52",
         "create_account_desc": "Regístrate gratis y empieza a compartir tus creaciones hoy mismo.",
         "name": "Nombre completo",
         "username": "Nombre de usuario",
@@ -159,7 +169,12 @@
         "no_account": "¿No tienes una cuenta?",
         "register_here": "Regístrate aquí",
         "loading": "Cargando...",
+        "save_changes": "Guardar Cambios",
+        "save_changes_desc": "Tus cambios se aplicarán inmediatamente.",
+        "updating": "Actualizando...",
+        "delete": "Eliminar",
         "confirmation_upload": "¿Todo listo?",
+        "search_placeholder": "Maceta, dragones, dragon ball...",
         "confirmation_upload_desc": "Asegúrate de haber completado los campos obligatorios.",
         "optionals_files": "Archivos opcionales",
         "optionals_files_desc": "Piezas sueltas y fotos para la galería",
@@ -170,8 +185,8 @@
         "post_model": "Publicar modelo",
         "post_model_desc": "Comparte tu creación 3D con la comunidad.",
         "model_uploaded": "Modelo subido exitosamente",
-        "no_models": "No se encontraron modelos",
         "no_model:": "No se encontró el modelo",
+        "no_models": "No se encontraron modelos",
         "no_designs": "No hay diseños todavía",
         "model_updated": "Modelo actualizado exitosamente",
         "profile_updated": "Perfil actualizado exitosamente",
@@ -183,6 +198,7 @@
         "welcome_back": "¡Bienvenido de nuevo a 3D-verse!",
         "new_user": "¿Nuevo aquí?",
         "error": "Error",
+        "error:auth": "Error de autenticación, por favor verifica tus credenciales",
         "save_in_favorites": "Guardado en favoritos",
         "remove_from_favorites": "Quitar de favoritos",
         "create_account": "Regístrate gratis y descubre un universo de modelos 3D listos para descargar.",
@@ -190,7 +206,9 @@
         "error_register": "Error al registrarse, por favor verifica tus datos",
         "error_name": "El nombre de usuario ya está en uso, por favor elige otro",
         "error_email": "El correo electrónico ya está en uso, por favor elige otro",
-        "error_password": "La contraseña es demasiado corta, debe tener al menos 6 caracteres"
+        "error_password": "La contraseña es demasiado corta, debe tener al menos 6 caracteres",
+        "no_models_found": "No se encontraron modelos",
+        "try_other_search": "Intenta con otros términos de búsqueda"
     },
     "uploadValidations": {
         "title_required": "El título es obligatorio.",
@@ -209,5 +227,34 @@
     "words": {
         "and": "y",
         "or": "o"
+    },
+    "admin": {
+        "no_permissions": "No tienes permisos para acceder a esta zona."
+    },
+    "home": {
+        "welcome_tag": "Impresión 3D sin límites",
+        "welcome_title": "Encuentra, comparte e imprime",
+        "welcome_title2": "diseños increíbles en 3D",
+        "welcome_desc": "Únete a la comunidad de creadores 3D más activa. Explora miles de modelos listos para imprimir, sube tus propias creaciones y conecta con diseñadores de todo el mundo.",
+        "section1_title": "¿Tienes tu propio diseño?",
+        "section1_desc": "Sube tus archivos STL, crea un portafolio espectacular y empieza a ganar seguidores hoy mismo."
+    },
+    "error_pages": {
+        "404_title": "404 - Página no encontrada",
+        "404_desc": "¡Ups! Te has salido del lienzo.",
+        "go_home": "Volver al inicio"
+    },
+    "contact": {
+        "contact_title1": "Contacto & ",
+        "contact_title2": "Sobre Mí",
+        "contact_desc": "Conoce al desarrollador detrás de la plataforma o envíame un correo directo."
+},
+    "administration_pages" : {
+        "admin_panel": "Panel de Administración",
+        "admin_desc": "Gestiona usuarios, modelos y contenido de la plataforma.",
+        "manage_users": "Moderar Usuarios",
+        "manage_models": "Moderar Modelos",
+        "go_community": "Ir a Comunidad",
+        "go_models": "Ir a Modelos"
     }
 }

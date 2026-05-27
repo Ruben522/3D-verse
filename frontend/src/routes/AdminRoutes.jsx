@@ -2,14 +2,16 @@ import React, { useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import useUsers from '../hooks/useUsers';
 import useMessage from '../hooks/useMessage';
+import { useTranslation } from 'react-i18next';
 
 const AdminRoute = ({ children }) => {
+    const { t } = useTranslation();
     const { isAuthenticated, isAdmin, currentUser, isAuthLoading } = useUsers();
     const { showMessage } = useMessage();
 
     useEffect(() => {
         if (!isAuthLoading && currentUser && !isAdmin) {
-            showMessage("No tienes permisos para acceder a esta zona.", "error");
+            showMessage(t("admin.no_permissions"), "error");
         }
     }, [isAuthLoading, isAdmin, currentUser, showMessage]);
 

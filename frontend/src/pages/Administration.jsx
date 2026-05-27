@@ -14,8 +14,8 @@ const Administration = () => {
         <div className="max-w-6xl mx-auto px-4 py-8">
 
             <InicialTittle
-                tittle={t('Panel de administrador')}
-                subtittle={t('Haz lo que tengas que hacer.')}
+                tittle={t('administration_pages.admin_panel')}
+                subtittle={t('administration_pages.admin_desc')}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
@@ -27,8 +27,8 @@ const Administration = () => {
                         <CubeIcon className="w-8 h-8" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-0.5">Moderar Modelos</h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">Ir a la galería principal para gestionar diseños 3D.</p>
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-0.5">{t('administration_pages.manage_models')}</h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{t('administration_pages.go_models')}</p>
                     </div>
                 </div>
 
@@ -40,8 +40,8 @@ const Administration = () => {
                         <UsersIcon className="w-8 h-8" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-0.5">Moderar Usuarios</h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">Ir a la comunidad para gestionar cuentas.</p>
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-0.5">{t('administration_pages.manage_users')}</h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{t('administration_pages.go_community')}</p>
                     </div>
                 </div>
             </div>

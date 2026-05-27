@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlanetError from '../assets/icons/PlanetError';
+import { useTranslation } from "react-i18next";
 
 const Error = () => {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 
 	return (
@@ -12,16 +14,12 @@ const Error = () => {
 				<PlanetError />
 			</div>
 
-			<h1 className="text-7xl md:text-9xl font-black text-gray-900 dark:text-white mb-2 tracking-tighter">
-				404
-			</h1>
-
 			<h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">
-				¡Ups! Te has salido del lienzo
+				{t('error_pages.404_title')}
 			</h2>
 
 			<p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto text-lg">
-				Parece que te has perdido en el espacio 3D. La página o el modelo que buscas no existe, ha sido movido o ha sido eliminado por la administración.
+				{t('error_pages.404_desc')}
 			</p>
 
 			<button
@@ -31,7 +29,7 @@ const Error = () => {
 				<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 				</svg>
-				Volver al inicio
+				{t('error_pages.go_home')}
 			</button>
 		</div>
 	);

@@ -14,7 +14,7 @@ import ProfileIcon from "../../assets/icons/ProfileIcon";
 import MenuToggleIcon from "../../assets/icons/MenuToggleIcon";
 
 const Menu = () => {
-  const { isAuthenticated, currentUser, cerrarSesion } = useUsers();
+  const { isAuthenticated, currentUser, cerrarSesion, isAdmin } = useUsers();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { t } = useTranslation();
 
@@ -49,8 +49,15 @@ const Menu = () => {
               >
                 {t('links.comunity')}
               </NavLink>
+              {isAdmin &&
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) => `text-sm font-bold tracking-wide transition-all duration-300 ${isActive ? "text-white drop-shadow-md" : "text-primary-100 dark:text-primary-200 hover:text-white dark:hover:text-white"}`}
+                >
+                  {t('links.admin')}
+                </NavLink>
+              }
             </div>
-
             <div className="hidden md:flex items-center gap-4 justify-end flex-shrink-0">
 
               <div className="flex items-center gap-2">
@@ -71,7 +78,7 @@ const Menu = () => {
                   <Link to="/profile" className="flex items-center gap-3 hover:bg-white/10 dark:hover:bg-white/5 p-1.5 pr-4 rounded-full transition-all duration-300 cursor-pointer group">
                     <div className="w-9 h-9 rounded-full bg-primary-700 dark:bg-primary-800 border border-white/20 group-hover:border-white/40 overflow-hidden transition-all duration-300 shadow-sm">
                       <img
-                        src={currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${currentUser.username}&background=0D8ABC&color=fff&bold=true`}
+                        src={currentUser.avatarUrl}
                         alt="Avatar"
                         className="w-full h-full object-cover"
                       />
@@ -143,7 +150,7 @@ const Menu = () => {
               <div className="flex flex-col gap-2">
                 <Link to="/profile" onClick={closeMobileMenu} className="flex items-center gap-3 text-lg font-bold text-white hover:text-primary-100 dark:hover:text-primary-200 p-3 rounded-xl hover:bg-white/5 transition-colors">
                   <ProfileIcon />
-                  {t('links.myProfile')}
+                  {t('links.my_profile')}
                 </Link>
                 <button onClick={handleCerrarSesionMovil} className="flex items-center gap-3 text-lg font-bold text-red-400 hover:text-red-300 p-3 rounded-xl hover:bg-red-500/10 text-left transition-colors">
                   <ExitAccountIcon />

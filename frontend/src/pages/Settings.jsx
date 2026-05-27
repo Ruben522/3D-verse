@@ -32,8 +32,8 @@ const Settings = () => {
 
                 <div className="-mb-4 md:-mb-8">
                     <InicialTittle
-                        tittle={t('configuracion.tittle', 'Configuración')}
-                        subtittle={t('configuracion.desc', 'Gestiona tu cuenta y preferencias')}
+                        tittle={t('configuracion.tittle')}
+                        subtittle={t('configuracion.desc')}
                     />
                 </div>
 
@@ -84,12 +84,12 @@ const Settings = () => {
             </div>
 
             <BotBar
-                title="Guardar Configuración"
-                description="Asegúrate de guardar los cambios antes de salir."
+                title={t('configuracion.save_settings')}
+                description={t('configuracion.save_settings_desc')}
                 onCancel={() => navigate('/profile')}
                 formId="settings-form"
                 isLoading={isUpdatingProfile}
-                submitText="Guardar cambios"
+                submitText={t('buttons.save_changes')}
             />
         </div>
     );

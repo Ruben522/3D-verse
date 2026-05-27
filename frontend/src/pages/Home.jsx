@@ -4,8 +4,10 @@ import useModels from '../hooks/useModels';
 import HeroCarousel from '../components/home/HeroCarousel';
 import PopularModels from '../components/home/PopularModels';
 import ThreeDHomeIcon from '../assets/icons/ThreeDHomeIcon';
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
+    const { t } = useTranslation();
     const { isFetchingModel } = useModels();
 
     return (
@@ -15,21 +17,21 @@ const Home = () => {
                 <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
                     <div className="animate-fade-in pr-0 lg:pr-8 text-center lg:text-left">
                         <span className="inline-block py-1.5 px-4 rounded-full bg-primary-50 text-primary-700 border border-primary-100 dark:bg-primary-900/30 dark:text-primary-300 dark:border-primary-800 font-black text-sm tracking-widest uppercase mb-6 transition-colors">
-                            Impresión 3D Sin Límites
+                            {t('home.welcome_tag')}
                         </span>
                         <h1 className="text-5xl lg:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-[1.1] transition-colors">
-                            Encuentra, comparte e imprime <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-400 dark:to-primary-300">diseños increíbles</span>
+                            {t('home.welcome_title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400 dark:from-primary-400 dark:to-primary-300">{t('home.welcome_title2')}</span>
                         </h1>
                         <p className="mt-6 text-lg text-gray-500 dark:text-gray-300 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0 transition-colors">
-                            Únete a la comunidad de creadores 3D más activa. Explora miles de modelos listos para imprimir, sube tus propias creaciones y conecta con diseñadores de todo el mundo.
+                            {t('home.welcome_desc')}
                         </p>
 
                         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                             <Link to="/models" className="w-full sm:w-auto px-8 py-4 bg-primary-600 text-white font-bold rounded-2xl hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/30 transition-all text-center text-lg">
-                                Explorar Modelos
+                                {t('buttons.see_models')}
                             </Link>
                             <Link to="/comunidad" className="w-full sm:w-auto px-8 py-4 bg-white text-gray-900 border border-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 font-bold rounded-2xl hover:bg-gray-50 transition-all text-center text-lg shadow-sm hover:shadow">
-                                Ver Comunidad
+                                {t('buttons.see_community')}
                             </Link>
                         </div>
                     </div>
@@ -56,12 +58,12 @@ const Home = () => {
                         <ThreeDHomeIcon />
                     </div>
 
-                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight transition-colors">¿Tienes tu propio diseño?</h2>
+                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight transition-colors">{t('home.section1_title')}</h2>
                     <p className="text-xl text-gray-500 dark:text-gray-400 font-medium mt-4 mb-10 transition-colors">
-                        Sube tus archivos STL, crea un portafolio espectacular y empieza a ganar seguidores hoy mismo.
+                        {t('home.section1_desc')}
                     </p>
                     <Link to="/subir" className="inline-flex px-10 py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black dark:bg-primary-500 dark:hover:bg-primary-400 hover:scale-105 transition-all shadow-xl text-lg">
-                        Publicar mi primer diseño
+                        {t('buttons.upload_my_design')}
                     </Link>
                 </div>
             </section>

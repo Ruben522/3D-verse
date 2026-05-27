@@ -12,6 +12,9 @@ import CategoryInput from '../components/uploads/CategoryInput';
 import BotBar from '../components/common/BotBar';
 import InicialTittle from '../components/common/InicialTittle';
 import { useTranslation } from 'react-i18next';
+import DetailsIcon from '../assets/icons/DetailsIcon';
+import CloudUploadIcon from '../assets/icons/CloudUploadIcon';
+import PlusIcon from '../assets/icons/PlusIcon';
 
 const UploadModel = () => {
     const navigate = useNavigate();
@@ -70,7 +73,7 @@ const UploadModel = () => {
                         isOpen={expandedSections.includes('info')}
                         hasError={!!uploadErrors?.title}
                         onToggle={toggleSection}
-                        icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>}
+                        icon={<DetailsIcon className="w-6 h-6 text-white" />}
                     >
                         <div className="flex flex-col gap-5 mt-4">
 
@@ -120,7 +123,7 @@ const UploadModel = () => {
                         isOpen={expandedSections.includes('files')}
                         hasError={!!uploadErrors?.main_file || !!uploadErrors?.main_image}
                         onToggle={toggleSection}
-                        icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>}
+                        icon={<CloudUploadIcon className="w-6 h-6 text-white" />}
                     >
                         <div className="grid md:grid-cols-2 gap-6 mt-4">
                             <MainFile />
@@ -135,7 +138,7 @@ const UploadModel = () => {
                         isOpen={expandedSections.includes('extras')}
                         hasError={false}
                         onToggle={toggleSection}
-                        icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>}
+                        icon={<PlusIcon className="w-6 h-6 text-white" />}
                     >
                         <div className="flex flex-col gap-8 mt-4">
                             <PartsFiles />
@@ -147,16 +150,16 @@ const UploadModel = () => {
             </div>
 
             <BotBar
-                title={isEditMode ? "Guardar Cambios" : t('messages.confirmation_upload')}
-                description={isEditMode ? "Tus cambios se aplicarán inmediatamente." : t('messages.confirmation_upload_desc')}
+                title={isEditMode ? t('messages.save_changes') : t('messages.confirmation_upload')}
+                description={isEditMode ? t('messages.save_changes_desc') : t('messages.confirmation_upload_desc')}
                 onCancel={() => navigate(isEditMode ? `/models/${editModelId}` : "/")}
                 onSubmit={handleSave}
                 isEditMode={isEditMode}
                 onDelete={() => borrarModelo(editModelId)}
-                deleteText="Eliminar Diseño"
+                deleteText={t('messages.delete')}
                 isLoading={isUploading}
-                submitText={isEditMode ? "Actualizar Modelo" : t('messages.post_model')}
-                loadingText={isEditMode ? "Actualizando..." : t('messages.loading')}
+                submitText={isEditMode ? t('messages.save_changes') : t('messages.post_model')}
+                loadingText={isEditMode ? t('messages.updating') : t('messages.loading')}
             />
         </div>
     ) : (
