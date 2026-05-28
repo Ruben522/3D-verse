@@ -281,7 +281,11 @@
         "profile_update_error": "Error al actualizar el perfil",
         "load_profile_error": "Error al cargar el perfil",
         "load_active_profile_error": "Error al cargar el perfil activo",
-        "community_search_error": "Error buscando en la comunidad"
+        "community_search_error": "Error buscando en la comunidad",
+        "sort_options": {
+            "more_followers": "Más seguidores",
+            "more_models": "Más modelos"
+        }
     },
     "models_context": {
         "meili_search_error": "Error en MeiliSearch, por favor intenta de nuevo",
@@ -296,7 +300,12 @@
         "prepare_edit_error": "No se pudieron cargar los datos del modelo para editar.",
          "edit_error": "No se pudieron guardar los cambios.",
          "upload_error": "Error al procesar tu diseño. Inténtalo de nuevo.",
-            "search_error": "Error al buscar modelos, por favor intenta de nuevo"
+        "search_error": "Error al buscar modelos, por favor intenta de nuevo",
+        "sort_options": {
+            "newest": "Recientes",
+            "popular": "Populares",
+            "downloads": "Más descargados"
+        }
     },
     "category_context": {
         "fetch_error": "Error al cargar las categorías, por favor intenta de nuevo",
@@ -336,5 +345,36 @@
     "like_context": {
         "toggle_like_error": "Error al actualizar tu like, por favor intenta de nuevo",
         "auth_required": "Debes iniciar sesión para dar like a los modelos"
+    },
+    "community" :{
+        "tittle": "Comunidad de Creadores",
+        "subtittle": "Descubre a los talentosos diseñadores 3D que forman parte de nuestra comunidad.",
+        "search_placeholder": "Busca por nombre de usuario o biografía",
+        "no_results": "No se encontraron usuarios que coincidan con tu búsqueda.",
+        "try_other_search": "Intenta con otros términos de búsqueda"
+    },
+    "models_page": {
+        "tittle": "Explora Modelos 3D",
+        "subtittle": "Encuentra el diseño perfecto.",
+        "search_placeholder": "Busca por título, categoría, tags...",
+        "no_results": "No se encontraron modelos que coincidan con tu búsqueda.",
+        "try_other_search": "Intenta con otros términos de búsqueda"
+    },
+    "searchbar": {
+        "categories": "Categorías",
+        "all": "Todas",
+        "placeholder": "Buscar..."
+    },
+    "categories": {
+        "Arte y Diseño": "Arte y Diseño",
+        "Automoción": "Automoción",
+        "Ciencia": "Ciencia",
+        "Educación": "Educación",
+        "Juguetes": "Juguetes",
+        "Medicina": "Medicina",
+        "Moda y Accesorios": "Moda y Accesorios",
+        "Tecnología y Gadgets": "Tecnología y Gadgets",
+        "Videojuegos": "Videojuegos",
+        "Arquitectura": "Arquitectura"
     }
 }

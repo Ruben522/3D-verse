@@ -25,8 +25,8 @@ const UserContext = ({ children }) => {
   const initialPagination = { page: 1, total: 0, totalPages: 1 };
 
   const sortOptions = [
-    { value: "followers_count:desc", label: "Más Seguidores" },
-    { value: "models_count:desc", label: "Más Modelos" }
+    { value: "followers_count:desc", label: t("user_context.sort_options.more_followers") },
+    { value: "models_count:desc", label: t("user_context.sort_options.more_models") }
   ];
 
   const [currentUser, setCurrentUser] = useState(null);
@@ -340,6 +340,10 @@ const UserContext = ({ children }) => {
     };
   }, []);
 
+  const clearCommunitySearch = useCallback(() => {
+    setSearchUserTerm("");
+  }, []);
+
   const exportData = {
     currentUser,
     isAuthenticated,
@@ -387,7 +391,7 @@ const UserContext = ({ children }) => {
     getProfileStyles,
     isAdmin,
     sortOptions,
-
+    clearCommunitySearch,
     datosSesion: authData,
     errorAuth: authError,
     actualizarDato: updateAuthData,

@@ -1,7 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const FilterDropdown = ({ options, activeFilter, onFilterChange, isOpen, onToggle, defaultLabel = "Filtros", allLabel = "Todas" }) => {
-    const activeLabel = activeFilter ? activeFilter : defaultLabel;
+    const { t } = useTranslation();
+
+    const activeLabel = activeFilter
+        ? t(`categories.${activeFilter}`, { defaultValue: activeFilter })
+        : defaultLabel;
 
     const handleSelect = (value) => {
         onFilterChange(activeFilter === value ? '' : value);
@@ -18,7 +23,9 @@ const FilterDropdown = ({ options, activeFilter, onFilterChange, isOpen, onToggl
                     <svg className="w-4 h-4 md:w-5 md:h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
-                    <span className="font-semibold text-xs md:text-sm whitespace-nowrap truncate max-w-[70px] md:max-w-[120px]">{activeLabel}</span>
+                    <span className="font-semibold text-xs md:text-sm whitespace-nowrap truncate max-w-[70px] md:max-w-[120px]">
+                        {activeLabel}
+                    </span>
                 </div>
                 <svg className={`w-3 h-3 md:w-4 md:h-4 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
@@ -47,7 +54,7 @@ const FilterDropdown = ({ options, activeFilter, onFilterChange, isOpen, onToggl
                                     : 'hover:bg-gray-50 text-gray-600 dark:hover:bg-zinc-700/50 dark:text-zinc-400'
                                     }`}
                             >
-                                {opt.name}
+                                {t(`categories.${opt.name}`, { defaultValue: opt.name })}
                             </button>
                         ))}
                     </div>

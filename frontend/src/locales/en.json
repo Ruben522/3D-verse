@@ -209,5 +209,24 @@
     "words": {
         "and": "and",
         "or": "or"
+    },
+    "searchbar": {
+        "categories": "Categories",
+        "all": "All",
+        "placeholder": "Search..."
+    },
+    "categories": {
+        "Arte y Diseño": "Art & Design",
+        "Automoción": "Automotive",
+        "Ciencia": "Science",
+        "Educación": "Education",
+        "Juguetes": "Toys",
+        "Medicina": "Medical",
+        "Moda y Accesorios": "Fashion & Accessories",
+        "Tecnología y Gadgets": "Technology & Gadgets",
+        "Videojuegos": "Video Games",
+        "Arquitectura": "Architecture"
     }
+
+
 }

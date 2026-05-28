@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ModelCard from '../components/models/ModelCard';
 import Pagination from '../components/common/Pagination';
 import SearchBar from '../components/common/SearchBar';
@@ -7,38 +7,32 @@ import { useTranslation } from "react-i18next";
 import InicialTittle from '../components/common/InicialTittle';
 import Loading from '../components/common/Loading';
 import EmptyModelsIcon from '../assets/icons/EmptyModelsIcon';
+import EmptyState from '../components/common/EmptyState';
 
 const Models = () => {
   const { t } = useTranslation();
-
   const {
-    models,
-    isFetchingModel,
-    pagination,
-    searchModels,
-    searchTerm,
-    setSearchTerm,
-    activeCategory,
-    setActiveCategory,
-    sortBy,
-    setSortBy,
-    categoriasDisponibles,
-    sortOptions
+    models, isFetchingModel, pagination, searchModels, searchTerm, setSearchTerm,
+    activeCategory, setActiveCategory, sortBy, setSortBy, categoriasDisponibles, sortOptions, clearModelsSearch
   } = useModels();
+
+  useEffect(() => {
+    clearModelsSearch();
+  }, [clearModelsSearch]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 py-12 px-4">
       <main className="max-w-7xl mx-auto pb-12">
         <div className="mb-12 text-center">
           <InicialTittle
-            tittle={t('explore.title')}
-            subtittle={t('explore.subtitle')}
+            tittle={t('models_page.tittle')}
+            subtittle={t('models_page.subtittle')}
           />
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             onClear={() => setSearchTerm('')}
-            placeholder={t('messages.search_placeholder')}
+            placeholder={t('models_page.search_placeholder')}
             categories={categoriasDisponibles}
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
@@ -60,33 +54,17 @@ const Models = () => {
             `}
           >
             {models.length > 0 ? (
-
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {models.map((m) => (
                   <ModelCard key={m.id} model={m} />
                 ))}
               </div>
-
             ) : (
-
-              <div className="
-                  text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border-2 border-dashed
-                  border-gray-100 dark:border-zinc-800 max-w-3xl mx-auto
-                  shadow-sm dark:shadow-black/20 transition-colors duration-300"
-              >
-                <div className="flex justify-center mb-6">
-                  <EmptyModelsIcon className="w-20 h-20 text-gray-300 dark:text-zinc-600 transition-colors" />
-                </div>
-
-                <h3 className="text-2xl font-black text-gray-900 dark:text-zinc-100 mb-2 transition-colors">
-                  {t('messages.no_models_found')}
-                </h3>
-
-                <p className="text-gray-500 dark:text-zinc-400 font-bold transition-colors">
-                  {t('messages.try_other_search')}
-                </p>
-              </div>
-
+              <EmptyState
+                icon={<EmptyModelsIcon />}
+                title={t('models_page.no_results')}
+                description={t('models_page.try_other_search')}
+              />
             )}
           </div>
         )}
@@ -100,7 +78,6 @@ const Models = () => {
             />
           </div>
         )}
-
       </main>
     </div>
   );

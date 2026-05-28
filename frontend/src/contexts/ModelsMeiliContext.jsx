@@ -27,9 +27,9 @@ const ModelsMeiliContext = ({ children }) => {
     const initialPagination = { page: 1, total: 0, totalPages: 1 };
 
     const sortOptions = [
-        { value: "created_at:desc", label: "Recientes" },
-        { value: "likes_count:desc", label: "Populares" },
-        { value: "downloads:desc", label: "Descargas" },
+        { value: "created_at:desc", label: t("models_context.sort_options.newest") },
+        { value: "likes_count:desc", label: t("models_context.sort_options.popular") },
+        { value: "downloads:desc", label: t("models_context.sort_options.downloads") },
     ];
 
     const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -72,13 +72,20 @@ const ModelsMeiliContext = ({ children }) => {
             };
 
             if (activeCategory) {
-                searchParams = { ...searchParams, filter: [...searchParams.filter, `category_ids = ${activeCategory}`] };
+                searchParams = {
+                    ...searchParams,
+                    filter: [...searchParams.filter, `category_names = '${activeCategory}'`]
+                };
             }
             if (activeTag) {
-                searchParams = { ...searchParams, filter: [...searchParams.filter, `tags = ${activeTag}`] };
+                searchParams = {
+                    ...searchParams,
+                    filter: [...searchParams.filter, `tag_names = '${activeTag}'`]
+                };
             }
 
             const results = await modelsIndex.search(query, searchParams);
+
             setModelsData(results.hits.map(normalizeMeiliHit));
             setPagination({
                 page: results.page,
@@ -86,6 +93,7 @@ const ModelsMeiliContext = ({ children }) => {
                 totalPages: results.totalPages
             });
         } catch (err) {
+            console.error("Error en Meilisearch:", err);
             showMessage(t("models_context.meili_search_error"), "error");
         } finally {
             setIsSearching(false);
@@ -412,6 +420,23 @@ const ModelsMeiliContext = ({ children }) => {
         }));
     }, []);
 
+    const clearModelsSearch = useCallback(() => {
+        setSearchTerm("");
+        setActiveCategory("");
+        setActiveTag("");
+        setSortBy("created_at:desc");
+    }, []);
+
+    const visibleTagsModel = (id) => {
+        const model = modelsData.find(m => String(m.id) === String(id));
+        return model ? model.tags?.slice(0, 3) || [] : [];
+    }
+
+    const visibleCategoryModel = (id) => {
+        const model = modelsData.find(m => String(m.id) === String(id));
+        return model ? model.categories?.[0] || null : null;
+    }
+
     const exportData = {
         models: modelsData,
         pagination,
@@ -456,6 +481,9 @@ const ModelsMeiliContext = ({ children }) => {
         editModel,
         updateLikesCount,
         updateFavoritesCount,
+        clearModelsSearch,
+        visibleTagsModel,
+        visibleCategoryModel,
         categoriasDisponibles: categories,
         getModels: fetchModels,
         getModelById: fetchModelById,
