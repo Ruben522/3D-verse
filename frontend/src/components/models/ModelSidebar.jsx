@@ -12,19 +12,18 @@ const ModelSidebar = () => {
   const { likedModels, toggleLike } = useLikes();
   const { favoritedModels, toggleFavorite } = useFavorites();
 
-  const isLiked = likedModels.has(currentModel.id);
-  const isSaved = favoritedModels.has(currentModel.id);
+  const safeId = String(currentModel.id);
+  const isLiked = likedModels.has(safeId);
+  const isSaved = favoritedModels.has(safeId);
 
   return (
     <aside className="w-full">
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col gap-8 transition-colors duration-300">
 
-        {/* SECCIÓN ESTADÍSTICAS E INTERACCIONES */}
         <div>
           <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-5 transition-colors duration-300">{t("sidebar.stats_title")}</h3>
           <div className="grid grid-cols-1 gap-4">
 
-            {/* Descargas (Informativo) */}
             <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-50 dark:border-gray-800 hover:border-blue-100 dark:hover:border-blue-900/50 hover:bg-blue-50/30 dark:hover:bg-blue-900/20 transition-all cursor-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-200 dark:shadow-none transition-colors duration-300">
@@ -35,9 +34,8 @@ const ModelSidebar = () => {
               <span className="text-lg font-black text-gray-900 dark:text-white pr-2 transition-colors duration-300">{currentModel.downloads}</span>
             </div>
 
-            {/* Botón de Like interactivo */}
             <button
-              onClick={(e) => toggleLike(e, currentModel.id)}
+              onClick={(e) => toggleLike(e, safeId)}
               className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all border group 
                 ${isLiked
                   ? "bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800/50 hover:bg-rose-100 dark:hover:bg-rose-900/40"
@@ -58,12 +56,11 @@ const ModelSidebar = () => {
                 </div>
                 <span className={`text-sm font-bold transition-colors duration-300 ${isLiked ? "text-rose-700 dark:text-rose-400" : "text-gray-600 dark:text-gray-400"}`}>{t("sidebar.likes")}</span>
               </div>
-              <span className={`text-lg font-black pr-2 transition-colors duration-300 ${isLiked ? "text-rose-700 dark:text-rose-400" : "text-gray-900 dark:text-white"}`}>{currentModel.likes}</span>
+              <span className={`text-lg font-black pr-2 transition-colors duration-300 ${isLiked ? "text-rose-700 dark:text-rose-400" : "text-gray-900 dark:text-white"}`}>{currentModel.likes || 0}</span>
             </button>
 
-            {/* Botón de Guardar interactivo */}
             <button
-              onClick={(e) => toggleFavorite(e, currentModel.id)}
+              onClick={(e) => toggleFavorite(e, safeId)}
               className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all border group 
                 ${isSaved
                   ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50 hover:bg-amber-100 dark:hover:bg-amber-900/40"
@@ -89,7 +86,6 @@ const ModelSidebar = () => {
               </span>
             </button>
 
-            {/* Visitas (Informativo) */}
             <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-50 dark:border-gray-800 hover:border-emerald-100 dark:hover:border-emerald-900/50 hover:bg-emerald-50/30 dark:hover:bg-emerald-900/20 transition-all cursor-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-500 dark:bg-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-200 dark:shadow-none transition-colors duration-300">
@@ -103,7 +99,6 @@ const ModelSidebar = () => {
           </div>
         </div>
 
-        {/* SECCIÓN CATEGORÍAS */}
         {currentModel.categories?.length > 0 && (
           <div className="pt-2">
             <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 transition-colors duration-300">{t("sidebar.categorys")}</h3>
@@ -120,7 +115,6 @@ const ModelSidebar = () => {
           </div>
         )}
 
-        {/* SECCIÓN TAGS ALEATORIOS */}
         {currentModel.tags?.length > 0 && (
           <div className="pt-2">
             <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 transition-colors duration-300">{t("sidebar.tags")}</h3>
@@ -137,7 +131,6 @@ const ModelSidebar = () => {
           </div>
         )}
 
-        {/* FECHA DE CREACIÓN */}
         {currentModel.createdDate && (
           <div className="pt-2">
             <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 transition-colors duration-300">{t("sidebar.publication_date")}</h3>

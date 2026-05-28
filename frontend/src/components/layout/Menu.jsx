@@ -21,11 +21,6 @@ const Menu = () => {
   const toggleMobileMenu = () => setIsMobileOpen(!isMobileOpen);
   const closeMobileMenu = () => setIsMobileOpen(false);
 
-  const handleCerrarSesionMovil = () => {
-    cerrarSesion();
-    closeMobileMenu();
-  };
-
   return (
     <>
       <nav className="sticky top-0 z-50 w-full bg-primary-800 dark:bg-primary-900 text-white border-b border-primary-700/50 dark:border-primary-800 transition-colors duration-300">
@@ -152,7 +147,10 @@ const Menu = () => {
                   <ProfileIcon />
                   {t('links.my_profile')}
                 </Link>
-                <button onClick={handleCerrarSesionMovil} className="flex items-center gap-3 text-lg font-bold text-red-400 hover:text-red-300 p-3 rounded-xl hover:bg-red-500/10 text-left transition-colors">
+                <button onClick={() => {
+                  closeMobileMenu();
+                  cerrarSesion();
+                }} className="flex items-center gap-3 text-lg font-bold text-red-400 hover:text-red-300 p-3 rounded-xl hover:bg-red-500/10 text-left transition-colors">
                   <ExitAccountIcon />
                   {t('links.logout')}
                 </button>

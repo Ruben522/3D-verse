@@ -2,16 +2,19 @@ import React, { createContext, useState, useEffect } from "react";
 import useAPI from "../hooks/useAPI.js";
 import useUsers from "../hooks/useUsers.js";
 import { normalizeUser } from "../utils/normalizers";
+import { useTranslation } from "react-i18next";
+import useMessage from "../hooks/useMessage.js";
 
 const follow = createContext();
 
 const FollowContext = ({ children }) => {
     const { isAuthenticated, currentUser } = useUsers();
+    const { showMessage } = useMessage();
+    const { t } = useTranslation();
 
     const api = useAPI();
 
-    const backendUrl =
-        import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     const [followedUsers, setFollowedUsers] = useState(new Set());
 
@@ -43,7 +46,7 @@ const FollowContext = ({ children }) => {
 
             setFollowedUsers(new Set(ids));
         } catch (error) {
-            console.error("Error cargando followings:", error);
+            showMessage(t("follow_context.load_followings_error"), "error");
         }
     };
 
@@ -63,7 +66,7 @@ const FollowContext = ({ children }) => {
             });
 
         } catch (error) {
-            console.error("Error cargando followers:", error);
+            showMessage(t("follow_context.load_followers_error"), "error");
         } finally {
             setIsLoadingFollowers(false);
         }
@@ -86,7 +89,7 @@ const FollowContext = ({ children }) => {
             });
 
         } catch (error) {
-            console.error("Error cargando following:", error);
+            showMessage(t("follow_context.load_following_error"), "error");
         } finally {
             setIsLoadingFollowing(false);
         }
@@ -121,7 +124,7 @@ const FollowContext = ({ children }) => {
                 }
                 return next;
             });
-            console.error("Error al procesar follow:", error);
+            showMessage(t("follow_context.toggle_follow_error"), "error");
         }
     };
 

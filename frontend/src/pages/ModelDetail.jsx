@@ -23,7 +23,7 @@ const ModelDetail = () => {
   return (
     <Viewer3DContext>
       <div className="min-h-screen pb-20 transition-colors duration-300">
-        {isFetchingModel ? (
+        {isFetchingModel && !currentModel ? (
           <div className="flex items-center justify-center min-h-[60vh]">
             <Loading message={t('messages.loading')} />
           </div>

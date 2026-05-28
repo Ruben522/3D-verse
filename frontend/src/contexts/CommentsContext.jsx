@@ -1,13 +1,15 @@
 import React, { createContext, useState, useCallback } from "react";
 import useAPI from "../hooks/useAPI";
 import useMessage from "../hooks/useMessage";
+import { useTranslation } from "react-i18next";
 
 const commentsContext = createContext();
 
 const CommentsContext = ({ children }) => {
     const api = useAPI();
+    const { t } = useTranslation();
     const { showConfirm, showMessage } = useMessage();
-    const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || "http://localhost:3000";
+    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     const [comments, setComments] = useState([]);
     const [pagination, setPagination] = useState(null);
@@ -28,7 +30,7 @@ const CommentsContext = ({ children }) => {
                 totalPages: res.data?.totalPages,
             });
         } catch (error) {
-            console.error("Error al obtener comentarios:", error);
+            showMessage(t("comments_context.fetch_error"), "error");
         } finally {
             setIsLoading(false);
         }
@@ -53,19 +55,20 @@ const CommentsContext = ({ children }) => {
     };
 
     const deleteComment = async (commentId) => {
-        showConfirm("¿Estás seguro de que quieres eliminar este comentario?", async () => {
+        showConfirm(t("comments_context.delete_confirmation"), async () => {
             try {
                 await api.remove(`${backendUrl}/comments/${commentId}`);
                 await loadComments(currentModelId, 1);
-                showMessage("Comentario eliminado", "success");
+                showMessage(t("comments_context.delete_success"), "success");
             } catch (error) {
-                console.error("Error al eliminar comentario:", error);
-                showMessage("No se pudo eliminar el comentario", "error");
+                showMessage(t("comments_context.delete_error"), "error");
             }
         });
     };
 
     const exportData = {
+        comments,
+        currentModelId,
         rootComments,
         pagination,
         isLoading,

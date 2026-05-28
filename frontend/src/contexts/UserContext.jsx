@@ -1,171 +1,171 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import useAPI from "../hooks/useAPI.js";
 import useMessage from "../hooks/useMessage.js";
 import { normalizeUser, normalizeModelForCard } from "../utils/normalizers";
 import { usersIndex } from "../services/meiliClient";
 import { validateLogin, validateRegister } from "../utils/userValidations";
+import { useTranslation } from "react-i18next";
 
-const user = createContext();
+const userContext = createContext();
 
 const UserContext = ({ children }) => {
-  const navegar = useNavigate();
+  const navigate = useNavigate();
   const authAPI = useAPI();
   const { showMessage, showConfirm } = useMessage();
+  const { t } = useTranslation();
   const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-  const userLocal = localStorage.getItem("user");
-  const tokenLocal = localStorage.getItem("token");
-
-  const sesionIniciadaInicial = !!tokenLocal;
-  const datosSesionInicial = { name: "", username: "", email: "", password: "" };
-  const datosPerfilInicial = {
+  const initialAuthData = { name: "", username: "", email: "", password: "" };
+  const initialProfileData = {
     username: "", name: "", lastname: "", bio: "", location: "",
     youtube: "", twitter: "", linkedin: "", github: "",
     card_bg_color: "#eaeaea", primary_color: "#851bd1"
   };
+  const initialPagination = { page: 1, total: 0, totalPages: 1 };
+
+  const sortOptions = [
+    { value: "followers_count:desc", label: "Más Seguidores" },
+    { value: "models_count:desc", label: "Más Modelos" }
+  ];
 
   const [currentUser, setCurrentUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(sesionIniciadaInicial);
-  const [datosSesion, setDatosSesion] = useState(datosSesionInicial);
-  const [datosPerfil, setDatosPerfil] = useState(datosPerfilInicial);
-  const [errorAuth, setErrorAuth] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+  const [authData, setAuthData] = useState(initialAuthData);
+  const [authError, setAuthError] = useState(null);
+
+  const [profileData, setProfileData] = useState(initialProfileData);
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
-  const [publicMyProfile, setPublicMyProfile] = useState(null);
-  const [publicProfile, setPublicProfile] = useState(null);
-  const [communityUsers, setCommunityUsers] = useState([]);
-
-  const [isLoadingMyProfile, setIsLoadingMyProfile] = useState(false);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
-  const [isLoadingCommunity, setIsLoadingCommunity] = useState(false);
-  const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
-  const [activeProfileTab, setActiveProfileTab] = useState("modelos");
-
   const [activeProfileData, setActiveProfileData] = useState(null);
   const [isLoadingActiveProfile, setIsLoadingActiveProfile] = useState(false);
+  const [activeProfileTab, setActiveProfileTab] = useState("modelos");
   const [isOwnProfile, setIsOwnProfile] = useState(false);
-  const [isOwnModel, setIsOwnModel] = useState(false);
 
+  const [publicMyProfile, setPublicMyProfile] = useState(null);
+  const [publicProfile, setPublicProfile] = useState(null);
+  const [isLoadingMyProfile, setIsLoadingMyProfile] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+
+  const [communityUsers, setCommunityUsers] = useState([]);
+  const [isLoadingCommunity, setIsLoadingCommunity] = useState(false);
+  const [isSearchingUsers, setIsSearchingUsers] = useState(false);
   const [searchUserTerm, setSearchUserTerm] = useState("");
   const [userSortBy, setUserSortBy] = useState("followers_count:desc");
-  const [isSearchingUsers, setIsSearchingUsers] = useState(false);
+  const [pagination, setPagination] = useState(initialPagination);
 
   const isAdmin = currentUser?.role === 'admin';
 
   useEffect(() => {
+    const userLocal = localStorage.getItem("user");
     if (userLocal) {
       setCurrentUser(normalizeUser(JSON.parse(userLocal)));
     }
   }, []);
 
-  const actualizarDato = (evento) => {
-    const { name, value } = evento.target;
-    setDatosSesion((prev) => ({ ...prev, [name]: value }));
-    if (errorAuth) setErrorAuth(null);
-  };
+  const updateAuthData = useCallback((e) => {
+    const { name, value } = e.target;
+    setAuthData((prev) => ({ ...prev, [name]: value }));
+    if (authError) setAuthError(null);
+  }, [authError]);
 
-  const limpiarFormulario = () => {
-    setDatosSesion(datosSesionInicial);
-    setErrorAuth(null);
-  };
+  const clearAuthForm = useCallback(() => {
+    setAuthData(initialAuthData);
+    setAuthError(null);
+  }, []);
 
-  const iniciarSesion = async (evento) => {
-    if (evento) evento.preventDefault();
-    setErrorAuth(null);
+  const login = async (e) => {
+    if (e) e.preventDefault();
+    setAuthError(null);
 
-    const validationError = validateLogin(datosSesion);
-    if (validationError) {
-      return setErrorAuth(validationError);
-    }
+    const validationError = validateLogin(authData);
+    if (validationError) return setAuthError(validationError);
 
     try {
       const response = await authAPI.post(`${backendUrl}/auth/login`, {
-        email: datosSesion.email.trim(),
-        password: datosSesion.password
+        email: authData.email.trim(),
+        password: authData.password
       });
       const { token, user } = response.data || response;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setCurrentUser(normalizeUser(user));
       setIsAuthenticated(true);
-      limpiarFormulario();
-      navegar("/");
+      clearAuthForm();
+      navigate("/");
     } catch (error) {
-      setErrorAuth("Correo electrónico o contraseña incorrectos.");
+      setAuthError(t("user_context.login_error"));
     }
   };
 
-  const registrarse = async (evento) => {
-    if (evento) evento.preventDefault();
-    setErrorAuth(null);
+  const register = async (e) => {
+    if (e) e.preventDefault();
+    setAuthError(null);
 
-    const validationError = validateRegister(datosSesion);
-    if (validationError) {
-      return setErrorAuth(validationError);
-    }
+    const validationError = validateRegister(authData);
+    if (validationError) return setAuthError(validationError);
 
     try {
       const response = await authAPI.post(`${backendUrl}/auth/register`, {
-        name: datosSesion.name.trim(),
-        username: datosSesion.username.trim(),
-        email: datosSesion.email.trim(),
-        password: datosSesion.password
+        name: authData.name.trim(),
+        username: authData.username.trim(),
+        email: authData.email.trim(),
+        password: authData.password
       });
       const { token, user } = response.data || response;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setCurrentUser(normalizeUser(user));
       setIsAuthenticated(true);
-      limpiarFormulario();
-      navegar("/");
+      clearAuthForm();
+      navigate("/");
     } catch (error) {
-      setErrorAuth("El usuario o el correo ya están registrados.");
+      setAuthError(t("user_context.register_error"));
     }
   };
 
-  const cerrarSesion = () => {
-    showConfirm("¿Estás seguro que quieres cerrar sesión?", () => {
+  const logout = useCallback(() => {
+    showConfirm(t("user_context.logout_question"), () => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       setCurrentUser(null);
       setIsAuthenticated(false);
-      limpiarFormulario();
-      navegar("/login");
+      clearAuthForm();
+      navigate("/login");
     });
-  };
+  }, [showConfirm, clearAuthForm, navigate]);
 
-  const eliminarUsuario = async (idUsuario) => {
+  const deleteUser = useCallback(async (userId) => {
     showConfirm(
-      "¿Estás seguro de que quieres eliminar esta cuenta? Esta acción es irreversible.",
+      t("user_context.delete_user_confirmation"),
       async () => {
         setIsUpdatingProfile(true);
         try {
-          await authAPI.remove(`${backendUrl}/users/${idUsuario}`);
+          await authAPI.remove(`${backendUrl}/users/${userId}`);
 
-          const esMiCuenta = String(currentUser?.id) === String(idUsuario);
+          const isMyAccount = String(currentUser?.id) === String(userId);
 
-          if (esMiCuenta) {
+          if (isMyAccount) {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             setCurrentUser(null);
             setIsAuthenticated(false);
-            limpiarFormulario();
-            navegar("/", { replace: true });
-            showMessage("Tu cuenta ha sido eliminada correctamente.", "success");
+            clearAuthForm();
+            navigate("/", { replace: true });
+            showMessage(t("user_context.delete_user_success"), "success");
           } else {
-            setCommunityUsers(prev => prev.filter(u => u.id !== idUsuario));
-            showMessage("Usuario eliminado correctamente.", "success");
+            setCommunityUsers(prev => prev.filter(u => u.id !== userId));
+            showMessage(t("user_context.delete_user_success"), "success");
           }
         } catch (error) {
-          showMessage("No se pudo eliminar la cuenta.", "error");
+          showMessage(t("user_context.delete_user_error"), "error");
         } finally {
           setIsUpdatingProfile(false);
         }
       }
     );
-  };
+  }, [currentUser, authAPI, backendUrl, navigate, showConfirm, showMessage, clearAuthForm]);
 
-  const searchCommunityUsers = async (query = "", page = 1) => {
+  const searchCommunityUsers = useCallback(async (query = "", page = 1) => {
     setIsLoadingCommunity(true);
     setIsSearchingUsers(true);
     try {
@@ -183,75 +183,69 @@ const UserContext = ({ children }) => {
         totalPages: results.totalPages
       });
     } catch (error) {
-      console.error("Error buscando en la comunidad:", error);
+      showMessage(t("user_context.community_search_error"), "error");
     } finally {
       setIsLoadingCommunity(false);
       setIsSearchingUsers(false);
     }
-  };
+  }, [userSortBy]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       searchCommunityUsers(searchUserTerm, 1);
     }, 300);
     return () => clearTimeout(timeoutId);
-  }, [searchUserTerm, userSortBy]);
+  }, [searchUserTerm, userSortBy, searchCommunityUsers]);
 
-  const getPublicProfile = async (username) => {
-    setIsLoadingProfile(true);
-    setPublicProfile(null);
-    try {
-      const response = await authAPI.get(`${backendUrl}/users/perfil/${username}`);
-      const data = response.data?.data || response.data;
-
-      setPublicProfile({
-        profile: normalizeUser(data.profile),
-        stats: data.stats,
-        content: data.content
+  const loadProfileSettings = useCallback(() => {
+    if (currentUser) {
+      setProfileData({
+        username: currentUser.username || "",
+        name: currentUser.name || "",
+        lastname: currentUser.lastname || "",
+        bio: currentUser.bio || "",
+        location: currentUser.location || "",
+        youtube: currentUser.youtube || "",
+        twitter: currentUser.twitter || "",
+        linkedin: currentUser.linkedin || "",
+        github: currentUser.github || "",
+        primary_color: currentUser.primary_color || "#3b82f6",
+        banner_url: currentUser.banner_url || "",
+        avatar: currentUser.avatar || ""
       });
+    }
+  }, [currentUser]);
+
+  const updateProfileData = useCallback((e) => {
+    const { name, value } = e.target;
+    setProfileData((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  const saveProfileChanges = async (e) => {
+    if (e) e.preventDefault();
+    setIsUpdatingProfile(true);
+    try {
+      const response = await authAPI.put(`${backendUrl}/users/${currentUser.id}`, profileData);
+      const updatedUser = response.data?.data || response.data;
+
+      const normalUser = normalizeUser(updatedUser);
+      setCurrentUser(normalUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      navigate('/profile');
+      showMessage(t("user_context.profile_updated"), "success");
     } catch (error) {
-      console.error("Error cargando el perfil:", error);
+      showMessage(error.response?.data?.message || t("user_context.profile_update_error"), "error");
     } finally {
-      setIsLoadingProfile(false);
+      setIsUpdatingProfile(false);
     }
   };
 
-  const getMyPublicProfile = async (id) => {
-    setIsLoadingMyProfile(true);
-    setPublicMyProfile(null);
-    try {
-      const response = await authAPI.get(`${backendUrl}/users/${id}`);
-      const data = response.data?.data || response.data;
-
-      setPublicMyProfile({
-        profile: normalizeUser(data.profile),
-        stats: data.stats,
-        content: data.content
-      });
-    } catch (error) {
-      console.error("Error cargando tu perfil:", error);
-    } finally {
-      setIsLoadingMyProfile(false);
-    }
-  };
-
-  const checkIsOwnProfile = (userId) => {
-    return currentUser?.id === userId;
-  };
-
-  const checkIsOwnModel = (model) => {
-    if (!currentUser || !model) return false;
-    return currentUser.id === (model.user_id || model.userId) ||
-      currentUser.username === model.username;
-  };
-
-  const getProfileRoute = (userId, username) => {
-    return checkIsOwnProfile(userId) ? '/profile' : `/perfil/${username}`;
-  };
+  const clearAvatar = useCallback(() => setProfileData(prev => ({ ...prev, avatar: "" })), []);
+  const clearBanner = useCallback(() => setProfileData(prev => ({ ...prev, banner_url: "" })), []);
 
   const loadProfile = async (usernameParam) => {
     const own = !usernameParam;
-
     setIsOwnProfile(own);
     setIsLoadingActiveProfile(true);
     setActiveProfileData(null);
@@ -280,71 +274,62 @@ const UserContext = ({ children }) => {
           recent_models: normalizedModels
         },
       });
-
     } catch (error) {
-      console.error("Error cargando perfil:", error);
+      showMessage(t("user_context.load_profile_error"), "error");
     } finally {
       setIsLoadingActiveProfile(false);
     }
   };
 
-  const changeProfileTab = (tab) => {
-    setActiveProfileTab(tab);
-  };
-
-  const getProfileModels = () => {
-    return activeProfileData?.content?.recent_models || [];
-  };
-
-  const actualizarDatoPerfil = (evento) => {
-    const { name, value } = evento.target;
-    setDatosPerfil((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const cargarDatosConfiguracion = () => {
-    if (currentUser) {
-      setDatosPerfil({
-        username: currentUser.username || "",
-        name: currentUser.name || "",
-        lastname: currentUser.lastname || "",
-        bio: currentUser.bio || "",
-        location: currentUser.location || "",
-        youtube: currentUser.youtube || "",
-        twitter: currentUser.twitter || "",
-        linkedin: currentUser.linkedin || "",
-        github: currentUser.github || "",
-        primary_color: currentUser.primary_color || "#3b82f6",
-        banner_url: currentUser.banner_url || "",
-        avatar: currentUser.avatar || ""
-      });
-    }
-  };
-
-  const guardarCambiosPerfil = async (evento) => {
-    if (evento) evento.preventDefault();
-    setIsUpdatingProfile(true);
+  const getPublicProfile = async (username) => {
+    setIsLoadingProfile(true);
+    setPublicProfile(null);
     try {
-      const response = await authAPI.put(`${backendUrl}/users/${currentUser.id}`, datosPerfil);
-      const updatedUser = response.data?.data || response.data;
-
-      const normalUser = normalizeUser(updatedUser);
-      setCurrentUser(normalUser);
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-
-      navegar('/profile');
-      showMessage("Perfil actualizado correctamente", "success");
+      const response = await authAPI.get(`${backendUrl}/users/perfil/${username}`);
+      const data = response.data?.data || response.data;
+      setPublicProfile({
+        profile: normalizeUser(data.profile),
+        stats: data.stats,
+        content: data.content
+      });
     } catch (error) {
-      showMessage(error.response?.data?.message || "Error al actualizar el perfil", "error");
+      showMessage(t("user_context.load_profile_error"), "error");
     } finally {
-      setIsUpdatingProfile(false);
+      setIsLoadingProfile(false);
     }
   };
 
-  const getProfileStyles = (userObj) => {
+  const getMyPublicProfile = async (id) => {
+    setIsLoadingMyProfile(true);
+    setPublicMyProfile(null);
+    try {
+      const response = await authAPI.get(`${backendUrl}/users/${id}`);
+      const data = response.data?.data || response.data;
+      setPublicMyProfile({
+        profile: normalizeUser(data.profile),
+        stats: data.stats,
+        content: data.content
+      });
+    } catch (error) {
+      showMessage(t("user_context.load_profile_error"), "error");
+    } finally {
+      setIsLoadingMyProfile(false);
+    }
+  };
+
+  const checkIsOwnProfile = useCallback((userId) => currentUser?.id === userId, [currentUser]);
+  const checkIsOwnModel = useCallback((model) => {
+    if (!currentUser || !model) return false;
+    return currentUser.id === (model.user_id || model.userId) || currentUser.username === model.username;
+  }, [currentUser]);
+
+  const getProfileRoute = useCallback((userId, username) => checkIsOwnProfile(userId) ? '/profile' : `/perfil/${username}`, [checkIsOwnProfile]);
+  const changeProfileTab = useCallback((tab) => setActiveProfileTab(tab), []);
+  const getProfileModels = useCallback(() => activeProfileData?.content?.recent_models || [], [activeProfileData]);
+
+  const getProfileStyles = useCallback((userObj) => {
     if (!userObj) return {};
-
     const custom = userObj.customization || userObj.profile || userObj;
-
     return {
       bannerBg: {
         backgroundImage: custom.banner_url ? `url(${custom.banner_url})` : 'none',
@@ -353,33 +338,27 @@ const UserContext = ({ children }) => {
         backgroundPosition: 'center'
       }
     };
-  };
-
-  const sortOptions = [
-    { value: "followers_count:desc", label: "Más Seguidores" },
-    { value: "models_count:desc", label: "Más Modelos" }
-  ];
-
-  const handleClearAvatar = () => {
-    setDatosPerfil((prev) => ({ ...prev, avatar: "" }));
-  };
-
-  const handleClearBanner = () => {
-    setDatosPerfil((prev) => ({ ...prev, banner_url: "" }));
-  };
+  }, []);
 
   const exportData = {
     currentUser,
     isAuthenticated,
-    datosSesion,
-    errorAuth,
+    authData,
+    authError,
     isAuthLoading: authAPI.isLoading,
-    actualizarDato,
-    limpiarFormulario,
-    iniciarSesion,
-    registrarse,
-    cerrarSesion,
-    eliminarUsuario,
+    updateAuthData,
+    clearAuthForm,
+    login,
+    register,
+    logout,
+    deleteUser,
+    profileData,
+    updateProfileData,
+    loadProfileSettings,
+    saveProfileChanges,
+    isUpdatingProfile,
+    clearAvatar,
+    clearBanner,
     publicProfile,
     publicMyProfile,
     communityUsers,
@@ -405,20 +384,29 @@ const UserContext = ({ children }) => {
     userSortBy,
     setUserSortBy,
     isSearchingUsers,
-    datosPerfil,
-    actualizarDatoPerfil,
-    cargarDatosConfiguracion,
-    guardarCambiosPerfil,
-    isUpdatingProfile,
     getProfileStyles,
     isAdmin,
     sortOptions,
-    handleClearAvatar,
-    handleClearBanner
+
+    datosSesion: authData,
+    errorAuth: authError,
+    actualizarDato: updateAuthData,
+    limpiarFormulario: clearAuthForm,
+    iniciarSesion: login,
+    registrarse: register,
+    cerrarSesion: logout,
+    eliminarUsuario: deleteUser,
+    datosPerfil: profileData,
+    actualizarDatoPerfil: updateProfileData,
+    cargarDatosConfiguracion: loadProfileSettings,
+    guardarCambiosPerfil: saveProfileChanges,
+    handleClearAvatar: clearAvatar,
+    handleClearBanner: clearBanner
   };
 
-  return <user.Provider value={exportData}>{children}</user.Provider>;
+  return <userContext.Provider value={exportData}>{children}</userContext.Provider>;
 };
 
-export { user };
+// Mantenemos el export de la variable antigua "user" por compatibilidad
+export { userContext };
 export default UserContext;

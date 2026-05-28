@@ -1,46 +1,47 @@
-import React, { createContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import useAPI from '../hooks/useAPI';
 import useMessage from '../hooks/useMessage';
+import { useTranslation } from 'react-i18next';
 
 const category = createContext();
 
-export const CategoryProvider = ({ children }) => {
+const CategoryContext = ({ children }) => {
     const api = useAPI();
     const { showMessage, showConfirm } = useMessage();
+    const { t } = useTranslation();
     const apiUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/categories`;
+    const initialCategoryData = { newName: "", editName: "", editingId: null };
 
     const [categories, setCategories] = useState([]);
     const [tags, setTags] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [categoryData, setCategoryData] = useState(initialCategoryData);
 
-    const datosCategoriaInicial = { newName: "", editName: "", editingId: null };
-    const [datosCategoria, setDatosCategoria] = useState(datosCategoriaInicial);
-
-    const actualizarDatoCategoria = (evento) => {
+    const updateCategoryData = (evento) => {
         const { name, value } = evento.target;
-        setDatosCategoria((prev) => ({ ...prev, [name]: value }));
+        setCategoryData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const getCategories = useCallback(async () => {
+    const getCategories = async () => {
         setIsLoading(true);
         try {
             const response = await api.get(apiUrl);
             const data = response.data?.data || response.data;
             setCategories(data);
         } catch (error) {
-            console.error("Error al cargar categorías:", error);
+            showMessage(t("category_context.fetch_error"), "error");
         } finally {
             setIsLoading(false);
         }
-    }, [api, apiUrl]);
+    };
 
     useEffect(() => {
         getCategories();
     }, []);
 
-    const crearCategoria = async (evento) => {
+    const createCategory = async (evento) => {
         if (evento) evento.preventDefault();
-        const nameToSave = datosCategoria.newName.trim();
+        const nameToSave = categoryData.newName.trim();
 
         if (!nameToSave) return;
         setIsLoading(true);
@@ -50,24 +51,23 @@ export const CategoryProvider = ({ children }) => {
             const newCategory = response.data?.data || response.data;
 
             setCategories(prev => [...prev, newCategory].sort((a, b) => a.name.localeCompare(b.name)));
-            showMessage("Categoría creada con éxito", "success");
+            showMessage(t("category_context.create_success"), "success");
 
-            setDatosCategoria(prev => ({ ...prev, newName: "" }));
+            setCategoryData(prev => ({ ...prev, newName: "" }));
         } catch (error) {
-            const errorMsg = error.response?.data?.message || "Error al crear la categoría";
-            showMessage(errorMsg, "error");
+            showMessage(t("category_context.create_error"), "error");
         } finally {
             setIsLoading(false);
         }
     };
 
-    const iniciarEdicionCategoria = (cat) => {
-        setDatosCategoria(prev => ({ ...prev, editingId: cat.id, editName: cat.name }));
+    const startEditingCategory = (cat) => {
+        setCategoryData(prev => ({ ...prev, editingId: cat.id, editName: cat.name }));
     };
 
-    const guardarEdicionCategoria = async (evento) => {
+    const saveCategoryEdit = async (evento) => {
         if (evento) evento.preventDefault();
-        const { editingId, editName } = datosCategoria;
+        const { editingId, editName } = categoryData;
 
         if (!editName.trim() || !editingId) return;
         setIsLoading(true);
@@ -80,11 +80,11 @@ export const CategoryProvider = ({ children }) => {
                 prev.map(cat => cat.id === editingId ? updatedCategory : cat)
                     .sort((a, b) => a.name.localeCompare(b.name))
             );
-            showMessage("Categoría actualizada", "success");
+            showMessage(t("category_context.update_success"), "success");
 
-            setDatosCategoria(prev => ({ ...prev, editingId: null, editName: "" }));
+            setCategoryData(prev => ({ ...prev, editingId: null, editName: "" }));
         } catch (error) {
-            showMessage("No se pudo actualizar la categoría", "error");
+            showMessage(t("category_context.update_error"), "error");
         } finally {
             setIsLoading(false);
         }
@@ -92,16 +92,15 @@ export const CategoryProvider = ({ children }) => {
 
     const removeCategory = async (id) => {
         showConfirm(
-            "¿Estás seguro? Se eliminará esta categoría de todos los modelos asociados.",
+            t("category_context.delete_confirmation"),
             async () => {
                 setIsLoading(true);
                 try {
                     await api.remove(`${apiUrl}/${id}`);
                     setCategories(prev => prev.filter(cat => cat.id !== id));
-                    showMessage("Categoría eliminada correctamente", "success");
+                    showMessage(t("category_context.delete_success"), "success");
                 } catch (error) {
-                    console.error("Error al borrar:", error);
-                    showMessage("Error al eliminar la categoría.", "error");
+                    showMessage(t("category_context.delete_error"), "error");
                 } finally {
                     setIsLoading(false);
                 }
@@ -113,13 +112,19 @@ export const CategoryProvider = ({ children }) => {
         categories,
         tags,
         isLoading,
-        datosCategoria,
-        actualizarDatoCategoria,
+        categoryData,
+        updateCategoryData,
         getCategories,
-        crearCategoria,
-        iniciarEdicionCategoria,
-        guardarEdicionCategoria,
+        createCategory,
+        startEditingCategory,
+        saveCategoryEdit,
         removeCategory,
+
+        datosCategoria: categoryData,
+        actualizarDatoCategoria: updateCategoryData,
+        crearCategoria: createCategory,
+        iniciarEdicionCategoria: startEditingCategory,
+        guardarEdicionCategoria: saveCategoryEdit
     };
 
     return (
@@ -130,4 +135,4 @@ export const CategoryProvider = ({ children }) => {
 };
 
 export { category };
-export default CategoryProvider;
+export default CategoryContext;

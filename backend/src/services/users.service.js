@@ -25,6 +25,12 @@ const getUserById = async (userId) => {
                     _count: {
                         select: { model_likes: true },
                     },
+                    model_category: {
+                        include: { categories: true }
+                    },
+                    model_tag: {
+                        include: { tags: true }
+                    }
                 },
             },
             favorites: {
@@ -115,11 +121,6 @@ const getUserById = async (userId) => {
 
 /**
  * Obtiene el perfil completo de un usuario por su username (público).
- * Útil para URLs amigables como /u/ruben_dev
- *
- * @param {string} username - Nombre de usuario único
- * @returns {Promise<Object>} Perfil completo (mismo formato que getUserById)
- * @throws {Error} Si el usuario no existe
  */
 const getUserByUsername = async (username) => {
     const user = await prisma.users.findFirst({
@@ -135,6 +136,12 @@ const getUserByUsername = async (username) => {
                 orderBy: { created_at: "desc" },
                 include: {
                     _count: { select: { model_likes: true } },
+                    model_category: {
+                        include: { categories: true }
+                    },
+                    model_tag: {
+                        include: { tags: true }
+                    }
                 },
             },
             favorites: {

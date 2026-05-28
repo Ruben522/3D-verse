@@ -62,6 +62,8 @@
         "upload_model": "Subir Modelo",
         "view_model": "Ver Modelo",
         "view_profile": "Ver Perfil",
+        "see_models": "Ver Modelos",
+        "see_community": "Ir a Comunidad",
         "download": "Descargar",
         "like": "Me gusta",
         "update_profile": "Actualizar Perfil",
@@ -69,6 +71,7 @@
         "save_settings": "Guardar Configuración",
         "save_settings_desc": "Asegúrate de guardar los cambios antes de salir.",
         "cancel": "Cancelar",
+        "confirm": "Confirmar",
         "delete": "Eliminar",
         "edit": "Editar",
         "follow": "Seguir",
@@ -239,6 +242,14 @@
         "section1_title": "¿Tienes tu propio diseño?",
         "section1_desc": "Sube tus archivos STL, crea un portafolio espectacular y empieza a ganar seguidores hoy mismo."
     },
+    "footer": {
+        "about": "Acerca de",
+        "contact": "Contacto",
+        "caracter": "©",
+        "all_rights": "3DVerse. Todos los derechos reservados.",
+        "terms": "Términos de Servicio",
+        "privacy": "Política de Privacidad"
+    },
     "error_pages": {
         "404_title": "404 - Página no encontrada",
         "404_desc": "¡Ups! Te has salido del lienzo.",
@@ -256,5 +267,74 @@
         "manage_models": "Moderar Modelos",
         "go_community": "Ir a Comunidad",
         "go_models": "Ir a Modelos"
+    },
+    "user_context": {
+        "login_error": "Correo electrónico o contraseña incorrectos.",
+        "register_error": "El usuario o el correo ya están registrados.",
+        "logout_question": "¿Estás seguro que quieres cerrar sesión?",
+        "logout_success": "Cierre de sesión exitoso",
+        "login_success": "Inicio de sesión exitoso",
+        "delete_user_confirmation": "¿Estás seguro de que quieres eliminar esta cuenta? Esta acción es irreversible.",
+        "delete_user_success": "Cuenta eliminada exitosamente",
+        "delete_user_error": "No se pudo eliminar la cuenta.",
+        "profile_updated": "Perfil actualizado exitosamente",
+        "profile_update_error": "Error al actualizar el perfil",
+        "load_profile_error": "Error al cargar el perfil",
+        "load_active_profile_error": "Error al cargar el perfil activo",
+        "community_search_error": "Error buscando en la comunidad"
+    },
+    "models_context": {
+        "meili_search_error": "Error en MeiliSearch, por favor intenta de nuevo",
+        "model_upload_success": "Modelo subido exitosamente",
+        "model_update_success": "Modelo actualizado exitosamente",
+        "model_delete_success": "Modelo eliminado exitosamente",
+        "model_error": "Ocurrió un error, por favor intenta de nuevo",
+        "download_error": "Error al descargar el modelo, por favor intenta de nuevo",
+        "download_package_error": "Error al descargar el paquete de descarga, por favor intenta de nuevo",
+        "delete_confirmation": "¿Estás seguro de que quieres eliminar este modelo? Esta acción es irreversible.",
+        "edit_permission_error": "No tienes permiso para editar este modelo.",
+        "prepare_edit_error": "No se pudieron cargar los datos del modelo para editar.",
+         "edit_error": "No se pudieron guardar los cambios.",
+         "upload_error": "Error al procesar tu diseño. Inténtalo de nuevo.",
+            "search_error": "Error al buscar modelos, por favor intenta de nuevo"
+    },
+    "category_context": {
+        "fetch_error": "Error al cargar las categorías, por favor intenta de nuevo",
+        "create_error": "Error al crear la categoría, por favor intenta de nuevo",
+        "update_error": "Error al actualizar la categoría, por favor intenta de nuevo",
+        "delete_error": "Error al eliminar la categoría, por favor intenta de nuevo",
+        "delete_confirmation": "¿Estás seguro de que quieres eliminar esta categoría? Esta acción es irreversible.",
+        "update_success": "Categoría actualizada exitosamente",
+        "create_success": "Categoría creada exitosamente"
+    },
+    "comments_context": {
+        "fetch_error": "Error al cargar los comentarios, por favor intenta de nuevo",
+        "add_error": "Error al agregar el comentario, por favor intenta de nuevo",
+        "add_success": "Comentario agregado exitosamente",
+        "delete_error": "Error al eliminar el comentario, por favor intenta de nuevo",
+        "delete_confirmation": "Eliminar este comentario?",
+        "delete_success": "Comentario eliminado"
+
+    },
+    "contact_context": {
+        "name": "Rubén",
+        "role": "Full Stack Developer",
+        "bio": "Soy un desarrollador apasionado por la tecnología y el diseño 3D. Me encanta crear soluciones innovadoras y compartir mis proyectos con la comunidad.",
+        "history": "Esta aplicación surge por querer crear una comunidad activa de creadores 3D, donde los usuarios puedan compartir sus diseños, inspirarse mutuamente y llevar la impresión 3D al siguiente nivel."
+    },
+    "favorites_context": {
+        "fetch_error": "Error al cargar tus favoritos, por favor intenta de nuevo",
+        "toggle_error": "Error al actualizar el favorito, por favor intenta de nuevo",
+        "auth_required": "Debes iniciar sesión para guardar modelos en favoritos"
+    },
+    "follow_context": {
+        "load_followings_error": "Error al cargar tus seguidos, por favor intenta de nuevo",
+        "load_followers_error": "Error al cargar tus seguidores, por favor intenta de nuevo",
+        "load_following_error": "Error al verificar si sigues a este usuario, por favor intenta de nuevo",
+        "toggle_follow_error": "Error al actualizar tu seguimiento, por favor intenta de nuevo"
+    },
+    "like_context": {
+        "toggle_like_error": "Error al actualizar tu like, por favor intenta de nuevo",
+        "auth_required": "Debes iniciar sesión para dar like a los modelos"
     }
 }

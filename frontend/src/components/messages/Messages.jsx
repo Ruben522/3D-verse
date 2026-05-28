@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { messagesStyles } from '../../utils/MessagesStyle.jsx';
+import { useTranslation } from "react-i18next";
 
 const Messages = ({ message, isConfirm, config, onClose, onConfirm }) => {
+    const { t } = useTranslation();
+
     return isConfirm ? (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-fade-in">
             <div className="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm transition-colors duration-300" onClick={onClose} title="Haz clic fuera para cancelar" />
@@ -22,10 +25,10 @@ const Messages = ({ message, isConfirm, config, onClose, onConfirm }) => {
 
                 <div className="flex justify-end gap-3 mt-8 pt-5 border-t border-gray-100/60 dark:border-gray-700/60 transition-colors duration-300">
                     <button onClick={onClose} className="px-5 py-2.5 text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors">
-                        Cancelar
+                        {t('buttons.cancel')}
                     </button>
                     <button onClick={onConfirm} className="px-6 py-2.5 text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-400 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                        Confirmar
+                        {t('buttons.confirm')}
                     </button>
                 </div>
             </div>

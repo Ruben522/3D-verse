@@ -1,84 +1,108 @@
 import React, { createContext, useState, useEffect } from "react";
 import useAPI from "../hooks/useAPI.js";
 import useUsers from "../hooks/useUsers.js";
+import { useTranslation } from "react-i18next";
+import useMessage from "../hooks/useMessage.js";
+import useModels from "../hooks/useModels.js";
 
-const like = createContext();
+const likeContext = createContext();
 
 const LikeContext = ({ children }) => {
     const { isAuthenticated, currentUser } = useUsers();
+    const { updateLikesCount } = useModels();
+    const { t } = useTranslation();
+    const { showMessage } = useMessage();
     const api = useAPI();
     const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     const [likedModels, setLikedModels] = useState(new Set());
 
-    useEffect(() => {
-        if (isAuthenticated && currentUser?.id) {
-            cargarLikes();
-        } else {
-            setLikedModels(new Set());
-        }
-    }, [isAuthenticated, currentUser]);
+    const fetchLikedModels = async () => {
+        if (!currentUser?.id) return;
 
-    const cargarLikes = async () => {
         try {
-            // Mapeado a users.routes.js -> router.get("/:userId/likes")
             const likesRes = await api.get(`${backendUrl}/users/${currentUser.id}/likes`);
-
-            // Extraemos los datos dependiendo de cómo tu getLikes formatee el JSON
             const data = likesRes.data?.data || likesRes.data || likesRes || [];
 
             const likeIds = new Set();
             data.forEach(item => {
-                if (item.model_id) likeIds.add(item.model_id);
-                else if (item.model?.id) likeIds.add(item.model.id);
-                else if (item.id) likeIds.add(item.id);
+                const id = item.model_id || item.model?.id || item.id;
+                if (id) likeIds.add(String(id));
             });
 
             setLikedModels(likeIds);
         } catch (error) {
-            console.error("Error al cargar los likes iniciales:", error);
+            showMessage(t("like_context.fetch_error"), "error");
         }
     };
 
-    const toggleLike = async (e, modelId) => {
-        if (e) e.preventDefault();
-        if (!isAuthenticated) return alert("Debes iniciar sesión para dar me gusta");
+    useEffect(() => {
+        if (isAuthenticated && currentUser?.id) {
+            fetchLikedModels();
+        } else {
+            setLikedModels(new Set());
+        }
+    }, [isAuthenticated, currentUser?.id]);
 
-        const isLiked = likedModels.has(modelId);
-
-        // Actualización optimista
+    const updateLocalLikeState = (modelId, isLiking) => {
+        updateLikesCount(modelId, isLiking);
         setLikedModels(prev => {
             const next = new Set(prev);
-            isLiked ? next.delete(modelId) : next.add(modelId);
+            isLiking ? next.add(modelId) : next.delete(modelId);
             return next;
         });
+    };
 
+    const syncLikeWithServer = async (modelId, isLiking) => {
         try {
-            // Mapeado a models.routes.js -> router.post("/:id/like") y router.delete("/:id/like")
-            if (isLiked) {
-                await api.remove(`${backendUrl}/models/${modelId}/like`);
-            } else {
+            if (isLiking) {
                 await api.post(`${backendUrl}/models/${modelId}/like`);
+            } else {
+                await api.remove(`${backendUrl}/models/${modelId}/like`);
             }
+            return true;
         } catch (error) {
-            // Revertir si el backend falla
-            setLikedModels(prev => {
-                const next = new Set(prev);
-                isLiked ? next.add(modelId) : next.delete(modelId);
-                return next;
-            });
-            console.error("Error al procesar el Like:", error);
+            return false;
         }
     };
 
-    const exportData = { likedModels, toggleLike };
+    const toggleLikeModel = async (e, modelId) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        if (!isAuthenticated) {
+            showMessage(t("like_context.not_authenticated"), "warning");
+            return;
+        }
+
+        const safeId = String(modelId);
+        const isCurrentlyLiked = likedModels.has(safeId);
+        const targetState = !isCurrentlyLiked;
+
+        updateLocalLikeState(safeId, targetState);
+
+        const isSuccess = await syncLikeWithServer(safeId, targetState);
+
+        if (!isSuccess) {
+            updateLocalLikeState(safeId, isCurrentlyLiked);
+            showMessage(t("like_context.toggle_like_error"), "error");
+        }
+    };
+
+    const exportData = {
+        likedModels,
+        toggleLikeModel,
+        toggleLike: toggleLikeModel
+    };
 
     return (
-        <like.Provider value={exportData}>
+        <likeContext.Provider value={exportData}>
             {children}
-        </like.Provider>
+        </likeContext.Provider>
     );
 };
 
-export { like };
+export { likeContext as like };
 export default LikeContext;

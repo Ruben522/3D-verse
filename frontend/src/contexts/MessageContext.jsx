@@ -13,19 +13,19 @@ export const MessageContext = ({ children }) => {
         if (timerRef.current) clearTimeout(timerRef.current);
     }, []);
 
-    const showMessage = useCallback((textoMensaje, type = 'info') => {
+    const showMessage = useCallback((messageText, type = 'info') => {
         hideMessage();
-        setToast({ message: textoMensaje, type });
+        setToast({ message: messageText, type });
 
         timerRef.current = setTimeout(() => {
             hideMessage();
         }, 5000);
     }, [hideMessage]);
 
-    const showConfirm = useCallback((textoMensaje, onConfirmCallback) => {
+    const showConfirm = useCallback((messageText, onConfirmCallback) => {
         hideMessage();
         setToast({
-            message: textoMensaje,
+            message: messageText,
             type: 'confirm',
             onConfirm: onConfirmCallback
         });
@@ -36,8 +36,13 @@ export const MessageContext = ({ children }) => {
         hideMessage();
     }, [toast, hideMessage]);
 
+    const exportData = {
+        showMessage,
+        showConfirm
+    }
+
     return (
-        <message.Provider value={{ showMessage, showConfirm }}>
+        <message.Provider value={exportData}>
             {children}
             {toast && (
                 <Message

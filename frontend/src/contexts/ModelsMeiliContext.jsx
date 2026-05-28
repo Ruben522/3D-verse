@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, createContext, useCallback } from "react";
 import useUsers from "../hooks/useUsers.js";
 import useAPI from "../hooks/useAPI.js";
 import { useNavigate } from "react-router-dom";
@@ -6,25 +6,42 @@ import { validateUploadData } from "../utils/uploadValidations";
 import useMessage from "../hooks/useMessage.js";
 import { normalizeMeiliHit, normalizeModelData } from "../utils/normalizers";
 import { modelsIndex } from "../services/meiliClient.js";
+import useCategories from '../hooks/useCategories.js';
+import { useTranslation } from "react-i18next";
 
-const model = createContext();
+const modelContext = createContext();
 
 const ModelsMeiliContext = ({ children }) => {
-    const navegar = useNavigate();
-    const modelAPI = useAPI();
-    const actionAPI = useAPI();
+    const navigate = useNavigate();
+    const api = useAPI();
     const { currentUser, isAdmin } = useUsers();
     const { showMessage, showConfirm } = useMessage();
+    const { categories } = useCategories();
+    const { t } = useTranslation();
+
+    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = `${backendUrl}/models`;
+
+    const initialUploadData = { title: "", description: "", categories: [], tags: [] };
+    const initialUploadFiles = { main_file: null, main_image: null, gallery: [], parts: [] };
+    const initialPagination = { page: 1, total: 0, totalPages: 1 };
+
+    const sortOptions = [
+        { value: "created_at:desc", label: "Recientes" },
+        { value: "likes_count:desc", label: "Populares" },
+        { value: "downloads:desc", label: "Descargas" },
+    ];
+
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [modelsData, setModelsData] = useState([]);
-    const [currentModel, setCurrentModel] = useState(null);
-    const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
-    const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
+    const [pagination, setPagination] = useState(initialPagination);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState("");
     const [activeTag, setActiveTag] = useState("");
     const [sortBy, setSortBy] = useState("created_at:desc");
     const [isSearching, setIsSearching] = useState(false);
+
+    const [currentModel, setCurrentModel] = useState(null);
     const [detailUI, setDetailUI] = useState({
         activeMediaTab: "imagenes",
         activeInfoTab: "detalles",
@@ -36,61 +53,30 @@ const ModelsMeiliContext = ({ children }) => {
         selectedPart: null,
         currentColor: "#ffffff",
     });
-    const initialUploadData = { title: "", description: "", categories: [], tags: [] };
-    const initialUploadFiles = { main_file: null, main_image: null, gallery: [], parts: [] };
+
     const [uploadData, setUploadData] = useState(initialUploadData);
     const [uploadFiles, setUploadFiles] = useState(initialUploadFiles);
     const [uploadErrors, setUploadErrors] = useState({});
     const [isUploading, setIsUploading] = useState(false);
     const [expandedSections, setExpandedSections] = useState(['info', 'files']);
-    const [archivosExistentes, setArchivosExistentes] = useState(null);
-
-    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-    const apiUrl = `${backendUrl}/models`;
-
-    const sortOptions = [
-        { value: "created_at:desc", label: "Recientes" },
-        { value: "likes_count:desc", label: "Populares" },
-        { value: "downloads:desc", label: "Descargas" },
-    ];
-
-    useEffect(() => {
-        getCategories();
-    }, []);
-
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            searchModels(searchTerm, 1);
-        }, 300);
-        return () => clearTimeout(timeoutId);
-    }, [searchTerm, activeCategory, activeTag, sortBy]);
-
-    const getCategories = async () => {
-        try {
-            const response = await modelAPI.get(`${backendUrl}/categories`);
-            setCategoriasDisponibles(response.data || []);
-        } catch (err) {
-            showMessage("Error al obtener categorías.", "error");
-            setCategoriasDisponibles([]);
-        }
-    };
-
-    const getModels = async (page = 1) => {
-        return searchModels(searchTerm, page);
-    };
+    const [existingFiles, setExistingFiles] = useState(null);
 
     const searchModels = async (query = "", page = 1) => {
         setIsSearching(true);
         try {
-            const searchParams = {
+            let searchParams = {
                 hitsPerPage: 12,
                 page: page,
                 sort: [sortBy],
                 filter: []
             };
 
-            if (activeCategory) searchParams.filter.push(`category_names = "${activeCategory}"`);
-            if (activeTag) searchParams.filter.push(`tag_names = "${activeTag}"`);
+            if (activeCategory) {
+                searchParams = { ...searchParams, filter: [...searchParams.filter, `category_ids = ${activeCategory}`] };
+            }
+            if (activeTag) {
+                searchParams = { ...searchParams, filter: [...searchParams.filter, `tags = ${activeTag}`] };
+            }
 
             const results = await modelsIndex.search(query, searchParams);
             setModelsData(results.hits.map(normalizeMeiliHit));
@@ -100,17 +86,37 @@ const ModelsMeiliContext = ({ children }) => {
                 totalPages: results.totalPages
             });
         } catch (err) {
-            console.error("Error en Meilisearch:", err);
+            showMessage(t("models_context.meili_search_error"), "error");
         } finally {
             setIsSearching(false);
             setIsInitialLoad(false);
         }
     };
 
-    const getModelById = async (id) => {
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            searchModels(searchTerm, 1);
+        }, 300);
+        return () => clearTimeout(timeoutId);
+    }, [searchTerm, activeCategory, activeTag, sortBy]);
+
+    const fetchModels = (page = 1) => searchModels(searchTerm, page);
+
+    const getTopPopularModels = () => {
+        if (!modelsData || modelsData.length === 0) return [];
+        return [...modelsData].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 5);
+    };
+
+    const getRandomModels = () => {
+        if (!modelsData || modelsData.length === 0) return [];
+        const modelsWithImages = modelsData.filter(m => m.imageUrl);
+        return [...modelsWithImages].sort(() => 0.5 - Math.random()).slice(0, 10);
+    };
+
+    const fetchModelById = useCallback(async (id) => {
         try {
             setCurrentModel(null);
-            const data = await modelAPI.get(`${apiUrl}/${id}`);
+            const data = await api.get(`${apiUrl}/${id}`);
             const normalizedData = normalizeModelData(data.data);
             setCurrentModel(normalizedData);
 
@@ -125,11 +131,11 @@ const ModelsMeiliContext = ({ children }) => {
                 currentColor: normalizedData.mainColor || "#ffffff",
             });
         } catch (err) {
-            showMessage("Error al cargar el modelo. Inténtalo de nuevo.", "error");
+            showMessage(t("models_context.model_error"), "error");
         }
-    };
+    }, [apiUrl, api, showMessage]);
 
-    const updateDetailUI = (field, value) => {
+    const updateDetailUI = useCallback((field, value) => {
         setDetailUI((prev) => {
             const newState = { ...prev, [field]: value };
             if (field === 'activeMediaTab' || field === 'active3DUrl') {
@@ -137,106 +143,120 @@ const ModelsMeiliContext = ({ children }) => {
             }
             return newState;
         });
-    };
+    }, []);
 
-    const downloadPackage = async (modelId, packageType) => {
+    const downloadPackage = useCallback(async (modelId, packageType) => {
         try {
             const url = `${backendUrl}/downloads/${modelId}?type=${packageType}`;
             const fileName = `${currentModel.title}.zip`;
-            await actionAPI.downloadPost(url, fileName);
+            await api.downloadPost(url, fileName);
         } catch (err) {
-            showMessage("Error al descargar el paquete.", "error");
+            showMessage(t("models_context.download_package_error"), "error");
         }
-    };
+    }, [backendUrl, currentModel, api, showMessage]);
 
-    const toggleSection = (sectionId) => setExpandedSections(prev => prev.includes(sectionId) ? prev.filter(id => id !== sectionId) : [...prev, sectionId]);
+    const toggleSection = useCallback((sectionId) => {
+        setExpandedSections(prev => prev.includes(sectionId) ? prev.filter(id => id !== sectionId) : [...prev, sectionId]);
+    }, []);
 
-    const actualizarDatoSubida = (evento) => {
+    const updateUploadData = useCallback((evento) => {
         const { name, value } = evento.target;
         setUploadData((prev) => ({ ...prev, [name]: value }));
         if (uploadErrors[name]) setUploadErrors(prev => ({ ...prev, [name]: null }));
-    };
+    }, [uploadErrors]);
 
-    const toggleCategoria = (categoryId) => setUploadData(prev => ({ ...prev, categories: prev.categories.includes(categoryId) ? prev.categories.filter(id => id !== categoryId) : [...prev.categories, categoryId] }));
+    const toggleCategory = useCallback((categoryId) => {
+        setUploadData(prev => ({
+            ...prev,
+            categories: prev.categories.includes(categoryId)
+                ? prev.categories.filter(id => id !== categoryId)
+                : [...prev.categories, categoryId]
+        }));
+    }, []);
 
-    const agregarTag = (evento) => {
+    const addTag = useCallback((evento) => {
         if (evento.key === 'Enter' || evento.key === ',') {
             evento.preventDefault();
-            const nuevoTag = evento.target.value.trim().toLowerCase();
-            if (nuevoTag && !uploadData.tags.includes(nuevoTag)) setUploadData(prev => ({ ...prev, tags: [...prev.tags, nuevoTag] }));
+            const newTag = evento.target.value.trim().toLowerCase();
+            if (newTag && !uploadData.tags.includes(newTag)) {
+                setUploadData(prev => ({ ...prev, tags: [...prev.tags, newTag] }));
+            }
             evento.target.value = '';
         }
-    };
+    }, [uploadData.tags]);
 
-    const eliminarTag = (tagAEliminar) => setUploadData(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tagAEliminar) }));
+    const removeTag = useCallback((tagToRemove) => {
+        setUploadData(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tagToRemove) }));
+    }, []);
 
-    const actualizarArchivos = (name, fileOrFiles) => {
+    const updateFiles = useCallback((name, fileOrFiles) => {
         setUploadFiles((prev) => ({ ...prev, [name]: fileOrFiles }));
         if (uploadErrors[name]) setUploadErrors(prev => ({ ...prev, [name]: null }));
-    };
+    }, [uploadErrors]);
 
-    const manejarSeleccionArchivo = (nombreCampo, evento, isMultiple = false) => {
+    const handleFileSelection = useCallback((fieldName, evento, isMultiple = false) => {
         const files = Array.from(evento.target.files);
         if (files.length === 0) return;
-        isMultiple ? setUploadFiles(prev => ({ ...prev, [nombreCampo]: [...prev[nombreCampo], ...files] })) : actualizarArchivos(nombreCampo, files[0]);
-    };
+        isMultiple
+            ? setUploadFiles(prev => ({ ...prev, [fieldName]: [...prev[fieldName], ...files] }))
+            : updateFiles(fieldName, files[0]);
+    }, [updateFiles]);
 
-    const eliminarArchivoSeleccionado = (nombreCampo, evento, index = null) => {
+    const removeSelectedFile = useCallback((fieldName, evento, index = null) => {
         evento.stopPropagation();
         if (index !== null) {
             setUploadFiles(prev => {
-                const nuevoArray = [...prev[nombreCampo]];
-                nuevoArray.splice(index, 1);
-                return { ...prev, [nombreCampo]: nuevoArray };
+                const newArray = [...prev[fieldName]];
+                newArray.splice(index, 1);
+                return { ...prev, [fieldName]: newArray };
             });
         } else {
-            actualizarArchivos(nombreCampo, null);
+            updateFiles(fieldName, null);
         }
-    };
+    }, [updateFiles]);
 
-    const limpiarFormularioSubida = () => {
+    const clearUploadForm = useCallback(() => {
         setUploadData(initialUploadData);
         setUploadFiles(initialUploadFiles);
         setUploadErrors({});
         setExpandedSections(['info', 'files']);
-    };
+    }, []);
 
-    const borrarModelo = async (id) => {
+    const deleteModel = useCallback(async (id) => {
         showConfirm(
-            "¿Estás seguro de que quieres eliminar este modelo? Esta acción es irreversible y borrará todos los archivos asociados.",
+            t("models_context.delete_confirmation"),
             async () => {
                 setIsUploading(true);
                 try {
-                    await actionAPI.remove(`${apiUrl}/${id}`);
-
-                    showMessage("Modelo eliminado correctamente", "success");
-                    limpiarFormularioSubida();
-                    navegar("/profile");
+                    await api.remove(`${apiUrl}/${id}`);
+                    showMessage(t("models_context.model_delete_success"), "success");
+                    clearUploadForm();
+                    navigate("/profile");
                 } catch (error) {
                     console.error("Error al eliminar:", error);
-                    showMessage("No se pudo eliminar el modelo.", "error");
+                    showMessage(t("models_context.model_error"), "error");
                 } finally {
                     setIsUploading(false);
                 }
             }
         );
-    };
+    }, [api, apiUrl, showConfirm, showMessage, clearUploadForm, navigate]);
 
-    const prepararEdicion = async (id) => {
+    const prepareEdit = useCallback(async (id) => {
         try {
-            const response = await modelAPI.get(`${apiUrl}/${id}`);
+            const response = await api.get(`${apiUrl}/${id}`);
             const modelToEdit = normalizeModelData(response.data);
 
             if (modelToEdit.username !== currentUser?.username && !isAdmin) {
-                showMessage("No tienes permiso para editar este modelo.", "error");
-                navegar("/");
+                showMessage(t("models_context.model_error"), "error");
+                navigate("/");
                 return;
             }
 
             const categoryIds = modelToEdit.categories
-                .map(nombreCategoria => {
-                    const categoriaEncontrada = categoriasDisponibles.find(c => c.name === nombreCategoria);
-                    return categoriaEncontrada ? categoriaEncontrada.id : null;
+                .map(categoryName => {
+                    const foundCategory = categories.find(c => c.name === categoryName);
+                    return foundCategory ? foundCategory.id : null;
                 })
                 .filter(Boolean);
 
@@ -254,7 +274,7 @@ const ModelsMeiliContext = ({ children }) => {
                 parts: []
             });
 
-            setArchivosExistentes({
+            setExistingFiles({
                 main_image: modelToEdit.imageUrl,
                 main_file: modelToEdit.fileUrl,
                 gallery: modelToEdit.gallery || [],
@@ -264,25 +284,24 @@ const ModelsMeiliContext = ({ children }) => {
             setExpandedSections(['info', 'files', 'extras']);
 
         } catch (error) {
-            console.error("Error en prepararEdicion:", error);
-            showMessage("No se pudieron cargar los datos del modelo para editar.", "error");
-            navegar("/");
+            showMessage(t("models_context.model_error"), "error");
+            navigate("/");
         }
-    };
+    }, [apiUrl, api, currentUser, isAdmin, categories, showMessage, navigate]);
 
-    const editarModelo = async (id) => {
+    const editModel = async (id) => {
         setIsUploading(true);
         try {
             if (uploadFiles.main_image) {
                 const formDataImg = new FormData();
                 formDataImg.append("image", uploadFiles.main_image);
-                await actionAPI.patchForm(`${apiUrl}/${id}/main-image`, formDataImg);
+                await api.patchForm(`${apiUrl}/${id}/main-image`, formDataImg);
             }
 
             if (uploadFiles.main_file) {
                 const formDataFile = new FormData();
                 formDataFile.append("main_file", uploadFiles.main_file);
-                await actionAPI.patchForm(`${apiUrl}/${id}/main-file`, formDataFile);
+                await api.patchForm(`${apiUrl}/${id}/main-file`, formDataFile);
             }
 
             const finalData = {
@@ -294,14 +313,13 @@ const ModelsMeiliContext = ({ children }) => {
                 license: uploadData.license
             };
 
-            await actionAPI.put(`${apiUrl}/${id}`, finalData);
+            await api.put(`${apiUrl}/${id}`, finalData);
 
-            showMessage("¡Cambios guardados correctamente!", "success");
-            limpiarFormularioSubida();
-            navegar(`/models/${id}`);
+            showMessage(t("models_context.model_update_success"), "success");
+            clearUploadForm();
+            navigate(`/models/${id}`);
         } catch (error) {
-            console.error("Error editando:", error);
-            showMessage("No se pudieron guardar los cambios.", "error");
+            showMessage(t("models_context.model_error"), "error");
         } finally {
             setIsUploading(false);
         }
@@ -316,7 +334,7 @@ const ModelsMeiliContext = ({ children }) => {
         return formData;
     };
 
-    const subirModelo = async () => {
+    const uploadModel = async () => {
         const validation = validateUploadData(uploadData, uploadFiles);
         if (!validation.isValid) {
             setUploadErrors(validation.errors);
@@ -326,47 +344,73 @@ const ModelsMeiliContext = ({ children }) => {
 
         setIsUploading(true);
         try {
-            const urlsDelServidor = await actionAPI.postForm(`${backendUrl}/models/upload`, buildUploadFormData());
+            const serverUrls = await api.postForm(`${backendUrl}/models/upload`, buildUploadFormData());
 
             const finalData = {
                 title: uploadData.title,
                 description: uploadData.description || "",
                 categories: uploadData.categories.length > 0 ? uploadData.categories : undefined,
-                file_url: urlsDelServidor.data?.main_file ?? urlsDelServidor.main_file,
-                main_image_url: urlsDelServidor.data?.cover_image ?? urlsDelServidor.cover_image ?? null,
-                gallery: urlsDelServidor.data?.gallery ?? urlsDelServidor.gallery ?? [],
-                parts: urlsDelServidor.data?.parts ?? urlsDelServidor.parts ?? [],
+                file_url: serverUrls.data?.main_file ?? serverUrls.main_file,
+                main_image_url: serverUrls.data?.cover_image ?? serverUrls.cover_image ?? null,
+                gallery: serverUrls.data?.gallery ?? serverUrls.gallery ?? [],
+                parts: serverUrls.data?.parts ?? serverUrls.parts ?? [],
             };
 
-            const responseDB = await actionAPI.post(`${backendUrl}/models`, finalData);
+            const responseDB = await api.post(`${backendUrl}/models`, finalData);
             const newModelId = responseDB.data?.id ?? responseDB.id;
 
             if (uploadData.tags && uploadData.tags.length > 0) {
-                await Promise.all(uploadData.tags.map(tagStr => actionAPI.post(`${backendUrl}/tags/model/${newModelId}`, { name: tagStr }).catch(() => null)));
+                await Promise.all(uploadData.tags.map(tagStr =>
+                    api.post(`${backendUrl}/tags/model/${newModelId}`, { name: tagStr }).catch(() => null)
+                ));
             }
 
-            limpiarFormularioSubida();
-            navegar(`/models/${newModelId}`);
+            clearUploadForm();
+            navigate(`/models/${newModelId}`);
             return true;
         } catch (error) {
-            showMessage("Error al procesar tu diseño. Inténtalo de nuevo.", "error");
-            setUploadErrors({ global: error.message || "Hubo un error al procesar tu diseño." });
+            showMessage(t("models_context.model_error"), "error");
             return false;
         } finally {
             setIsUploading(false);
         }
     };
 
-    const getTopPopularModels = () => {
-        if (!modelsData || modelsData.length === 0) return [];
-        return [...modelsData].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 5);
-    };
+    const updateLikesCount = useCallback((modelId, isAdding) => {
+        const safeId = String(modelId);
 
-    const getRandomModels = () => {
-        if (!modelsData || modelsData.length === 0) return [];
-        const modelsWithImages = modelsData.filter(m => m.imageUrl);
-        return [...modelsWithImages].sort(() => 0.5 - Math.random()).slice(0, 10);
-    };
+        setCurrentModel(prev => {
+            if (prev && String(prev.id) === safeId) {
+                return { ...prev, likes: isAdding ? (prev.likes || 0) + 1 : Math.max(0, (prev.likes || 0) - 1) };
+            }
+            return prev;
+        });
+
+        setModelsData(prev => prev.map(model => {
+            if (String(model.id) === safeId) {
+                return { ...model, likes: isAdding ? (model.likes || 0) + 1 : Math.max(0, (model.likes || 0) - 1) };
+            }
+            return model;
+        }));
+    }, []);
+
+    const updateFavoritesCount = useCallback((modelId, isAdding) => {
+        const safeId = String(modelId);
+
+        setCurrentModel(prev => {
+            if (prev && String(prev.id) === safeId) {
+                return { ...prev, favorites: isAdding ? (prev.favorites || 0) + 1 : Math.max(0, (prev.favorites || 0) - 1) };
+            }
+            return prev;
+        });
+
+        setModelsData(prev => prev.map(model => {
+            if (String(model.id) === safeId) {
+                return { ...model, favorites: isAdding ? (model.favorites || 0) + 1 : Math.max(0, (model.favorites || 0) - 1) };
+            }
+            return model;
+        }));
+    }, []);
 
     const exportData = {
         models: modelsData,
@@ -377,43 +421,61 @@ const ModelsMeiliContext = ({ children }) => {
         uploadFiles,
         uploadErrors,
         expandedSections,
-        categoriasDisponibles,
+        categories,
         searchTerm, setSearchTerm,
         activeCategory, setActiveCategory,
         activeTag, setActiveTag,
         sortBy, setSortBy,
         sortOptions,
         isSearching,
-        isFetchingModel: isInitialLoad || isSearching || modelAPI.isLoading,
-        modelError: modelAPI.error,
-        isDownloading: actionAPI.isLoading,
-        downloadError: actionAPI.error,
+        isFetchingModel: isInitialLoad || isSearching || api.isLoading,
+        modelError: api.error,
+        isDownloading: api.isLoading,
+        downloadError: api.error,
         isUploading,
-        getModels,
+        existingFiles,
+        fetchModels,
         searchModels,
-        getModelById,
+        fetchModelById,
         updateDetailUI,
         downloadPackage,
         toggleSection,
-        actualizarDatoSubida,
-        toggleCategoria,
-        agregarTag,
-        eliminarTag,
-        actualizarArchivos,
-        manejarSeleccionArchivo,
-        eliminarArchivoSeleccionado,
-        limpiarFormularioSubida,
-        subirModelo,
+        updateUploadData,
+        toggleCategory,
+        addTag,
+        removeTag,
+        updateFiles,
+        handleFileSelection,
+        removeSelectedFile,
+        clearUploadForm,
+        uploadModel,
         getTopPopularModels,
         getRandomModels,
-        borrarModelo,
-        prepararEdicion,
-        editarModelo,
-        archivosExistentes,
+        deleteModel,
+        prepareEdit,
+        editModel,
+        updateLikesCount,
+        updateFavoritesCount,
+        categoriasDisponibles: categories,
+        getModels: fetchModels,
+        getModelById: fetchModelById,
+        actualizarDatoSubida: updateUploadData,
+        toggleCategoria: toggleCategory,
+        agregarTag: addTag,
+        eliminarTag: removeTag,
+        actualizarArchivos: updateFiles,
+        manejarSeleccionArchivo: handleFileSelection,
+        eliminarArchivoSeleccionado: removeSelectedFile,
+        limpiarFormularioSubida: clearUploadForm,
+        subirModelo: uploadModel,
+        borrarModelo: deleteModel,
+        prepararEdicion: prepareEdit,
+        editarModelo: editModel,
+        archivosExistentes: existingFiles,
     };
 
-    return <model.Provider value={exportData}>{children}</model.Provider>;
+    return <modelContext.Provider value={exportData}>{children}</modelContext.Provider>;
 };
 
-export { model };
+export { modelContext };
 export default ModelsMeiliContext;

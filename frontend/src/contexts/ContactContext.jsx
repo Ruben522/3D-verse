@@ -1,15 +1,17 @@
 import React, { createContext, useState } from "react";
 import { sendExternalEmail } from "../hooks/useMailService.js";
+import { useTranslation } from "react-i18next";
 
 const contact = createContext();
 
 const ContactContext = ({ children }) => {
+    const { t } = useTranslation();
     const creatorInfo = {
-        name: "Rubén",
-        role: "Full Stack Developer",
-        bio: "Desarrollador apasionado por crear experiencias digitales únicas. Me encanta resolver problemas complejos y construir herramientas que aporten valor.",
+        name: t("contact_context.name"),
+        role: t("contact_context.role"),
+        bio: t("contact_context.bio"),
         avatar: "https://ui-avatars.com/api/?name=Tu+Nombre&background=3b82f6&color=fff",
-        history: "Todo empezó al darme cuenta de que las plataformas actuales de modelos 3D estaban estancadas. Decidí construir 3DVerse para crear una experiencia rápida, limpia y optimizada.",
+        history: t("contact_context.history"),
         socials: {
             github: "https://github.com/tu-usuario",
             linkedin: "https://linkedin.com/in/tu-usuario",
@@ -36,7 +38,7 @@ const ContactContext = ({ children }) => {
             setSendSuccess(true);
             setFormData(formInicial);
         } catch (error) {
-            console.error("El contexto atrapó un error:", error);
+            console.error(error);
         } finally {
             setIsSending(false);
         }

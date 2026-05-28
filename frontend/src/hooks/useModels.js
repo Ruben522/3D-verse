@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 //import { model } from "../contexts/ModelsContext.jsx";
-import { model } from "../contexts/ModelsMeiliContext.jsx";
+import { modelContext } from "../contexts/ModelsMeiliContext.jsx";
 
 const useModels = () => {
     /**
      * Hook personalizado para consumir el contexto de la sesión de forma segura.
      * Lanza un error si se intenta usar fuera de su proveedor.
      */
-    const contexto = useContext(model);
+    const contexto = useContext(modelContext);
 
     if (!contexto) {
         throw new Error(

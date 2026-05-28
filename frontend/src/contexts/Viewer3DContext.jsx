@@ -12,12 +12,13 @@ const Viewer3DContext = ({ children }) => {
     const [selectedPart, setSelectedPart] = useState(null);
     const [currentColor, setCurrentColor] = useState("#3b82f6");
 
-
     const handlePartsDetected = useCallback((newParts) => {
         setDetectedParts((prevParts) => {
-            if (prevParts.length !== newParts.length) return newParts;
-            const sonIguales = prevParts.every((part, index) => part.uuid === newParts[index].uuid);
-            return sonIguales ? prevParts : newParts;
+            if (prevParts.length !== newParts.length) {
+                return newParts
+            };
+            const areEqual = prevParts.every((part, index) => part.uuid === newParts[index].uuid);
+            return areEqual ? prevParts : newParts;
         });
     }, []);
 

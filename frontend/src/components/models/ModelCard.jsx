@@ -112,7 +112,7 @@ const ModelCard = ({ model }) => {
         </div>
         <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
           <div className="transform transition-transform active:scale-95">
-            <LikeButton modelId={model.id} initialLikesCount={model.likes} />
+            <LikeButton modelId={model.id} likesCount={model.likes} />
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-100 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/20 hover:bg-purple-100 transition-all shadow-sm">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

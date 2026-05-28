@@ -23,21 +23,21 @@ createRoot(document.getElementById("root")).render(
 				<MessageContext>
 					<UserContext>
 						<LanguageContext>
-							<ModelsMeiliContext>
-								<LikeContext>
-									<FavoriteContext>
-										<FollowContext>
-											<ContactContext>
-												<CommentsContext>
-													<CategoryContext>
+							<CategoryContext>
+								<ModelsMeiliContext>
+									<LikeContext>
+										<FavoriteContext>
+											<FollowContext>
+												<ContactContext>
+													<CommentsContext>
 														<App />
-													</CategoryContext>
-												</CommentsContext>
-											</ContactContext>
-										</FollowContext>
-									</FavoriteContext>
-								</LikeContext>
-							</ModelsMeiliContext>
+													</CommentsContext>
+												</ContactContext>
+											</FollowContext>
+										</FavoriteContext>
+									</LikeContext>
+								</ModelsMeiliContext>
+							</CategoryContext>
 						</LanguageContext>
 					</UserContext>
 				</MessageContext>
