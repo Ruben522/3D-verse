@@ -211,7 +211,12 @@
         "error_email": "El correo electrónico ya está en uso, por favor elige otro",
         "error_password": "La contraseña es demasiado corta, debe tener al menos 6 caracteres",
         "no_models_found": "No se encontraron modelos",
-        "try_other_search": "Intenta con otros términos de búsqueda"
+        "try_other_search": "Intenta con otros términos de búsqueda",
+        "no_models_user": "No hay modelos creados",
+        "no_favorites": "No hay modelos guardados en favoritos",
+        "no_comments": "No hay comentarios todavía",
+        "no_followers": "No hay seguidores todavía",
+        "no_following": "No hay seguidos todavía"
     },
     "uploadValidations": {
         "title_required": "El título es obligatorio.",

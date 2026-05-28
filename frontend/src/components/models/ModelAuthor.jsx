@@ -1,16 +1,26 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useModels from "../../hooks/useModels";
+import useUsers from "../../hooks/useUsers";
 import { useTranslation } from "react-i18next";
 
 const ModelAuthor = () => {
     const navigate = useNavigate();
     const { currentModel } = useModels();
+    const { checkIsOwnModel } = useUsers();
     const { t } = useTranslation();
+
+    const handleNavigation = () => {
+        if (checkIsOwnModel(currentModel)) {
+            navigate("/profile");
+        } else {
+            navigate(`/perfil/${currentModel.username}`);
+        }
+    };
 
     return (
         <div
-            onClick={() => navigate(`/perfil/${currentModel.username}`)}
+            onClick={handleNavigation}
             className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full pl-1 pr-4 py-1 cursor-pointer shadow-sm hover:shadow-md hover:border-primary-300 dark:hover:border-primary-500/50 hover:-translate-y-0.5 transition-all duration-300 group w-fit"
         >
             <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-900">

@@ -3,46 +3,42 @@ import useFollows from '../../hooks/useFollows';
 import useUsers from '../../hooks/useUsers';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import PlusIcon from '../../assets/icons/PlusIcon';
+import MinusIcon from '../../assets/icons/MinusIcon';
 
-const FollowButton = ({ targetUserId }) => {
+const FollowButton = ({ targetUserId, className = '' }) => {
     const { followedUsers, toggleFollow } = useFollows();
     const { isAuthenticated } = useUsers();
     const navigate = useNavigate();
     const { t } = useTranslation();
 
-    const isFollowed = followedUsers.has(targetUserId);
+    const safeId = String(targetUserId);
+    const isFollowed = followedUsers.has(safeId);
+
+    const handleFollowClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        toggleFollow(e, safeId);
+    };
+
+    const baseClasses = "flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold border rounded-xl transition-colors whitespace-nowrap";
+    const followClasses = "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 border-primary-200 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40";
+    const unfollowClasses = "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40";
 
     return (
         <button
-            onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!isAuthenticated) {
-                    navigate('/login');
-                    return;
-                }
-                toggleFollow(e, targetUserId);
-            }}
-            title={isFollowed ? "Dejar de seguir" : "Seguir usuario"}
-            className={`absolute top-3 right-3 z-20 p-2.5 rounded-full backdrop-blur-md border shadow-sm transition-all duration-300 hover:scale-110 group/btn ${isFollowed
-                ? 'bg-primary-500/90 border-primary-400 hover:bg-primary-600'
-                : 'bg-black/20 hover:bg-black/40 border-white/30'
-                }`}
+            onClick={handleFollowClick}
+            className={`${baseClasses} ${isFollowed ? unfollowClasses : followClasses} ${className}`}
         >
-            {isFollowed ? (
-                <svg className="w-5 h-5 text-white fill-none stroke-current" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                    <circle cx="8.5" cy="7" r="4" />
-                    <polyline strokeLinecap="round" strokeLinejoin="round" points="17 11 19 13 23 9" />
-                </svg>
-            ) : (
-                <svg className="w-5 h-5 text-white group-hover/btn:text-primary-400 fill-none stroke-current drop-shadow-md group-hover/btn:drop-shadow-none" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                    <circle cx="8.5" cy="7" r="4" />
-                    <line strokeLinecap="round" strokeLinejoin="round" x1="20" y1="8" x2="20" y2="14" />
-                    <line strokeLinecap="round" strokeLinejoin="round" x1="23" y1="11" x2="17" y2="11" />
-                </svg>
-            )}
+            {isFollowed ? <MinusIcon className="w-5 h-5 -ml-1" /> : <PlusIcon className="w-5 h-5 -ml-1" />}
+
+            {isFollowed
+                ? t("user.unfollow", { defaultValue: "Dejar de seguir" })
+                : t("user.follow", { defaultValue: "Seguir" })}
         </button>
     );
 };
