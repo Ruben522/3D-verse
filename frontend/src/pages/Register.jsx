@@ -100,6 +100,21 @@ const Register = ({ onToggleView }) => {
               className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 focus:border-primary-500 dark:focus:border-primary-500 outline-none transition-all bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 transition-colors">
+              {t('messages.confirm_password')}
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              required
+              value={datosSesion.confirmPassword}
+              onChange={(e) => actualizarDato(e)}
+              placeholder={t('messages.password_placeholder')}
+              minLength="6"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-500 focus:border-primary-500 dark:focus:border-primary-500 outline-none transition-all bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+            />
+          </div>
 
           <InnputForm
             isInput={true}

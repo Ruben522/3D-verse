@@ -26,7 +26,9 @@
         "files_required": "Archivos Requeridos",
         "files_required_desc": "El archivo principal y la imagen de la portada.",
         "mb": "MB",
-        "delete_file": "Quitar Archivo"
+        "delete_file": "Quitar Archivo",
+        "archive_actually": "Archivo 3D Actual Guardado",
+        "archive_replace": "Haz clic para reemplazar el archivo 3D"
     },
     "parts_files": {
         "parts_files": "Partes adicionales",
@@ -475,5 +477,27 @@
         "loading": "Subiendo proyectos...",
         "featured": "Destacado",
         "view_design": "Ver diseño"
+    },
+    "validations": {
+        "login": {
+            "empty_email_and_password": "Por favor, introduce tu correo y contraseña.",
+            "empty_email": "El campo de correo electrónico no puede estar vacío.",
+            "empty_password": "Por favor, introduce tu contraseña.",
+            "invalid_email": "El formato del correo electrónico no es válido.",
+            "password_too_short": "La contraseña tiene que tener al menos 6 caracteres."
+        },
+        "register": {
+            "all_fields_required": "Todos los campos son obligatorios para registrarte.",
+            "username_too_short": "El nombre de usuario debe tener al menos 3 caracteres.",
+            "username_has_spaces": "El nombre de usuario no puede contener espacios.",
+            "invalid_email": "Por favor, introduce una dirección de correo válida.",
+            "password_too_short": "La contraseña debe tener al menos 6 caracteres.",
+            "passwords_do_not_match": "Las contraseñas no coinciden."
+        },
+        "profile_update": {
+            "username_empty": "El nombre de usuario no puede estar vacío.",
+            "username_too_short": "El nombre de usuario debe tener al menos 3 caracteres.",
+            "username_has_spaces": "El nombre de usuario no puede contener espacios."
+        }
     }
 }

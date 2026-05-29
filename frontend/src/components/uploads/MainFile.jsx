@@ -62,8 +62,8 @@ const MainFile = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"></path>
                     </svg>
-                    <p className="font-bold text-primary-700 dark:text-primary-400 transition-colors">Archivo 3D Actual Guardado</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 transition-colors">Haz clic para subir uno nuevo y reemplazarlo</p>
+                    <p className="font-bold text-primary-700 dark:text-primary-400 transition-colors">{t("model_files.archive_actually")}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 transition-colors">{t("model_files.archive_replace")}</p>
                     {uploadErrors?.main_file && <p className="text-red-500 dark:text-red-400 text-sm font-bold mt-2">{uploadErrors.main_file}</p>}
                 </div>
 

@@ -26,7 +26,9 @@
         "files_required": "必需文件",
         "files_required_desc": "主文件与封面图。",
         "mb": "MB",
-        "delete_file": "删除文件"
+        "delete_file": "删除文件",
+        "archive_actually": "当前已保存的3D文件",
+        "archive_replace": "点击替换3D文件"
     },
     "parts_files": {
         "parts_files": "附加部件",
@@ -472,5 +474,27 @@
         "loading": "加载项目中...",
         "featured": "精选推荐",
         "view_design": "查看设计"
+    },
+    "validations": {
+        "login": {
+            "empty_email_and_password": "请输入你的邮箱和密码。",
+            "empty_email": "邮箱字段不能为空。",
+            "empty_password": "请输入你的密码。",
+            "invalid_email": "邮箱格式无效。",
+            "password_too_short": "密码长度至少为6个字符。"
+        },
+        "register": {
+            "all_fields_required": "注册时所有字段均为必填项。",
+            "username_too_short": "用户名长度至少为3个字符。",
+            "username_has_spaces": "用户名不能包含空格。",
+            "invalid_email": "请输入有效的邮箱地址。",
+            "password_too_short": "密码长度至少为6个字符。",
+            "passwords_do_not_match": "两次输入的密码不一致。"
+        },
+        "profile_update": {
+            "username_empty": "用户名不能为空。",
+            "username_too_short": "用户名长度至少为3个字符。",
+            "username_has_spaces": "用户名不能包含空格。"
+        }
     }
 }

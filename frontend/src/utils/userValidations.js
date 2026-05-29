@@ -1,56 +1,44 @@
+const checkEmpty = (value) => !value?.trim();
+const checkEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim());
+const checkNoSpaces = (value) => /\s/.test(value?.trim());
+
 /**
  * Valida los datos del formulario de inicio de sesión.
- * @param {Object} datos - Objeto con email y password.
- * @returns {string|null} - Mensaje de error o null si es válido.
  */
-export const validateLogin = ({ email, password }) => {
-    // 1. Campos vacíos
-    if (!email?.trim() && !password?.trim()) {
-        return "Por favor, introduce tu correo y contraseña.";
-    }
-    if (!email?.trim()) {
-        return "El campo de correo electrónico no puede estar vacío.";
-    }
-    if (!password?.trim()) {
-        return "Por favor, introduce tu contraseña.";
-    }
-
-    // 2. Formato de correo electrónico
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-        return "El formato del correo electrónico no es válido.";
-    }
-
-    // 3. Longitud mínima de contraseña (igual que en registro)
-    if (password.length < 6) {
-        return "La contraseña tiene que tener al menos 6 caracteres.";
-    }
+export const validateLogin = ({ email, password }, t) => {
+    if (checkEmpty(email) && checkEmpty(password)) return t('validations.login.empty_email_and_password', { defaultValue: 'Por favor, introduce tu correo y contraseña.' });
+    if (checkEmpty(email)) return t('validations.login.empty_email', { defaultValue: 'El campo de correo electrónico no puede estar vacío.' });
+    if (checkEmpty(password)) return t('validations.login.empty_password', { defaultValue: 'Por favor, introduce tu contraseña.' });
+    if (!checkEmail(email)) return t('validations.login.invalid_email', { defaultValue: 'El formato del correo electrónico no es válido.' });
+    if (password.length < 6) return t('validations.login.password_too_short', { defaultValue: 'La contraseña tiene que tener al menos 6 caracteres.' });
 
     return null;
 };
 
 /**
  * Valida los datos del formulario de registro.
- * @param {Object} datos - Objeto con name, username, email y password.
- * @returns {string|null} - Mensaje de error o null si es válido.
  */
-export const validateRegister = ({ name, username, email, password }) => {
-    if (!name?.trim() || !username?.trim() || !email?.trim() || !password?.trim()) {
-        return "Todos los campos son obligatorios para registrarte.";
+export const validateRegister = ({ name, username, email, password, confirmPassword }, t) => {
+    if (checkEmpty(name) || checkEmpty(username) || checkEmpty(email) || checkEmpty(password)) {
+        return t('validations.register.all_fields_required', { defaultValue: 'Todos los campos son obligatorios para registrarte.' });
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-        return "Por favor, introduce una dirección de correo válida.";
-    }
+    if (username.trim().length < 3) return t('validations.register.username_too_short', { defaultValue: 'El nombre de usuario debe tener al menos 3 caracteres.' });
+    if (checkNoSpaces(username)) return t('validations.register.username_has_spaces', { defaultValue: 'El nombre de usuario no puede contener espacios.' });
+    if (!checkEmail(email)) return t('validations.register.invalid_email', { defaultValue: 'Por favor, introduce una dirección de correo válida.' });
+    if (password.length < 6) return t('validations.register.password_too_short', { defaultValue: 'La contraseña debe tener al menos 6 caracteres.' });
+    if (password !== confirmPassword) return t('validations.register.passwords_do_not_match', { defaultValue: 'Las contraseñas no coinciden.' });
 
-    if (password.length < 6) {
-        return "La contraseña debe tener al menos 6 caracteres.";
-    }
+    return null;
+};
 
-    if (/\s/.test(username.trim())) {
-        return "El nombre de usuario no puede contener espacios.";
-    }
+/**
+ * Valida los datos al guardar la configuración del perfil.
+ */
+export const validateProfileUpdate = ({ username }, t) => {
+    if (checkEmpty(username)) return t('validations.profile_update.username_empty', { defaultValue: 'El nombre de usuario no puede estar vacío.' });
+    if (username.trim().length < 3) return t('validations.profile_update.username_too_short', { defaultValue: 'El nombre de usuario debe tener al menos 3 caracteres.' });
+    if (checkNoSpaces(username)) return t('validations.profile_update.username_has_spaces', { defaultValue: 'El nombre de usuario no puede contener espacios.' });
 
     return null;
 };

@@ -25,7 +25,9 @@
         "files_required": "Required Files",
         "files_required_desc": "The main file and the cover image.",
         "mb": "MB",
-        "delete_file": "Remove File"
+        "delete_file": "Remove File",
+        "archive_actually": "Current 3D File Saved",
+        "archive_replace": "Click to replace the 3D file"
     },
     "parts_files": {
         "parts_files": "Additional Parts",
@@ -41,10 +43,10 @@
         }
     },
     "images_files": {
-    "delete_image": "Remove cover",
-    "replace_image": "Replace cover",
-    "main_image": "Cover image",
-    "acepted_formats": "JPG, PNG or JPEG"
+        "delete_image": "Remove cover",
+        "replace_image": "Replace cover",
+        "main_image": "Cover image",
+        "acepted_formats": "JPG, PNG or JPEG"
     },
     "sidebar": {
         "stats_title": "Usage Statistics",
@@ -461,14 +463,37 @@
             "color": "Banner color",
             "color_desc": "Choose a color for your banner if you don't want to use an image"
         }
-    }, "popular_models": {
-    "title": "Top Popular Designs",
-    "description": "Discover the most popular models in the community.",
-    "see_all": "See all"
-},
-"hero_carousel": {
-    "loading": "Loading projects...",
-    "featured": "Featured",
-    "view_design": "View design"
-}
+    },
+    "popular_models": {
+        "title": "Top Popular Designs",
+        "description": "Discover the most popular models in the community.",
+        "see_all": "See all"
+    },
+    "hero_carousel": {
+        "loading": "Loading projects...",
+        "featured": "Featured",
+        "view_design": "View design"
+    },
+    "validations": {
+        "login": {
+            "empty_email_and_password": "Please enter your email and password.",
+            "empty_email": "The email field cannot be empty.",
+            "empty_password": "Please enter your password.",
+            "invalid_email": "The email format is invalid.",
+            "password_too_short": "Password must be at least 6 characters long."
+        },
+        "register": {
+            "all_fields_required": "All fields are required to register.",
+            "username_too_short": "Username must be at least 3 characters long.",
+            "username_has_spaces": "Username cannot contain spaces.",
+            "invalid_email": "Please enter a valid email address.",
+            "password_too_short": "Password must be at least 6 characters long.",
+            "passwords_do_not_match": "Passwords do not match."
+        },
+        "profile_update": {
+            "username_empty": "Username cannot be empty.",
+            "username_too_short": "Username must be at least 3 characters long.",
+            "username_has_spaces": "Username cannot contain spaces."
+        }
+    }
 }

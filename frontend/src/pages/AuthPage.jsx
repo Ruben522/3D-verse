@@ -3,18 +3,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 import { useTranslation } from "react-i18next";
-
+import useUsers from "../hooks/useUsers.js";
 import AuthBackground3D from "../components/3d/AuthBackground3D";
 
 const AuthPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { limpiarFormulario } = useUsers();
   const [isLoginView, setIsLoginView] = useState(location.pathname === "/login");
   const { t } = useTranslation();
 
   useEffect(() => {
     setIsLoginView(location.pathname === "/login");
+    limpiarFormulario();
   }, [location.pathname]);
 
   const toggleView = () => {
@@ -26,7 +27,11 @@ const AuthPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 transition-colors duration-300 relative">
 
-      <div className="relative w-full max-w-5xl h-[750px] md:h-[650px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl dark:shadow-black/50 overflow-hidden flex flex-col md:flex-row transition-colors duration-300">
+      <div className="relative w-full max-w-5xl h-[850px] md:h-[720px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl dark:shadow-black/50 overflow-hidden flex flex-col md:flex-row transition-colors duration-300">
+
+        <div className="absolute inset-0 z-0 md:hidden flex items-center justify-center opacity-30 pointer-events-none transition-opacity duration-700">
+          <AuthBackground3D isLoginView={isLoginView} />
+        </div>
 
         <div className={`absolute top-0 left-0 w-full md:w-1/2 h-full z-10 transition-all duration-700 ease-in-out ${isLoginView ? 'opacity-100 pointer-events-auto translate-x-0' : 'opacity-0 md:opacity-100 pointer-events-none -translate-x-full md:translate-x-0'}`}>
           <Login onToggleView={toggleView} />

@@ -4,7 +4,7 @@ import useAPI from "../hooks/useAPI.js";
 import useMessage from "../hooks/useMessage.js";
 import { normalizeUser, normalizeModelForCard } from "../utils/normalizers";
 import { usersIndex } from "../services/meiliClient";
-import { validateLogin, validateRegister } from "../utils/userValidations";
+import { validateLogin, validateRegister, validateProfileUpdate } from "../utils/userValidations";
 import { useTranslation } from "react-i18next";
 
 const userContext = createContext();
@@ -16,7 +16,7 @@ const UserContext = ({ children }) => {
   const { t } = useTranslation();
   const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-  const initialAuthData = { name: "", username: "", email: "", password: "" };
+  const initialAuthData = { name: "", username: "", email: "", password: "", confirmPassword: "" };
   const initialProfileData = {
     username: "", name: "", lastname: "", bio: "", location: "",
     youtube: "", twitter: "", linkedin: "", github: "",
@@ -77,7 +77,7 @@ const UserContext = ({ children }) => {
     if (e) e.preventDefault();
     setAuthError(null);
 
-    const validationError = validateLogin(authData);
+    const validationError = validateLogin(authData, t);
     if (validationError) return setAuthError(validationError);
 
     try {
@@ -101,7 +101,7 @@ const UserContext = ({ children }) => {
     if (e) e.preventDefault();
     setAuthError(null);
 
-    const validationError = validateRegister(authData);
+    const validationError = validateRegister(authData, t);
     if (validationError) return setAuthError(validationError);
 
     try {
@@ -223,6 +223,13 @@ const UserContext = ({ children }) => {
 
   const saveProfileChanges = async (e) => {
     if (e) e.preventDefault();
+
+    const validationError = validateProfileUpdate(profileData, t);
+    if (validationError) {
+      showMessage(validationError, "error");
+      return;
+    }
+
     setIsUpdatingProfile(true);
     try {
       const response = await authAPI.put(`${backendUrl}/users/${currentUser.id}`, profileData);
@@ -235,7 +242,7 @@ const UserContext = ({ children }) => {
       navigate('/profile');
       showMessage(t("user_context.profile_updated"), "success");
     } catch (error) {
-      showMessage(error.response?.data?.message || t("user_context.profile_update_error"), "error");
+      showMessage(t("user_context.profile_update_error"), "error");
     } finally {
       setIsUpdatingProfile(false);
     }
@@ -344,6 +351,20 @@ const UserContext = ({ children }) => {
     setSearchUserTerm("");
   }, []);
 
+  const getActiveSocials = useCallback((socialObj) => {
+    if (!socialObj) return [];
+
+    let socials = [];
+    const formatUrl = (url) => url.startsWith('http') ? url : `https://${url}`;
+
+    if (socialObj.youtube) socials = [...socials, { type: "youtube", url: formatUrl(socialObj.youtube) }];
+    if (socialObj.twitter) socials = [...socials, { type: "twitter", url: formatUrl(socialObj.twitter) }];
+    if (socialObj.linkedin) socials = [...socials, { type: "linkedin", url: formatUrl(socialObj.linkedin) }];
+    if (socialObj.github) socials = [...socials, { type: "github", url: formatUrl(socialObj.github) }];
+
+    return socials;
+  }, []);
+
   const exportData = {
     currentUser,
     isAuthenticated,
@@ -391,6 +412,7 @@ const UserContext = ({ children }) => {
     getProfileStyles,
     isAdmin,
     sortOptions,
+    getActiveSocials,
     clearCommunitySearch,
     datosSesion: authData,
     errorAuth: authError,

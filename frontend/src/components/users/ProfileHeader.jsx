@@ -5,6 +5,7 @@ import useUsers from '../../hooks/useUsers';
 import SettingIcon from '../../assets/icons/SettingIcon';
 import ExitAccountIcon from '../../assets/icons/ExitAccountIcon';
 import FollowButton from '../common/FollowButton';
+import ProfileBio from './ProfileBio';
 
 const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
   const { t } = useTranslation();
@@ -62,7 +63,8 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
             {t("user.member_since")} {profile?.fechaRegistro}
           </p>
         </div>
-
+        {console.log(profile)}
+        <ProfileBio profile={profile} />
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-8 md:gap-14 py-6 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <div className="flex flex-col items-center md:items-start">
             <span className="text-3xl font-black text-gray-900 dark:text-white transition-colors">{stats?.total_models || 0}</span>

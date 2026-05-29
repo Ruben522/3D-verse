@@ -37,8 +37,8 @@ const FollowButton = ({ targetUserId, className = '' }) => {
             {isFollowed ? <MinusIcon className="w-5 h-5 -ml-1" /> : <PlusIcon className="w-5 h-5 -ml-1" />}
 
             {isFollowed
-                ? t("user.unfollow", { defaultValue: "Dejar de seguir" })
-                : t("user.follow", { defaultValue: "Seguir" })}
+                ? t("buttons.unfollow")
+                : t("buttons.follow")}
         </button>
     );
 };
