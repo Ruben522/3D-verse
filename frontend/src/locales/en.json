@@ -40,6 +40,12 @@
             "png": "PNG"
         }
     },
+    "images_files": {
+    "delete_image": "Remove cover",
+    "replace_image": "Replace cover",
+    "main_image": "Cover image",
+    "acepted_formats": "JPG, PNG or JPEG"
+    },
     "sidebar": {
         "stats_title": "Usage Statistics",
         "downloads": "Downloads",
@@ -59,14 +65,20 @@
         "details": "Details",
         "save": "Save",
         "saved": "Saved",
+        "saving": "Saving...",
         "upload_model": "Upload Model",
         "view_model": "View Model",
         "view_profile": "View Profile",
+        "see_models": "Explore Models",
+        "see_community": "Go to Community",
         "download": "Download",
         "like": "Like",
         "update_profile": "Update Profile",
         "save_changes": "Save Changes",
+        "save_settings": "Save Settings",
+        "save_settings_desc": "Make sure to save your changes before leaving.",
         "cancel": "Cancel",
+        "confirm": "Confirm",
         "delete": "Delete",
         "edit": "Edit",
         "follow": "Follow",
@@ -88,7 +100,10 @@
         "change_main_image": "Change Cover Image",
         "delete_account": "Delete Account",
         "explore": "Explore",
-        "my_profile": "My Profile"
+        "my_profile": "My Profile",
+        "upload_my_design": "Publish my design",
+        "next": "Next",
+        "previous": "Prev"
     },
     "user": {
         "profile": "Profile",
@@ -104,6 +119,7 @@
         "designs": "Designs",
         "favorites": "Favorites",
         "followers": "Followers",
+        "following": "Following",
         "total_downloads": "Total Downloads",
         "total_likes": "Total Likes",
         "my_models": "My Models",
@@ -117,13 +133,16 @@
     },
     "links": {
         "explore": "Explore",
+        "admin": "Administration",
         "comunity": "Community",
         "upload": "Upload Design",
         "my_profile": "My Profile",
         "settings": "Settings",
         "logout": "Log Out",
         "login": "Log In",
-        "register": "Sign Up"
+        "register": "Sign Up",
+        "see_models": "Explore Models",
+        "see_community": "View Community"
     },
     "downloads": {
         "download": "Download",
@@ -147,6 +166,10 @@
         "login_desc": "Access your 3D-Verse account",
         "loading_creator": "Loading creator...",
         "create_account_tittle": "Create Account",
+        "email_placeholder": "your@email.com",
+        "password_placeholder": "••••••••",
+        "name_placeholder": "e.g. Rubén",
+        "username_placeholder": "e.g. rubio52",
         "create_account_desc": "Sign up for free and start sharing your creations today.",
         "name": "Full Name",
         "username": "Username",
@@ -154,12 +177,18 @@
         "password": "Password",
         "forgot_password": "Forgot your password?",
         "confirm_password": "Confirm Password",
+        "confirmation": "Confirmation",
         "account_already": "Already have an account?",
         "login_here": "Log in",
         "no_account": "Don't have an account?",
         "register_here": "Sign up here",
         "loading": "Loading...",
+        "save_changes": "Save Changes",
+        "save_changes_desc": "Your changes will be applied immediately.",
+        "updating": "Updating...",
+        "delete": "Delete",
         "confirmation_upload": "Ready to go?",
+        "search_placeholder": "Pot, dragons, dragon ball...",
         "confirmation_upload_desc": "Make sure you have completed all required fields.",
         "optionals_files": "Optional Files",
         "optionals_files_desc": "Loose parts and gallery images",
@@ -183,6 +212,7 @@
         "welcome_back": "Welcome back to 3D-Verse!",
         "new_user": "New here?",
         "error": "Error",
+        "error:auth": "Authentication error, please check your credentials",
         "save_in_favorites": "Saved to favorites",
         "remove_from_favorites": "Removed from favorites",
         "create_account": "Sign up for free and discover a universe of ready-to-download 3D models.",
@@ -190,7 +220,14 @@
         "error_register": "Registration error, please check your data",
         "error_name": "Username already in use, please choose another",
         "error_email": "Email already in use, please choose another",
-        "error_password": "Password is too short, it must be at least 6 characters"
+        "error_password": "Password is too short, it must be at least 6 characters",
+        "no_models_found": "No models found",
+        "try_other_search": "Try other search terms",
+        "no_models_user": "No models created",
+        "no_favorites": "No favorite models saved",
+        "no_comments": "No comments yet",
+        "no_followers": "No followers yet",
+        "no_following": "Not following anyone yet"
     },
     "uploadValidations": {
         "title_required": "Title is required.",
@@ -210,6 +247,141 @@
         "and": "and",
         "or": "or"
     },
+    "admin": {
+        "no_permissions": "You do not have permission to access this area."
+    },
+    "home": {
+        "welcome_tag": "3D printing without limits",
+        "welcome_title": "Find, share and print",
+        "welcome_title2": "amazing 3D designs",
+        "welcome_desc": "Join the most active 3D creator community. Explore thousands of ready-to-print models, upload your own creations and connect with designers from around the world.",
+        "section1_title": "Have your own design?",
+        "section1_desc": "Upload your STL files, create a stunning portfolio and start gaining followers today."
+    },
+    "footer": {
+        "about": "About",
+        "contact": "Contact",
+        "caracter": "©",
+        "all_rights": "3DVerse. All rights reserved.",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy"
+    },
+    "error_pages": {
+        "404_title": "404 - Page not found",
+        "404_desc": "Oops! You've gone off the canvas.",
+        "go_home": "Back to home"
+    },
+    "contact": {
+        "contact_title1": "Contact & ",
+        "contact_title2": "About Me",
+        "contact_desc": "Meet the developer behind the platform or send me a direct email."
+    },
+    "administration_pages": {
+        "admin_panel": "Administration Panel",
+        "admin_desc": "Manage users, models and platform content.",
+        "manage_users": "Moderate Users",
+        "manage_models": "Moderate Models",
+        "go_community": "Go to Community",
+        "go_models": "Go to Models",
+        "categories": {
+            "title": "Category Management",
+            "new_category_placeholder": "Name of the new category",
+            "add": "Add",
+            "adding": "Adding...",
+            "no_categories": "No categories created"
+        }
+    },
+    "user_context": {
+        "login_error": "Incorrect email or password.",
+        "register_error": "Username or email already registered.",
+        "logout_question": "Are you sure you want to log out?",
+        "logout_success": "Logout successful",
+        "login_success": "Login successful",
+        "delete_user_confirmation": "Are you sure you want to delete this account? This action is irreversible.",
+        "delete_user_success": "Account deleted successfully",
+        "delete_user_error": "Could not delete the account.",
+        "profile_updated": "Profile updated successfully",
+        "profile_update_error": "Error updating profile",
+        "load_profile_error": "Error loading profile",
+        "load_active_profile_error": "Error loading active profile",
+        "community_search_error": "Error searching the community",
+        "sort_options": {
+            "more_followers": "More followers",
+            "more_models": "More models"
+        }
+    },
+    "models_context": {
+        "meili_search_error": "Error in MeiliSearch, please try again",
+        "model_upload_success": "Model uploaded successfully",
+        "model_update_success": "Model updated successfully",
+        "model_delete_success": "Model deleted successfully",
+        "model_error": "An error occurred, please try again",
+        "download_error": "Error downloading the model, please try again",
+        "download_package_error": "Error downloading the package, please try again",
+        "delete_confirmation": "Are you sure you want to delete this model? This action is irreversible.",
+        "edit_permission_error": "You do not have permission to edit this model.",
+        "prepare_edit_error": "Could not load model data for editing.",
+        "edit_error": "Could not save changes.",
+        "upload_error": "Error processing your design. Please try again.",
+        "search_error": "Error searching for models, please try again",
+        "sort_options": {
+            "newest": "Newest",
+            "popular": "Popular",
+            "downloads": "Most downloaded"
+        }
+    },
+    "category_context": {
+        "fetch_error": "Error loading categories, please try again",
+        "create_error": "Error creating category, please try again",
+        "update_error": "Error updating category, please try again",
+        "delete_error": "Error deleting category, please try again",
+        "delete_confirmation": "Are you sure you want to delete this category? This action is irreversible.",
+        "update_success": "Category updated successfully",
+        "create_success": "Category created successfully"
+    },
+    "comments_context": {
+        "fetch_error": "Error loading comments, please try again",
+        "add_error": "Error adding comment, please try again",
+        "add_success": "Comment added successfully",
+        "delete_error": "Error deleting comment, please try again",
+        "delete_confirmation": "Delete this comment?",
+        "delete_success": "Comment deleted"
+    },
+    "contact_context": {
+        "name": "Rubén",
+        "role": "Full Stack Developer",
+        "bio": "I am a developer passionate about technology and 3D design. I love creating innovative solutions and sharing my projects with the community.",
+        "history": "This application arises from wanting to create an active community of 3D creators, where users can share their designs, inspire each other and take 3D printing to the next level."
+    },
+    "favorites_context": {
+        "fetch_error": "Error loading your favorites, please try again",
+        "toggle_error": "Error updating favorite, please try again",
+        "auth_required": "You must log in to save models to favorites"
+    },
+    "follow_context": {
+        "load_followings_error": "Error loading your followings, please try again",
+        "load_followers_error": "Error loading your followers, please try again",
+        "load_following_error": "Error checking if you follow this user, please try again",
+        "toggle_follow_error": "Error updating your follow, please try again"
+    },
+    "like_context": {
+        "toggle_like_error": "Error updating your like, please try again",
+        "auth_required": "You must log in to like models"
+    },
+    "community": {
+        "tittle": "Creator Community",
+        "subtittle": "Discover the talented 3D designers that are part of our community.",
+        "search_placeholder": "Search by username or bio",
+        "no_results": "No users match your search.",
+        "try_other_search": "Try other search terms"
+    },
+    "models_page": {
+        "tittle": "Explore 3D Models",
+        "subtittle": "Find the perfect design.",
+        "search_placeholder": "Search by title, category, tags...",
+        "no_results": "No models match your search.",
+        "try_other_search": "Try other search terms"
+    },
     "searchbar": {
         "categories": "Categories",
         "all": "All",
@@ -226,7 +398,77 @@
         "Tecnología y Gadgets": "Technology & Gadgets",
         "Videojuegos": "Video Games",
         "Arquitectura": "Architecture"
-    }
-
-
+    },
+    "upload_page": {
+        "parts_files": {
+            "parts_files_title": "Additional Parts",
+            "parts_files_desc": "Is your design divided into parts? Upload them here.",
+            "no_parts": "No additional parts have been added."
+        }
+    },
+    "user_settings": {
+        "title": "User Settings",
+        "subtitle": "Manage your profile, social networks and account",
+        "public_profile": "Public Profile",
+        "desing": "Customization and design",
+        "preferences": "Preferences",
+        "account_tittle": "Account",
+        "save_settings": "Save Settings",
+        "save_settings_desc": "Make sure to save your changes before leaving.",
+        "basic_info": {
+            "title": "Basic Information",
+            "subtitle": "Name, location and bio",
+            "username": "Username",
+            "name": "Full Name",
+            "lastname": "Last Name",
+            "location": "Location",
+            "location_placeholder": "E.g., Madrid, Spain",
+            "bio": "Bio",
+            "bio_placeholder": "Tell us a little about yourself..."
+        },
+        "social_links": {
+            "title": "Social Networks",
+            "subtitle": "Share your social profiles",
+            "youtube": "YouTube",
+            "twitter": "Twitter",
+            "github": "GitHub",
+            "linkedin": "LinkedIn",
+            "your_username": "Your username on"
+        },
+        "account": {
+            "title": "Account",
+            "subtitle": "Account deletion",
+            "danger_zone": "Danger Zone",
+            "danger_desc": "Deleting your account is irreversible. All your data, models and activity will be removed.",
+            "delete_account": "Delete account"
+        },
+        "preferences_section": {
+            "title": "Display & Language",
+            "subtitle": "Adjust how you want to see the application",
+            "language": "Language",
+            "theme": "Theme"
+        },
+        "customization": {
+            "avatar": "Profile Picture",
+            "avatar_subtitle": "Your main avatar in the community",
+            "banner": "Banner or color",
+            "banner_subtitle": "Customize your card header",
+            "img_url": "Image URL",
+            "img_url_placeholder": "https://example.com/my-avatar.png",
+            "remove_photo": "Remove profile picture",
+            "preview": "Preview",
+            "remove_banner": "Remove banner image",
+            "color": "Banner color",
+            "color_desc": "Choose a color for your banner if you don't want to use an image"
+        }
+    }, "popular_models": {
+    "title": "Top Popular Designs",
+    "description": "Discover the most popular models in the community.",
+    "see_all": "See all"
+},
+"hero_carousel": {
+    "loading": "Loading projects...",
+    "featured": "Featured",
+    "view_design": "View design"
+}
 }

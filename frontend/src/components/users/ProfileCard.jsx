@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import useUsers from '../../hooks/useUsers';
 import FollowButton from '../common/FollowButton';
 import TrashIcon from '../../assets/icons/TrashIcon';
+import { useTranslation } from 'react-i18next';
 
 const ProfileCard = ({ user }) => {
     const { checkIsOwnProfile, getProfileRoute, isAdmin, eliminarUsuario } = useUsers();
+    const { t } = useTranslation();
 
     const isOwn = checkIsOwnProfile(user.id);
 
@@ -23,7 +25,6 @@ const ProfileCard = ({ user }) => {
             {isAdmin && !isOwn && (
                 <button
                     onClick={handleDeleteClick}
-                    title="Eliminar usuario (Admin)"
                     className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center bg-white/90 dark:bg-gray-900/90 backdrop-blur-md text-red-500 hover:text-red-700 border border-red-100 dark:border-red-900/30 hover:border-red-500 dark:hover:border-red-500 rounded-full shadow-sm hover:shadow-md transition-all duration-300"
                 >
                     <TrashIcon className="w-5 h-5 shrink-0" />
@@ -55,11 +56,11 @@ const ProfileCard = ({ user }) => {
                 <div className="flex items-center justify-center gap-8 w-full mt-5 pt-4 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
                     <div className="flex flex-col items-center">
                         <span className="font-black text-gray-900 dark:text-white text-lg transition-colors duration-300">{user.models_count || 0}</span>
-                        <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold transition-colors duration-300">Modelos</span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold transition-colors duration-300">{t('user.models')}</span>
                     </div>
                     <div className="flex flex-col items-center">
                         <span className="font-black text-gray-900 dark:text-white text-lg transition-colors duration-300">{user.followers_count || 0}</span>
-                        <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold transition-colors duration-300">Seguidores</span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold transition-colors duration-300">{t('user.followers')}</span>
                     </div>
                 </div>
             </div>

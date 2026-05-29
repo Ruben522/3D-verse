@@ -4,6 +4,7 @@ import TagIcon from '../../assets/icons/TagIcon';
 import EditIcon from '../../assets/icons/EditIcon';
 import CheckIcon from '../../assets/icons/CheckIcon';
 import TrashIcon from '../../assets/icons/TrashIcon';
+import { useTranslation } from 'react-i18next';
 
 const ModelsCategories = () => {
     const {
@@ -16,6 +17,7 @@ const ModelsCategories = () => {
         guardarEdicionCategoria,
         removeCategory
     } = useCategories();
+    const { t } = useTranslation();
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden transition-colors">
@@ -23,7 +25,7 @@ const ModelsCategories = () => {
                 <div className="p-2 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl">
                     <TagIcon className="w-6 h-6" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Gestión de Categorías</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('administration_pages.categories.title')}</h2>
             </div>
 
             <div className="p-6">
@@ -33,7 +35,7 @@ const ModelsCategories = () => {
                         name="newName"
                         value={datosCategoria.newName}
                         onChange={(e) => actualizarDatoCategoria(e)}
-                        placeholder="Nombre de la nueva categoría (ej: Sci-Fi, Vehículos...)"
+                        placeholder={t('administration_pages.categories.new_category_placeholder')}
                         className="flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all dark:text-white"
                         disabled={isLoading}
                     />
@@ -42,7 +44,7 @@ const ModelsCategories = () => {
                         disabled={isLoading || !datosCategoria.newName.trim()}
                         className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-all shadow-sm active:scale-95 disabled:opacity-50 whitespace-nowrap"
                     >
-                        {isLoading ? "Añadiendo..." : "Añadir"}
+                        {isLoading ? t('administration_pages.categories.adding') : t('administration_pages.categories.add')}
                     </button>
                 </form>
 
@@ -94,7 +96,7 @@ const ModelsCategories = () => {
                         ))
                     ) : (
                         <div className="col-span-full py-10 text-center">
-                            <p className="text-gray-400 dark:text-gray-500 italic">No hay categorías creadas todavía.</p>
+                            <p className="text-gray-400 dark:text-gray-500 italic">{t('administration_pages.categories.no_categories')}</p>
                         </div>
                     )}
                 </div>

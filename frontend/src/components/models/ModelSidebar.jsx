@@ -108,7 +108,7 @@ const ModelSidebar = () => {
                   key={`cat-${i}`}
                   className="bg-primary-600 dark:bg-primary-500 text-white text-[11px] font-black px-4 py-2 rounded-full shadow-sm shadow-primary-200 dark:shadow-none transition-colors duration-300"
                 >
-                  {category.toUpperCase()}
+                  {t(`categories.${category}`, { defaultValue: category }).toUpperCase()}
                 </span>
               ))}
             </div>

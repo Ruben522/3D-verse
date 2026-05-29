@@ -21,8 +21,8 @@ const PreferencesSettings = () => {
         <div className="flex flex-col gap-6 animate-fade-in">
             <AccordionSection
                 id="display"
-                title="Visualización e Idioma"
-                subtitle="Ajusta cómo quieres ver la aplicación"
+                title={t('user_settings.preferences_section.title')}
+                subtitle={t('user_settings.preferences_section.subtitle')}
                 isOpen={expandedSections.includes('display')}
                 onToggle={toggleSection}
                 icon={<PreferencesIcon className="w-6 h-6 text-white" />}
@@ -31,7 +31,7 @@ const PreferencesSettings = () => {
 
                     <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors duration-300 hover:border-gray-200 dark:hover:border-gray-700">
                         <span className="font-bold text-gray-900 dark:text-white text-sm">
-                            Idioma
+                            {t('user_settings.preferences_section.language')}
                         </span>
 
                         <div className="flex items-center gap-1.5 bg-gray-200/50 dark:bg-gray-800 p-1 rounded-xl">
@@ -61,7 +61,7 @@ const PreferencesSettings = () => {
 
                     <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors duration-300 hover:border-gray-200 dark:hover:border-gray-700">
                         <span className="font-bold text-gray-900 dark:text-white text-sm">
-                            Tema visual
+                            {t('user_settings.preferences_section.theme')}
                         </span>
                         <div className="flex-shrink-0 scale-95 origin-right">
                             <ThemeToggle />

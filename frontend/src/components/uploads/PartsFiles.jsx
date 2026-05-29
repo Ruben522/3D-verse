@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import useModels from '../../hooks/useModels';
+import { useTranslation } from 'react-i18next';
 
 const PartsFiles = () => {
     const { uploadFiles, manejarSeleccionArchivo, eliminarArchivoSeleccionado } = useModels();
@@ -7,19 +8,21 @@ const PartsFiles = () => {
 
     const parts = uploadFiles.parts || [];
 
+    const { t } = useTranslation();
+
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h4 className="font-bold text-gray-900 dark:text-white transition-colors">Archivos de Piezas (Parts)</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors">¿Tu diseño está dividido en partes? Súbelas aquí.</p>
+                    <h4 className="font-bold text-gray-900 dark:text-white transition-colors">{t('upload_page.parts_files.parts_files_title')}</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors">{t('upload_page.parts_files.parts_files_desc')}</p>
                 </div>
                 <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
                     className="px-4 py-2 bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 font-bold rounded-xl hover:bg-primary-100 dark:hover:bg-primary-500/30 transition-colors text-sm"
                 >
-                    Añadir Piezas
+                    {t('buttons.put_parts')}
                 </button>
             </div>
 
@@ -64,7 +67,7 @@ const PartsFiles = () => {
                     <svg className="w-8 h-8 mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                     </svg>
-                    <p className="text-sm font-medium text-gray-400 dark:text-gray-500 transition-colors">No se han añadido piezas adicionales.</p>
+                    <p className="text-sm font-medium text-gray-400 dark:text-gray-500 transition-colors">{t('upload_page.parts_files.no_parts')}</p>
                 </div>
             )}
         </div>

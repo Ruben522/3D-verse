@@ -7,7 +7,7 @@ const Messages = ({ message, isConfirm, config, onClose, onConfirm }) => {
 
     return isConfirm ? (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-fade-in">
-            <div className="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm transition-colors duration-300" onClick={onClose} title="Haz clic fuera para cancelar" />
+            <div className="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm transition-colors duration-300" onClick={onClose} />
 
             <div className="relative w-full max-w-sm bg-white dark:bg-gray-800 flex flex-col px-6 py-6 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 transform scale-100 transition-colors duration-300">
                 <div className="flex items-center gap-4 mb-2">
@@ -16,7 +16,7 @@ const Messages = ({ message, isConfirm, config, onClose, onConfirm }) => {
                             {config.icon}
                         </svg>
                     </div>
-                    <h3 className="font-black text-xl text-gray-900 dark:text-white transition-colors duration-300">Confirmación</h3>
+                    <h3 className="font-black text-xl text-gray-900 dark:text-white transition-colors duration-300">{t('messages.confirmation')}</h3>
                 </div>
 
                 <p className="font-medium text-gray-600 dark:text-gray-300 mt-2 ml-1 leading-relaxed transition-colors duration-300">

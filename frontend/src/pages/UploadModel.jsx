@@ -91,7 +91,7 @@ const UploadModel = () => {
                                             ? 'border-red-400 bg-red-50 focus:bg-white dark:border-red-500/50 dark:bg-red-900/30 dark:focus:bg-gray-800'
                                             : 'border-gray-200 bg-gray-50 focus:bg-white dark:border-gray-700 dark:bg-gray-900 dark:focus:bg-gray-800'
                                         }`}
-                                    placeholder="Ej: Figura de Dragón Articulado"
+                                    placeholder={t('model_files.model_placeholder')}
                                 />
                                 {uploadErrors?.title && <p className="text-red-500 dark:text-red-400 text-sm font-bold mt-1">{uploadErrors.title}</p>}
                             </div>

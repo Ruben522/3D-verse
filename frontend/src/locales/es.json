@@ -8,7 +8,8 @@
         "other_files": "Otros Archivos",
         "title": "Título",
         "title_model": "Título del Modelo",
-        "title_placeholder": "Figura de Dragón articuladoaaa",
+        "title_placeholder": "Figura de Dragón articulado",
+        "model_placeholder": "Ej: Figura de Dragón Articulado",
         "description": "Descripción",
         "no_description": "No hay descripción disponible.",
         "description_placeholder": "Ej: Esta figura de dragón articulado es perfecta para imprimir en 3D.",
@@ -40,6 +41,12 @@
             "png": "PNG"
         }
     },
+    "images_files": {
+        "delete_image": "Quitar portada",
+        "replace_image": "Reemplazar portada",
+        "main_image": "Imagen de portada",
+        "acepted_formats": "JPG, PNG o JPEG"
+    },
     "sidebar": {
         "stats_title": "Estadísticas de Uso",
         "downloads": "Descargas",
@@ -59,6 +66,7 @@
         "details": "Detalles",
         "save": "Guardar",
         "saved": "Guardado",
+        "saving": "Guardando...",
         "upload_model": "Subir Modelo",
         "view_model": "Ver Modelo",
         "view_profile": "Ver Perfil",
@@ -94,7 +102,9 @@
         "delete_account": "Eliminar cuenta",
         "explore": "Explorar",
         "my_profile": "Mi Perfil",
-        "upload_my_design": "Publicar mi diseño"
+        "upload_my_design": "Publicar mi diseño",
+        "next": "Sig",
+        "previous": "Ant"
     },
     "user": {
         "profile": "Perfil",
@@ -110,6 +120,7 @@
         "designs": "Diseños",
         "favorites": "Favoritos",
         "followers": "Seguidores",
+        "following": "Siguiendo",
         "total_downloads": "Descargas totales",
         "total_likes": "Me gustas",
         "my_models": "Mis Modelos",
@@ -165,6 +176,7 @@
         "username": "Nombre de usuario",
         "email": "Correo electrónico",
         "password": "Contraseña",
+        "confirmation": "Confirmación",
         "forgot_password": "¿Olvidaste tu contraseña?",
         "confirm_password": "Confirmar contraseña",
         "account_already": "¿Ya tienes una cuenta?",
@@ -271,7 +283,14 @@
         "manage_users": "Moderar Usuarios",
         "manage_models": "Moderar Modelos",
         "go_community": "Ir a Comunidad",
-        "go_models": "Ir a Modelos"
+        "go_models": "Ir a Modelos",
+        "categories": {
+            "title": "Gestión de Categorías",
+            "new_category_placeholder": "Nombre de la nueva categoría",
+            "add": "Añadir",
+            "adding": "Añadiendo...",
+            "no_categories": "No hay categorías creadas"
+        }
     },
     "user_context": {
         "login_error": "Correo electrónico o contraseña incorrectos.",
@@ -377,9 +396,84 @@
         "Educación": "Educación",
         "Juguetes": "Juguetes",
         "Medicina": "Medicina",
-        "Moda y Accesorios": "Moda y Accesorios",
-        "Tecnología y Gadgets": "Tecnología y Gadgets",
+        "Moda": "Moda y Accesorios",
+        "Tecnologías": "Tecnología y Gadgets",
         "Videojuegos": "Videojuegos",
         "Arquitectura": "Arquitectura"
+    },
+    "upload_page": {
+        "parts_files": {
+            "parts_files_title": "Partes adicionales",
+            "parts_files_desc": "¿Tu diseño está dividido en partes? Súbelas aquí.",
+            "no_parts": "No se han añadido partes adicionales."
+
+        }
+    },
+    "user_settings": {
+        "title": "Configuración de Usuario",
+        "subtitle": "Gestiona tu perfil, redes sociales y cuenta",
+        "public_profile": "Perfil público",
+        "desing": "Personalización y diseño",
+        "preferences": "Preferencias",
+        "account_tittle": "Cuenta",
+        "save_settings": "Guardar Configuración",
+        "save_settings_desc": "Asegúrate de guardar los cambios antes de salir.",
+        "basic_info": {
+            "title": "Información básica",
+            "subtitle": "Nombre, ubicación y biografía",
+            "username": "Nombre de usuario",
+            "name": "Nombre completo",
+            "lastname": "Apellidos",
+            "location": "Ubicación",
+            "location_placeholder": "Ej: Madrid, España",
+            "bio": "Biografía",
+            "bio_placeholder": "Cuéntanos un poco sobre ti..."
+        },
+        "social_links": {
+            "title": "Redes sociales",
+            "subtitle": "Comparte tus perfiles sociales",
+            "youtube": "YouTube",
+            "twitter": "Twitter",
+            "github": "GitHub",
+            "linkedin": "LinkedIn",
+            "your_username": "Tu usuario en"
+        },
+        "account": {
+            "title": "Cuenta",
+            "subtitle": "Eliminación de cuenta",
+            "danger_zone": "Zona de Peligro",
+            "danger_desc": "Eliminar tu cuenta es irreversible. Se eliminarán todos tus datos, modelos y actividad.",
+            "delete_account": "Eliminar cuenta"
+        },
+        "preferences_section": {
+            "title": "Visualización e Idioma",
+            "subtitle": "Ajusta cómo quieres ver la aplicación",
+            "language": "Idioma",
+            "theme": "Tema"
+        },
+        "customization": {
+            "avatar": "Foto de perfil",
+            "avatar_subtitle": "Tu avatar principal en la comunidad",
+            "banner": "Banner o color",
+            "banner_subtitle": "Personaliza la cabecera de tu tarjeta",
+            "img_url": "URL de la imagen",
+            "img_url_placeholder": "https://ejemplo.com/mi-avatar.png",
+            "remove_photo": "Quitar foto de perfil",
+            "preview": "Vista previa",
+            "remove_banner": "Quitar foto del banner",
+            "color": "Color del banner",
+            "color_desc": "Elige un color para tu banner si no quieres usar una imagen"
+
+        }
+    },
+    "popular_models": {
+        "title": "Top Diseños Populares",
+        "description": "Descubre los modelos más populares de la comunidad.",
+        "see_all": "Ver todos"
+    },
+    "hero_carousel": {
+        "loading": "Subiendo proyectos...",
+        "featured": "Destacado",
+        "view_design": "Ver diseño"
     }
 }

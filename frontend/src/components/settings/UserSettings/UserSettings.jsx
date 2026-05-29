@@ -6,9 +6,11 @@ import AccountSection from './AccountSection';
 import UserIcon from '../../../assets/icons/UserIcon';
 import LinkIcon from '../../../assets/icons/LinkIcon';
 import SettingIcon from '../../../assets/icons/SettingIcon';
+import { useTranslation } from 'react-i18next';
 
 const UserSettings = () => {
     const [expandedSections, setExpandedSections] = useState(['basic', 'social']);
+    const { t } = useTranslation();
 
     const toggleSection = (id) => {
         setExpandedSections(prev =>
@@ -20,8 +22,8 @@ const UserSettings = () => {
         <div className="flex flex-col gap-6">
             <AccordionSection
                 id="basic"
-                title="Información Básica"
-                subtitle="Nombre, ubicación y biografía"
+                title={t('user_settings.basic_info.title')}
+                subtitle={t('user_settings.basic_info.subtitle')}
                 isOpen={expandedSections.includes('basic')}
                 onToggle={toggleSection}
                 icon={<UserIcon className="w-6 h-6 text-white" />}
@@ -31,24 +33,13 @@ const UserSettings = () => {
 
             <AccordionSection
                 id="social"
-                title="Redes Sociales"
-                subtitle="Conecta tus cuentas externas"
-                isOpen={expandedSections.includes('social')}
+                title={t('user_settings.social_links.title')}
+                subtitle={t('user_settings.social_links.subtitle')}
+                isOpen={expandedSections.includes('social') ? false : true}
                 onToggle={toggleSection}
                 icon={<LinkIcon className="w-6 h-6 text-white" />}
             >
                 <SocialMediaSection />
-            </AccordionSection>
-
-            <AccordionSection
-                id="account"
-                title="Cuenta"
-                subtitle="Gestión de seguridad y eliminación"
-                isOpen={expandedSections.includes('account')}
-                onToggle={toggleSection}
-                icon={<SettingIcon className="w-6 h-6 text-white" />}
-            >
-                <AccountSection />
             </AccordionSection>
         </div>
     );

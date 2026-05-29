@@ -26,7 +26,7 @@ const CategoryInput = () => {
                                     : 'bg-white text-gray-600 border-gray-200 hover:border-primary-300 hover:bg-primary-50 dark:bg-gray-900 dark:text-gray-400 dark:border-gray-700 dark:hover:border-primary-500/30 dark:hover:bg-gray-800'
                                 }`}
                         >
-                            {cat.name}
+                            {t(`categories.${cat.name}`)}
                         </button>
                     );
                 })}

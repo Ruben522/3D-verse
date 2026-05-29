@@ -98,7 +98,7 @@ const ModelCard = ({ model }) => {
         <div className="flex flex-wrap items-center gap-1.5 mb-4">
           {visibleCategoryModel(model.id) && (
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide bg-purple-600 dark:bg-purple-700 text-white shadow-sm">
-              {t(`categories.${visibleCategoryModel(model.id)}`, { defaultValue: visibleCategoryModel(model.id) })}
+              {t(`categories.${visibleCategoryModel(model.id)}`)}
             </span>
           )}
           {visibleTagsModel(model.id)?.map((tag, idx) => (

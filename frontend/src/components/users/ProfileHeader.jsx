@@ -74,11 +74,11 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
           </div>
           <div className="flex flex-col items-center md:items-start">
             <span className="text-3xl font-black text-gray-900 dark:text-white transition-colors">{stats?.total_following || 0}</span>
-            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.total_following")}</span>
+            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.following")}</span>
           </div>
           <div className="flex flex-col items-center md:items-start">
             <span className="text-3xl font-black text-gray-900 dark:text-white transition-colors">{stats?.total_favorites_given || 0}</span>
-            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.total_favorites_given")}</span>
+            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors">{t("user.favorites")}</span>
           </div>
         </div>
 

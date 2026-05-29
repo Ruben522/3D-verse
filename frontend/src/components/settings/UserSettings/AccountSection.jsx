@@ -1,30 +1,33 @@
-import React from 'react';
-import useUsers from '../../../hooks/useUsers';
-import TrashIcon from '../../../assets/icons/TrashIcon';
+import React, { useState } from 'react';
+import AccordionSection from '../../common/AccordionSection';
+import DeleteAccount from './DeleteAccount';
+import SettingIcon from '../../../assets/icons/SettingIcon';
+import { useTranslation } from 'react-i18next';
 
 const AccountSection = () => {
-    const { currentUser, eliminarUsuario } = useUsers();
+    const [expandedSections, setExpandedSections] = useState(['danger']);
+    const { t } = useTranslation();
+
+    const toggleSection = (id) => {
+        setExpandedSections(prev =>
+            prev.includes(id) ? prev.filter(sec => sec !== id) : [...prev, id]
+        );
+    };
 
     return (
-        <div className="space-y-6">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-                Aquí podrás gestionar la seguridad de tu cuenta. (Próximamente: Cambio de contraseña y correo).
-            </p>
+        <div className="flex flex-col gap-6">
 
-            <div className="pt-4 border-t border-red-100 dark:border-red-900/30">
-                <h4 className="text-red-600 dark:text-red-400 font-bold mb-2">Zona de Peligro</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    Eliminar tu cuenta es una acción permanente e irreversible. Se borrarán todos tus modelos, likes, comentarios y configuraciones.
-                </p>
+            <AccordionSection
+                id="danger"
+                title={t('user_settings.account.danger_zone')}
+                subtitle={t('user_settings.account.danger_desc')}
+                isOpen={expandedSections.includes('danger')}
+                onToggle={toggleSection}
+                icon={<SettingIcon className="w-6 h-6 text-white" />}
+            >
+                <DeleteAccount />
+            </AccordionSection>
 
-                <button
-                    onClick={(e) => { e.preventDefault(), eliminarUsuario(currentUser.id) }}
-                    className="flex items-center gap-2 px-6 py-3 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 font-bold rounded-xl transition-all border border-red-200 dark:border-red-800"
-                >
-                    <TrashIcon className="w-5 h-5 shrink-0" />
-                    <span>Eliminar mi cuenta</span>
-                </button>
-            </div>
         </div>
     );
 };

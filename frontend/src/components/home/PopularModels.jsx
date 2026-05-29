@@ -2,27 +2,35 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import useModels from '../../hooks/useModels';
 import ModelCard from '../models/ModelCard';
+import ArrowRightIcon from '../../assets/icons/ArrowRightIcon';
+import { useTranslation } from 'react-i18next';
 
 const PopularModels = () => {
     const { getTopPopularModels } = useModels();
     const topModels = getTopPopularModels();
 
-    if (topModels.length === 0) return null;
+    const { t } = useTranslation();
 
     return (
         <section className="py-16 transition-colors duration-300">
             <div className="flex items-end justify-between mb-8">
                 <div>
                     <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight transition-colors">
-                        Top Diseños Populares
+                        {t('popular_models.title')}
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 font-medium mt-2 transition-colors">
-                        Los modelos más valorados por la comunidad.
+                        {t('popular_models.description')}
                     </p>
                 </div>
 
-                <Link to="/models" className="hidden sm:block text-primary-600 dark:text-primary-400 font-bold hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
-                    Ver todos →
+                <Link
+                    to="/models"
+                    className="hidden sm:flex items-baseline gap-1 text-primary-600 dark:text-primary-400 font-bold hover:text-primary-700 dark:hover:text-primary-300 transition-colors group"
+                >
+                    <span className="whitespace-nowrap">
+                        {t('popular_models.see_all')}
+                    </span>
+                    <ArrowRightIcon className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1.5 translate-y-[2px]" />
                 </Link>
             </div>
 

@@ -66,8 +66,8 @@ const ImagesFiles = () => {
                                 }`}
                         >
                             {isNewImage
-                                ? 'Quitar Nueva Portada'
-                                : 'Reemplazar Portada'}
+                                ? t('images_files.delete_image')
+                                : t('images_files.replace_image')}
                         </button>
                     </div>
                 </div>
@@ -86,11 +86,11 @@ const ImagesFiles = () => {
                     </svg>
 
                     <p className="font-bold text-gray-900 dark:text-white transition-colors">
-                        Imagen de Portada
+                        {t('images_files.main_image')}
                     </p>
 
                     <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors">
-                        JPG, PNG o WEBP
+                        {t('images_files.acepted_formats')}
                     </p>
 
                     {uploadErrors?.main_image && (

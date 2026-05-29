@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import UserSettings from '../components/settings/UserSettings/UserSettings.jsx';
 import CustomizationSection from '../components/settings/UserSettings/CustomizationSection';
 import PreferencesSettings from '../components/settings/UserSettings/PreferencesSettings';
+import AccountSection from '../components/settings/UserSettings/AccountSection';
 import useUsers from '../hooks/useUsers';
 import BotBar from '../components/common/BotBar.jsx';
 import { useTranslation } from 'react-i18next';
@@ -32,8 +33,8 @@ const Settings = () => {
 
                 <div className="-mb-4 md:-mb-8">
                     <InicialTittle
-                        tittle={t('configuracion.tittle')}
-                        subtittle={t('configuracion.desc')}
+                        tittle={t('user_settings.title')}
+                        subtittle={t('user_settings.subtitle')}
                     />
                 </div>
 
@@ -47,7 +48,7 @@ const Settings = () => {
                                 : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                             }`}
                     >
-                        Perfil Público
+                        {t('user_settings.public_profile')}
                     </button>
 
                     <button
@@ -59,7 +60,7 @@ const Settings = () => {
                                 : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                             }`}
                     >
-                        Personalización y Diseño
+                        {t('user_settings.desing')}
                     </button>
 
                     <button
@@ -71,7 +72,19 @@ const Settings = () => {
                                 : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                             }`}
                     >
-                        Preferencias
+                        {t('user_settings.preferences')}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab('account')}
+                        className={`flex-1 px-6 py-4 text-sm font-bold whitespace-nowrap transition-colors outline-none 
+                            ${activeTab === 'account'
+                                ? 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-b-2 border-red-500'
+                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                            }`}
+                    >
+                        {t('user_settings.account_tittle')}
                     </button>
                 </div>
 
@@ -79,18 +92,21 @@ const Settings = () => {
                     {activeTab === 'profile' && <UserSettings />}
                     {activeTab === 'customization' && <CustomizationSection />}
                     {activeTab === 'preferences' && <PreferencesSettings />}
+                    {activeTab === 'account' && <AccountSection />}
                 </form>
 
             </div>
 
-            <BotBar
-                title={t('configuracion.save_settings')}
-                description={t('configuracion.save_settings_desc')}
-                onCancel={() => navigate('/profile')}
-                formId="settings-form"
-                isLoading={isUpdatingProfile}
-                submitText={t('buttons.save_changes')}
-            />
+            {activeTab !== 'account' && (
+                <BotBar
+                    title={t('user_settings.save_settings')}
+                    description={t('user_settings.save_settings_desc')}
+                    onCancel={() => navigate('/profile')}
+                    formId="settings-form"
+                    isLoading={isUpdatingProfile}
+                    submitText={t('buttons.save_changes')}
+                />
+            )}
         </div>
     );
 };

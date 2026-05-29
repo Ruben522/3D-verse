@@ -1,13 +1,10 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
+import { useTranslation } from 'react-i18next';
 
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {
+    const { t } = useTranslation();
 
-    //Hago esta declaración de función aquí y no en un contexto o en el componente padre porque
-    //es una función muy específica de este componente y no se reutiliza en ningún otro sitio,
-    //por lo que no tiene sentido complicar la estructura del proyecto para algo tan concreto.
-    //Además, al estar dentro del componente, tiene acceso directo a las props
-    //sin necesidad de pasarlas como argumentos adicionales.
     const handlePageClick = (event) => {
         const newPage = event.selected + 1;
         onPageChange(newPage);
@@ -19,12 +16,13 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
             breakLabel="..."
             nextLabel={
                 <span className="flex items-center gap-1">
-                    Sig <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+                    {t('buttons.next')} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
                 </span>
             }
             previousLabel={
                 <span className="flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" /></svg> Ant
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" /></svg>
+                    {t('buttons.previous')}
                 </span>
             }
             onPageChange={handlePageClick}

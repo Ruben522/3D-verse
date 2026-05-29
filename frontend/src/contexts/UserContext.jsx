@@ -38,7 +38,7 @@ const UserContext = ({ children }) => {
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [activeProfileData, setActiveProfileData] = useState(null);
   const [isLoadingActiveProfile, setIsLoadingActiveProfile] = useState(false);
-  const [activeProfileTab, setActiveProfileTab] = useState("modelos");
+  const [activeProfileTab, setActiveProfileTab] = useState("models");
   const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   const [publicMyProfile, setPublicMyProfile] = useState(null);

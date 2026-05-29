@@ -1,8 +1,10 @@
 import React from 'react';
 import useUsers from '../../../hooks/useUsers';
+import { useTranslation } from 'react-i18next';
 
 const AvatarSettings = () => {
     const { datosPerfil, actualizarDatoPerfil, handleClearAvatar } = useUsers();
+    const { t } = useTranslation();
     const currentAvatar = datosPerfil.avatar || datosPerfil.avatarUrl || '';
     const hasAvatar = currentAvatar.trim() !== '';
 
@@ -27,14 +29,14 @@ const AvatarSettings = () => {
             </div>
 
             <div className="flex-1 w-full">
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 transition-colors">URL de la imagen (jpg, png, webp)</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 transition-colors">{t('user_settings.customization.img_url')}</p>
                 <div className="flex gap-2 w-full">
                     <input
                         type="url"
                         name="avatar"
                         value={currentAvatar}
                         onChange={actualizarDatoPerfil}
-                        placeholder="Ej: https://misitio.com/mifoto.jpg"
+                        placeholder={t('user_settings.customization.img_url_placeholder')}
                         className="flex-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 py-2.5 px-3 text-sm focus:border-primary-500 dark:focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none text-gray-900 dark:text-white placeholder-gray-400 transition-all"
                     />
 
@@ -44,7 +46,7 @@ const AvatarSettings = () => {
                             onClick={handleClearAvatar}
                             className="px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/50 hover:shadow-sm text-sm font-bold transition-all whitespace-nowrap"
                         >
-                            Quitar foto
+                            {t('user_settings.customization.remove_photo')}
                         </button>
                     )}
                 </div>

@@ -7,11 +7,10 @@ import UserFavorites from "../users/UserFavorites";
 
 const ProfileContent = ({ activeTab, onTabChange, models, isOwnProfile }) => {
     const { t } = useTranslation();
-    const tabs = ["modelos", "seguidos", "seguidores", "favoritos"];
+    const tabs = ["models", "following", "followers", "favorites"];
 
     return (
         <>
-            {/* TABS */}
             <div className="flex items-center gap-8 border-b border-gray-200 dark:border-gray-700 mb-6 overflow-x-auto custom-scrollbar transition-colors duration-300">
                 {tabs.map((tab) => (
                     <button
@@ -22,32 +21,28 @@ const ProfileContent = ({ activeTab, onTabChange, models, isOwnProfile }) => {
                             : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
                             }`}
                     >
-                        {isOwnProfile && tab === "modelos" ? t('user.my_models') : t(`user.${tab}`)}
+                        {isOwnProfile && tab === "models" ? t('user.my_models') : t(`user.${tab}`)}
                     </button>
                 ))}
             </div>
 
             <div className="min-h-[400px]">
-                {/* MODELOS */}
-                {activeTab === "modelos" && (
+                {activeTab === "models" && (
                     <div className="py-6 animate-fade-in">
                         <UserModels models={models} />
                     </div>
                 )}
-                {/* SEGUIDORES */}
-                {activeTab === "seguidores" && (
+                {activeTab === "followers" && (
                     <div className="py-6 animate-fade-in">
                         <UserFollowers />
                     </div>
                 )}
-                {/* SEGUIDOS */}
-                {activeTab === "seguidos" && (
+                {activeTab === "following" && (
                     <div className="py-6 animate-fade-in">
                         <UserFollowings />
                     </div>
                 )}
-                {/* FAVORITOS */}
-                {activeTab === "favoritos" && (
+                {activeTab === "favorites" && (
                     <div className="py-6 animate-fade-in">
                         <UserFavorites />
                     </div>
