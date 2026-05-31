@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { messagesStyles } from '../../utils/MessagesStyle.jsx';
+import { messagesStyles } from '../../utils/TempStyle.jsx';
 import { useTranslation } from "react-i18next";
 
 const Messages = ({ message, isConfirm, config, onClose, onConfirm }) => {

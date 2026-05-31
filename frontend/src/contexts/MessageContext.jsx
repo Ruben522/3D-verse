@@ -1,5 +1,5 @@
 import React, { createContext, useState, useCallback, useRef } from 'react';
-import { messagesStyles } from '../utils/MessagesStyle.jsx';
+import { messagesStyles } from '../utils/TempStyle.jsx';
 import Message from '../components/messages/Messages.jsx';
 
 const message = createContext();
