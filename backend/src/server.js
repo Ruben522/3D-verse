@@ -1,10 +1,12 @@
 import dotenv from "dotenv";
+
+dotenv.config({ override: false });
+
 import app from "./app.js";
-import "./config/db.js";
+import "./config/db.js"; // REVISA ESTE ARCHIVO TAMBIÉN (ver paso 3)
 
-dotenv.config();
+const PORT = process.env.PORT || 10000;
 
-const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`🔥 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`🔥 Servidor corriendo en puerto ${PORT}`);
 });
