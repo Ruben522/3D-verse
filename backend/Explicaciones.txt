@@ -1,4 +1,0 @@
-"Separamos la Subida Física de la Creación Lógica.
-El primer paso asegura los archivos en el almacenamiento y
-el segundo vincula esos archivos con información (título, autor, etiquetas) en la base de datos.
-Esto mejora la velocidad, la seguridad y permite una mejor interfaz para el usuario."

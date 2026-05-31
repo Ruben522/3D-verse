@@ -23,7 +23,7 @@ const configureStaticFiles = (expressApp) => {
     expressApp.use("/uploads", express.static(uploadsPath));
 };
 
-app.use(cors());
+app.use(cors({ origin: "https://3d-verse-pi.vercel.app" }));
 app.use(express.json());
 
 configureStaticFiles(app);

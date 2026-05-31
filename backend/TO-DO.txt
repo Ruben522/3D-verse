@@ -1,9 +1,0 @@
-1. Para que un usuario pueda subir los modelos.
-
-    Un recuadro grande que diga: "Sube el modelo completo (.glb)".
-
-    Un botón opcional: "Sube las piezas por separado (Max 10)".
-
-    Un recuadro para: "Foto de portada".
-
-    Un botón para: "Imágenes extra".
