@@ -14,7 +14,7 @@ const FollowContext = ({ children }) => {
 
     const api = useAPI();
 
-    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const backendUrl = import.meta.env.VITE_API_URL;
 
     const [followedUsers, setFollowedUsers] = useState(new Set());
 

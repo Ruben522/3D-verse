@@ -13,7 +13,7 @@ const LikeContext = ({ children }) => {
     const { t } = useTranslation();
     const { showMessage } = useMessage();
     const api = useAPI();
-    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const backendUrl = import.meta.env.VITE_API_URL;
 
     const [likedModels, setLikedModels] = useState(new Set());
 

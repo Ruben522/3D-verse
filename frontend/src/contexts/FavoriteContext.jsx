@@ -12,7 +12,7 @@ const FavoriteContext = ({ children }) => {
     const { isAuthenticated, currentUser } = useUsers();
     const { updateFavoritesCount } = useModels();
     const api = useAPI();
-    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const backendUrl = import.meta.env.VITE_API_URL;
     const { showMessage } = useMessage();
     const { t } = useTranslation();
 

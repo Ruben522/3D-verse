@@ -9,7 +9,7 @@ const CommentsContext = ({ children }) => {
     const api = useAPI();
     const { t } = useTranslation();
     const { showConfirm, showMessage } = useMessage();
-    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const backendUrl = import.meta.env.VITE_API_URL;
 
     const [comments, setComments] = useState([]);
     const [pagination, setPagination] = useState(null);

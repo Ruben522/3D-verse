@@ -9,7 +9,7 @@ const CategoryContext = ({ children }) => {
     const api = useAPI();
     const { showMessage, showConfirm } = useMessage();
     const { t } = useTranslation();
-    const apiUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/categories`;
+    const apiUrl = `${import.meta.env.VITE_API_URL}/categories`;
     const initialCategoryData = { newName: "", editName: "", editingId: null };
 
     const [categories, setCategories] = useState([]);

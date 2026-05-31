@@ -14,7 +14,7 @@ const UserContext = ({ children }) => {
   const authAPI = useAPI();
   const { showMessage, showConfirm } = useMessage();
   const { t } = useTranslation();
-  const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const backendUrl = import.meta.env.VITE_API_URL;
 
   const initialAuthData = { name: "", username: "", email: "", password: "", confirmPassword: "" };
   const initialProfileData = {
