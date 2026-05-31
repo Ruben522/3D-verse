@@ -1,8 +1,8 @@
 import { Meilisearch } from 'meilisearch';
 
 const client = new Meilisearch({
-  host: 'http://localhost:7700',
-  apiKey: 'MiClaveSecreta123!',
+  host: process.env.VITE_MEILI_URL || 'http://localhost:7700',
+  apiKey: process.env.VITE_MEILI_KEY || 'MiClaveSecreta123!',
 });
 
 async function arreglarReglas() {
