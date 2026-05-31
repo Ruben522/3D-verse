@@ -7,7 +7,7 @@ import {
     sendSuccess,
     sendError,
 } from "../utils/helper/response.helper.js";
-
+import { syncUserToMeili } from '../server/meilisearchSync.js';
 /**
  * Registra un nuevo usuario en la plataforma.
  * Crea cuenta y devuelve datos básicos + token JWT.
@@ -18,6 +18,7 @@ import {
 const register = async (req, res) => {
     try {
         const data = await registerUser(req.body);
+        await syncUserToMeili(data.id);
         sendSuccess(
             res,
             "Usuario registrado exitosamente.",

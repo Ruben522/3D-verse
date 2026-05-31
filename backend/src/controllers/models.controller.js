@@ -16,7 +16,7 @@ import {
     sendError,
 } from "../utils/helper/response.helper.js";
 import { deletePhysicalFolder } from "../utils/helper/file.helper.js";
-import { syncModelToMeili } from '../server/meilisearchSync.js';
+import { syncModelToMeili, deleteModelFromMeili } from '../server/meilisearchSync.js';
 
 /**
  * Formatea las rutas de los archivos subidos por Multer para que coincidan con la estructura esperada por la base de datos.
@@ -111,6 +111,7 @@ const create = async (req, res) => {
             req.user.id,
             req.body,
         );
+        await syncModelToMeili(model.id);
         sendSuccess(
             res,
             "Modelo publicado con éxito.",
@@ -236,6 +237,7 @@ const remove = async (req, res) => {
             req.params.id,
             req.user,
         );
+        await deleteModelFromMeili(req.params.id);
         sendSuccess(res, result.message);
     } catch (error) {
         const status = error.code === "P2025" ? 404 : 403;

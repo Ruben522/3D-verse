@@ -1,8 +1,8 @@
 import { Meilisearch } from 'meilisearch';
 
 export const client = new Meilisearch({
-  host: 'http://localhost:7700',
-  apiKey: 'MiClaveSecreta123!', 
+  host: 'https://ms-15af045c4afa-46324.par.meilisearch.io',
+  apiKey: 'fa37077b9d4ed7d75508c6116eb758dfef215c23',
 });
 
 export const modelsIndex = client.index('models');

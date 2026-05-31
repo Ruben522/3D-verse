@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { PrismaClient } from '@prisma/client';
 import { setupMeilisearch, modelsIndex, usersIndex } from './src/server/meilisearch.js';
 import { syncModelToMeili, syncUserToMeili } from './src/server/meilisearchSync.js';
