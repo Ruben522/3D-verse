@@ -18,13 +18,19 @@ import { syncUserToMeili } from '../server/meilisearchSync.js';
 const register = async (req, res) => {
     try {
         const data = await registerUser(req.body);
-        await syncUserToMeili(data.id);
-        sendSuccess(
-            res,
-            "Usuario registrado exitosamente.",
-            data,
-            201,
-        );
+
+        console.log("📦 Datos devueltos por registerUser:", data);
+
+        const userId = data?.id || data?.user?.id || data?.newUser?.id || data?.data?.id;
+
+        if (userId) {
+            console.log(`✅ ID de usuario encontrado: ${userId}. Sincronizando...`);
+            await syncUserToMeili(userId);
+        } else {
+            console.warn("⚠️ No se encontró ningún ID válido para sincronizar a Meilisearch.");
+        }
+
+        sendSuccess(res, "Usuario registrado exitosamente.", data, 201);
     } catch (error) {
         sendError(res, error.message + ".", 400);
     }

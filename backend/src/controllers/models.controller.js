@@ -96,28 +96,21 @@ const uploadModel = async (req, res) => {
  */
 const create = async (req, res) => {
     try {
-        if (
-            !req.body ||
-            Object.keys(req.body).length === 0
-        ) {
-            return sendError(
-                res,
-                "Los datos del modelo son obligatorios.",
-                400,
-            );
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return sendError(res, "Los datos del modelo son obligatorios.", 400);
         }
 
-        const model = await createModel(
-            req.user.id,
-            req.body,
-        );
-        await syncModelToMeili(model.id);
-        sendSuccess(
-            res,
-            "Modelo publicado con éxito.",
-            model,
-            201,
-        );
+        const model = await createModel(req.user.id, req.body);
+
+        const modelId = model?.id || model?.model?.id || model?.data?.id;
+
+        if (modelId) {
+            await syncModelToMeili(modelId);
+        } else {
+            console.warn("⚠️ No se encontró el ID del modelo para Meilisearch. Datos:", model);
+        }
+
+        sendSuccess(res, "Modelo publicado con éxito.", model, 201);
     } catch (error) {
         sendError(res, error.message, 400);
     }
