@@ -6,6 +6,7 @@ import SettingIcon from '../../assets/icons/SettingIcon';
 import ExitAccountIcon from '../../assets/icons/ExitAccountIcon';
 import FollowButton from '../common/FollowButton';
 import ProfileBio from './ProfileBio';
+import UserAvatarIcon from '../../assets/icons/UserAvatarIcon';
 
 const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
   const { t } = useTranslation();
@@ -19,13 +20,16 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
       <div className="px-6 sm:px-10 pb-8 relative">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-16 md:-mt-20 mb-6 relative z-10">
 
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white dark:border-gray-800 shadow-lg overflow-hidden flex items-center justify-center bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-6xl font-black flex-shrink-0 transition-colors duration-300">
-            {profile?.avatarUrl ? (
+          {profile?.avatarUrl ? (
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white dark:border-gray-800 shadow-lg overflow-hidden shrink-0 transition-colors duration-300">
               <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover bg-white dark:bg-gray-800" />
-            ) : (
-              profile?.inicial || profile?.username?.charAt(0).toUpperCase()
-            )}
-          </div>
+            </div>
+          ) : (
+            <UserAvatarIcon
+              username={profile?.username}
+              className="w-32 h-32 md:w-40 md:h-40 border-4 border-white dark:border-gray-800 shadow-lg text-6xl"
+            />
+          )}
 
           <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
             {isOwnProfile ? (
@@ -52,19 +56,21 @@ const ProfileHeader = ({ profile, stats, isOwnProfile, cerrarSesion }) => {
           </div>
         </div>
 
-        <div className="mb-8 text-center md:text-left">
+        <div className="mb-6 text-center md:text-left">
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight transition-colors">
             {profile?.name} {profile?.lastname}
           </h1>
           <p className="text-lg font-bold mt-1 text-primary-600 dark:text-primary-400 transition-colors">
             @{profile?.username}
           </p>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium transition-colors">
+          <p className="flex items-center justify-center md:justify-start gap-1.5 text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             {t("user.member_since")} {profile?.fechaRegistro}
           </p>
         </div>
-        {console.log(profile)}
+
         <ProfileBio profile={profile} />
+
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-8 md:gap-14 py-6 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <div className="flex flex-col items-center md:items-start">
             <span className="text-3xl font-black text-gray-900 dark:text-white transition-colors">{stats?.total_models || 0}</span>

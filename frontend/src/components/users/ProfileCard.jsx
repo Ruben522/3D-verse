@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import useUsers from '../../hooks/useUsers';
 import FollowButton from '../common/FollowButton';
 import TrashIcon from '../../assets/icons/TrashIcon';
+import UserAvatarIcon from '../../assets/icons/UserAvatarIcon';
 import { useTranslation } from 'react-i18next';
 
 const ProfileCard = ({ user }) => {
@@ -36,11 +37,14 @@ const ProfileCard = ({ user }) => {
                 style={user.computedBannerStyle}
             />
 
-
-
             <div className="p-5 pt-0 flex flex-col items-center text-center relative z-10">
                 <div className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 shadow-md -mt-10 overflow-hidden bg-white dark:bg-gray-800 relative transition-colors duration-300">
-                    <img src={user.computedAvatar} alt={user.username} className="w-full h-full object-cover" />
+
+                    {user.avatarUrl ? (
+                        <img src={user.avatarUrl} alt={user.username} className="w-full h-full object-cover" />
+                    ) : (
+                        <UserAvatarIcon username={user.username} className="w-full h-full text-2xl" />
+                    )}
                     {user.badge_url && (
                         <img src={user.badge_url} alt="Badge" className="absolute bottom-0 right-0 w-6 h-6" />
                     )}

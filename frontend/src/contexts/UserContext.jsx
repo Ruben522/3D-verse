@@ -351,19 +351,21 @@ const UserContext = ({ children }) => {
     setSearchUserTerm("");
   }, []);
 
-  const getActiveSocials = useCallback((socialObj) => {
-    if (!socialObj) return [];
+  const getActiveSocials = (profile) => {
+    const social = profile?.social;
+    if (!social) return [];
 
-    let socials = [];
-    const formatUrl = (url) => url.startsWith('http') ? url : `https://${url}`;
+    const formatUrl = (url) => url?.trim() ? (url.startsWith('http') ? url : `https://${url}`) : null;
 
-    if (socialObj.youtube) socials = [...socials, { type: "youtube", url: formatUrl(socialObj.youtube) }];
-    if (socialObj.twitter) socials = [...socials, { type: "twitter", url: formatUrl(socialObj.twitter) }];
-    if (socialObj.linkedin) socials = [...socials, { type: "linkedin", url: formatUrl(socialObj.linkedin) }];
-    if (socialObj.github) socials = [...socials, { type: "github", url: formatUrl(socialObj.github) }];
+    const active = [];
 
-    return socials;
-  }, []);
+    if (formatUrl(social.youtube)) active.push({ type: 'youtube', url: formatUrl(social.youtube) });
+    if (formatUrl(social.twitter)) active.push({ type: 'twitter', url: formatUrl(social.twitter) });
+    if (formatUrl(social.linkedin)) active.push({ type: 'linkedin', url: formatUrl(social.linkedin) });
+    if (formatUrl(social.github)) active.push({ type: 'github', url: formatUrl(social.github) });
+
+    return active;
+  };
 
   const exportData = {
     currentUser,

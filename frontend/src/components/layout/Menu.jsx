@@ -5,6 +5,7 @@ import Logo from "../common/Logo";
 import LanguageSelector from "../language/LanguageSelector";
 import ThemeToggle from "../common/ThemeToggle";
 import { useTranslation } from "react-i18next";
+import UserAvatarIcon from "../../assets/icons/UserAvatarIcon";
 
 import UploadIcon from "../../assets/icons/UploadIcon";
 import ExitAccountIcon from "../../assets/icons/ExitAccountIcon.jsx";
@@ -53,8 +54,8 @@ const Menu = () => {
                 </NavLink>
               }
             </div>
-            <div className="hidden md:flex items-center gap-4 justify-end flex-shrink-0">
 
+            <div className="hidden md:flex items-center gap-4 justify-end flex-shrink-0">
               <div className="flex items-center gap-2">
                 <LanguageSelector />
                 <ThemeToggle />
@@ -72,11 +73,16 @@ const Menu = () => {
                 <div className="flex items-center gap-3 pl-3 border-l border-primary-700/50 dark:border-primary-800">
                   <Link to="/profile" className="flex items-center gap-3 hover:bg-white/10 dark:hover:bg-white/5 p-1.5 pr-4 rounded-full transition-all duration-300 cursor-pointer group">
                     <div className="w-9 h-9 rounded-full bg-primary-700 dark:bg-primary-800 border border-white/20 group-hover:border-white/40 overflow-hidden transition-all duration-300 shadow-sm">
-                      <img
-                        src={currentUser.avatarUrl}
-                        alt="Avatar"
-                        className="w-full h-full object-cover"
-                      />
+                      {currentUser.avatarUrl ? (
+                        <img
+                          src={currentUser.avatarUrl}
+                          alt="Avatar"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <UserAvatarIcon username={currentUser.username} className="w-full h-full text-lg" />
+                      )}
+
                     </div>
                     <span className="text-sm font-bold text-white hidden lg:block">
                       {currentUser.username}
@@ -97,8 +103,14 @@ const Menu = () => {
 
             <div className="md:hidden flex items-center gap-2">
               {isAuthenticated && currentUser && (
-                <Link to="/profile" className="w-8 h-8 rounded-full overflow-hidden border border-white/20 shadow-sm">
-                  <img src={currentUser.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                <Link to="/profile" className="w-8 h-8 rounded-full overflow-hidden border border-white/20 shadow-sm flex-shrink-0">
+
+                  {currentUser.avatarUrl ? (
+                    <img src={currentUser.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <UserAvatarIcon username={currentUser.username} className="w-full h-full text-sm" />
+                  )}
+
                 </Link>
               )}
 

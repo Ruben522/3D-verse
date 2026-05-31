@@ -4,7 +4,7 @@ import SocialLink from '../common/SocialLink';
 
 const ProfileBio = ({ profile }) => {
     const { getActiveSocials } = useUsers();
-    const activeSocials = getActiveSocials(profile?.social);
+    const activeSocials = getActiveSocials(profile);
 
     return (
         <div className="mb-6 flex flex-col items-center md:items-start text-center md:text-left w-full overflow-hidden">
@@ -24,10 +24,10 @@ const ProfileBio = ({ profile }) => {
                     {profile.bio}
                 </p>
             )}
-
+            {console.log("Active Socials:", activeSocials)} {/* Debug: Ver qué redes sociales activas se están pasando */}
             {activeSocials.length > 0 && (
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-4">
-                    {activeSocials.map(social => (
+                    {activeSocials.map((social) => (
                         <SocialLink key={social.type} type={social.type} url={social.url} />
                     ))}
                 </div>
