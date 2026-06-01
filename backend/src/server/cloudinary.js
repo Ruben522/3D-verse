@@ -1,34 +1,33 @@
+import 'dotenv/config';
 import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
-import 'dotenv/config';
+
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multerStorage = require('multer-storage-cloudinary');
 
-// ... (El resto de tu código se queda igual) ...
+// Esto busca si está dentro de la propiedad o si el paquete es el propio constructor
+const CloudinaryStorage = multerStorage.CloudinaryStorage || multerStorage;
 
+// 2. CONFIGURACIÓN
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-cloudinary.api.ping((error, result) => {
-    if (error) console.error("❌ CLOUDINARY ERROR: No se puede conectar:", error);
-    else console.log("✅ CLOUDINARY CONECTADO EXITOSAMENTE");
-});
+
+// 3. STORAGE
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
         const isImage = file.mimetype.startsWith('image/');
-
         return {
             folder: `3dverse/models/${req.user?.id || 'guest'}`,
-            resource_type: isImage ? 'image' : 'raw',
+            resource_type: "auto",
             public_id: `${Date.now()}-${file.originalname.split('.')[0]}`
         };
     },
 });
 
-// 3. Exportamos el middleware de Multer listo para usar
 export const uploadCloud = multer({ storage: storage });
 export { cloudinary };
