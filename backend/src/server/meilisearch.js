@@ -30,6 +30,13 @@ export const setupMeilisearch = async () => {
       'downloads'
     ]);
 
+    await usersIndex.updateSearchableAttributes([
+      'username', 'bio'
+    ]);
+
+    await usersIndex.updateSortableAttributes([
+      'followers_count', 'models_count'
+    ]);
     console.log('✅ Meilisearch: Configuración de filtros y ordenación actualizada');
   } catch (error) {
     console.error('❌ Error configurando Meilisearch:', error);

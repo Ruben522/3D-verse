@@ -24,7 +24,6 @@ const ProfileBio = ({ profile }) => {
                     {profile.bio}
                 </p>
             )}
-            {console.log("Active Socials:", activeSocials)} {/* Debug: Ver qué redes sociales activas se están pasando */}
             {activeSocials.length > 0 && (
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-4">
                     {activeSocials.map((social) => (
