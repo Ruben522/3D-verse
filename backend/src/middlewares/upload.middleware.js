@@ -1,7 +1,7 @@
 import multer from "multer";
 import path from "path";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
-import { cloudinary } from "../config/cloudinary.js";
+import { cloudinary } from "../server/cloudinary.js";
 /**
  * 1. CONFIGURACIÓN DEL STORAGE DE CLOUDINARY
  * Sustituye a tus antiguos createInitialStorage y createDynamicStorage.
