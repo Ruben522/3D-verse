@@ -15,18 +15,8 @@ import categoriesRoutes from "./routes/categories.routes.js";
 
 const app = express();
 
-const configureStaticFiles = (expressApp) => {
-    const uploadsPath = path.resolve(
-        process.cwd(),
-        "uploads",
-    );
-    expressApp.use("/uploads", express.static(uploadsPath));
-};
-
 app.use(cors({ origin: "https://3d-verse-pi.vercel.app" }));
 app.use(express.json());
-
-configureStaticFiles(app);
 
 // RUTAS
 app.use("/auth", authRoutes);
