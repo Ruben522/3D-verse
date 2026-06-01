@@ -39,18 +39,27 @@ const formatUploadedFiles = (files) => {
 
 const uploadModel = async (req, res) => {
     try {
-        console.log("=== 📦 ARCHIVOS RECIBIDOS DE MULTER ===");
-        console.log(JSON.stringify(req.files, null, 2));
-        const formattedFiles = formatUploadedFiles(req.files);
+        console.log("Archivos subidos a Cloudinary:", req.files);
 
-        sendSuccess(
-            res,
-            "Archivos preparados correctamente.",
-            { upload_id: req.uploadId, ...formattedFiles },
-            201,
-        );
+        if (!req.files || !req.files["main_file"]) {
+            return sendError(res, "El archivo principal 3D es obligatorio.", 400);
+        }
+
+        const formattedFiles = {
+            main_file: req.files["main_file"][0].path,           // URL de Cloudinary
+            cover_image: req.files["cover_image"] ? req.files["cover_image"][0].path : null,
+            parts: (req.files["parts"] || []).map(file => ({
+                part_name: file.originalname.split(".")[0],
+                file_url: file.path,
+                file_size: file.size,
+            })),
+            gallery: (req.files["gallery"] || []).map(file => file.path),
+        };
+
+        sendSuccess(res, "Archivos subidos correctamente a Cloudinary", formattedFiles, 201);
     } catch (error) {
-        sendError(res, error.message, 400);
+        console.error(error);
+        sendError(res, error.message, 500);
     }
 };
 
