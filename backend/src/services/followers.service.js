@@ -12,6 +12,9 @@ import { syncUserToMeili } from "../server/meilisearchSync.js";
  * @throws {Error} Si se intenta seguir a uno mismo
  * @throws {Error} Error genérico de base de datos (excepto duplicado P2002)
  */
+/**
+ * Permite que un usuario siga a otro usuario.
+ */
 const followUser = async (userIdToFollow, followerId) => {
   if (userIdToFollow === followerId) {
     throw new Error("No puedes seguirte a ti mismo");
@@ -36,8 +39,9 @@ const followUser = async (userIdToFollow, followerId) => {
       }),
     ]);
 
-    const completeUpdated = await getUserById(userIdToFollow);
-    await syncUserToMeili(completeUpdated);
+    // 👉 EL ARREGLO: Pasamos directamente el ID en formato texto
+    await syncUserToMeili(userIdToFollow);
+    await syncUserToMeili(followerId); // Opcional: sincronizar a ambos para actualizar sus contadores
 
     return { message: "Ahora sigues a este usuario" };
   } catch (error) {
@@ -50,13 +54,6 @@ const followUser = async (userIdToFollow, followerId) => {
 
 /**
  * Permite que un usuario deje de seguir a otro.
- * Actualiza los contadores de seguidores y seguidos en una transacción.
- * Es idempotente: si no se seguía, retorna mensaje informativo sin error.
- *
- * @param {string} userIdToUnfollow - ID del usuario que se desea dejar de seguir
- * @param {string} followerId - ID del usuario que realiza la acción
- * @returns {Promise<{ message: string }>} Mensaje de resultado
- * @throws {Error} Error genérico de base de datos (excepto no encontrado P2025)
  */
 const unfollowUser = async (userIdToUnfollow, followerId) => {
   try {
@@ -80,8 +77,8 @@ const unfollowUser = async (userIdToUnfollow, followerId) => {
       }),
     ]);
 
-    const completeUpdated = await getUserById(userIdToUnfollow);
-    await syncUserToMeili(completeUpdated);
+    await syncUserToMeili(userIdToUnfollow);
+    await syncUserToMeili(followerId);
 
     return {
       message: "Has dejado de seguir al usuario",

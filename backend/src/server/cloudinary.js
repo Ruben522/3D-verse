@@ -1,8 +1,11 @@
 import { v2 as cloudinary } from 'cloudinary';
-import pkg from 'multer-storage-cloudinary';
 import multer from 'multer';
 import 'dotenv/config';
-const { CloudinaryStorage } = pkg;
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+// ... (El resto de tu código se queda igual) ...
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
