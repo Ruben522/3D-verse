@@ -12,7 +12,10 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
+cloudinary.api.ping((error, result) => {
+    if (error) console.error("❌ CLOUDINARY ERROR: No se puede conectar:", error);
+    else console.log("✅ CLOUDINARY CONECTADO EXITOSAMENTE");
+});
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
