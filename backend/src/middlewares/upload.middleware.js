@@ -1,7 +1,17 @@
 import multer from "multer";
 import path from "path";
-import { cloudinary } from "../config/cloudinary.js"; // <-- Ajusta esta ruta si tu cloudinary.js está en otra carpeta
-import CloudinaryStorage from "../config/cloudinaryBridge.cjs"; // <-- ¡NUESTRO PUENTE MÁGICO!
+import { cloudinary } from "../server/cloudinary.js"; // Tu conexión a Cloudinary
+
+// 🪄 MAGIA NEGRA: Extraemos la librería sin importar cómo venga empaquetada
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const multerStoragePkg = require("multer-storage-cloudinary");
+
+// Buscamos el constructor en todas sus formas posibles (por si está escondido en .default)
+const CloudinaryStorage = multerStoragePkg.CloudinaryStorage || (multerStoragePkg.default && multerStoragePkg.default.CloudinaryStorage) || multerStoragePkg;
+
+// Ponemos un chivato para confirmar que lo ha encontrado
+console.log("=== VERIFICANDO CONSTRUCTOR ===", typeof CloudinaryStorage);
 
 /**
  * 1. CONFIGURACIÓN DEL STORAGE DE CLOUDINARY
