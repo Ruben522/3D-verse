@@ -1,6 +1,7 @@
 import multer from "multer";
 import path from "path";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
+import pkg from "multer-storage-cloudinary";
+const { CloudinaryStorage } = pkg;
 import { cloudinary } from "../server/cloudinary.js";
 /**
  * 1. CONFIGURACIÓN DEL STORAGE DE CLOUDINARY
