@@ -18,7 +18,7 @@ const storage = new CloudinaryStorage({
 
         return {
             folder: `3dverse/models/${userId}`,
-            resource_type: isImage ? "image" : "raw",
+            resource_type: "auto", // Cloudinary detecta el tipo automáticamente
             public_id: `${Date.now()}_${cleanName}`,
         };
     },

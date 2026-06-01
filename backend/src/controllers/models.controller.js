@@ -39,6 +39,8 @@ const formatUploadedFiles = (files) => {
 
 const uploadModel = async (req, res) => {
     try {
+        console.log("=== 📦 ARCHIVOS RECIBIDOS DE MULTER ===");
+        console.log(JSON.stringify(req.files, null, 2));
         const formattedFiles = formatUploadedFiles(req.files);
 
         sendSuccess(
