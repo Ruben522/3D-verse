@@ -61,7 +61,7 @@ const uploadMainImageFile = multer({ storage: storage, fileFilter: filterImages 
 const uploadMainFileReplacement = multer({ storage: storage, fileFilter: filter3D });
 
 console.log("=== CONFIGURANDO MULTER CON CLOUDINARY ===");
-const uploadModelFile = multer({ storage: storage, fileFilter: filterAll });
+//const uploadModelFile = multer({ storage: storage, fileFilter: filterAll });
 const modelUploadFields = uploadModelFile.fields([
     { name: "main_file", maxCount: 1 },
     { name: "cover_image", maxCount: 1 },
