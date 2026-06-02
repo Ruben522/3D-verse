@@ -39,44 +39,26 @@ const formatUploadedFiles = (files) => {
 
 const uploadModel = async (req, res) => {
     try {
-        console.log("=== 📦 1. ARCHIVOS RECIBIDOS DE MULTER ===");
-        // Imprimimos la estructura completa para ver si Cloudinary oculta algo
-        console.log(JSON.stringify(req.files, null, 2));
-
         if (!req.files || !req.files["main_file"]) {
             return sendError(res, "El archivo principal 3D es obligatorio.", 400);
         }
 
-        console.log("=== ⚙️ 2. FORMATEANDO ARCHIVOS ===");
-
         const formattedFiles = {
             main_file: req.files["main_file"][0].path,
             cover_image: req.files["cover_image"] ? req.files["cover_image"][0].path : null,
-
-            // Protegemos el mapeo por si el array viene vacío
             parts: (req.files["parts"] || []).map((file, index) => {
                 console.log(`Procesando parte ${index + 1}:`, file.originalname);
                 return {
-                    // Extraemos el nombre limpiamente
                     part_name: (file.originalname || file.filename || `parte_${index}`).split(".")[0],
                     file_url: file.path,
-                    // 🔥 LA CLAVE: Cloudinary a veces usa 'bytes' en vez de 'size'. 
-                    // Ponemos 0 de respaldo para que Prisma nunca reciba un 'undefined'
                     file_size: file.size || file.bytes || 0,
                 };
             }),
 
-            // Mapeamos la galería con seguridad
             gallery: (req.files["gallery"] || []).map(file => file.path),
         };
-
-        console.log("=== ✅ 3. ARCHIVOS LISTOS PARA LA BASE DE DATOS ===");
-        console.log(JSON.stringify(formattedFiles, null, 2));
-
         sendSuccess(res, "Archivos subidos correctamente a Cloudinary", formattedFiles, 201);
     } catch (error) {
-        // Atrapamos cualquier error inesperado y lo mostramos en la consola de Render
-        console.error("❌ ERROR CRÍTICO EN UPLOADMODEL:", error);
         sendError(res, error.message || "Error procesando los archivos múltiples", 500);
     }
 };

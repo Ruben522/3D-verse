@@ -8,17 +8,12 @@ const multerStoragePkg = require("multer-storage-cloudinary");
 
 const CloudinaryStorage = multerStoragePkg.CloudinaryStorage || (multerStoragePkg.default && multerStoragePkg.default.CloudinaryStorage) || multerStoragePkg;
 
-/**
- * 1. CONFIGURACIÓN DEL STORAGE DE CLOUDINARY
- */
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
         const isImage = file.mimetype.startsWith("image/");
         const userId = req.user?.id || "guest";
         const cleanName = file.originalname.split(".")[0].replace(/\s/g, "_");
-
-        // 🔥 ARREGLO 1: Añadimos un aleatorio para que no choquen los nombres al subir múltiples
         const randomStr = Math.floor(Math.random() * 100000);
 
         return {
@@ -39,27 +34,22 @@ const filterAll = createFilter([".stl", ".glb", ".obj", ".png", ".jpg", ".jpeg"]
 const filterImages = createFilter([".png", ".jpg", ".jpeg"], "Solo imágenes");
 const filter3D = createFilter([".stl", ".glb", ".obj"], "Solo archivos 3D");
 
-const uploadModelFile = multer({ storage: storage, fileFilter: filterAll });
-const uploadImageFile = multer({ storage: storage, fileFilter: filterImages });
-const uploadPartsFile = multer({ storage: storage, fileFilter: filter3D });
-const uploadMainImageFile = multer({ storage: storage, fileFilter: filterImages });
-const uploadMainFileReplacement = multer({ storage: storage, fileFilter: filter3D });
-
-const rawModelUploadFields = uploadModelFile.fields([
-    { name: "main_file", maxCount: 1 },
-    { name: "cover_image", maxCount: 1 },
-    { name: "parts", maxCount: 10 },
-    { name: "gallery", maxCount: 10 },
-]);
-
-
-const MAX_SIZE = 90 * 1024 * 1024;
+// 🔥 ARREGLO: Declaramos los límites y las variables UNA SOLA VEZ
+const MAX_SIZE = 90 * 1024 * 1024; // 90 MB
 
 const uploadModelFile = multer({ storage: storage, fileFilter: filterAll, limits: { fileSize: MAX_SIZE } });
 const uploadImageFile = multer({ storage: storage, fileFilter: filterImages, limits: { fileSize: MAX_SIZE } });
 const uploadPartsFile = multer({ storage: storage, fileFilter: filter3D, limits: { fileSize: MAX_SIZE } });
 const uploadMainImageFile = multer({ storage: storage, fileFilter: filterImages, limits: { fileSize: MAX_SIZE } });
 const uploadMainFileReplacement = multer({ storage: storage, fileFilter: filter3D, limits: { fileSize: MAX_SIZE } });
+
+// Una vez declaradas, ya podemos usarlas
+const rawModelUploadFields = uploadModelFile.fields([
+    { name: "main_file", maxCount: 1 },
+    { name: "cover_image", maxCount: 1 },
+    { name: "parts", maxCount: 10 },
+    { name: "gallery", maxCount: 10 },
+]);
 
 const modelUploadFields = (req, res, next) => {
     rawModelUploadFields(req, res, (err) => {
@@ -76,6 +66,9 @@ const modelUploadFields = (req, res, next) => {
 
 const createUploadWrapper = (uploadFn, limitErrorMsg) => (req, res, next) => {
     uploadFn(req, res, (err) => {
+        if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({ error: "El archivo excede el tamaño máximo permitido de 90MB." });
+        }
         if (err instanceof multer.MulterError && err.code === "LIMIT_UNEXPECTED_FILE" && limitErrorMsg) {
             return res.status(400).json({ error: limitErrorMsg });
         }

@@ -298,6 +298,20 @@ const ModelsMeiliContext = ({ children }) => {
     }, [apiUrl, api, currentUser, isAdmin, categories, showMessage, navigate]);
 
     const editModel = async (id) => {
+
+        const sizeError = validateFileSize(uploadFiles, t);
+        if (sizeError) {
+            showMessage(sizeError, "warning");
+            return false;
+        }
+
+        const dataError = validateUploadData(uploadData, uploadFiles, true, t);
+        if (dataError) {
+            showMessage(dataError, "warning");
+            setExpandedSections(['info', 'files', 'extras']);
+            return false;
+        }
+
         setIsUploading(true);
         try {
             if (uploadFiles.main_image) {
@@ -342,30 +356,16 @@ const ModelsMeiliContext = ({ children }) => {
         return formData;
     };
 
-    const validateFileSize = (fileOrArray) => {
-        const getFileSize = (fileOrArray) => {
-            if (!fileOrArray) return 0;
-            if (Array.isArray(fileOrArray)) return fileOrArray.reduce((acc, file) => acc + (file.size || 0), 0);
-            return fileOrArray.size || 0;
-        };
-
-        const totalSize = getFileSize(uploadFiles.main_file) +
-            getFileSize(uploadFiles.main_image) +
-            getFileSize(uploadFiles.gallery) +
-            getFileSize(uploadFiles.parts);
-
-        if (totalSize > 90 * 1024 * 1024) {
-            const sizeMB = (totalSize / (1024 * 1024)).toFixed(1);
-            showMessage(`Límite superado: Tus archivos pesan ${sizeMB}MB. El máximo es 90MB.`, "warning");
+    const uploadModel = async () => {
+        const sizeError = validateFileSize(uploadFiles, t);
+        if (sizeError) {
+            showMessage(sizeError, "warning");
             return false;
         }
-    };
 
-    const uploadModel = async () => {
-        validateFileSize(uploadFiles);
-        const validation = validateUploadData(uploadData, uploadFiles);
-        if (!validation.isValid) {
-            setUploadErrors(validation.errors);
+        const dataError = validateUploadData(uploadData, uploadFiles, false, t);
+        if (dataError) {
+            showMessage(dataError, "warning");
             setExpandedSections(['info', 'files', 'extras']);
             return false;
         }
