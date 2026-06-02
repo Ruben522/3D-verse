@@ -28,6 +28,7 @@
         "jsonwebtoken": "^9.0.3",
         "meilisearch": "^0.57.0",
         "multer": "^2.1.0",
+        "multer-storage-cloudinary": "^4.0.0",
         "multer-storage-cloudinary-v2": "^1.0.3",
         "node-pg-migrate": "^8.0.4",
         "pg": "^8.18.0"
