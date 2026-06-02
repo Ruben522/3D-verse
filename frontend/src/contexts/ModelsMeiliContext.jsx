@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useCallback } from "react";
 import useUsers from "../hooks/useUsers.js";
 import useAPI from "../hooks/useAPI.js";
 import { useNavigate } from "react-router-dom";
-import { validateUploadData } from "../utils/uploadValidations";
+import { validateUploadData, validateFileSize } from "../utils/uploadValidations";
 import useMessage from "../hooks/useMessage.js";
 import { normalizeMeiliHit, normalizeModelData } from "../utils/normalizers";
 import { modelsIndex } from "../services/meiliClient.js";
