@@ -64,7 +64,9 @@ const UploadModel = () => {
                         subtittle={t('messages.post_model_desc')}
                     />
                 </div>
-
+                <div className="bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 px-3 py-1.5 rounded-lg text-sm font-bold border border-primary-200 dark:border-primary-800">
+                    Max: 90MB
+                </div>
                 <div className="flex flex-col gap-6">
                     <AccordionSection
                         id="info"

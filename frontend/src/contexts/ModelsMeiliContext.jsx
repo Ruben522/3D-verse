@@ -342,7 +342,27 @@ const ModelsMeiliContext = ({ children }) => {
         return formData;
     };
 
+    const validateFileSize = (fileOrArray) => {
+        const getFileSize = (fileOrArray) => {
+            if (!fileOrArray) return 0;
+            if (Array.isArray(fileOrArray)) return fileOrArray.reduce((acc, file) => acc + (file.size || 0), 0);
+            return fileOrArray.size || 0;
+        };
+
+        const totalSize = getFileSize(uploadFiles.main_file) +
+            getFileSize(uploadFiles.main_image) +
+            getFileSize(uploadFiles.gallery) +
+            getFileSize(uploadFiles.parts);
+
+        if (totalSize > 90 * 1024 * 1024) {
+            const sizeMB = (totalSize / (1024 * 1024)).toFixed(1);
+            showMessage(`Límite superado: Tus archivos pesan ${sizeMB}MB. El máximo es 90MB.`, "warning");
+            return false;
+        }
+    };
+
     const uploadModel = async () => {
+        validateFileSize(uploadFiles);
         const validation = validateUploadData(uploadData, uploadFiles);
         if (!validation.isValid) {
             setUploadErrors(validation.errors);
@@ -353,8 +373,6 @@ const ModelsMeiliContext = ({ children }) => {
         setIsUploading(true);
         try {
             const serverUrlsResponse = await api.postForm(`${backendUrl}/models/upload`, buildUploadFormData());
-
-            console.log("Respuesta de subida de archivos (serverUrlsResponse):", serverUrlsResponse);
 
             const serverUrls = serverUrlsResponse.data || serverUrlsResponse;
 
@@ -372,16 +390,9 @@ const ModelsMeiliContext = ({ children }) => {
                 parts: serverUrls.parts || [],
             };
 
-            console.log("Datos que vamos a mandar para crear el modelo (finalData):", finalData);
-
             const responseDB = await api.post(`${backendUrl}/models`, finalData);
-
-            console.log("Respuesta tras crear el modelo (responseDB):", responseDB);
-
             const newModel = responseDB.data || responseDB;
             const newModelId = newModel.id;
-
-            console.log("ID Final Extraído (newModelId):", newModelId);
 
             if (!newModelId) {
                 throw new Error("El backend no devolvió un ID válido para el modelo.");
@@ -392,12 +403,10 @@ const ModelsMeiliContext = ({ children }) => {
                     api.post(`${backendUrl}/tags/model/${newModelId}`, { name: tagStr }).catch(() => null)
                 ));
             }
-
             clearUploadForm();
             navigate(`/models/${newModelId}`);
             return true;
         } catch (error) {
-            console.error("Error completo al subir el modelo:", error);
             showMessage(t("models_context.model_error"), "error");
             return false;
         } finally {
@@ -521,6 +530,7 @@ const ModelsMeiliContext = ({ children }) => {
         prepararEdicion: prepareEdit,
         editarModelo: editModel,
         archivosExistentes: existingFiles,
+
     };
 
     return <modelContext.Provider value={exportData}>{children}</modelContext.Provider>;

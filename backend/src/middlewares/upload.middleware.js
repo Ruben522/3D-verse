@@ -45,7 +45,6 @@ const uploadPartsFile = multer({ storage: storage, fileFilter: filter3D });
 const uploadMainImageFile = multer({ storage: storage, fileFilter: filterImages });
 const uploadMainFileReplacement = multer({ storage: storage, fileFilter: filter3D });
 
-// 🔥 ARREGLO 2: Creamos el escudo para que no devuelva HTML si falla
 const rawModelUploadFields = uploadModelFile.fields([
     { name: "main_file", maxCount: 1 },
     { name: "cover_image", maxCount: 1 },
@@ -53,8 +52,20 @@ const rawModelUploadFields = uploadModelFile.fields([
     { name: "gallery", maxCount: 10 },
 ]);
 
+
+const MAX_SIZE = 90 * 1024 * 1024;
+
+const uploadModelFile = multer({ storage: storage, fileFilter: filterAll, limits: { fileSize: MAX_SIZE } });
+const uploadImageFile = multer({ storage: storage, fileFilter: filterImages, limits: { fileSize: MAX_SIZE } });
+const uploadPartsFile = multer({ storage: storage, fileFilter: filter3D, limits: { fileSize: MAX_SIZE } });
+const uploadMainImageFile = multer({ storage: storage, fileFilter: filterImages, limits: { fileSize: MAX_SIZE } });
+const uploadMainFileReplacement = multer({ storage: storage, fileFilter: filter3D, limits: { fileSize: MAX_SIZE } });
+
 const modelUploadFields = (req, res, next) => {
     rawModelUploadFields(req, res, (err) => {
+        if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({ error: "Has superado el límite de 90MB por subida." });
+        }
         if (err) {
             console.error("❌ ERROR OCULTO DE MULTER/CLOUDINARY:", err);
             return res.status(400).json({ error: "Error en la subida: " + err.message });

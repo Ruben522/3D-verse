@@ -17,7 +17,6 @@ async function runSeed() {
     console.log(`👤 Generando ${NUM_USERS} usuarios con avatares...`);
     const createdUsers = [];
 
-    // ¡Aquí estaba el bucle desaparecido!
     for (let i = 0; i < NUM_USERS; i++) {
       let fakeUser = await prisma.users.create({
         data: {
@@ -43,7 +42,7 @@ async function runSeed() {
         }
       });
 
-      createdUsers.push(fakeUser); // Guardamos el usuario en la lista
+      createdUsers.push(fakeUser);
     }
 
     // ==========================================
@@ -62,7 +61,6 @@ async function runSeed() {
         data: {
           title: `${faker.commerce.productAdjective()} ${randomCategory} 3D`,
           description: faker.lorem.paragraphs(2),
-          // Usamos la nueva función recomendada por Faker
           main_image_url: faker.image.url(),
           file_url: '',
           license: 'Standard',
