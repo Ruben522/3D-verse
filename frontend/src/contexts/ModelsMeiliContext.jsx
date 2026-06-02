@@ -352,20 +352,40 @@ const ModelsMeiliContext = ({ children }) => {
 
         setIsUploading(true);
         try {
-            const serverUrls = await api.postForm(`${backendUrl}/models/upload`, buildUploadFormData());
+            const serverUrlsResponse = await api.postForm(`${backendUrl}/models/upload`, buildUploadFormData());
+
+            console.log("Respuesta de subida de archivos (serverUrlsResponse):", serverUrlsResponse);
+
+            const serverUrls = serverUrlsResponse.data || serverUrlsResponse;
+
+            if (!serverUrls.main_file) {
+                throw new Error("No se recibió la URL del archivo principal de Cloudinary.");
+            }
 
             const finalData = {
                 title: uploadData.title,
                 description: uploadData.description || "",
                 categories: uploadData.categories.length > 0 ? uploadData.categories : undefined,
-                file_url: serverUrls.data?.main_file ?? serverUrls.main_file,
-                main_image_url: serverUrls.data?.cover_image ?? serverUrls.cover_image ?? null,
-                gallery: serverUrls.data?.gallery ?? serverUrls.gallery ?? [],
-                parts: serverUrls.data?.parts ?? serverUrls.parts ?? [],
+                file_url: serverUrls.main_file,
+                main_image_url: serverUrls.cover_image || null,
+                gallery: serverUrls.gallery || [],
+                parts: serverUrls.parts || [],
             };
 
+            console.log("Datos que vamos a mandar para crear el modelo (finalData):", finalData);
+
             const responseDB = await api.post(`${backendUrl}/models`, finalData);
-            const newModelId = responseDB.data?.id ?? responseDB.id;
+
+            console.log("Respuesta tras crear el modelo (responseDB):", responseDB);
+
+            const newModel = responseDB.data || responseDB;
+            const newModelId = newModel.id;
+
+            console.log("ID Final Extraído (newModelId):", newModelId);
+
+            if (!newModelId) {
+                throw new Error("El backend no devolvió un ID válido para el modelo.");
+            }
 
             if (uploadData.tags && uploadData.tags.length > 0) {
                 await Promise.all(uploadData.tags.map(tagStr =>
@@ -377,6 +397,7 @@ const ModelsMeiliContext = ({ children }) => {
             navigate(`/models/${newModelId}`);
             return true;
         } catch (error) {
+            console.error("Error completo al subir el modelo:", error);
             showMessage(t("models_context.model_error"), "error");
             return false;
         } finally {
