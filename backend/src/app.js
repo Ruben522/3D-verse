@@ -1,3 +1,4 @@
+import prisma from "./config/prisma.js";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -31,8 +32,15 @@ app.use("/downloads", downloadsRoutes);
 app.use("/model-images", modelImagesRoutes);
 app.use("/categories", categoriesRoutes);
 
-app.get("/", (req, res) => {
-    res.send("Bienvenido a la API de 3D-verse");
+app.get("/", async (req, res) => {
+    try {
+        // Consulta minúscula para mantener a Neon (la BD) despierta
+        await prisma.$queryRaw`SELECT 1`;
+        res.send("Bienvenido a la API de 3D-verse. ¡Base de datos activa! 🟢");
+    } catch (error) {
+        console.error("Error en el ping de la BD:", error);
+        res.status(500).send("Error conectando a la BD");
+    }
 });
 
 BigInt.prototype.toJSON = function () {
