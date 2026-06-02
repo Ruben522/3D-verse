@@ -1,6 +1,6 @@
 import multer from "multer";
 import path from "path";
-import { cloudinary } from "../config/cloudinary"; // Tu conexión a Cloudinary
+import { cloudinary } from "../config/cloudinary.js";
 
 // 🪄 MAGIA NEGRA: Extraemos la librería sin importar cómo venga empaquetada
 import { createRequire } from "module";
