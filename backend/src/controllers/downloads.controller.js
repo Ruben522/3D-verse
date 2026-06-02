@@ -1,195 +1,120 @@
 import archiver from "archiver";
-import fs from "fs";
-import path from "path";
-import {
-    recordDownload,
-    getDownloadsHistory,
-    getModelDownloadStats,
-    getDownloadInfo,
-} from "../services/downloads.service.js";
-import {
-    sendSuccess,
-    sendError,
-} from "../utils/helper/response.helper.js";
-import { getDisplayFileName } from "../utils/helper/file.helper.js";
+import https from "https";
+import prisma from "../config/prisma.js";
+import { recordDownload, getDownloadsHistory, getModelDownloadStats } from "../services/downloads.service.js";
+import { sendSuccess, sendError } from "../utils/helper/response.helper.js";
 
 /**
- * Añade recursivamente los archivos de una carpeta a un ZIP, limpiando nombres de archivo.
- * Ignora subcarpetas (solo archivos directos).
- *
- * @param {archiver.Archiver} archive - Instancia del ZIP en curso
- * @param {string} folderPath - Ruta absoluta de la carpeta a comprimir
- * @param {string} [zipSubFolder=""] - Subcarpeta dentro del ZIP (ej: "parts", "gallery")
+ * Añade un archivo desde una URL de Cloudinary directamente al ZIP
  */
-const appendCleanFolderToArchive = (
-    archive,
-    folderPath,
-    zipSubFolder = "",
-) => {
-    if (!fs.existsSync(folderPath)) return;
-
-    const files = fs.readdirSync(folderPath);
-    for (const file of files) {
-        const filePath = path.join(folderPath, file);
-        if (fs.statSync(filePath).isFile()) {
-            const cleanName = getDisplayFileName(file);
-            const zipPath = zipSubFolder
-                ? `${zipSubFolder}/${cleanName}`
-                : cleanName;
-            archive.file(filePath, { name: zipPath });
-        }
-    }
+const appendUrlToArchive = (archive, url, zipPath) => {
+    return new Promise((resolve, reject) => {
+        if (!url) return resolve();
+        https.get(url, (response) => {
+            if (response.statusCode !== 200) {
+                console.warn(`⚠️ No se pudo descargar: ${url}`);
+                return resolve(); // Resolvemos para no romper el resto del ZIP
+            }
+            archive.append(response, { name: zipPath });
+            response.on('end', resolve);
+            response.on('error', reject);
+        }).on('error', reject);
+    });
 };
 
-/**
- * Registra la descarga y devuelve el archivo solicitado (individual o ZIP comprimido).
- * Soporta tipos: main (por defecto), all, parts, gallery.
- * Limpia nombres de archivo y registra IP, user-agent y usuario (si autenticado).
- *
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- */
 const record = async (req, res) => {
     try {
         const { modelId } = req.params;
         const { type } = req.query;
 
-        await recordDownload(
-            modelId,
-            req.user || null,
-            req.ip,
-            req.headers["user-agent"],
-        );
+        // 1. Registramos la estadística de descarga
+        await recordDownload(modelId, req.user || null, req.ip, req.headers["user-agent"]);
 
-        const info = await getDownloadInfo(modelId);
+        // 2. Buscamos el modelo en la base de datos para obtener las URLs de Cloudinary
+        const model = await prisma.models.findUnique({
+            where: { id: modelId },
+            include: { model_parts: true, model_images: true }
+        });
 
+        if (!model) return sendError(res, "El modelo solicitado no existe.", 404);
+
+        const cleanTitle = model.title.replace(/[^a-zA-Z0-9]/g, "_");
+
+        // --- DESCARGA SIMPLE (MAIN) ---
         if (!type || type === "main") {
-            return res.download(
-                info.absolutePath,
-                info.cleanName,
-            );
+            // Truco de Cloudinary: añadir fl_attachment fuerza la descarga directa en el navegador
+            const downloadUrl = model.file_url.replace('/upload/', '/upload/fl_attachment/');
+            return res.redirect(downloadUrl);
         }
 
-        const archive = archiver("zip", {
-            zlib: { level: 9 },
-        });
-        const baseName = info.cleanName.split(".")[0];
-
-        res.attachment(`${baseName}_${type}.zip`);
+        // --- DESCARGAS ZIP MULTIPLES ---
+        res.attachment(`${cleanTitle}_${type}.zip`);
+        const archive = archiver("zip", { zlib: { level: 9 } });
         archive.pipe(res);
 
-        if (type === "all") {
-            appendCleanFolderToArchive(
-                archive,
-                info.modelFolder,
-            );
-            appendCleanFolderToArchive(
-                archive,
-                path.join(info.modelFolder, "parts"),
-                "parts",
-            );
-            appendCleanFolderToArchive(
-                archive,
-                path.join(info.modelFolder, "gallery"),
-                "gallery",
-            );
-        } else if (type === "parts") {
-            const partsDir = path.join(
-                info.modelFolder,
-                "parts",
-            );
-            if (!fs.existsSync(partsDir)) {
-                return sendError(
-                    res,
-                    "No hay partes adicionales.",
-                    404,
-                );
+        const downloadPromises = [];
+
+        if (type === "all" || type === "parts") {
+            if (type === "all" && model.file_url) {
+                const ext = model.file_url.split('.').pop();
+                downloadPromises.push(appendUrlToArchive(archive, model.file_url, `${cleanTitle}_main.${ext}`));
             }
-            appendCleanFolderToArchive(archive, partsDir);
-        } else if (type === "gallery") {
-            const galleryDir = path.join(
-                info.modelFolder,
-                "gallery",
-            );
-            if (!fs.existsSync(galleryDir)) {
-                return sendError(
-                    res,
-                    "No hay galería disponible.",
-                    404,
-                );
+
+            if (model.model_parts && model.model_parts.length > 0) {
+                model.model_parts.forEach((part, index) => {
+                    const ext = part.file_url.split('.').pop();
+                    const partName = part.part_name ? part.part_name.replace(/[^a-zA-Z0-9]/g, "_") : `parte_${index}`;
+                    downloadPromises.push(appendUrlToArchive(archive, part.file_url, `parts/${partName}.${ext}`));
+                });
+            } else if (type === "parts") {
+                return sendError(res, "No hay partes adicionales.", 404);
             }
-            appendCleanFolderToArchive(archive, galleryDir);
-        } else {
-            return sendError(
-                res,
-                "Tipo de descarga no válido. Usa: main, all, parts o gallery.",
-                400,
-            );
         }
 
+        if (type === "all" || type === "gallery") {
+            if (model.model_images && model.model_images.length > 0) {
+                model.model_images.forEach((img, index) => {
+                    const ext = img.image_url.split('.').pop();
+                    downloadPromises.push(appendUrlToArchive(archive, img.image_url, `gallery/imagen_${index + 1}.${ext}`));
+                });
+            } else if (type === "gallery") {
+                return sendError(res, "No hay galería disponible.", 404);
+            }
+        }
+
+        if (!["main", "all", "parts", "gallery"].includes(type)) {
+            return sendError(res, "Tipo de descarga no válido.", 400);
+        }
+
+        // Esperamos a que todos los streams de Cloudinary se añadan al ZIP
+        await Promise.all(downloadPromises);
         await archive.finalize();
+
     } catch (error) {
+        console.error("❌ Error en descarga:", error);
         if (!res.headersSent) {
-            const status = error.message.includes(
-                "El modelo solicitado no existe",
-            )
-                ? 404
-                : 500;
-            sendError(res, error.message + ".", status);
+            sendError(res, "Error al procesar la descarga. " + error.message, 500);
         }
     }
 };
 
-/**
- * Obtiene el historial paginado de descargas del usuario autenticado.
- * Requiere autenticación.
- *
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- */
 const getUserHistory = async (req, res) => {
+    // ... tu código se queda igual ...
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
-
-        const history = await getDownloadsHistory(
-            req.user.id,
-            { page, limit },
-        );
-        sendSuccess(
-            res,
-            "Historial de descargas recuperado correctamente.",
-            history,
-        );
-    } catch (error) {
-        sendError(res, error.message + ".", 500);
-    }
+        const history = await getDownloadsHistory(req.user.id, { page, limit });
+        sendSuccess(res, "Historial de descargas recuperado correctamente.", history);
+    } catch (error) { sendError(res, error.message + ".", 500); }
 };
 
-/**
- * Obtiene estadísticas detalladas de descargas de un modelo (total, únicos, anónimos, etc.).
- * Requiere ser propietario del modelo o administrador.
- *
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- */
 const getModelStats = async (req, res) => {
+    // ... tu código se queda igual ...
     try {
-        const stats = await getModelDownloadStats(
-            req.params.modelId,
-            req.user,
-        );
-        sendSuccess(
-            res,
-            "Estadísticas de descargas recuperadas correctamente.",
-            stats,
-        );
+        const stats = await getModelDownloadStats(req.params.modelId, req.user);
+        sendSuccess(res, "Estadísticas de descargas recuperadas correctamente.", stats);
     } catch (error) {
-        const status = error.message.includes(
-            "El modelo solicitado no existe",
-        )
-            ? 404
-            : 403;
+        const status = error.message.includes("El modelo") ? 404 : 403;
         sendError(res, error.message + ".", status);
     }
 };

@@ -2,16 +2,11 @@ import multer from "multer";
 import path from "path";
 import { cloudinary } from "../config/cloudinary.js";
 
-// 🪄 MAGIA NEGRA: Extraemos la librería sin importar cómo venga empaquetada
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const multerStoragePkg = require("multer-storage-cloudinary");
 
-// Buscamos el constructor en todas sus formas posibles (por si está escondido en .default)
 const CloudinaryStorage = multerStoragePkg.CloudinaryStorage || (multerStoragePkg.default && multerStoragePkg.default.CloudinaryStorage) || multerStoragePkg;
-
-// Ponemos un chivato para confirmar que lo ha encontrado
-console.log("=== VERIFICANDO CONSTRUCTOR ===", typeof CloudinaryStorage);
 
 /**
  * 1. CONFIGURACIÓN DEL STORAGE DE CLOUDINARY
@@ -23,49 +18,51 @@ const storage = new CloudinaryStorage({
         const userId = req.user?.id || "guest";
         const cleanName = file.originalname.split(".")[0].replace(/\s/g, "_");
 
+        // 🔥 ARREGLO 1: Añadimos un aleatorio para que no choquen los nombres al subir múltiples
+        const randomStr = Math.floor(Math.random() * 100000);
+
         return {
             folder: `3dverse/models/${userId}`,
             resource_type: "auto",
-            public_id: `${Date.now()}_${cleanName}`,
+            public_id: `${Date.now()}_${randomStr}_${cleanName}`,
         };
     },
 });
 
-/**
- * 2. FILTROS DE EXTENSIÓN
- */
 const createFilter = (allowedTypes, errorMsg) => (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    if (allowedTypes.includes(ext)) {
-        cb(null, true);
-    } else {
-        cb(new Error(errorMsg));
-    }
+    if (allowedTypes.includes(ext)) cb(null, true);
+    else cb(new Error(errorMsg));
 };
 
 const filterAll = createFilter([".stl", ".glb", ".obj", ".png", ".jpg", ".jpeg"], "Solo archivos 3D o imágenes");
 const filterImages = createFilter([".png", ".jpg", ".jpeg"], "Solo imágenes");
 const filter3D = createFilter([".stl", ".glb", ".obj"], "Solo archivos 3D");
 
-/**
- * 3. INSTANCIAS DE MULTER
- */
 const uploadModelFile = multer({ storage: storage, fileFilter: filterAll });
 const uploadImageFile = multer({ storage: storage, fileFilter: filterImages });
 const uploadPartsFile = multer({ storage: storage, fileFilter: filter3D });
 const uploadMainImageFile = multer({ storage: storage, fileFilter: filterImages });
 const uploadMainFileReplacement = multer({ storage: storage, fileFilter: filter3D });
 
-const modelUploadFields = uploadModelFile.fields([
+// 🔥 ARREGLO 2: Creamos el escudo para que no devuelva HTML si falla
+const rawModelUploadFields = uploadModelFile.fields([
     { name: "main_file", maxCount: 1 },
     { name: "cover_image", maxCount: 1 },
     { name: "parts", maxCount: 10 },
     { name: "gallery", maxCount: 10 },
 ]);
 
-/**
- * 4. WRAPPERS DE ERRORES
- */
+const modelUploadFields = (req, res, next) => {
+    rawModelUploadFields(req, res, (err) => {
+        if (err) {
+            console.error("❌ ERROR OCULTO DE MULTER/CLOUDINARY:", err);
+            return res.status(400).json({ error: "Error en la subida: " + err.message });
+        }
+        next();
+    });
+};
+
 const createUploadWrapper = (uploadFn, limitErrorMsg) => (req, res, next) => {
     uploadFn(req, res, (err) => {
         if (err instanceof multer.MulterError && err.code === "LIMIT_UNEXPECTED_FILE" && limitErrorMsg) {
@@ -82,14 +79,7 @@ const handleMainImageReplacement = createUploadWrapper(uploadMainImageFile.singl
 const handleMainFileReplacement = createUploadWrapper(uploadMainFileReplacement.single("main_file"), "Solo 1 archivo 3D.");
 
 export {
-    uploadModelFile,
-    modelUploadFields,
-    uploadImageFile,
-    uploadPartsFile,
-    uploadMainImageFile,
-    uploadMainFileReplacement,
-    handleMultipleImagesUpload,
-    handleMultiplePartsUpload,
-    handleMainImageReplacement,
-    handleMainFileReplacement,
+    uploadModelFile, modelUploadFields, uploadImageFile, uploadPartsFile,
+    uploadMainImageFile, uploadMainFileReplacement, handleMultipleImagesUpload,
+    handleMultiplePartsUpload, handleMainImageReplacement, handleMainFileReplacement,
 };
