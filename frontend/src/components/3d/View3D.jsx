@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stage, Environment } from "@react-three/drei"; 
+import { OrbitControls, Stage, Environment } from "@react-three/drei";
 import Model3D from "./Model3D";
 
 const View3D = ({ currentModelUrl, color, selectedPart, onPartsDetected }) => {
@@ -11,13 +11,13 @@ const View3D = ({ currentModelUrl, color, selectedPart, onPartsDetected }) => {
                     <Suspense fallback={null}>
                         <Stage intensity={0.5} environment={null} adjustCamera={1.2}>
                             <Model3D
-                                modelPath={currentModelUrl} 
+                                modelPath={currentModelUrl}
                                 currentColor={color}
                                 selectedPart={selectedPart}
                                 onPartsDetected={onPartsDetected}
                             />
                         </Stage>
-                        <Environment files="/textures/potsdamer_platz_1k.hdr" />
+                        <Environment preset="city" background />
                         <OrbitControls makeDefault />
                     </Suspense>
                 </Canvas>
