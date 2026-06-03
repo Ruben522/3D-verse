@@ -1,28 +1,20 @@
 import multer from "multer";
 import path from "path";
-import { cloudinary } from "../config/cloudinary.js";
+import fs from "fs";
 
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const multerStoragePkg = require("multer-storage-cloudinary");
+// Creamos la carpeta temporal si no existe
+const uploadDir = path.join(process.cwd(), 'uploads_temp');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
-const CloudinaryStorage = multerStoragePkg.CloudinaryStorage || (multerStoragePkg.default && multerStoragePkg.default.CloudinaryStorage) || multerStoragePkg;
-
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: async (req, file) => {
-        const isImage = file.mimetype.startsWith("image/");
-        const userId = req.user?.id || "guest";
-        const cleanName = file.originalname.split(".")[0].replace(/\s/g, "_");
+// Guardamos en disco temporalmente para no saturar la memoria RAM de Render
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadDir),
+    filename: (req, file, cb) => {
         const randomStr = Math.floor(Math.random() * 100000);
-
-        return {
-            folder: `3dverse/models/${userId}`,
-            resource_type: "auto",
-            public_id: `${Date.now()}_${randomStr}_${cleanName}`,
-            chunk_size: 6000000
-        };
-    },
+        cb(null, `${Date.now()}_${randomStr}_${file.originalname}`);
+    }
 });
 
 const createFilter = (allowedTypes, errorMsg) => (req, file, cb) => {
@@ -35,7 +27,7 @@ const filterAll = createFilter([".stl", ".glb", ".obj", ".png", ".jpg", ".jpeg"]
 const filterImages = createFilter([".png", ".jpg", ".jpeg"], "Solo imágenes");
 const filter3D = createFilter([".stl", ".glb", ".obj"], "Solo archivos 3D");
 
-const MAX_SIZE = 90 * 1024 * 1024;
+const MAX_SIZE = 90 * 1024 * 1024; // 90 MB (Supabase lo aguantará perfectamente)
 
 const uploadModelFile = multer({ storage: storage, fileFilter: filterAll, limits: { fileSize: MAX_SIZE } });
 const uploadImageFile = multer({ storage: storage, fileFilter: filterImages, limits: { fileSize: MAX_SIZE } });
@@ -53,11 +45,11 @@ const rawModelUploadFields = uploadModelFile.fields([
 const modelUploadFields = (req, res, next) => {
     rawModelUploadFields(req, res, (err) => {
         if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
-            return res.status(400).json({ error: "Has superado el límite de 90MB por subida." });
+            return res.status(400).json({ error: "Has superado el límite de 90MB por archivo." });
         }
         if (err) {
-            console.error("❌ ERROR OCULTO DE MULTER/CLOUDINARY:", err);
-            return res.status(400).json({ error: "Error en la subida: " + err.message });
+            console.error("❌ ERROR OCULTO DE MULTER:", err);
+            return res.status(400).json({ error: "Error procesando archivos: " + err.message });
         }
         next();
     });
@@ -66,7 +58,7 @@ const modelUploadFields = (req, res, next) => {
 const createUploadWrapper = (uploadFn, limitErrorMsg) => (req, res, next) => {
     uploadFn(req, res, (err) => {
         if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
-            return res.status(400).json({ error: "El archivo excede el tamaño máximo permitido de 90MB." });
+            return res.status(400).json({ error: "El archivo excede el tamaño máximo permitido." });
         }
         if (err instanceof multer.MulterError && err.code === "LIMIT_UNEXPECTED_FILE" && limitErrorMsg) {
             return res.status(400).json({ error: limitErrorMsg });

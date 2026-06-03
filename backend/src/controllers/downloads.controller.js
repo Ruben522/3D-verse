@@ -4,16 +4,13 @@ import prisma from "../config/prisma.js";
 import { recordDownload, getDownloadsHistory, getModelDownloadStats } from "../services/downloads.service.js";
 import { sendSuccess, sendError } from "../utils/helper/response.helper.js";
 
-/**
- * Añade un archivo desde una URL de Cloudinary directamente al ZIP
- */
 const appendUrlToArchive = (archive, url, zipPath) => {
     return new Promise((resolve, reject) => {
         if (!url) return resolve();
         https.get(url, (response) => {
             if (response.statusCode !== 200) {
                 console.warn(`⚠️ No se pudo descargar: ${url}`);
-                return resolve(); // Resolvemos para no romper el resto del ZIP
+                return resolve();
             }
             archive.append(response, { name: zipPath });
             response.on('end', resolve);
@@ -27,10 +24,8 @@ const record = async (req, res) => {
         const { modelId } = req.params;
         const { type } = req.query;
 
-        // 1. Registramos la estadística de descarga
         await recordDownload(modelId, req.user || null, req.ip, req.headers["user-agent"]);
 
-        // 2. Buscamos el modelo en la base de datos para obtener las URLs de Cloudinary
         const model = await prisma.models.findUnique({
             where: { id: modelId },
             include: { model_parts: true, model_images: true }
@@ -40,14 +35,11 @@ const record = async (req, res) => {
 
         const cleanTitle = model.title.replace(/[^a-zA-Z0-9]/g, "_");
 
-        // --- DESCARGA SIMPLE (MAIN) ---
         if (!type || type === "main") {
-            // Truco de Cloudinary: añadir fl_attachment fuerza la descarga directa en el navegador
             const downloadUrl = model.file_url.replace('/upload/', '/upload/fl_attachment/');
             return res.redirect(downloadUrl);
         }
 
-        // --- DESCARGAS ZIP MULTIPLES ---
         res.attachment(`${cleanTitle}_${type}.zip`);
         const archive = archiver("zip", { zlib: { level: 9 } });
         archive.pipe(res);
@@ -86,7 +78,6 @@ const record = async (req, res) => {
             return sendError(res, "Tipo de descarga no válido.", 400);
         }
 
-        // Esperamos a que todos los streams de Cloudinary se añadan al ZIP
         await Promise.all(downloadPromises);
         await archive.finalize();
 
@@ -99,7 +90,6 @@ const record = async (req, res) => {
 };
 
 const getUserHistory = async (req, res) => {
-    // ... tu código se queda igual ...
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
@@ -109,7 +99,6 @@ const getUserHistory = async (req, res) => {
 };
 
 const getModelStats = async (req, res) => {
-    // ... tu código se queda igual ...
     try {
         const stats = await getModelDownloadStats(req.params.modelId, req.user);
         sendSuccess(res, "Estadísticas de descargas recuperadas correctamente.", stats);

@@ -16,10 +16,9 @@ import {
     sendError,
 } from "../utils/helper/response.helper.js";
 import { syncModelToMeili, deleteModelFromMeili } from '../server/meilisearchSync.js';
+import fs from "fs";
+import { supabase } from "../config/supabase.js";
 
-/**
- * Formatea las rutas devueltas por Cloudinary para la base de datos.
- */
 const formatUploadedFiles = (files) => {
     if (!files || !files["main_file"]) {
         throw new Error("El archivo principal 3D es obligatorio.");
@@ -37,29 +36,79 @@ const formatUploadedFiles = (files) => {
     };
 };
 
+const uploadToSupabase = async (file, folderPath) => {
+    if (!file) return null;
+
+    const cleanName = file.originalname.split(".")[0].replace(/[^a-zA-Z0-9]/g, "_");
+    const ext = file.originalname.split(".").pop();
+    const filePath = `${folderPath}/${Date.now()}_${cleanName}.${ext}`;
+
+    try {
+        const fileBuffer = fs.readFileSync(file.path);
+
+        const { error } = await supabase.storage
+            .from("models")
+            .upload(filePath, fileBuffer, {
+                contentType: file.mimetype,
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (error) throw error;
+
+        const { data } = supabase.storage.from("models").getPublicUrl(filePath);
+
+        fs.unlinkSync(file.path);
+
+        return data.publicUrl;
+    } catch (error) {
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        throw error;
+    }
+};
+
 const uploadModel = async (req, res) => {
     try {
         if (!req.files || !req.files["main_file"]) {
             return sendError(res, "El archivo principal 3D es obligatorio.", 400);
         }
 
-        const formattedFiles = {
-            main_file: req.files["main_file"][0].path,
-            cover_image: req.files["cover_image"] ? req.files["cover_image"][0].path : null,
-            parts: (req.files["parts"] || []).map((file, index) => {
-                console.log(`Procesando parte ${index + 1}:`, file.originalname);
-                return {
-                    part_name: (file.originalname || file.filename || `parte_${index}`).split(".")[0],
-                    file_url: file.path,
-                    file_size: file.size || file.bytes || 0,
-                };
-            }),
+        const userId = req.user?.id || "guest";
+        const folderPath = `3dverse/${userId}`;
+        const mainFileUrl = await uploadToSupabase(req.files["main_file"][0], folderPath);
+        const coverImageUrl = req.files["cover_image"] ? await uploadToSupabase(req.files["cover_image"][0], folderPath) : null;
 
-            gallery: (req.files["gallery"] || []).map(file => file.path),
+        const parts = [];
+        if (req.files["parts"]) {
+            for (const file of req.files["parts"]) {
+                const url = await uploadToSupabase(file, folderPath);
+                parts.push({
+                    part_name: file.originalname.split(".")[0],
+                    file_url: url,
+                    file_size: file.size
+                });
+            }
+        }
+
+        const gallery = [];
+        if (req.files["gallery"]) {
+            for (const file of req.files["gallery"]) {
+                const url = await uploadToSupabase(file, folderPath);
+                gallery.push(url);
+            }
+        }
+
+        const formattedFiles = {
+            main_file: mainFileUrl,
+            cover_image: coverImageUrl,
+            parts: parts,
+            gallery: gallery,
         };
-        sendSuccess(res, "Archivos subidos correctamente a Cloudinary", formattedFiles, 201);
+
+        sendSuccess(res, "Archivos subidos correctamente a Supabase", formattedFiles, 201);
     } catch (error) {
-        sendError(res, error.message || "Error procesando los archivos múltiples", 500);
+        console.error("❌ ERROR AL SUBIR A SUPABASE:", error);
+        sendError(res, "Error subiendo archivos a la nube: " + error.message, 500);
     }
 };
 
