@@ -29,10 +29,8 @@ const Profile = () => {
     <div className="min-h-screen pb-20 transition-colors duration-300">
 
       {(isLoadingActiveProfile || !activeProfileData) ? (
-        <div className="flex flex-col justify-center items-center min-h-[60vh]">
-          <p className="text-gray-500 dark:text-gray-400 font-bold text-xl transition-colors">
-            {t("messages.loading")}
-          </p>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loading message={t('messages.loading')} />
         </div>
       ) : (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">

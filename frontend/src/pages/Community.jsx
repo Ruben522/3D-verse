@@ -7,6 +7,7 @@ import SearchBar from '../components/common/SearchBar';
 import InicialTittle from '../components/common/InicialTittle';
 import EmptyCreatorsIcon from '../assets/icons/EmptyCreatorsIcon';
 import EmptyState from '../components/common/EmptyState';
+import Loading from '../components/common/Loading';
 
 const Community = () => {
     const {
@@ -38,21 +39,25 @@ const Community = () => {
                     />
                 </div>
 
-                <div className={`transition-all duration-300 ${isSearchingUsers ? 'opacity-50 blur-sm scale-[0.98] pointer-events-none' : 'opacity-100'}`}>
-                    {communityUsers?.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {communityUsers.map((user) => (
-                                <ProfileCard key={user.id} user={user} />
-                            ))}
-                        </div>
-                    ) : (
-                        <EmptyState
-                            icon={<EmptyCreatorsIcon />}
-                            title={t('community.no_results')}
-                            description={t('community.try_other_search')}
-                        />
-                    )}
-                </div>
+                {isLoadingCommunity ? (
+                    <Loading message={t('messages.loading')} />
+                ) : (
+                    <div className={`transition-all duration-300 ${isSearchingUsers ? 'opacity-50 blur-sm scale-[0.98] pointer-events-none' : 'opacity-100'}`}>
+                        {communityUsers?.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                {communityUsers.map((user) => (
+                                    <ProfileCard key={user.id} user={user} />
+                                ))}
+                            </div>
+                        ) : (
+                            <EmptyState
+                                icon={<EmptyCreatorsIcon />}
+                                title={t('community.no_results')}
+                                description={t('community.try_other_search')}
+                            />
+                        )}
+                    </div>
+                )}
 
                 {!isLoadingCommunity && pagination.totalPages > 1 && (
                     <div className="mt-14 flex justify-center animate-fade-in">

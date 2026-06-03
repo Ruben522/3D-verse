@@ -43,7 +43,7 @@ const Models = () => {
         </div>
 
         {isFetchingModel && models.length === 0 ? (
-          <Loading message={t('messages.loading_models', t('messages.loading'))} />
+          <Loading message={t('messages.loading')} />
         ) : (
           <div
             className={`transition-all duration-500

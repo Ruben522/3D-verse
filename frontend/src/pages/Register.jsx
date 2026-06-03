@@ -118,7 +118,7 @@ const Register = ({ onToggleView }) => {
 
           <InnputForm
             isInput={true}
-            value={isAuthLoading ? {} : t('messages.register_here')}
+            value={isAuthLoading ? t('messages.loading') : t('messages.register_here')}
             onClick={(e) => registrarse(e)}
             disabled={isAuthLoading}
             className="w-full mt-6"

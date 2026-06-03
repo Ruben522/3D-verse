@@ -27,7 +27,7 @@ const filterAll = createFilter([".stl", ".glb", ".obj", ".png", ".jpg", ".jpeg"]
 const filterImages = createFilter([".png", ".jpg", ".jpeg"], "Solo imágenes");
 const filter3D = createFilter([".stl", ".glb", ".obj"], "Solo archivos 3D");
 
-const MAX_SIZE = 90 * 1024 * 1024; // 90 MB (Supabase lo aguantará perfectamente)
+const MAX_SIZE = 50 * 1024 * 1024; // 50 MB
 
 const uploadModelFile = multer({ storage: storage, fileFilter: filterAll, limits: { fileSize: MAX_SIZE } });
 const uploadImageFile = multer({ storage: storage, fileFilter: filterImages, limits: { fileSize: MAX_SIZE } });
@@ -45,7 +45,7 @@ const rawModelUploadFields = uploadModelFile.fields([
 const modelUploadFields = (req, res, next) => {
     rawModelUploadFields(req, res, (err) => {
         if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
-            return res.status(400).json({ error: "Has superado el límite de 90MB por archivo." });
+            return res.status(400).json({ error: "Has superado el límite de 50MB por archivo." });
         }
         if (err) {
             console.error("❌ ERROR OCULTO DE MULTER:", err);

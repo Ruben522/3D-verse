@@ -278,8 +278,8 @@
         "contact_title1": "Contacto & ",
         "contact_title2": "Sobre Mí",
         "contact_desc": "Conoce al desarrollador detrás de la plataforma o envíame un correo directo."
-},
-    "administration_pages" : {
+    },
+    "administration_pages": {
         "admin_panel": "Panel de Administración",
         "admin_desc": "Gestiona usuarios, modelos y contenido de la plataforma.",
         "manage_users": "Moderar Usuarios",
@@ -324,8 +324,8 @@
         "delete_confirmation": "¿Estás seguro de que quieres eliminar este modelo? Esta acción es irreversible.",
         "edit_permission_error": "No tienes permiso para editar este modelo.",
         "prepare_edit_error": "No se pudieron cargar los datos del modelo para editar.",
-         "edit_error": "No se pudieron guardar los cambios.",
-         "upload_error": "Error al procesar tu diseño. Inténtalo de nuevo.",
+        "edit_error": "No se pudieron guardar los cambios.",
+        "upload_error": "Error al procesar tu diseño. Inténtalo de nuevo.",
         "search_error": "Error al buscar modelos, por favor intenta de nuevo",
         "sort_options": {
             "newest": "Recientes",
@@ -349,7 +349,6 @@
         "delete_error": "Error al eliminar el comentario, por favor intenta de nuevo",
         "delete_confirmation": "Eliminar este comentario?",
         "delete_success": "Comentario eliminado"
-
     },
     "contact_context": {
         "name": "Rubén",
@@ -372,7 +371,7 @@
         "toggle_like_error": "Error al actualizar tu like, por favor intenta de nuevo",
         "auth_required": "Debes iniciar sesión para dar like a los modelos"
     },
-    "community" :{
+    "community": {
         "tittle": "Comunidad de Creadores",
         "subtittle": "Descubre a los talentosos diseñadores 3D que forman parte de nuestra comunidad.",
         "search_placeholder": "Busca por nombre de usuario o biografía",
@@ -408,7 +407,6 @@
             "parts_files_title": "Partes adicionales",
             "parts_files_desc": "¿Tu diseño está dividido en partes? Súbelas aquí.",
             "no_parts": "No se han añadido partes adicionales."
-
         }
     },
     "user_settings": {
@@ -465,7 +463,6 @@
             "remove_banner": "Quitar foto del banner",
             "color": "Color del banner",
             "color_desc": "Elige un color para tu banner si no quieres usar una imagen"
-
         }
     },
     "popular_models": {
@@ -498,6 +495,15 @@
             "username_empty": "El nombre de usuario no puede estar vacío.",
             "username_too_short": "El nombre de usuario debe tener al menos 3 caracteres.",
             "username_has_spaces": "El nombre de usuario no puede contener espacios."
+        },
+        "validateFileSize": {
+            "size_exceeded1": "Límite superado: Tus archivos pesan ",
+            "size_exceeded2": "MB. El máximo es 50MB."
+        },
+        "validateUploadData": {
+            "title_required": "El título es obligatorio.",
+            "main_file_required": "Debes subir un archivo 3D principal .obj, .stl, .glb, .gltf.",
+            "main_image_required": "La imagen de portada es obligatoria."
         }
     }
 }

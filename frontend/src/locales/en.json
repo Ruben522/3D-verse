@@ -494,6 +494,15 @@
             "username_empty": "Username cannot be empty.",
             "username_too_short": "Username must be at least 3 characters long.",
             "username_has_spaces": "Username cannot contain spaces."
+        },
+        "validateFileSize": {
+            "size_exceeded1": "Limit exceeded: Your files weigh ",
+            "size_exceeded2": "MB. The maximum is 50MB."
+        },
+        "validateUploadData": {
+            "title_required": "Title is required.",
+            "main_file_required": "You must upload a main 3D file (.obj, .stl, .glb, .gltf).",
+            "main_image_required": "Main image is required."
         }
     }
 }

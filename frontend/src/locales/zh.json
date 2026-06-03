@@ -495,6 +495,15 @@
             "username_empty": "用户名不能为空。",
             "username_too_short": "用户名长度至少为3个字符。",
             "username_has_spaces": "用户名不能包含空格。"
+        },
+        "validateFileSize": {
+            "size_exceeded1": "超出限制：你的文件重 ",
+            "size_exceeded2": "MB。最大值为 50MB。"
+        },
+        "validateUploadData": {
+            "title_required": "标题是必填的。",
+            "main_file_required": "你必须上传一个主要的 3D 文件 (.obj, .stl, .glb, .gltf)。",
+            "main_image_required": "封面图片是必需的。"
         }
     }
 }
