@@ -20,6 +20,7 @@ const storage = new CloudinaryStorage({
             folder: `3dverse/models/${userId}`,
             resource_type: "auto",
             public_id: `${Date.now()}_${randomStr}_${cleanName}`,
+            chunk_size: 6000000
         };
     },
 });
@@ -34,8 +35,7 @@ const filterAll = createFilter([".stl", ".glb", ".obj", ".png", ".jpg", ".jpeg"]
 const filterImages = createFilter([".png", ".jpg", ".jpeg"], "Solo imágenes");
 const filter3D = createFilter([".stl", ".glb", ".obj"], "Solo archivos 3D");
 
-// 🔥 ARREGLO: Declaramos los límites y las variables UNA SOLA VEZ
-const MAX_SIZE = 90 * 1024 * 1024; // 90 MB
+const MAX_SIZE = 90 * 1024 * 1024;
 
 const uploadModelFile = multer({ storage: storage, fileFilter: filterAll, limits: { fileSize: MAX_SIZE } });
 const uploadImageFile = multer({ storage: storage, fileFilter: filterImages, limits: { fileSize: MAX_SIZE } });
@@ -43,7 +43,6 @@ const uploadPartsFile = multer({ storage: storage, fileFilter: filter3D, limits:
 const uploadMainImageFile = multer({ storage: storage, fileFilter: filterImages, limits: { fileSize: MAX_SIZE } });
 const uploadMainFileReplacement = multer({ storage: storage, fileFilter: filter3D, limits: { fileSize: MAX_SIZE } });
 
-// Una vez declaradas, ya podemos usarlas
 const rawModelUploadFields = uploadModelFile.fields([
     { name: "main_file", maxCount: 1 },
     { name: "cover_image", maxCount: 1 },
