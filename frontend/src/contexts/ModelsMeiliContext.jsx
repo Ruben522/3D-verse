@@ -237,6 +237,9 @@ const ModelsMeiliContext = ({ children }) => {
                 setIsUploading(true);
                 try {
                     await api.remove(`${apiUrl}/${id}`);
+
+                    setModelsData(prevModels => prevModels.filter(model => String(model.id) !== String(id)));
+
                     showMessage(t("models_context.model_delete_success"), "success");
                     clearUploadForm();
                     navigate("/profile");
