@@ -18,6 +18,7 @@ import MenuToggleIcon from "../../assets/icons/MenuToggleIcon";
 const Menu = () => {
   const { isAuthenticated, currentUser, cerrarSesion, isAdmin } = useUsers();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { showMessage } = useMessage();
   const { t } = useTranslation();
 
   const toggleMobileMenu = () => setIsMobileOpen(!isMobileOpen);
