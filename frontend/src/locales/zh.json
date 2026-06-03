@@ -408,7 +408,11 @@
         "Moda": "时尚与配饰",
         "Tecnologías": "技术与设备",
         "Videojuegos": "电子游戏",
-        "Arquitectura": "建筑"
+        "Arquitectura": "建筑",
+        "Vehiculos": "车辆",
+        "Naturaleza": "自然",
+        "Personajes": "角色",
+        "Otros": "其他"
     },
     "upload_page": {
         "parts_files": {

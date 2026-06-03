@@ -242,7 +242,11 @@ const ModelsMeiliContext = ({ children }) => {
 
                     showMessage(t("models_context.model_delete_success"), "success");
                     clearUploadForm();
-                    navigate("/profile");
+                    if (isAdmin) {
+                        navigate("/models");
+                    } else {
+                        navigate("/profile");
+                    }
                 } catch (error) {
                     console.error("Error al eliminar:", error);
                     showMessage(t("models_context.model_error"), "error");
@@ -376,11 +380,11 @@ const ModelsMeiliContext = ({ children }) => {
         setIsUploading(true);
         try {
             const serverUrlsResponse = await api.postForm(`${backendUrl}/models/upload`, buildUploadFormData());
-
-            const serverUrls = serverUrlsResponse.data || serverUrlsResponse;
+            const responseData = serverUrlsResponse.data || serverUrlsResponse;
+            const serverUrls = responseData.data || responseData;
 
             if (!serverUrls.main_file) {
-                throw new Error("No se recibió la URL del archivo principal de Cloudinary.");
+                throw new Error("No se recibió la URL del archivo principal de Supabase.");
             }
 
             const finalData = {
@@ -394,7 +398,8 @@ const ModelsMeiliContext = ({ children }) => {
             };
 
             const responseDB = await api.post(`${backendUrl}/models`, finalData);
-            const newModel = responseDB.data || responseDB;
+            const newModelData = responseDB.data || responseDB;
+            const newModel = newModelData.data || newModelData;
             const newModelId = newModel.id;
 
             if (!newModelId) {

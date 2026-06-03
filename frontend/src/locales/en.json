@@ -407,7 +407,11 @@
         "Moda y Accesorios": "Fashion & Accessories",
         "Tecnología y Gadgets": "Technology & Gadgets",
         "Videojuegos": "Video Games",
-        "Arquitectura": "Architecture"
+        "Arquitectura": "Architecture",
+        "Vehículos": "Vehicles",
+        "Naturaleza": "Nature",
+        "Personajes": "Characters",
+        "Otros": "Others"
     },
     "upload_page": {
         "parts_files": {

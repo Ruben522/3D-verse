@@ -58,17 +58,11 @@ const UploadModel = () => {
     return isAuthenticated ? (
         <div className="min-h-screen py-12 px-4 sm:px-6 pb-48 md:pb-56 transition-colors duration-300">
             <div className="max-w-4xl mx-auto flex flex-col gap-8">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 -mb-4 md:-mb-8">
+                <div className="-mb-4 md:-mb-8">
                     <InicialTittle
                         tittle={t('messages.post_model')}
                         subtittle={t('messages.post_model_desc')}
                     />
-                    <div className="inline-flex items-center bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-4 py-2 rounded-xl text-sm font-bold border border-primary-200 dark:border-primary-800 shadow-sm mt-2 sm:mt-0">
-                        <svg className="w-5 h-5 mr-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Max: 50MB
-                    </div>
                 </div>
                 <div className="flex flex-col gap-6">
                     <AccordionSection

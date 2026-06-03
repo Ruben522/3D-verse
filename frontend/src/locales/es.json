@@ -340,8 +340,9 @@
         "update_error": "Error al actualizar la categoría, por favor intenta de nuevo",
         "delete_error": "Error al eliminar la categoría, por favor intenta de nuevo",
         "delete_confirmation": "¿Estás seguro de que quieres eliminar esta categoría? Esta acción es irreversible.",
-        "update_success": "Categoría actualizada exitosamente",
-        "create_success": "Categoría creada exitosamente"
+        "update_success": "Categoría actualizada",
+        "create_success": "Categoría creada exitosamente",
+        "delete_success": "Categoría eliminada"
     },
     "comments_context": {
         "fetch_error": "Error al cargar los comentarios, por favor intenta de nuevo",
@@ -408,7 +409,11 @@
         "Moda": "Moda y Accesorios",
         "Tecnologías": "Tecnología y Gadgets",
         "Videojuegos": "Videojuegos",
-        "Arquitectura": "Arquitectura"
+        "Arquitectura": "Arquitectura",
+        "Vehiculos": "Vehículos",
+        "Naturaleza": "Naturaleza",
+        "Personajes": "Personajes",
+        "Otros": "Otros"
     },
     "upload_page": {
         "parts_files": {
