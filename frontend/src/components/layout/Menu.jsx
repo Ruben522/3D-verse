@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import useUsers from "../../hooks/useUsers.js";
+import useMessage from "../../hooks/useMessage.js";
 import Logo from "../common/Logo";
 import LanguageSelector from "../language/LanguageSelector";
 import ThemeToggle from "../common/ThemeToggle";
 import { useTranslation } from "react-i18next";
-import UserAvatarIcon from "../../assets/icons/UserAvatarIcon";
 
+import UserAvatarIcon from "../../assets/icons/UserAvatarIcon";
 import UploadIcon from "../../assets/icons/UploadIcon";
 import ExitAccountIcon from "../../assets/icons/ExitAccountIcon.jsx";
 import ExploreIcon from "../../assets/icons/ExploreIcon";
@@ -21,6 +22,13 @@ const Menu = () => {
 
   const toggleMobileMenu = () => setIsMobileOpen(!isMobileOpen);
   const closeMobileMenu = () => setIsMobileOpen(false);
+
+  const handleUploadClick = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      showMessage(t('messages.login_required_upload'), 'info');
+    }
+  };
 
   return (
     <>
@@ -63,6 +71,9 @@ const Menu = () => {
 
               <Link
                 to="/subir"
+                onClick={
+                  handleUploadClick
+                }
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold bg-white text-gray-900 dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm hover:-translate-y-0.5 transition-all duration-300"
               >
                 <UploadIcon className="w-4 h-4" />
@@ -139,7 +150,10 @@ const Menu = () => {
 
             <Link
               to="/subir"
-              onClick={closeMobileMenu}
+              onClick={(e) => {
+                handleUploadClick(e);
+                closeMobileMenu();
+              }}
               className="mt-4 mb-2 flex items-center justify-center gap-2 text-lg font-bold bg-white text-gray-900 dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 py-3.5 rounded-xl shadow-sm active:scale-95 transition-all"
             >
               <UploadIcon />

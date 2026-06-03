@@ -190,6 +190,7 @@
         "updating": "Updating...",
         "delete": "Delete",
         "confirmation_upload": "Ready to go?",
+        "login_required_upload": "You must log in to upload a model.",
         "search_placeholder": "Pot, dragons, dragon ball...",
         "confirmation_upload_desc": "Make sure you have completed all required fields.",
         "optionals_files": "Optional Files",
@@ -369,6 +370,13 @@
     "like_context": {
         "toggle_like_error": "Error updating your like, please try again",
         "auth_required": "You must log in to like models"
+    },
+    "comments_section": {
+        "add_comment_placeholder": "Write your comment here...",
+        "publish": "Publish",
+        "auth_required": "You must log in to comment",
+        "no_comments": "No comments yet. Be the first to comment!",
+        "loading_comments": "Loading comments..."
     },
     "community": {
         "tittle": "Creator Community",

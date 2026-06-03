@@ -190,6 +190,7 @@
         "save_changes_desc": "你的更改将立即生效。",
         "updating": "更新中...",
         "delete": "删除",
+        "login_required_upload": "请登录后上传模型。",
         "confirmation_upload": "准备就绪？",
         "search_placeholder": "花瓶、龙、龙珠...",
         "confirmation_upload_desc": "请确认已填写所有必填项。",
@@ -370,6 +371,13 @@
     "like_context": {
         "toggle_like_error": "更新点赞时出错，请重试",
         "auth_required": "请登录后给模型点赞"
+    },
+    "comments_section": {
+        "add_comment_placeholder": "在此处撰写你的评论...",
+        "publish": "发布",
+        "auth_required": "请登录后发表评论",
+        "no_comments": "暂无评论。成为第一个发表评论的人吧！",
+        "loading_comments": "正在加载评论..."
     },
     "community": {
         "tittle": "创作者社区",

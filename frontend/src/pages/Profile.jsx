@@ -4,6 +4,7 @@ import useUsers from "../hooks/useUsers.js";
 import ProfileHeader from "../components/users/ProfileHeader";
 import ProfileContent from "../components/users/ProfileContent";
 import { useTranslation } from "react-i18next";
+import Loading from '../components/common/Loading';
 
 const Profile = () => {
   const { username } = useParams();

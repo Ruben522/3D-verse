@@ -73,7 +73,7 @@ const LikeContext = ({ children }) => {
         }
 
         if (!isAuthenticated) {
-            showMessage(t("like_context.not_authenticated"), "warning");
+            showMessage(t("like_context.auth_required"), "warning");
             return;
         }
 

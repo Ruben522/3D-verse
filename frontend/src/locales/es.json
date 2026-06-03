@@ -190,6 +190,7 @@
         "save_changes_desc": "Tus cambios se aplicarán inmediatamente.",
         "updating": "Actualizando...",
         "delete": "Eliminar",
+        "login_required_upload": "Es necesario iniciar sesión para subir un modelo.",
         "confirmation_upload": "¿Todo listo?",
         "search_placeholder": "Maceta, dragones, dragon ball...",
         "confirmation_upload_desc": "Asegúrate de haber completado los campos obligatorios.",
@@ -370,6 +371,13 @@
     "like_context": {
         "toggle_like_error": "Error al actualizar tu like, por favor intenta de nuevo",
         "auth_required": "Debes iniciar sesión para dar like a los modelos"
+    },
+    "comments_section": {
+        "add_comment_placeholder": "Escribe tu comentario aquí...",
+        "publish": "Publicar",
+        "auth_required": "Debes iniciar sesión para comentar",
+        "no_comments": "No hay comentarios aún. ¡Sé el primero en opinar!",
+        "loading_comments": "Cargando comentarios..."
     },
     "community": {
         "tittle": "Comunidad de Creadores",
