@@ -10,7 +10,7 @@ const Viewer3DContext = ({ children }) => {
     const [isInteractive, setIsInteractive] = useState(false);
     const [detectedParts, setDetectedParts] = useState([]);
     const [selectedPart, setSelectedPart] = useState(null);
-    const [currentColor, setCurrentColor] = useState("#ffffff");
+    const [currentColor, setCurrentColor] = useState("#3b82f6");
 
     const handlePartsDetected = useCallback((newParts) => {
         setDetectedParts((prevParts) => {
@@ -29,7 +29,7 @@ const Viewer3DContext = ({ children }) => {
         setIsInteractive(false);
         setDetectedParts([]);
         setSelectedPart(null);
-        setCurrentColor(model?.mainColor || "#ffffff");
+        setCurrentColor("#3b82f6");
         setActiveUploadTab("todo");
     }, []);
 

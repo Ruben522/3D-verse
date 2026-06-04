@@ -68,7 +68,6 @@ const createModel = async (userId, data) => {
   return model;
 };
 
-// Añadimos un parámetro 'incrementViews' que por defecto es true
 const getModelById = async (modelId, incrementViews = true) => {
   let modelData;
 
