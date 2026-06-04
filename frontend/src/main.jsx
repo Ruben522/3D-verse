@@ -10,10 +10,8 @@ import LikeContext from "./contexts/LikeContext.jsx";
 import FavoriteContext from "./contexts/FavoriteContext.jsx";
 import LanguageContext from "./contexts/LanguageContext.jsx";
 import FollowContext from "./contexts/FollowContext.jsx";
-import ContactContext from "./contexts/ContactContext.jsx";
 import MessageContext from "./contexts/MessageContext.jsx";
 import ThemeContext from "./contexts/ThemeContext.jsx";
-import CommentsContext from "./contexts/CommentsContext.jsx"
 import CategoryContext from "./contexts/CategoryContext.jsx";
 
 createRoot(document.getElementById("root")).render(
@@ -28,11 +26,7 @@ createRoot(document.getElementById("root")).render(
 									<LikeContext>
 										<FavoriteContext>
 											<FollowContext>
-												<ContactContext>
-													<CommentsContext>
-														<App />
-													</CommentsContext>
-												</ContactContext>
+												<App />
 											</FollowContext>
 										</FavoriteContext>
 									</LikeContext>

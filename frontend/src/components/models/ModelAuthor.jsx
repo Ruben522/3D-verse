@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useModels from "../../hooks/useModels";
 import useUsers from "../../hooks/useUsers";
 import { useTranslation } from "react-i18next";
+import UserAvatarIcon from "../../assets/icons/UserAvatarIcon";
 
 const ModelAuthor = () => {
     const navigate = useNavigate();
@@ -31,9 +32,7 @@ const ModelAuthor = () => {
                         className="w-full h-full object-cover"
                     />
                 ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center text-white font-bold text-sm transition-colors duration-300">
-                        {currentModel.username.charAt(0).toUpperCase()}
-                    </div>
+                    <UserAvatarIcon username={currentModel.username} className="w-full h-full text-lg" />
                 )}
             </div>
 

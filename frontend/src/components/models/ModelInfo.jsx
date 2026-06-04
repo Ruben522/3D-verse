@@ -2,6 +2,7 @@ import React from "react";
 import useModels from "../../hooks/useModels";
 import CommentsSection from "../comments/CommentsSection";
 import { useTranslation } from "react-i18next";
+import CommentsContext from "../../contexts/CommentsContext";
 
 const ModelInfo = () => {
   const { currentModel, detailUI, updateDetailUI } = useModels();
@@ -42,12 +43,13 @@ const ModelInfo = () => {
           </p>
         </div>
       )}
-
-      {activeInfoTab === "comentarios" && (
-        <div className="mt-4 animate-fade-in">
-          <CommentsSection modelId={currentModel.id} />
-        </div>
-      )}
+      <CommentsContext>
+        {activeInfoTab === "comentarios" && (
+          <div className="mt-4 animate-fade-in">
+            <CommentsSection modelId={currentModel.id} />
+          </div>
+        )}
+      </CommentsContext>
     </div>
   );
 };

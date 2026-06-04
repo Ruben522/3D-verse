@@ -12,22 +12,27 @@ import Contact from "../pages/Contact";
 import Settings from "../pages/Settings";
 import Administration from "../pages/Administration";
 import AdminRoute from "./AdminRoutes";
+import SocialLayout from "./SocialLayout";
 
 const AllRoutes = () => {
 	return (
 		<Routes>
 			<Route path="/" element={<Home />} />
-			<Route path="/models" element={<Models />} />
-			<Route path="/models/:id" element={<ModelDetail />} />
 			<Route path="/login" element={<AuthPage />} />
 			<Route path="/register" element={<AuthPage />} />
-			<Route path="/profile" element={<Profile />} />
-			<Route path="/perfil/:username" element={<Profile />} />
-			<Route path="/subir" element={<UploadModel />} />
-			<Route path="/edit/:id" element={<UploadModel />} />
-			<Route path="/comunidad" element={<Community />} />
 			<Route path="/contacto" element={<Contact />} />
 			<Route path="/settings" element={<Settings />} />
+
+			<Route element={<SocialLayout />}>
+				<Route path="/models" element={<Models />} />
+				<Route path="/models/:id" element={<ModelDetail />} />
+				<Route path="/profile" element={<Profile />} />
+				<Route path="/perfil/:username" element={<Profile />} />
+				<Route path="/subir" element={<UploadModel />} />
+				<Route path="/edit/:id" element={<UploadModel />} />
+				<Route path="/comunidad" element={<Community />} />
+			</Route>
+
 			<Route path="/admin" element={<AdminRoute />}>
 				<Route path="/admin" element={<Administration />} />
 			</Route>

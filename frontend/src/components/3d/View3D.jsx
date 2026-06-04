@@ -17,7 +17,8 @@ const View3D = ({ currentModelUrl, color, selectedPart, onPartsDetected }) => {
                                 onPartsDetected={onPartsDetected}
                             />
                         </Stage>
-                        <Environment preset="city" background />
+                        <color attach="background" args={["#f9fafb"]} />
+                        <Environment preset="studio" />
                         <OrbitControls makeDefault />
                     </Suspense>
                 </Canvas>
