@@ -68,29 +68,7 @@ const createModel = async (userId, data) => {
   return model;
 };
 
-const getModelById = async (modelId) => {
-  const updatedModel = await prisma.models.update({
-    where: { id: modelId },
-    data: { views: { increment: 1 } },
-    include: {
-      users: {
-        select: {
-          id: true,
-          profile: { select: { username: true, avatar: true } },
-        },
-      },
-      model_parts: true,
-      model_images: { orderBy: { display_order: "asc" } },
-      model_tag: { include: { tags: true } },
-      model_category: { include: { categories: true } },
-      _count: { select: { model_likes: true } },
-    },
-  });
-
-  if (!updatedModel) throw new Error("Modelo no encontrado");
-  return formatModelAuthor(updatedModel);
-};
-
+// Añadimos un parámetro 'incrementViews' que por defecto es true
 const getModelById = async (modelId, incrementViews = true) => {
   let modelData;
 
