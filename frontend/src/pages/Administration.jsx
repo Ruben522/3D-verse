@@ -20,7 +20,7 @@ const Administration = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
                 <div
-                    onClick={() => navigate("/")}
+                    onClick={() => navigate("/models")}
                     className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer group flex items-center gap-5"
                 >
                     <div className="p-3 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-xl group-hover:scale-110 transition-transform">
@@ -33,7 +33,7 @@ const Administration = () => {
                 </div>
 
                 <div
-                    onClick={() => navigate("/community")}
+                    onClick={() => navigate("/comunidad")}
                     className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer group flex items-center gap-5"
                 >
                     <div className="p-3 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl group-hover:scale-110 transition-transform">

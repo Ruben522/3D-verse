@@ -195,20 +195,24 @@ const remove = async (req, res) => {
         if (model.user_id !== req.user.id && req.user.role !== 'admin') {
             return sendError(res, "No tienes permiso para eliminar este modelo.", 403);
         }
+        // 2. Recopilar todas las URLs que hay que borrar
         const pathsToDelete = [];
 
+        // Archivo principal y de portada (Directos en la tabla 'models')
         if (model.file_url) pathsToDelete.push(extractSupabasePath(model.file_url));
         if (model.main_image_url) pathsToDelete.push(extractSupabasePath(model.main_image_url));
 
-        if (model.parts && model.parts.length > 0) {
-            model.parts.forEach(part => {
+        // Partes (Relación con la tabla 'model_parts')
+        if (model.model_parts && model.model_parts.length > 0) {
+            model.model_parts.forEach(part => {
                 if (part.file_url) pathsToDelete.push(extractSupabasePath(part.file_url));
             });
         }
 
-        if (model.gallery && model.gallery.length > 0) {
-            model.gallery.forEach(url => {
-                if (url) pathsToDelete.push(extractSupabasePath(url));
+        // Galería de imágenes (Relación con la tabla 'model_images')
+        if (model.model_images && model.model_images.length > 0) {
+            model.model_images.forEach(img => {
+                if (img.image_url) pathsToDelete.push(extractSupabasePath(img.image_url));
             });
         }
 

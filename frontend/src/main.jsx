@@ -6,10 +6,7 @@ import "./index.css";
 import "./i18n.js";
 import ModelsMeiliContext from "./contexts/ModelsMeiliContext.jsx";
 import UserContext from "./contexts/UserContext.jsx";
-import LikeContext from "./contexts/LikeContext.jsx";
-import FavoriteContext from "./contexts/FavoriteContext.jsx";
 import LanguageContext from "./contexts/LanguageContext.jsx";
-import FollowContext from "./contexts/FollowContext.jsx";
 import MessageContext from "./contexts/MessageContext.jsx";
 import ThemeContext from "./contexts/ThemeContext.jsx";
 import CategoryContext from "./contexts/CategoryContext.jsx";
@@ -23,13 +20,7 @@ createRoot(document.getElementById("root")).render(
 						<LanguageContext>
 							<CategoryContext>
 								<ModelsMeiliContext>
-									<LikeContext>
-										<FavoriteContext>
-											<FollowContext>
-												<App />
-											</FollowContext>
-										</FavoriteContext>
-									</LikeContext>
+									<App />
 								</ModelsMeiliContext>
 							</CategoryContext>
 						</LanguageContext>

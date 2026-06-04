@@ -278,7 +278,18 @@
     "contact": {
         "contact_title1": "Contacto & ",
         "contact_title2": "Sobre Mí",
-        "contact_desc": "Conoce al desarrollador detrás de la plataforma o envíame un correo directo."
+        "contact_desc": "Conoce al desarrollador detrás de la plataforma o envíame un correo directo.",
+        "3dverse_history": "La historia de 3DVerse",
+        "send_email": "Enviame un correo",
+        "questions": "¿Tienes alguna pregunta, propuesta de trabajo o simplemente quieres saludar? ¡Escríbeme!",
+        "email_send": "¡Mensaje enviado!",
+        "thanks": "¡Gracias por ponerte en contacto! Responderé lo antes posible.",
+        "name_placeholder": "Tu nombre",
+        "email_placeholder": "Tu correo electrónico",
+        "subject_placeholder": "¿De qué quieres hablar?",
+        "message_placeholder": "Escribe tu mensaje aquí...",
+        "sending": "Enviando...",
+        "send": "Enviar mensaje"
     },
     "administration_pages": {
         "admin_panel": "Panel de Administración",
@@ -410,7 +421,7 @@
         "Tecnologías": "Tecnología y Gadgets",
         "Videojuegos": "Videojuegos",
         "Arquitectura": "Arquitectura",
-        "Vehiculos": "Vehículos",
+        "Vehículos": "Vehículos",
         "Naturaleza": "Naturaleza",
         "Personajes": "Personajes",
         "Otros": "Otros"

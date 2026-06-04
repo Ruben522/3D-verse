@@ -4,8 +4,6 @@ import useViewer3D from "../../hooks/useViewer3D";
 import View3D from "./View3D";
 import ColorSelector from "../../utils/ColorSelector";
 import { useTranslation } from "react-i18next";
-
-// 👇 Importamos nuestro nuevo componente de respaldo
 import ErrorModel3D from "./ErrorModel3D";
 
 const MediaViewer = () => {

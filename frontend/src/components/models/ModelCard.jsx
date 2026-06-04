@@ -10,6 +10,7 @@ import ViewIcon from "../../assets/icons/ViewIcon";
 import DownloadIcon from "../../assets/icons/DownloadIcon";
 import { useTranslation } from "react-i18next";
 import useModels from "../../hooks/useModels";
+import UserAvatarIcon from "../../assets/icons/UserAvatarIcon";
 
 const ModelCard = ({ model }) => {
   const navigate = useNavigate();
@@ -88,8 +89,12 @@ const ModelCard = ({ model }) => {
           {model.title}
         </h3>
         <div className="flex items-center gap-2.5 mb-4">
-          <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm flex-shrink-0">
-            <img src={model.avatarUrl} alt={model.username} className="w-full h-full object-cover" />
+          <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm flex-shrink-0 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            {model.avatarUrl ? (
+              <img src={model.avatarUrl} alt={model.username} className="w-full h-full object-cover" />
+            ) : (
+              <UserAvatarIcon username={model.username} className="w-full h-full text-[10px]" />
+            )}
           </div>
           <span className="text-xs font-bold truncate text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors">
             @{model.username}

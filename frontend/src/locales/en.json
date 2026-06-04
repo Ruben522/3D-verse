@@ -277,7 +277,18 @@
     "contact": {
         "contact_title1": "Contact & ",
         "contact_title2": "About Me",
-        "contact_desc": "Meet the developer behind the platform or send me a direct email."
+        "contact_desc": "Meet the developer behind the platform or send me a direct email.",
+        "3dverse_history": "The Story of 3DVerse",
+        "send_email": "Send Email",
+        "questions": "Do you have any questions, job proposals, or just want to say hello? Feel free to reach out!",
+        "email_send": "Your message is being sent...",
+        "thanks": "Thank you for contacting me! I'll get back to you as soon as possible.",
+        "name_placeholder": "Your name",
+        "email_placeholder": "Your email address",
+        "subject_placeholder": "What do you want to talk about?",
+        "message_placeholder": "Write your message here...",
+        "sending": "Sending...",
+        "send": "Send message"
     },
     "administration_pages": {
         "admin_panel": "Administration Panel",

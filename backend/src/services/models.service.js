@@ -91,6 +91,27 @@ const getModelById = async (modelId) => {
   return formatModelAuthor(updatedModel);
 };
 
+const getModelById = async (modelId, incrementViews = true) => {
+  let modelData;
+
+  if (incrementViews) {
+    modelData = await prisma.models.update({
+      where: { id: modelId },
+      data: { views: { increment: 1 } },
+      include: getModelIncludes(),
+    });
+  } else {
+    modelData = await prisma.models.findUnique({
+      where: { id: modelId },
+      include: getModelIncludes(),
+    });
+  }
+
+  if (!modelData) throw new Error("Modelo no encontrado");
+
+  return formatModelAuthor(modelData);
+};
+
 const getModelIncludes = () => ({
   users: {
     select: {
@@ -98,8 +119,10 @@ const getModelIncludes = () => ({
       profile: { select: { username: true, avatar: true } },
     },
   },
-  model_tag: { include: { tags: { select: { id: true, name: true } } } },
-  model_category: { include: { categories: { select: { id: true, name: true } } } },
+  model_parts: true,
+  model_images: { orderBy: { display_order: "asc" } },
+  model_tag: { include: { tags: true } },
+  model_category: { include: { categories: true } },
   _count: { select: { model_likes: true } },
 });
 

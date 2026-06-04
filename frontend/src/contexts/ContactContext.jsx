@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import { sendExternalEmail } from "../hooks/useMailService.js";
 import { useTranslation } from "react-i18next";
+import fotoPerfil from "../assets/images/fotojpg.jgp";
 
 const contact = createContext();
 
@@ -10,7 +11,7 @@ const ContactContext = ({ children }) => {
         name: t("contact_context.name"),
         role: t("contact_context.role"),
         bio: t("contact_context.bio"),
-        avatar: "https://ui-avatars.com/api/?name=Tu+Nombre&background=3b82f6&color=fff",
+        avatar: fotoPerfil,
         history: t("contact_context.history"),
         socials: {
             github: "https://github.com/tu-usuario",
