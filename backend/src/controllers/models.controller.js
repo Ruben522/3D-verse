@@ -67,6 +67,15 @@ const uploadToSupabase = async (file, folderPath) => {
     }
 };
 
+const extractSupabasePath = (publicUrl) => {
+    if (!publicUrl) return null;
+    const urlParts = publicUrl.split('/public/models/');
+    if (urlParts.length === 2) {
+        return urlParts[1];
+    }
+    return null;
+};
+
 const uploadModel = async (req, res) => {
     try {
         if (!req.files || !req.files["main_file"]) {
@@ -180,11 +189,46 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const result = await deleteModel(req.params.id, req.user);
-        await deleteModelFromMeili(req.params.id);
+        const modelId = req.params.id;
+        const model = await getModelById(modelId);
+
+        if (model.user_id !== req.user.id && req.user.role !== 'admin') {
+            return sendError(res, "No tienes permiso para eliminar este modelo.", 403);
+        }
+        const pathsToDelete = [];
+
+        if (model.file_url) pathsToDelete.push(extractSupabasePath(model.file_url));
+        if (model.main_image_url) pathsToDelete.push(extractSupabasePath(model.main_image_url));
+
+        if (model.parts && model.parts.length > 0) {
+            model.parts.forEach(part => {
+                if (part.file_url) pathsToDelete.push(extractSupabasePath(part.file_url));
+            });
+        }
+
+        if (model.gallery && model.gallery.length > 0) {
+            model.gallery.forEach(url => {
+                if (url) pathsToDelete.push(extractSupabasePath(url));
+            });
+        }
+
+        const validPaths = pathsToDelete.filter(path => path !== null);
+        if (validPaths.length > 0) {
+            const { error: supabaseError } = await supabase.storage
+                .from("models")
+                .remove(validPaths);
+
+            if (supabaseError) {
+                console.error("⚠️ Error al borrar archivos de Supabase:", supabaseError);
+            }
+        }
+
+        const result = await deleteModel(modelId, req.user);
+        await deleteModelFromMeili(modelId);
+
         sendSuccess(res, result.message);
     } catch (error) {
-        const status = error.code === "P2025" ? 404 : 403;
+        const status = error.code === "P2025" || error.message.includes("no encontrado") ? 404 : 403;
         sendError(res, error.message, status);
     }
 };
