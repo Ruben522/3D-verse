@@ -27,14 +27,14 @@ const PreferencesSettings = () => {
                 onToggle={toggleSection}
                 icon={<PreferencesIcon className="w-6 h-6 text-white" />}
             >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
 
-                    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors duration-300 hover:border-gray-200 dark:hover:border-gray-700">
-                        <span className="font-bold text-gray-900 dark:text-white text-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors duration-300 hover:border-gray-200 dark:hover:border-gray-700 gap-4">
+                        <span className="font-bold text-gray-900 dark:text-white text-sm whitespace-nowrap">
                             {t('user_settings.preferences_section.language')}
                         </span>
 
-                        <div className="flex items-center gap-1.5 bg-gray-200/50 dark:bg-gray-800 p-1 rounded-xl">
+                        <div className="flex flex-wrap items-center justify-end gap-1.5 bg-gray-200/50 dark:bg-gray-800 p-1.5 rounded-xl w-full sm:w-auto">
                             {languages.map(lang => (
                                 <button
                                     key={lang.code}
