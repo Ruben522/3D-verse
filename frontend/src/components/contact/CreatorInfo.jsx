@@ -40,8 +40,11 @@ const CreatorInfo = () => {
 
             <div className="bg-gray-900 dark:bg-gray-800/80 rounded-3xl p-8 shadow-xl text-white dark:border dark:border-gray-700 transition-colors duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                    <ThreeDHomeIcon />
                     <h3 className="text-2xl font-black tracking-tight">{t('contact.3dverse_history')}</h3>
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 relative">
+                        <ThreeDHomeIcon />
+                    </div>
+
                 </div>
                 <div className="space-y-4 text-gray-300 text-sm leading-relaxed">
                     <p>{creatorInfo.history}</p>
