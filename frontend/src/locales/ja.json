@@ -1,0 +1,533 @@
+{
+    "model_files": {
+        "available_files": "利用可能なファイル",
+        "all": "すべて",
+        "main_file": "メインファイル",
+        "images": "画像",
+        "3d_models": "3Dモデル",
+        "other_files": "その他のファイル",
+        "title": "タイトル",
+        "title_model": "モデルのタイトル",
+        "title_placeholder": "関節付きドラゴンのフィギュア",
+        "model_placeholder": "例：関節付きドラゴンのフィギュア",
+        "description": "説明",
+        "no_description": "説明はありません。",
+        "description_placeholder": "例：この関節付きドラゴンのフィギュアは3Dプリントに最適です。",
+        "tags": "タグ",
+        "tags_placeholder": "タグを入力してEnterを押す",
+        "tags_example": "#ドラゴン #ファンタジー #関節付き...",
+        "categories": "カテゴリー",
+        "category": "カテゴリー",
+        "categories_text": "複数のカテゴリーを選択できます",
+        "select_category": "カテゴリーを選択...",
+        "model_upload_text": "3Dモデルをアップロード",
+        "model_extensions": ".obj, .stl, .glb, .gltf",
+        "model_size_limit": "最大サイズ：50MB",
+        "files_required": "必須ファイル",
+        "files_required_desc": "メインファイルとカバー画像。",
+        "mb": "MB",
+        "delete_file": "ファイルを削除",
+        "archive_actually": "現在の3Dファイル（保存済み）",
+        "archive_replace": "クリックして3Dファイルを置き換える"
+    },
+    "parts_files": {
+        "parts_files": "追加パーツ",
+        "no_parts": "追加パーツはありません。"
+    },
+    "gallery_files": {
+        "gallery_files": "ギャラリー画像",
+        "no_images": "ギャラリーに画像が追加されていません。",
+        "main_image": "カバー画像",
+        "images_type": {
+            "jpg": "JPG",
+            "png": "PNG"
+        }
+    },
+    "images_files": {
+        "delete_image": "カバーを削除",
+        "replace_image": "カバーを置き換える",
+        "main_image": "カバー画像",
+        "acepted_formats": "JPG、PNG または JPEG"
+    },
+    "sidebar": {
+        "stats_title": "利用統計",
+        "downloads": "ダウンロード",
+        "likes": "いいね",
+        "views": "閲覧数",
+        "categorys": "カテゴリー",
+        "tags": "関連タグ",
+        "publication_date": "公開日"
+    },
+    "comments": {
+        "comments": "コメント",
+        "add_comment": "コメントを追加",
+        "placeholder_comment": "ここにコメントを入力...",
+        "submit": "送信"
+    },
+    "buttons": {
+        "details": "詳細",
+        "save": "保存",
+        "saved": "保存済み",
+        "saving": "保存中...",
+        "upload_model": "モデルをアップロード",
+        "view_model": "モデルを見る",
+        "view_profile": "プロフィールを見る",
+        "see_models": "モデルを探索",
+        "see_community": "コミュニティへ",
+        "download": "ダウンロード",
+        "like": "いいね",
+        "update_profile": "プロフィールを更新",
+        "save_changes": "変更を保存",
+        "save_settings": "設定を保存",
+        "save_settings_desc": "終了する前に変更を保存してください。",
+        "cancel": "キャンセル",
+        "confirm": "確認",
+        "delete": "削除",
+        "edit": "編集",
+        "follow": "フォロー",
+        "unfollow": "フォロー解除",
+        "report": "報告",
+        "share": "共有",
+        "exit": "終了",
+        "create_account": "アカウント作成",
+        "login": "ログイン",
+        "put_parts": "パーツを追加",
+        "put_images": "画像を追加",
+        "all": "すべて",
+        "main": "メイン",
+        "images": "画像",
+        "parts": "パーツ",
+        "change_language": "言語を変更",
+        "change_theme": "テーマを変更",
+        "change_porfile_picture": "プロフィール画像を変更",
+        "change_main_image": "カバーを変更",
+        "delete_account": "アカウントを削除",
+        "explore": "探索",
+        "my_profile": "マイプロフィール",
+        "upload_my_design": "デザインを公開",
+        "next": "次へ",
+        "previous": "前へ"
+    },
+    "user": {
+        "profile": "プロフィール",
+        "creator": "クリエイター",
+        "settings": "設定",
+        "logout": "ログアウト",
+        "login": "ログイン",
+        "register": "新規登録",
+        "username": "ユーザー名",
+        "email": "メールアドレス",
+        "password": "パスワード",
+        "confirm_password": "パスワード（確認）",
+        "designs": "デザイン",
+        "favorites": "お気に入り",
+        "followers": "フォロワー",
+        "following": "フォロー中",
+        "total_downloads": "総ダウンロード数",
+        "total_likes": "総いいね数",
+        "my_models": "マイモデル",
+        "saves": "保存済み",
+        "member_since": "登録日",
+        "activity": "アクティビティ",
+        "views": "閲覧数",
+        "info": "情報",
+        "models": "モデル",
+        "no_models": "表示するモデルがありません。"
+    },
+    "links": {
+        "explore": "探索",
+        "admin": "管理",
+        "comunity": "コミュニティ",
+        "upload": "デザインをアップロード",
+        "my_profile": "マイプロフィール",
+        "settings": "設定",
+        "logout": "ログアウト",
+        "login": "ログイン",
+        "register": "新規登録",
+        "see_models": "モデルを探索",
+        "see_community": "コミュニティを見る"
+    },
+    "downloads": {
+        "download": "ダウンロード",
+        "download_options": "ダウンロードオプション",
+        "download_desc": "メインモデル、すべての準備済みパーツ、画像ギャラリー（ある場合）を含む完全なパッケージをダウンロードします。",
+        "download_package": "完全なパッケージをダウンロード",
+        "download_main": "メインファイルのみをダウンロード",
+        "download_images": "画像のみをダウンロード",
+        "downloading": "ダウンロード中...",
+        "prepare_zip": "ZIPを準備中...",
+        "images": "画像",
+        "compressing": "圧縮中...",
+        "donwload_galery": "ギャラリーをダウンロード",
+        "donwload_parts": "パーツをダウンロード",
+        "donwload_main": "ファイルをダウンロード",
+        "main_model": "メインモデル",
+        "main_model_desc": "印刷または表示用の基本ファイル",
+        "parts_list": "追加パーツ"
+    },
+    "messages": {
+        "login_desc": "3D-Verseアカウントにアクセス",
+        "loading_creator": "クリエイターを読み込み中...",
+        "create_account_tittle": "アカウント作成",
+        "email_placeholder": "your@email.com",
+        "password_placeholder": "••••••••",
+        "name_placeholder": "例：山田 太郎",
+        "username_placeholder": "例：yamada52",
+        "create_account_desc": "無料で登録して、今日からあなたの作品を共有しましょう。",
+        "name": "フルネーム",
+        "username": "ユーザー名",
+        "email": "メールアドレス",
+        "password": "パスワード",
+        "confirmation": "確認",
+        "forgot_password": "パスワードをお忘れですか？",
+        "confirm_password": "パスワード（確認）",
+        "account_already": "すでにアカウントをお持ちですか？",
+        "login_here": "ログイン",
+        "no_account": "アカウントをお持ちでないですか？",
+        "register_here": "新規登録",
+        "loading": "読み込み中...",
+        "save_changes": "変更を保存",
+        "save_changes_desc": "変更はすぐに反映されます。",
+        "updating": "更新中...",
+        "delete": "削除",
+        "login_required_upload": "モデルをアップロードするにはログインが必要です。",
+        "confirmation_upload": "準備はいいですか？",
+        "search_placeholder": "鉢、ドラゴン、ドラゴンボール...",
+        "confirmation_upload_desc": "必須項目をすべて入力したことを確認してください。",
+        "optionals_files": "オプションファイル",
+        "optionals_files_desc": "ギャラリー用の個別のパーツと写真",
+        "required_files": "必須ファイル",
+        "files_required_desc": "メインの3Dファイルとカバー画像",
+        "model_details": "モデルの詳細",
+        "model_details_desc": "タイトル、説明、カテゴリー、タグ",
+        "post_model": "モデルを公開",
+        "post_model_desc": "あなたの3D作品をコミュニティと共有しましょう。",
+        "model_uploaded": "モデルのアップロードに成功しました",
+        "no_model:": "モデルが見つかりません",
+        "no_models": "モデルが見つかりません",
+        "no_designs": "デザインはまだありません",
+        "model_updated": "モデルの更新に成功しました",
+        "profile_updated": "プロフィールの更新に成功しました",
+        "comment_added": "コメントの追加に成功しました",
+        "error_ocurred": "エラーが発生しました。もう一度お試しください",
+        "login_success": "ログインに成功しました",
+        "logout_success": "ログアウトに成功しました",
+        "enter_to_account": "3D-Verseアカウントにアクセス",
+        "welcome_back": "3D-Verseへお帰りなさい！",
+        "new_user": "初めてですか？",
+        "error": "エラー",
+        "error:auth": "認証エラー。認証情報を確認してください",
+        "save_in_favorites": "お気に入りに保存しました",
+        "remove_from_favorites": "お気に入りから削除しました",
+        "create_account": "無料で登録して、ダウンロードできる3Dモデルの世界を発見しましょう。",
+        "error_login": "ログインエラー。認証情報を確認してください",
+        "error_register": "登録エラー。入力データを確認してください",
+        "error_name": "このユーザー名は既に使用されています。別の名前を選択してください",
+        "error_email": "このメールアドレスは既に使用されています。別のメールを選択してください",
+        "error_password": "パスワードが短すぎます。少なくとも6文字以上必要です",
+        "no_models_found": "モデルが見つかりません",
+        "try_other_search": "別の検索用語をお試しください",
+        "no_models_user": "作成されたモデルはありません",
+        "no_favorites": "お気に入りに保存されたモデルはありません",
+        "no_comments": "まだコメントはありません",
+        "no_followers": "まだフォロワーはいません",
+        "no_following": "まだ誰もフォローしていません"
+    },
+    "uploadValidations": {
+        "title_required": "タイトルは必須です。",
+        "main_file_required": "メインの3Dファイル（.obj、.stl、.glb、.gltf）をアップロードする必要があります。",
+        "main_image_required": "カバー画像は必須です。"
+    },
+    "media_viwer": {
+        "images": "画像",
+        "models": "3Dモデル",
+        "clic_interact": "クリックして操作",
+        "main_model": "メインモデル",
+        "color_piece": "パーツの色",
+        "parts": "パーツ",
+        "all": "すべて"
+    },
+    "words": {
+        "and": "と",
+        "or": "または"
+    },
+    "admin": {
+        "no_permissions": "このエリアにアクセスする権限がありません。"
+    },
+    "home": {
+        "welcome_tag": "無限の3Dプリント",
+        "welcome_title": "見つける、共有する、印刷する",
+        "welcome_title2": "素晴らしい3Dデザイン",
+        "welcome_desc": "最もアクティブな3Dクリエイターコミュニティに参加しましょう。印刷可能な数千のモデルを探索し、自分の作品をアップロードして、世界中のデザイナーとつながりましょう。",
+        "section1_title": "自分のデザインを持っていますか？",
+        "section1_desc": "STLファイルをアップロードして、見事なポートフォリオを作成し、今日からフォロワーを増やし始めましょう。"
+    },
+    "footer": {
+        "about": "概要",
+        "contact": "お問い合わせ",
+        "caracter": "©",
+        "all_rights": "3DVerse. All rights reserved.",
+        "terms": "利用規約",
+        "privacy": "プライバシーポリシー"
+    },
+    "error_pages": {
+        "404_title": "404 - ページが見つかりません",
+        "404_desc": "おっと！キャンバスの外に出てしまったようです。",
+        "go_home": "ホームに戻る"
+    },
+    "contact": {
+        "contact_title1": "お問い合わせ & ",
+        "contact_title2": "私について",
+        "contact_desc": "プラットフォームの開発者について知るか、直接メールを送ってください。",
+        "3dverse_history": "3DVerseの歴史",
+        "send_email": "メールを送信",
+        "questions": "質問や仕事の提案、またはただ挨拶したいですか？メッセージを送ってください！",
+        "email_send": "メッセージを送信しました！",
+        "thanks": "ご連絡ありがとうございます！できるだけ早くお返事いたします。",
+        "name_placeholder": "お名前",
+        "email_placeholder": "メールアドレス",
+        "subject_placeholder": "どのようなご用件ですか？",
+        "message_placeholder": "ここにメッセージを入力...",
+        "sending": "送信中...",
+        "send": "メッセージを送信"
+    },
+    "administration_pages": {
+        "admin_panel": "管理パネル",
+        "admin_desc": "ユーザー、モデル、プラットフォームのコンテンツを管理します。",
+        "manage_users": "ユーザー管理",
+        "manage_models": "モデル管理",
+        "go_community": "コミュニティへ",
+        "go_models": "モデルへ",
+        "categories": {
+            "title": "カテゴリー管理",
+            "new_category_placeholder": "新しいカテゴリー名",
+            "add": "追加",
+            "adding": "追加中...",
+            "no_categories": "カテゴリーが作成されていません"
+        }
+    },
+    "user_context": {
+        "login_error": "メールアドレスまたはパスワードが正しくありません。",
+        "register_error": "ユーザー名またはメールアドレスは既に登録されています。",
+        "logout_question": "本当にログアウトしますか？",
+        "logout_success": "ログアウトに成功しました",
+        "login_success": "ログインに成功しました",
+        "delete_user_confirmation": "本当にこのアカウントを削除しますか？この操作は元に戻せません。",
+        "delete_user_success": "アカウントを削除しました",
+        "delete_user_error": "アカウントの削除に失敗しました。",
+        "profile_updated": "プロフィールを更新しました",
+        "profile_update_error": "プロフィールの更新エラー",
+        "load_profile_error": "プロフィールの読み込みエラー",
+        "load_active_profile_error": "アクティブなプロフィールの読み込みエラー",
+        "community_search_error": "コミュニティの検索エラー",
+        "sort_options": {
+            "more_followers": "フォロワーが多い順",
+            "more_models": "モデルが多い順"
+        }
+    },
+    "models_context": {
+        "meili_search_error": "MeiliSearchでエラーが発生しました。もう一度お試しください",
+        "model_upload_success": "モデルをアップロードしました",
+        "model_update_success": "モデルを更新しました",
+        "model_delete_success": "モデルを削除しました",
+        "model_error": "エラーが発生しました。もう一度お試しください",
+        "download_error": "モデルのダウンロードエラー。もう一度お試しください",
+        "download_package_error": "パッケージのダウンロードエラー。もう一度お試しください",
+        "delete_confirmation": "本当にこのモデルを削除しますか？この操作は元に戻せません。",
+        "edit_permission_error": "このモデルを編集する権限がありません。",
+        "prepare_edit_error": "編集用のモデルデータを読み込めませんでした。",
+        "edit_error": "変更を保存できませんでした。",
+        "upload_error": "デザインの処理中にエラーが発生しました。もう一度お試しください。",
+        "search_error": "モデルの検索エラー。もう一度お試しください",
+        "sort_options": {
+            "newest": "新着順",
+            "popular": "人気順",
+            "downloads": "ダウンロード数順"
+        }
+    },
+    "category_context": {
+        "fetch_error": "カテゴリーの読み込みエラー。もう一度お試しください",
+        "create_error": "カテゴリーの作成エラー。もう一度お試しください",
+        "update_error": "カテゴリーの更新エラー。もう一度お試しください",
+        "delete_error": "カテゴリーの削除エラー。もう一度お試しください",
+        "delete_confirmation": "本当にこのカテゴリーを削除しますか？この操作は元に戻せません。",
+        "update_success": "カテゴリーを更新しました",
+        "create_success": "カテゴリーを作成しました",
+        "delete_success": "カテゴリーを削除しました"
+    },
+    "comments_context": {
+        "fetch_error": "コメントの読み込みエラー。もう一度お試しください",
+        "add_error": "コメントの追加エラー。もう一度お試しください",
+        "add_success": "コメントを追加しました",
+        "delete_error": "コメントの削除エラー。もう一度お試しください",
+        "delete_confirmation": "このコメントを削除しますか？",
+        "delete_success": "コメントを削除しました"
+    },
+    "contact_context": {
+        "name": "Rubén",
+        "role": "フルスタックエンジニア",
+        "bio": "私はテクノロジーと3Dデザインに情熱を注ぐ開発者です。革新的なソリューションを作成し、プロジェクトをコミュニティと共有することが大好きです。",
+        "history": "このアプリケーションは、ユーザーがデザインを共有し、互いに刺激し合い、3Dプリントを次のレベルに引き上げるためのアクティブな3Dクリエイターコミュニティを作りたいという思いから生まれました。"
+    },
+    "favorites_context": {
+        "fetch_error": "お気に入りの読み込みエラー。もう一度お試しください",
+        "toggle_error": "お気に入りの更新エラー。もう一度お試しください",
+        "auth_required": "モデルをお気に入りに保存するにはログインが必要です"
+    },
+    "follow_context": {
+        "load_followings_error": "フォロー中のユーザーの読み込みエラー。もう一度お試しください",
+        "load_followers_error": "フォロワーの読み込みエラー。もう一度お試しください",
+        "load_following_error": "フォロー状態の確認エラー。もう一度お試しください",
+        "toggle_follow_error": "フォローの更新エラー。もう一度お試しください"
+    },
+    "like_context": {
+        "toggle_like_error": "いいねの更新エラー。もう一度お試しください",
+        "auth_required": "モデルにいいねするにはログインが必要です"
+    },
+    "comments_section": {
+        "add_comment_placeholder": "ここにコメントを入力...",
+        "publish": "公開する",
+        "auth_required": "コメントするにはログインが必要です",
+        "no_comments": "まだコメントはありません。最初のコメントを投稿しましょう！",
+        "loading_comments": "コメントを読み込み中..."
+    },
+    "community": {
+        "tittle": "クリエイターコミュニティ",
+        "subtittle": "私たちのコミュニティに参加している才能豊かな3Dデザイナーを発見しましょう。",
+        "search_placeholder": "ユーザー名または経歴で検索",
+        "no_results": "検索条件に一致するユーザーは見つかりませんでした。",
+        "try_other_search": "別の検索用語をお試しください"
+    },
+    "models_page": {
+        "tittle": "3Dモデルを探索",
+        "subtittle": "完璧なデザインを見つけましょう。",
+        "search_placeholder": "タイトル、カテゴリー、タグで検索...",
+        "no_results": "検索条件に一致するモデルは見つかりませんでした。",
+        "try_other_search": "別の検索用語をお試しください"
+    },
+    "searchbar": {
+        "categories": "カテゴリー",
+        "all": "すべて",
+        "placeholder": "検索..."
+    },
+    "categories": {
+        "Arte y Diseño": "アート＆デザイン",
+        "Automoción": "自動車",
+        "Ciencia": "科学",
+        "Educación": "教育",
+        "Juguetes": "おもちゃ",
+        "Medicina": "医療",
+        "Moda y Accesorios": "ファッション＆アクセサリー",
+        "Tecnología y Gadgets": "テクノロジー＆ガジェット",
+        "Videojuegos": "ゲーム",
+        "Arquitectura": "建築",
+        "Vehículos": "乗り物",
+        "Naturaleza": "自然",
+        "Personajes": "キャラクター",
+        "Otros": "その他"
+    },
+    "upload_page": {
+        "parts_files": {
+            "parts_files_title": "追加パーツ",
+            "parts_files_desc": "デザインは複数のパーツに分かれていますか？ここにアップロードしてください。",
+            "no_parts": "追加パーツはありません。"
+        }
+    },
+    "user_settings": {
+        "title": "ユーザー設定",
+        "subtitle": "プロフィール、SNS、アカウントを管理します",
+        "public_profile": "公開プロフィール",
+        "desing": "カスタマイズとデザイン",
+        "preferences": "環境設定",
+        "account_tittle": "アカウント",
+        "save_settings": "設定を保存",
+        "save_settings_desc": "終了する前に変更を保存してください。",
+        "basic_info": {
+            "title": "基本情報",
+            "subtitle": "名前、場所、経歴",
+            "username": "ユーザー名",
+            "name": "フルネーム",
+            "lastname": "姓",
+            "location": "場所",
+            "location_placeholder": "例：東京、日本",
+            "bio": "自己紹介",
+            "bio_placeholder": "あなたについて少し教えてください..."
+        },
+        "social_links": {
+            "title": "SNS連携",
+            "subtitle": "ソーシャルプロフィールを共有する",
+            "youtube": "YouTube",
+            "twitter": "Twitter",
+            "github": "GitHub",
+            "linkedin": "LinkedIn",
+            "your_username": "あなたのユーザー名"
+        },
+        "account": {
+            "title": "アカウント",
+            "subtitle": "アカウントの削除",
+            "danger_zone": "危険エリア",
+            "danger_desc": "アカウントの削除は元に戻せません。すべてのデータ、モデル、アクティビティが削除されます。",
+            "delete_account": "アカウントを削除"
+        },
+        "preferences_section": {
+            "title": "表示と言語",
+            "subtitle": "アプリの表示方法を調整します",
+            "language": "言語",
+            "theme": "テーマ"
+        },
+        "customization": {
+            "avatar": "プロフィール画像",
+            "avatar_subtitle": "コミュニティでのメインアバター",
+            "banner": "バナーまたは色",
+            "banner_subtitle": "カードのヘッダーをカスタマイズ",
+            "img_url": "画像URL",
+            "img_url_placeholder": "https://example.com/my-avatar.png",
+            "remove_photo": "プロフィール画像を削除",
+            "preview": "プレビュー",
+            "remove_banner": "バナー画像を削除",
+            "color": "バナーの色",
+            "color_desc": "画像を使用しない場合は、バナーの色を選択してください"
+        }
+    },
+    "popular_models": {
+        "title": "人気のデザイン トップ",
+        "description": "コミュニティで最も人気のあるモデルを発見しましょう。",
+        "see_all": "すべて見る"
+    },
+    "hero_carousel": {
+        "loading": "プロジェクトを読み込み中...",
+        "featured": "おすすめ",
+        "view_design": "デザインを見る"
+    },
+    "validations": {
+        "login": {
+            "empty_email_and_password": "メールアドレスとパスワードを入力してください。",
+            "empty_email": "メールアドレスは空にできません。",
+            "empty_password": "パスワードを入力してください。",
+            "invalid_email": "メールアドレスの形式が無効です。",
+            "password_too_short": "パスワードは6文字以上である必要があります。"
+        },
+        "register": {
+            "all_fields_required": "登録にはすべてのフィールドが必要です。",
+            "username_too_short": "ユーザー名は3文字以上である必要があります。",
+            "username_has_spaces": "ユーザー名にスペースを含めることはできません。",
+            "invalid_email": "有効なメールアドレスを入力してください。",
+            "password_too_short": "パスワードは6文字以上である必要があります。",
+            "passwords_do_not_match": "パスワードが一致しません。"
+        },
+        "profile_update": {
+            "username_empty": "ユーザー名は空にできません。",
+            "username_too_short": "ユーザー名は3文字以上である必要があります。",
+            "username_has_spaces": "ユーザー名にスペースを含めることはできません。"
+        },
+        "validateFileSize": {
+            "size_exceeded1": "制限を超えました：ファイルサイズは ",
+            "size_exceeded2": "MBです。最大は50MBです。"
+        },
+        "validateUploadData": {
+            "title_required": "タイトルは必須です。",
+            "main_file_required": "メインの3Dファイル（.obj、.stl、.glb、.gltf）をアップロードする必要があります。",
+            "main_image_required": "カバー画像は必須です。"
+        }
+    }
+}

@@ -22,8 +22,14 @@ const LanguageContext = ({ children }) => {
 
     const languages = [
         { code: 'es', country: 'ES', label: 'Español' },
-        { code: 'en', country: 'GB', label: 'English' },
+        { code: 'en', country: 'US', label: 'English' },
         { code: 'zh', country: 'CN', label: '中文' },
+        { code: 'it', country: 'IT', label: 'Italiano' },
+        { code: 'fr', country: 'FR', label: 'Français' },
+        { code: 'de', country: 'DE', label: 'Deutsch' },
+        { code: 'ja', country: 'JP', label: '日本語' },
+        { code: 'ko', country: 'KR', label: '한국어' },
+        { code: 'pt', country: 'PT', label: 'Português' },
     ];
 
     const currentLanguage = languages.find(l => l.code === currentLang);

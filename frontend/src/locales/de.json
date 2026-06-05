@@ -1,0 +1,533 @@
+{
+    "model_files": {
+        "available_files": "Verfügbare Dateien",
+        "all": "Alle",
+        "main_file": "Hauptdatei",
+        "images": "Bilder",
+        "3d_models": "3D-Modelle",
+        "other_files": "Andere Dateien",
+        "title": "Titel",
+        "title_model": "Titel des Modells",
+        "title_placeholder": "Gelenkdrachen-Figur",
+        "model_placeholder": "Z.B.: Gelenkdrachen-Figur",
+        "description": "Beschreibung",
+        "no_description": "Keine Beschreibung verfügbar.",
+        "description_placeholder": "Z.B.: Diese Gelenkdrachen-Figur ist perfekt für den 3D-Druck.",
+        "tags": "Tags",
+        "tags_placeholder": "Tag eingeben und Enter drücken",
+        "tags_example": "#drache #fantasy #gelenkig...",
+        "categories": "Kategorien",
+        "category": "Kategorie",
+        "categories_text": "Du kannst mehr als eine Kategorie auswählen",
+        "select_category": "Wähle eine Kategorie aus...",
+        "model_upload_text": "Lade dein 3D-Modell hoch",
+        "model_extensions": ".obj, .stl, .glb, .gltf",
+        "model_size_limit": "Maximale Größe: 50MB",
+        "files_required": "Erforderliche Dateien",
+        "files_required_desc": "Die Hauptdatei und das Titelbild.",
+        "mb": "MB",
+        "delete_file": "Datei entfernen",
+        "archive_actually": "Aktuelles 3D-Modell gespeichert",
+        "archive_replace": "Klicken, um die 3D-Datei zu ersetzen"
+    },
+    "parts_files": {
+        "parts_files": "Zusätzliche Teile",
+        "no_parts": "Es wurden keine zusätzlichen Teile hinzugefügt."
+    },
+    "gallery_files": {
+        "gallery_files": "Galeriebilder",
+        "no_images": "Es wurden keine Bilder zur Galerie hinzugefügt.",
+        "main_image": "Titelbild",
+        "images_type": {
+            "jpg": "JPG",
+            "png": "PNG"
+        }
+    },
+    "images_files": {
+        "delete_image": "Titelbild entfernen",
+        "replace_image": "Titelbild ersetzen",
+        "main_image": "Titelbild",
+        "acepted_formats": "JPG, PNG oder JPEG"
+    },
+    "sidebar": {
+        "stats_title": "Nutzungsstatistiken",
+        "downloads": "Downloads",
+        "likes": "Gefällt mir",
+        "views": "Aufrufe",
+        "categorys": "Kategorien",
+        "tags": "Verwandte Tags",
+        "publication_date": "Veröffentlichungsdatum"
+    },
+    "comments": {
+        "comments": "Kommentare",
+        "add_comment": "Kommentar hinzufügen",
+        "placeholder_comment": "Schreibe hier deinen Kommentar...",
+        "submit": "Senden"
+    },
+    "buttons": {
+        "details": "Details",
+        "save": "Speichern",
+        "saved": "Gespeichert",
+        "saving": "Wird gespeichert...",
+        "upload_model": "Modell hochladen",
+        "view_model": "Modell ansehen",
+        "view_profile": "Profil ansehen",
+        "see_models": "Modelle entdecken",
+        "see_community": "Zur Community",
+        "download": "Herunterladen",
+        "like": "Gefällt mir",
+        "update_profile": "Profil aktualisieren",
+        "save_changes": "Änderungen speichern",
+        "save_settings": "Einstellungen speichern",
+        "save_settings_desc": "Stelle sicher, dass du die Änderungen speicherst, bevor du gehst.",
+        "cancel": "Abbrechen",
+        "confirm": "Bestätigen",
+        "delete": "Löschen",
+        "edit": "Bearbeiten",
+        "follow": "Folgen",
+        "unfollow": "Entfolgen",
+        "report": "Melden",
+        "share": "Teilen",
+        "exit": "Verlassen",
+        "create_account": "Konto erstellen",
+        "login": "Anmelden",
+        "put_parts": "Teile hinzufügen",
+        "put_images": "Bilder hinzufügen",
+        "all": "Alle",
+        "main": "Hauptdatei",
+        "images": "Bilder",
+        "parts": "Teile",
+        "change_language": "Sprache ändern",
+        "change_theme": "Design ändern",
+        "change_porfile_picture": "Profilbild ändern",
+        "change_main_image": "Titelbild ändern",
+        "delete_account": "Konto löschen",
+        "explore": "Entdecken",
+        "my_profile": "Mein Profil",
+        "upload_my_design": "Mein Design veröffentlichen",
+        "next": "Weiter",
+        "previous": "Zurück"
+    },
+    "user": {
+        "profile": "Profil",
+        "creator": "Ersteller",
+        "settings": "Einstellungen",
+        "logout": "Abmelden",
+        "login": "Anmelden",
+        "register": "Registrieren",
+        "username": "Benutzername",
+        "email": "E-Mail",
+        "password": "Passwort",
+        "confirm_password": "Passwort bestätigen",
+        "designs": "Designs",
+        "favorites": "Favoriten",
+        "followers": "Follower",
+        "following": "Folge ich",
+        "total_downloads": "Gesamte Downloads",
+        "total_likes": "Gesamte Likes",
+        "my_models": "Meine Modelle",
+        "saves": "Gespeichert",
+        "member_since": "Mitglied seit",
+        "activity": "Aktivität",
+        "views": "Aufrufe",
+        "info": "Informationen",
+        "models": "Modelle",
+        "no_models": "Keine Modelle zum Anzeigen."
+    },
+    "links": {
+        "explore": "Entdecken",
+        "admin": "Administration",
+        "comunity": "Community",
+        "upload": "Design hochladen",
+        "my_profile": "Mein Profil",
+        "settings": "Einstellungen",
+        "logout": "Abmelden",
+        "login": "Anmelden",
+        "register": "Registrieren",
+        "see_models": "Modelle entdecken",
+        "see_community": "Community ansehen"
+    },
+    "downloads": {
+        "download": "Herunterladen",
+        "download_options": "Download-Optionen",
+        "download_desc": "Lade das komplette Paket herunter, das das Hauptmodell, alle vorbereiteten Teile und die Bildergalerie (falls vorhanden) enthält.",
+        "download_package": "Komplettes Paket herunterladen",
+        "download_main": "Nur Hauptdatei herunterladen",
+        "download_images": "Nur Bilder herunterladen",
+        "downloading": "Wird heruntergeladen...",
+        "prepare_zip": "Zip wird vorbereitet...",
+        "images": "Bilder",
+        "compressing": "Wird komprimiert...",
+        "donwload_galery": "Galerie herunterladen",
+        "donwload_parts": "Teile herunterladen",
+        "donwload_main": "Datei herunterladen",
+        "main_model": "Hauptmodell",
+        "main_model_desc": "Basisdatei zum Drucken oder Anzeigen",
+        "parts_list": "Zusätzliche Teile"
+    },
+    "messages": {
+        "login_desc": "Melde dich bei deinem 3D-Verse Konto an",
+        "loading_creator": "Ersteller wird geladen...",
+        "create_account_tittle": "Konto erstellen",
+        "email_placeholder": "deine@email.com",
+        "password_placeholder": "••••••••",
+        "name_placeholder": "Z.B.: Rubén",
+        "username_placeholder": "Z.B.: rubio52",
+        "create_account_desc": "Melde dich kostenlos an und fange noch heute an, deine Kreationen zu teilen.",
+        "name": "Vollständiger Name",
+        "username": "Benutzername",
+        "email": "E-Mail",
+        "password": "Passwort",
+        "confirmation": "Bestätigung",
+        "forgot_password": "Passwort vergessen?",
+        "confirm_password": "Passwort bestätigen",
+        "account_already": "Hast du bereits ein Konto?",
+        "login_here": "Hier anmelden",
+        "no_account": "Hast du noch kein Konto?",
+        "register_here": "Hier registrieren",
+        "loading": "Wird geladen...",
+        "save_changes": "Änderungen speichern",
+        "save_changes_desc": "Deine Änderungen werden sofort übernommen.",
+        "updating": "Wird aktualisiert...",
+        "delete": "Löschen",
+        "login_required_upload": "Du musst angemeldet sein, um ein Modell hochzuladen.",
+        "confirmation_upload": "Alles bereit?",
+        "search_placeholder": "Topf, Drachen, Dragon Ball...",
+        "confirmation_upload_desc": "Stelle sicher, dass du alle Pflichtfelder ausgefüllt hast.",
+        "optionals_files": "Optionale Dateien",
+        "optionals_files_desc": "Einzelteile und Fotos für die Galerie",
+        "required_files": "Erforderliche Dateien",
+        "files_required_desc": "Die Haupt-3D-Datei und das Titelbild",
+        "model_details": "Modelldetails",
+        "model_details_desc": "Titel, Beschreibung, Kategorisierung und Tags",
+        "post_model": "Modell veröffentlichen",
+        "post_model_desc": "Teile deine 3D-Kreation mit der Community.",
+        "model_uploaded": "Modell erfolgreich hochgeladen",
+        "no_model:": "Modell nicht gefunden",
+        "no_models": "Keine Modelle gefunden",
+        "no_designs": "Noch keine Designs",
+        "model_updated": "Modell erfolgreich aktualisiert",
+        "profile_updated": "Profil erfolgreich aktualisiert",
+        "comment_added": "Kommentar erfolgreich hinzugefügt",
+        "error_ocurred": "Ein Fehler ist aufgetreten, bitte versuche es erneut",
+        "login_success": "Erfolgreich angemeldet",
+        "logout_success": "Erfolgreich abgemeldet",
+        "enter_to_account": "Greife auf dein 3D-Verse Konto zu",
+        "welcome_back": "Willkommen zurück bei 3D-Verse!",
+        "new_user": "Neu hier?",
+        "error": "Fehler",
+        "error:auth": "Authentifizierungsfehler, bitte überprüfe deine Anmeldedaten",
+        "save_in_favorites": "In Favoriten gespeichert",
+        "remove_from_favorites": "Aus Favoriten entfernt",
+        "create_account": "Registriere dich kostenlos und entdecke ein Universum von 3D-Modellen zum Herunterladen.",
+        "error_login": "Anmeldefehler, bitte überprüfe deine Anmeldedaten",
+        "error_register": "Registrierungsfehler, bitte überprüfe deine Daten",
+        "error_name": "Der Benutzername ist bereits vergeben, bitte wähle einen anderen",
+        "error_email": "Die E-Mail-Adresse ist bereits vergeben, bitte wähle eine andere",
+        "error_password": "Das Passwort ist zu kurz, es muss mindestens 6 Zeichen lang sein",
+        "no_models_found": "Keine Modelle gefunden",
+        "try_other_search": "Versuche es mit anderen Suchbegriffen",
+        "no_models_user": "Keine Modelle erstellt",
+        "no_favorites": "Keine favorisierten Modelle gespeichert",
+        "no_comments": "Noch keine Kommentare",
+        "no_followers": "Noch keine Follower",
+        "no_following": "Du folgst noch niemandem"
+    },
+    "uploadValidations": {
+        "title_required": "Der Titel ist erforderlich.",
+        "main_file_required": "Du musst eine 3D-Hauptdatei (.obj, .stl, .glb, .gltf) hochladen.",
+        "main_image_required": "Das Titelbild ist erforderlich."
+    },
+    "media_viwer": {
+        "images": "Bilder",
+        "models": "3D-Modelle",
+        "clic_interact": "Klicken, um zu interagieren",
+        "main_model": "Hauptmodell",
+        "color_piece": "Farbe des Teils",
+        "parts": "Teile",
+        "all": "Alle"
+    },
+    "words": {
+        "and": "und",
+        "or": "oder"
+    },
+    "admin": {
+        "no_permissions": "Du hast keine Berechtigung, auf diesen Bereich zuzugreifen."
+    },
+    "home": {
+        "welcome_tag": "3D-Druck ohne Grenzen",
+        "welcome_title": "Finde, teile und drucke",
+        "welcome_title2": "unglaubliche 3D-Designs",
+        "welcome_desc": "Trete der aktivsten 3D-Ersteller-Community bei. Entdecke Tausende von druckfertigen Modellen, lade deine eigenen Kreationen hoch und vernetze dich mit Designern aus der ganzen Welt.",
+        "section1_title": "Hast du ein eigenes Design?",
+        "section1_desc": "Lade deine STL-Dateien hoch, erstelle ein beeindruckendes Portfolio und fange noch heute an, Follower zu gewinnen."
+    },
+    "footer": {
+        "about": "Über uns",
+        "contact": "Kontakt",
+        "caracter": "©",
+        "all_rights": "3DVerse. Alle Rechte vorbehalten.",
+        "terms": "Nutzungsbedingungen",
+        "privacy": "Datenschutzrichtlinie"
+    },
+    "error_pages": {
+        "404_title": "404 - Seite nicht gefunden",
+        "404_desc": "Hoppla! Du hast die Leinwand verlassen.",
+        "go_home": "Zurück zur Startseite"
+    },
+    "contact": {
+        "contact_title1": "Kontakt & ",
+        "contact_title2": "Über mich",
+        "contact_desc": "Lerne den Entwickler hinter der Plattform kennen oder sende mir eine direkte E-Mail.",
+        "3dverse_history": "Die Geschichte von 3DVerse",
+        "send_email": "E-Mail senden",
+        "questions": "Hast du Fragen, Jobangebote oder möchtest du einfach nur Hallo sagen? Schreib mir!",
+        "email_send": "Nachricht gesendet!",
+        "thanks": "Danke für deine Kontaktaufnahme! Ich werde so schnell wie möglich antworten.",
+        "name_placeholder": "Dein Name",
+        "email_placeholder": "Deine E-Mail-Adresse",
+        "subject_placeholder": "Worüber möchtest du sprechen?",
+        "message_placeholder": "Schreibe deine Nachricht hier...",
+        "sending": "Wird gesendet...",
+        "send": "Nachricht senden"
+    },
+    "administration_pages": {
+        "admin_panel": "Administrationspanel",
+        "admin_desc": "Verwalte Benutzer, Modelle und Plattforminhalte.",
+        "manage_users": "Benutzer moderieren",
+        "manage_models": "Modelle moderieren",
+        "go_community": "Zur Community",
+        "go_models": "Zu den Modellen",
+        "categories": {
+            "title": "Kategorienverwaltung",
+            "new_category_placeholder": "Name der neuen Kategorie",
+            "add": "Hinzufügen",
+            "adding": "Wird hinzugefügt...",
+            "no_categories": "Keine Kategorien erstellt"
+        }
+    },
+    "user_context": {
+        "login_error": "Falsche E-Mail-Adresse oder falsches Passwort.",
+        "register_error": "Benutzername oder E-Mail ist bereits registriert.",
+        "logout_question": "Bist du sicher, dass du dich abmelden möchtest?",
+        "logout_success": "Erfolgreich abgemeldet",
+        "login_success": "Erfolgreich angemeldet",
+        "delete_user_confirmation": "Bist du sicher, dass du dieses Konto löschen möchtest? Diese Aktion ist unwiderruflich.",
+        "delete_user_success": "Konto erfolgreich gelöscht",
+        "delete_user_error": "Das Konto konnte nicht gelöscht werden.",
+        "profile_updated": "Profil erfolgreich aktualisiert",
+        "profile_update_error": "Fehler beim Aktualisieren des Profils",
+        "load_profile_error": "Fehler beim Laden des Profils",
+        "load_active_profile_error": "Fehler beim Laden des aktiven Profils",
+        "community_search_error": "Fehler bei der Suche in der Community",
+        "sort_options": {
+            "more_followers": "Mehr Follower",
+            "more_models": "Mehr Modelle"
+        }
+    },
+    "models_context": {
+        "meili_search_error": "Fehler in MeiliSearch, bitte versuche es erneut",
+        "model_upload_success": "Modell erfolgreich hochgeladen",
+        "model_update_success": "Modell erfolgreich aktualisiert",
+        "model_delete_success": "Modell erfolgreich gelöscht",
+        "model_error": "Ein Fehler ist aufgetreten, bitte versuche es erneut",
+        "download_error": "Fehler beim Herunterladen des Modells, bitte versuche es erneut",
+        "download_package_error": "Fehler beim Herunterladen des Pakets, bitte versuche es erneut",
+        "delete_confirmation": "Bist du sicher, dass du dieses Modell löschen möchtest? Diese Aktion ist unwiderruflich.",
+        "edit_permission_error": "Du hast keine Berechtigung, dieses Modell zu bearbeiten.",
+        "prepare_edit_error": "Modelldaten konnten nicht zum Bearbeiten geladen werden.",
+        "edit_error": "Änderungen konnten nicht gespeichert werden.",
+        "upload_error": "Fehler bei der Verarbeitung deines Designs. Bitte versuche es erneut.",
+        "search_error": "Fehler bei der Suche nach Modellen, bitte versuche es erneut",
+        "sort_options": {
+            "newest": "Neueste",
+            "popular": "Beliebte",
+            "downloads": "Am meisten heruntergeladen"
+        }
+    },
+    "category_context": {
+        "fetch_error": "Fehler beim Laden der Kategorien, bitte versuche es erneut",
+        "create_error": "Fehler beim Erstellen der Kategorie, bitte versuche es erneut",
+        "update_error": "Fehler beim Aktualisieren der Kategorie, bitte versuche es erneut",
+        "delete_error": "Fehler beim Löschen der Kategorie, bitte versuche es erneut",
+        "delete_confirmation": "Bist du sicher, dass du diese Kategorie löschen möchtest? Diese Aktion ist unwiderruflich.",
+        "update_success": "Kategorie erfolgreich aktualisiert",
+        "create_success": "Kategorie erfolgreich erstellt",
+        "delete_success": "Kategorie gelöscht"
+    },
+    "comments_context": {
+        "fetch_error": "Fehler beim Laden der Kommentare, bitte versuche es erneut",
+        "add_error": "Fehler beim Hinzufügen des Kommentars, bitte versuche es erneut",
+        "add_success": "Kommentar erfolgreich hinzugefügt",
+        "delete_error": "Fehler beim Löschen des Kommentars, bitte versuche es erneut",
+        "delete_confirmation": "Diesen Kommentar löschen?",
+        "delete_success": "Kommentar gelöscht"
+    },
+    "contact_context": {
+        "name": "Rubén",
+        "role": "Full Stack Developer",
+        "bio": "Ich bin ein Entwickler mit einer Leidenschaft für Technologie und 3D-Design. Ich liebe es, innovative Lösungen zu entwickeln und meine Projekte mit der Community zu teilen.",
+        "history": "Diese App entstand aus dem Wunsch, eine aktive Community von 3D-Erstellern zu gründen, in der Nutzer ihre Designs teilen, sich gegenseitig inspirieren und den 3D-Druck auf das nächste Level heben können."
+    },
+    "favorites_context": {
+        "fetch_error": "Fehler beim Laden deiner Favoriten, bitte versuche es erneut",
+        "toggle_error": "Fehler beim Aktualisieren des Favoriten, bitte versuche es erneut",
+        "auth_required": "Du musst angemeldet sein, um Modelle in den Favoriten zu speichern"
+    },
+    "follow_context": {
+        "load_followings_error": "Fehler beim Laden der Personen, denen du folgst, bitte versuche es erneut",
+        "load_followers_error": "Fehler beim Laden deiner Follower, bitte versuche es erneut",
+        "load_following_error": "Fehler bei der Überprüfung, ob du diesem Benutzer folgst, bitte versuche es erneut",
+        "toggle_follow_error": "Fehler beim Aktualisieren deines Follows, bitte versuche es erneut"
+    },
+    "like_context": {
+        "toggle_like_error": "Fehler beim Aktualisieren deines Likes, bitte versuche es erneut",
+        "auth_required": "Du musst angemeldet sein, um Modelle zu liken"
+    },
+    "comments_section": {
+        "add_comment_placeholder": "Schreibe hier deinen Kommentar...",
+        "publish": "Veröffentlichen",
+        "auth_required": "Du musst angemeldet sein, um zu kommentieren",
+        "no_comments": "Noch keine Kommentare. Sei der Erste, der seine Meinung sagt!",
+        "loading_comments": "Kommentare werden geladen..."
+    },
+    "community": {
+        "tittle": "Ersteller-Community",
+        "subtittle": "Entdecke die talentierten 3D-Designer, die Teil unserer Community sind.",
+        "search_placeholder": "Suche nach Benutzername oder Biografie",
+        "no_results": "Es wurden keine Benutzer gefunden, die deiner Suche entsprechen.",
+        "try_other_search": "Versuche es mit anderen Suchbegriffen"
+    },
+    "models_page": {
+        "tittle": "Entdecke 3D-Modelle",
+        "subtittle": "Finde das perfekte Design.",
+        "search_placeholder": "Suche nach Titel, Kategorie, Tags...",
+        "no_results": "Es wurden keine Modelle gefunden, die deiner Suche entsprechen.",
+        "try_other_search": "Versuche es mit anderen Suchbegriffen"
+    },
+    "searchbar": {
+        "categories": "Kategorien",
+        "all": "Alle",
+        "placeholder": "Suchen..."
+    },
+    "categories": {
+        "Arte y Diseño": "Kunst und Design",
+        "Automoción": "Automobil",
+        "Ciencia": "Wissenschaft",
+        "Educación": "Bildung",
+        "Juguetes": "Spielzeug",
+        "Medicina": "Medizin",
+        "Moda y Accesorios": "Mode und Accessoires",
+        "Tecnología y Gadgets": "Technologie und Gadgets",
+        "Videojuegos": "Videospiele",
+        "Arquitectura": "Architektur",
+        "Vehículos": "Fahrzeuge",
+        "Naturaleza": "Natur",
+        "Personajes": "Charaktere",
+        "Otros": "Andere"
+    },
+    "upload_page": {
+        "parts_files": {
+            "parts_files_title": "Zusätzliche Teile",
+            "parts_files_desc": "Ist dein Design in mehrere Teile unterteilt? Lade sie hier hoch.",
+            "no_parts": "Es wurden keine zusätzlichen Teile hinzugefügt."
+        }
+    },
+    "user_settings": {
+        "title": "Benutzereinstellungen",
+        "subtitle": "Verwalte dein Profil, deine sozialen Netzwerke und dein Konto",
+        "public_profile": "Öffentliches Profil",
+        "desing": "Anpassung und Design",
+        "preferences": "Einstellungen",
+        "account_tittle": "Konto",
+        "save_settings": "Einstellungen speichern",
+        "save_settings_desc": "Stelle sicher, dass du die Änderungen speicherst, bevor du gehst.",
+        "basic_info": {
+            "title": "Grundlegende Informationen",
+            "subtitle": "Name, Ort und Biografie",
+            "username": "Benutzername",
+            "name": "Vollständiger Name",
+            "lastname": "Nachname",
+            "location": "Ort",
+            "location_placeholder": "Z.B.: Berlin, Deutschland",
+            "bio": "Biografie",
+            "bio_placeholder": "Erzähle uns ein wenig über dich..."
+        },
+        "social_links": {
+            "title": "Soziale Netzwerke",
+            "subtitle": "Teile deine sozialen Profile",
+            "youtube": "YouTube",
+            "twitter": "Twitter",
+            "github": "GitHub",
+            "linkedin": "LinkedIn",
+            "your_username": "Dein Benutzername auf"
+        },
+        "account": {
+            "title": "Konto",
+            "subtitle": "Konto löschen",
+            "danger_zone": "Gefahrenzone",
+            "danger_desc": "Das Löschen deines Kontos ist unwiderruflich. Alle deine Daten, Modelle und Aktivitäten werden entfernt.",
+            "delete_account": "Konto löschen"
+        },
+        "preferences_section": {
+            "title": "Anzeige und Sprache",
+            "subtitle": "Passe an, wie du die Anwendung sehen möchtest",
+            "language": "Sprache",
+            "theme": "Design"
+        },
+        "customization": {
+            "avatar": "Profilbild",
+            "avatar_subtitle": "Dein Haupt-Avatar in der Community",
+            "banner": "Banner oder Farbe",
+            "banner_subtitle": "Passe den Header deiner Karte an",
+            "img_url": "Bild-URL",
+            "img_url_placeholder": "https://beispiel.de/mein-avatar.png",
+            "remove_photo": "Profilbild entfernen",
+            "preview": "Vorschau",
+            "remove_banner": "Bannerbild entfernen",
+            "color": "Bannerfarbe",
+            "color_desc": "Wähle eine Farbe für dein Banner, wenn du kein Bild verwenden möchtest"
+        }
+    },
+    "popular_models": {
+        "title": "Top Beliebte Designs",
+        "description": "Entdecke die beliebtesten Modelle in der Community.",
+        "see_all": "Alle ansehen"
+    },
+    "hero_carousel": {
+        "loading": "Projekte werden geladen...",
+        "featured": "Hervorgehoben",
+        "view_design": "Design ansehen"
+    },
+    "validations": {
+        "login": {
+            "empty_email_and_password": "Bitte gib deine E-Mail und dein Passwort ein.",
+            "empty_email": "Das E-Mail-Feld darf nicht leer sein.",
+            "empty_password": "Bitte gib dein Passwort ein.",
+            "invalid_email": "Das Format der E-Mail-Adresse ist ungültig.",
+            "password_too_short": "Das Passwort muss mindestens 6 Zeichen lang sein."
+        },
+        "register": {
+            "all_fields_required": "Alle Felder sind zur Registrierung erforderlich.",
+            "username_too_short": "Der Benutzername muss mindestens 3 Zeichen lang sein.",
+            "username_has_spaces": "Der Benutzername darf keine Leerzeichen enthalten.",
+            "invalid_email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+            "password_too_short": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+            "passwords_do_not_match": "Die Passwörter stimmen nicht überein."
+        },
+        "profile_update": {
+            "username_empty": "Der Benutzername darf nicht leer sein.",
+            "username_too_short": "Der Benutzername muss mindestens 3 Zeichen lang sein.",
+            "username_has_spaces": "Der Benutzername darf keine Leerzeichen enthalten."
+        },
+        "validateFileSize": {
+            "size_exceeded1": "Limit überschritten: Deine Dateien wiegen ",
+            "size_exceeded2": "MB. Das Maximum beträgt 50MB."
+        },
+        "validateUploadData": {
+            "title_required": "Der Titel ist erforderlich.",
+            "main_file_required": "Du musst eine 3D-Hauptdatei (.obj, .stl, .glb, .gltf) hochladen.",
+            "main_image_required": "Das Titelbild ist erforderlich."
+        }
+    }
+}
