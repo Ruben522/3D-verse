@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 import { sendExternalEmail } from "../hooks/useMailService.js";
 import { useTranslation } from "react-i18next";
-import fotoPerfil from "../assets/images/fotojpg.jgp";
+import fotoPerfil from "../assets/images/fotojpg.jpg";
 
 const contact = createContext();
 
