@@ -17,13 +17,13 @@ import SocialLayout from "./SocialLayout";
 const AllRoutes = () => {
 	return (
 		<Routes>
-			<Route path="/" element={<Home />} />
 			<Route path="/login" element={<AuthPage />} />
 			<Route path="/register" element={<AuthPage />} />
 			<Route path="/contacto" element={<Contact />} />
 			<Route path="/settings" element={<Settings />} />
 
 			<Route element={<SocialLayout />}>
+				<Route path="/" element={<Home />} />
 				<Route path="/models" element={<Models />} />
 				<Route path="/models/:id" element={<ModelDetail />} />
 				<Route path="/profile" element={<Profile />} />
