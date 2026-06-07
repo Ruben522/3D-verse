@@ -5,16 +5,10 @@ import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 
 async function runSeed() {
-  console.log('🌱 Iniciando la creación de Usuarios, Modelos y Likes falsos...');
 
   try {
     const NUM_USERS = 15;
     const NUM_MODELS = 50;
-
-    // ==========================================
-    // 1. CREACIÓN DE USUARIOS FALSOS
-    // ==========================================
-    console.log(`👤 Generando ${NUM_USERS} usuarios con avatares...`);
     const createdUsers = [];
 
     for (let i = 0; i < NUM_USERS; i++) {
@@ -45,10 +39,7 @@ async function runSeed() {
       createdUsers.push(fakeUser);
     }
 
-    // ==========================================
-    // 2. CREACIÓN DE MODELOS ASIGNADOS
-    // ==========================================
-    console.log(`📦 Creando ${NUM_MODELS} modelos y asignándoselos a los usuarios...`);
+    console.log(`Creando ${NUM_MODELS} modelos y asignándoselos a los usuarios...`);
     const createdModels = [];
 
     const categorias = ['Robot', 'Coche', 'Casa', 'Espada', 'Nave Espacial', 'Personaje', 'Mueble', 'Arma'];
@@ -77,7 +68,6 @@ async function runSeed() {
     // ==========================================
     // 3. REPARTO DE LIKES (Interacciones)
     // ==========================================
-    console.log(`❤️ Simulando que los usuarios le dan Like a los modelos...`);
 
     for (const model of createdModels) {
       const shuffledUsers = [...createdUsers].sort(() => 0.5 - Math.random());
@@ -94,11 +84,8 @@ async function runSeed() {
       }
     }
 
-    console.log(`✅ ¡Magia completada! Tu base de datos parece la de una plataforma en pleno rendimiento.`);
-    console.log(`⚠️ Paso final: Ejecuta 'node sync-initial.js' para purgar Meilisearch y subir todo este contenido nuevo.`);
-
   } catch (error) {
-    console.error('❌ Error inyectando datos:', error);
+    console.error('Error inyectando datos:', error);
   } finally {
     await prisma.$disconnect();
   }

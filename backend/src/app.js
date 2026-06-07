@@ -19,7 +19,6 @@ const app = express();
 app.use(cors({ origin: "https://3d-verse-pi.vercel.app" }));
 app.use(express.json());
 
-// RUTAS
 app.use("/auth", authRoutes);
 app.use("/models", modelsRoutes);
 app.use("/users", usersRoutes);
@@ -34,9 +33,8 @@ app.use("/categories", categoriesRoutes);
 
 app.get("/", async (req, res) => {
     try {
-        // Consulta minúscula para mantener a Neon (la BD) despierta
         await prisma.$queryRaw`SELECT 1`;
-        res.send("Bienvenido a la API de 3D-verse. ¡Base de datos activa! 🟢");
+        res.send("Bienvenido a la API de 3D-verse.");
     } catch (error) {
         console.error("Error en el ping de la BD:", error);
         res.status(500).send("Error conectando a la BD");

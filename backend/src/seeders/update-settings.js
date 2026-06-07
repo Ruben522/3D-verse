@@ -1,8 +1,6 @@
-import { client } from './src/server/meilisearch.js';
+import { client } from '../server/meilisearch.js';
 
 async function updateMeiliSettings() {
-  console.log('⏳ Enviando nuevas reglas a Meilisearch...');
-
   try {
     const modelsIndex = client.index('models');
 
@@ -32,7 +30,7 @@ async function updateMeiliSettings() {
     ]);
 
   } catch (error) {
-    console.error('❌ Error actualizando Meilisearch:', error);
+    console.error('Error actualizando Meilisearch:', error);
   } finally {
     process.exit(0);
   }

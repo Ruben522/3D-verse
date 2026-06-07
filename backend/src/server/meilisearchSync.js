@@ -43,9 +43,8 @@ export const syncModelToMeili = async (modelOrId) => {
 
     const document = transformModelForMeili(fullModel);
     await modelsIndex.addDocuments([document]);
-    console.log(`🔍 Modelo ${fullModel.id} sincronizado con Meilisearch`);
   } catch (error) {
-    console.error('❌ Error al sincronizar modelo con Meilisearch:', error);
+    console.error('Error al sincronizar modelo con Meilisearch:', error);
   }
 };
 
@@ -70,9 +69,8 @@ export const syncUserToMeili = async (userOrId) => {
 
     const document = transformUserForMeili(fullUser);
     await usersIndex.addDocuments([document]);
-    console.log(`👤 Usuario ${document.username} sincronizado`);
   } catch (error) {
-    console.error('❌ Error sincronizando usuario con Meili:', error);
+    console.error('Error sincronizando usuario con Meili:', error);
   }
 };
 
@@ -98,8 +96,7 @@ export const deleteModelFromMeili = async (modelOrId) => {
     const modelId = typeof modelOrId === 'object' ? modelOrId.id : modelOrId;
 
     await modelsIndex.deleteDocument(modelId);
-    console.log(`🗑️ Modelo ${modelId} eliminado de Meilisearch`);
   } catch (error) {
-    console.error('❌ Error al eliminar de Meilisearch:', error);
+    console.error('Error al eliminar de Meilisearch:', error);
   }
 };

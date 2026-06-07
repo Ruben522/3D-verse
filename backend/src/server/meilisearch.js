@@ -37,9 +37,8 @@ export const setupMeilisearch = async () => {
     await usersIndex.updateSortableAttributes([
       'followers_count', 'models_count'
     ]);
-    console.log('✅ Meilisearch: Configuración de filtros y ordenación actualizada');
   } catch (error) {
-    console.error('❌ Error configurando Meilisearch:', error);
+    console.error('Error configurando Meilisearch:', error);
   }
 };
 
@@ -64,8 +63,7 @@ export const syncUserToMeili = async (user) => {
   try {
     const document = transformUserForMeili(user);
     await usersIndex.addDocuments([document]);
-    console.log(`👤 Creador ${user.username} sincronizado con Meilisearch`);
   } catch (error) {
-    console.error('❌ Error al sincronizar usuario con Meilisearch:', error);
+    console.error('Error al sincronizar usuario con Meilisearch:', error);
   }
 };
