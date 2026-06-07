@@ -85,8 +85,8 @@ const uploadModel = async (req, res) => {
         const userId = req.user?.id || "guest";
         const folderPath = `3dverse/${userId}`;
         const mainFileUrl = await uploadToSupabase(req.files["main_file"][0], folderPath);
-        const coverImageUrl = req.files["cover_image"] ? await uploadToSupabase(req.files["cover_image"][0], folderPath) : null;
-
+        const mainImageFile = req.files["main_image"] ? req.files["main_image"][0] : (req.files["cover_image"] ? req.files["cover_image"][0] : null);
+        const coverImageUrl = mainImageFile ? await uploadToSupabase(mainImageFile, folderPath) : null;
         const parts = [];
         if (req.files["parts"]) {
             for (const file of req.files["parts"]) {
@@ -110,6 +110,7 @@ const uploadModel = async (req, res) => {
         const formattedFiles = {
             main_file: mainFileUrl,
             cover_image: coverImageUrl,
+            main_image_url: coverImageUrl,
             parts: parts,
             gallery: gallery,
         };
@@ -257,7 +258,13 @@ const patchMainFile = async (req, res) => {
             return sendError(res, "Debe proporcionar el nuevo archivo 3D.", 400);
         }
 
-        const updatedModel = await replaceMainFile(req.params.id, req.user, req.file.path);
+        const userId = req.user?.id || "guest";
+        const folderPath = `3dverse/${userId}`;
+
+        const fileUrl = await uploadToSupabase(req.file, folderPath);
+
+        const updatedModel = await replaceMainFile(req.params.id, req.user, fileUrl);
+
         await syncModelToMeili(req.params.id);
         sendSuccess(res, "Archivo principal actualizado correctamente.", updatedModel);
     } catch (error) {
@@ -271,7 +278,13 @@ const patchMainImage = async (req, res) => {
             return sendError(res, "Debe proporcionar una imagen.", 400);
         }
 
-        const updatedModel = await updateMainImage(req.params.id, req.user, req.file.path);
+        const userId = req.user?.id || "guest";
+        const folderPath = `3dverse/${userId}`;
+
+        const imageUrl = await uploadToSupabase(req.file, folderPath);
+
+        const updatedModel = await updateMainImage(req.params.id, req.user, imageUrl);
+
         await syncModelToMeili(req.params.id);
         sendSuccess(res, "Imagen principal actualizada correctamente.", updatedModel);
     } catch (error) {
