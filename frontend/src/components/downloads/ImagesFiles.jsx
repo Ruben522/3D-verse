@@ -29,7 +29,7 @@ const ImagesFiles = () => {
           return (
             <a
               key={index}
-              href={imgUrl}
+              href={imgUrl.includes('supabase.co') ? `${imgUrl}?download=` : imgUrl}
               download={`imagen_referencia_${index + 1}`}
               className="relative group aspect-square rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-sm block transition-colors duration-300"
             >

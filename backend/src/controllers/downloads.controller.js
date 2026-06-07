@@ -19,6 +19,14 @@ const appendUrlToArchive = (archive, url, zipPath) => {
     });
 };
 
+const formatDownloadUrl = (url) => {
+    if (!url) return null;
+    if (url.includes('supabase.co')) {
+        return url.includes('?') ? `${url}&download=` : `${url}?download=`;
+    }
+    return url;
+};
+
 const record = async (req, res) => {
     try {
         const { modelId } = req.params;
@@ -36,7 +44,7 @@ const record = async (req, res) => {
         const cleanTitle = model.title.replace(/[^a-zA-Z0-9]/g, "_");
 
         if (!type || type === "main") {
-            const downloadUrl = model.file_url.replace('/upload/', '/upload/fl_attachment/');
+            const downloadUrl = formatDownloadUrl(model.file_url);
             return res.redirect(downloadUrl);
         }
 
@@ -48,13 +56,13 @@ const record = async (req, res) => {
 
         if (type === "all" || type === "parts") {
             if (type === "all" && model.file_url) {
-                const ext = model.file_url.split('.').pop();
+                const ext = model.file_url.split('.').pop().split('?')[0];
                 downloadPromises.push(appendUrlToArchive(archive, model.file_url, `${cleanTitle}_main.${ext}`));
             }
 
             if (model.model_parts && model.model_parts.length > 0) {
                 model.model_parts.forEach((part, index) => {
-                    const ext = part.file_url.split('.').pop();
+                    const ext = part.file_url.split('.').pop().split('?')[0];
                     const partName = part.part_name ? part.part_name.replace(/[^a-zA-Z0-9]/g, "_") : `parte_${index}`;
                     downloadPromises.push(appendUrlToArchive(archive, part.file_url, `parts/${partName}.${ext}`));
                 });
@@ -64,12 +72,18 @@ const record = async (req, res) => {
         }
 
         if (type === "all" || type === "gallery") {
+
+            if (model.main_image_url) {
+                const ext = model.main_image_url.split('.').pop().split('?')[0];
+                downloadPromises.push(appendUrlToArchive(archive, model.main_image_url, `gallery/00_imagen_principal.${ext}`));
+            }
+
             if (model.model_images && model.model_images.length > 0) {
                 model.model_images.forEach((img, index) => {
-                    const ext = img.image_url.split('.').pop();
-                    downloadPromises.push(appendUrlToArchive(archive, img.image_url, `gallery/imagen_${index + 1}.${ext}`));
+                    const ext = img.image_url.split('.').pop().split('?')[0];
+                    downloadPromises.push(appendUrlToArchive(archive, img.image_url, `gallery/01_imagen_adicional_${index + 1}.${ext}`));
                 });
-            } else if (type === "gallery") {
+            } else if (type === "gallery" && !model.main_image_url) {
                 return sendError(res, "No hay galería disponible.", 404);
             }
         }
